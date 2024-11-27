@@ -18,8 +18,14 @@
       rel="stylesheet"
       href="{% static 'modules/fontawesome/css/all.min.css' %}"
     />
+      
+    <!-- Custom CSS -->
+    {% block custom_css %}{% endblock %}
 
     <!-- CSS Libraries -->
+     
+    <!-- CSS Libraries -->
+    {% block extra_css %}{% endblock %}
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
@@ -116,5 +122,8 @@
 
     <!-- Template JS File -->
     <script src="{% static 'js/scripts.js' %}"></script>
+    
+    <!-- Page Specific JS -->
+    {% block page_js %}{% endblock %}
   </body>
 </html>
