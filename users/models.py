@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 class CustomUser(AbstractUser):
+    
+
     USER_TYPE_CHOICES=[
         ('admin','System Admin'),
         ('hotel_manager','Hotel Manager'),
@@ -14,7 +16,7 @@ class CustomUser(AbstractUser):
     ]
     user_type=models.CharField(max_length=20,choices=USER_TYPE_CHOICES)
     phone=models.CharField(max_length=20,blank=True)
-    image = models.ImageField(upload_to='user/%y/%m/%d',default=True)  
+    image = models.ImageField(upload_to='user/%y/%m/%d',default=None)  
     # , default='accounts/24/07/29/home4.png'
     
     is_active = models.BooleanField(default=True)
@@ -43,10 +45,8 @@ class HotelAccountRequest(models.Model):
     verify_number = models.CharField(max_length=50)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     admin_notes = models.TextField(blank=True)
-    created_user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='created_requests')
-    updated_user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='updated_requests')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def str(self):
+    def __str__(self):
         return f"Request for {self.hotel_name}"
