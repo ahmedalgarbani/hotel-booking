@@ -56,7 +56,7 @@ def register(request):
     else:
         form = CustomUser_CreationForm()
     
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'admin/auth/register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -72,7 +72,7 @@ def login_view(request):
         else:
             messages.error(request, 'البريد الإلكتروني أو كلمة المرور غير صحيحة.')
 
-    return render(request, 'users/login.html')  # تأكد من وجود هذا القالب
+    return render(request, 'admin/auth/login.html')  # تأكد من وجود هذا القالب
 
 
 def request_hotel_account(request):

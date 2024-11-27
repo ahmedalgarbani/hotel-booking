@@ -2,92 +2,42 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
-      name="viewport"
-    />
-    <title>{% block title %}Blank Page{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>{% block title %}Stisla Dashboard{% endblock %}</title>
 
     <!-- General CSS Files -->
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/bootstrap/css/bootstrap.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/fontawesome/css/all.min.css' %}"
-    />
-      
-    <!-- Custom CSS -->
-    {% block custom_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'admin_assets/modules/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/modules/fontawesome/css/all.min.css' %}">
 
-    <!-- CSS Libraries -->
-     
     <!-- CSS Libraries -->
     {% block extra_css %}{% endblock %}
 
     <!-- Template CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/components.css' %}" />
+    <link rel="stylesheet" href="{% static 'admin_assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/components.css' %}">
 
-    <!-- Additional CSS Libraries -->
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'css/dataTables.bootstrap4.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'css/buttons.bootstrap4.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'css/responsive.bootstrap4.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/jqvmap/dist/jqvmap.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/weather-icon/css/weather-icons.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'modules/summernote/summernote-bs4.css' %}"
-    />
+    <!-- Custom CSS -->
+    {% block custom_css %}{% endblock %}
 
-    <!-- General Scripts -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"
-    ></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "UA-94034622-3");
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-94034622-3');
     </script>
-  </head>
-
   <body>
     <div id="app">
       <div class="main-wrapper main-wrapper-1">
-        <div class="navbar-bg"></div>
-
+        
+         {% if request.user.is_authenticated %}
+                <div class="navbar-bg"></div>
         {% include "admin/layouts/topbar.html" %} {% include
         "admin/layouts/sidebar.html" %}
 
+            {% endif %}
         <div class="main-content">
           <section class="section">
             {% block content %}
