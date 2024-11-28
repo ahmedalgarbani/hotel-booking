@@ -1,0 +1,103 @@
+{% extends "admin/layouts/master.html" %}
+
+{% block content %}
+
+<div id="app">
+    <section class="section">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+                    <div class="login-brand">
+                        <img src="assets/img/stisla-fill.svg" alt="logo" width="100" class="shadow-light rounded-circle">
+                    </div>
+<div class="card card-primary">
+    <div class="card-header"><h4>Register</h4></div>
+
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="frist_name">User  Name</label>
+                    <input id="frist_name" type="text" class="form-control" name="username" autofocus>
+                </div>
+                <div class="form-group col-6">
+                    <label for="frist_name">First Name</label>
+                    <input id="frist_name" type="text" class="form-control" name="first_name" autofocus>
+                </div>
+                <div class="form-group col-6">
+                    <label for="last_name">Last Name</label>
+                    <input id="last_name" type="text" class="form-control" name="last_name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" class="form-control" name="email">
+                <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="password" class="d-block">Password</label>
+                    <input id="password" type="password" class="form-control pwstrength show" data-indicator="pwindicator" name="password1">
+                    <input type="checkbox" onclick="togglePasswordVisibility('password')"> show Password
+                    <div id="pwindicator" class="pwindicator">
+                        <div class="bar"></div>
+                        <div class="label"></div>
+                    </div>
+                </div>
+                <div class="form-group col-6">
+                    <label for="password2" class="d-block">Password Confirmation</label>
+                    <input id="password2" type="password" class="form-control" name="password2">
+                    <input type="checkbox" onclick="togglePasswordVisibility('password2')">show Password
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="user_type">User  Type</label>
+                <select id="user_type" class="form-control" name="user_type">
+                    {% for choice in form.fields.user_type.choices %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="phone" type="text" class="form-control" name="phone">
+            </div>
+
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="agree" class="custom-control-input" id="agree">
+                    <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+            </div>
+
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+<div class="simple-footer">
+    Copyright &copy; Stisla 2018
+</div>
+ </div>
+
+ <script>
+    function togglePasswordVisibility(passwordFieldId) {
+        const passwordInput = document.getElementById(passwordFieldId);
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+    }
+</script>
+</section>
+{% endblock content %}

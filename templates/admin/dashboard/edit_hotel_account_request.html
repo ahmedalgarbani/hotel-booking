@@ -1,0 +1,57 @@
+{% extends "admin/layouts/master.html" %}
+{% load widget_tweaks %}
+{% block title %}تعديل طلب فتح حساب الفندق{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="section-header">
+      <h1>تعديل طلب فتح حساب الفندق</h1>
+      <div class="section-header-breadcrumb">
+          <div class="breadcrumb-item"><a href="{% url 'mananghotel' %}">قائمة الطلبات</a></div>
+          <div class="breadcrumb-item active">تعديل الطلب</div>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h4>تعديل طلب فتح حساب الفندق</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:"form-control" }}  <!-- إضافة فئة Bootstrap -->
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+          </form>
+          <hr>
+          <h5>الملف المرفق:</h5>
+          <ul class="list-group">
+              <li class="list-group-item"><strong>اسم الملف:</strong> {{ hotel_request.document_path.name }}</li>
+              <li class="list-group-item"><strong>تاريخ التحميل:</strong> {{ hotel_request.created_at }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'HotelManagement',
+    "dashboard",
     'rooms',
-    'HotelManagement'
+    'widget_tweaks',
+    
 ]
 
 MIDDLEWARE = [
@@ -83,7 +86,7 @@ DATABASES = {
 		'USER': 'root',
 		'PASSWORD': '',
 		'HOST':'localhost',
-		'PORT':'3306',
+		'PORT':'54321',
 	}
 }
 
