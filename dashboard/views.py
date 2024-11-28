@@ -19,9 +19,6 @@ def details_hotel_account(request, id):
     hotel_request = HotelAccountRequest.objects.filter(id=id).first()
 
     return render(request,'admin/dashboard/ditals_requst_hotel.html',{'order':hotel_request})
-   
-from django.contrib import messages
-from django.shortcuts import redirect
 
 def approve_hotel_account(request, id):
     hotel_request = HotelAccountRequest.objects.filter(id=id).first()

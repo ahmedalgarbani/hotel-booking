@@ -7,7 +7,7 @@
   <div class="section-header">
       <h1>تفاصيل الطلب</h1>
       <div class="section-header-breadcrumb">
-          <div class="breadcrumb-item">DataTables</div>
+          <div class="breadcrumb-item">قوائم البيانات</div>
       </div>
   </div>
 
@@ -29,7 +29,11 @@
                           <li class="list-group-item"><strong>الوصف:</strong> {{ order.hotel_description }}</li>
                           <li class="list-group-item"><strong>رقم الترخيص:</strong> {{ order.business_license_number }}</li>
                           <li class="list-group-item"><strong>رقم التحقق:</strong> {{ order.verify_number }}</li>
-                          <li class="list-group-item"><strong>الحالة:</strong> <span class="badge badge-success">{{ order.status }}</span></li>
+                          <li class="list-group-item"><strong>الحالة:</strong> <span class="badge  {% if order.status == 'pending' %} badge-warning 
+                                              {% elif order.status == 'approved' %} badge-success 
+                                              {% else %} badge-danger 
+                                              {% endif %}">
+                                              {{ order.status }}</span></li>
                           <li class="list-group-item"><strong>الملاحظات الإدارية:</strong> {{ order.admin_notes|default:"لا توجد ملاحظات" }}</li>
                           <li class="list-group-item"><strong>تاريخ الإنشاء:</strong> {{ order.created_at }}</li>
                           <li class="list-group-item"><strong>تاريخ التحديث:</strong> {{ order.updated_at }}</li>
@@ -69,11 +73,13 @@
                   </div>
                   <div class="card-body">
                       <div class="d-flex justify-content-between">
-                          {% comment %} <a href="{% url 'reject_hotel_account' order.id %}" class="btn btn-danger">رفض الطلب</a> {% endcomment %}
-                      
-                        <a href="{% url 'approve_hotel_account' order.id %}" class="btn btn-success">الموافقة على الطلب</a>
+                          <a href="{% url 'approve_hotel_account' order.id %}" class="btn btn-success">الموافقة على الطلب</a>
                           <a href="{% url 'edit_hotel_account_request' order.id %}" class="btn btn-warning">تعديل الطلب</a>
+                           <form method="POST">
+                           {% csrf_token %}
                           <a href="{% url 'delet_hotel_account_request' id_request=order.id %}" class="btn btn-danger">حذف الطلب</a>
+                          </form>
+
                       </div>
                   </div>
               </div>
@@ -93,6 +99,30 @@
         }
         .badge-success {
             background-color: #28a745;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        . .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .section-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+        }
+        .section-title {
+            color: #343a40;
         }
     </style>
 {% endblock %}
