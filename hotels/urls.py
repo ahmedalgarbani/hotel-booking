@@ -25,6 +25,8 @@ urlpatterns = [
 
     path('hotel-management/', include('HotelManagement.urls')),
     path('rooms/', include('rooms.urls')),
+    path('reviews/', include('reviews.urls')),
+    path('services/', include('services.urls')),
 ]
 
 if settings.DEBUG:

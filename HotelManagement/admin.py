@@ -3,10 +3,10 @@ from .models import Hotel, Location, Phone, Image, City
 
 # ---------- Hotel -------------
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'rating', 'is_verified', 'slug', 'created_at')
+    list_display = ('name', 'location', 'is_verified', 'slug', 'created_at')
     readonly_fields = ('slug',)  
     search_fields = ('name', 'location__name')  
-    list_filter = ('rating', 'is_verified') 
+    list_filter = ('name','is_verified') 
 
 admin.site.register(Hotel, HotelAdmin)
 

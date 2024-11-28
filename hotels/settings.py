@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'HotelManagement',
     "dashboard",
     'rooms',
+    'HotelManagement',
+    'reviews',
+    'services'
     'widget_tweaks',
     
 ]

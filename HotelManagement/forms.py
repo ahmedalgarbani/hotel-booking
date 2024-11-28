@@ -4,7 +4,7 @@ from .models import Hotel, Location, Phone, Image, City
 class HotelForm(forms.ModelForm):
     class Meta:
         model = Hotel
-        fields = ['location', 'name', 'email', 'description', 'rating', 'is_verified', 'verification_date']
+        fields = ['location', 'name', 'email', 'description', 'is_verified', 'verification_date']
 
 class LocationForm(forms.ModelForm):
     class Meta:

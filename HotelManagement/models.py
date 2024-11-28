@@ -88,9 +88,6 @@ class Hotel(BaseModel):
         blank=True, 
         verbose_name=_("وصف الفندق")
     )
-    rating = models.IntegerField(
-        verbose_name=_("التقييم")
-    )
     is_verified = models.BooleanField(
         default=False, 
         verbose_name=_("تم التحقق")
