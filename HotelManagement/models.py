@@ -1,7 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 from django.conf import settings
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
@@ -29,17 +30,44 @@ class BaseModel(models.Model):
         verbose_name=_("المعدل"),
         on_delete=models.CASCADE
     )
+    
+    slug = models.SlugField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("Slug"),
+        blank=True
+    )
 
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self.generate_unique_slug()
+        super(BaseModel, self).save(*args, **kwargs)
 
+    def generate_unique_slug(self):
+        base_slug = slugify(self.name) if hasattr(self, 'name') and self.name else slugify(str(self.id) if self.id else str(self))
+        slug = base_slug
+        num = 1
+
+        model_class = self.__class__
+        while model_class.objects.filter(slug=slug).exists():
+            slug = f'{base_slug}-{num}'
+            num += 1
+
+        return slug
+
+    def get_absolute_url(self):
+        return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
+
+   
 
 
 
 # -------------------- Hotel ----------------------------
 
-class Hotel(BaseModel): 
+class Hotel(BaseModel):
     location = models.ForeignKey(
         "Location",
         verbose_name=_("موقع الفندق"), 
@@ -76,24 +104,26 @@ class Hotel(BaseModel):
     class Meta:
         verbose_name = _("فندق")
         verbose_name_plural = _("فنادق")
-
     def __str__(self):
-        return self.name if self.name else _("فندق بدون اسم")
-
+        return f"{self.name}" 
 
 # -------------------- Location ----------------------------
+
 class Location(BaseModel):
-    name = models.CharField(max_length=255,verbose_name=_("الموقع"))
+    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
-    city = models.ForeignKey("City",
+    city = models.ForeignKey(
+        "City",
         verbose_name=_("موقع الفندق"), 
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
+
     class Meta:
         verbose_name = _("الموقع")
         verbose_name_plural = _("المواقع")
-
     def __str__(self):
-        return self.name if self.name else _("موقع بدون اسم")
+        return f"{self.name}" 
+
 # -------------------- Phone ----------------------------
 
 class Phone(BaseModel):
@@ -109,16 +139,20 @@ class Phone(BaseModel):
     class Meta:
         verbose_name = _("رقم هاتف")
         verbose_name_plural = _("أرقام الهواتف")
-
     def __str__(self):
-        return f"{self.country_code}-{self.phone_number}"
+        return f"{self.phone_number}" 
 
-#----------------------  images  -------------------------------
-    
+# ---------------------- Image -------------------------------
+
 class Image(BaseModel):    
-    image_path = models.CharField(_("مسار الصوره"),max_length=255)
-    image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True,max_length=3000)
+    image_path = models.ImageField(upload_to='images/', blank=True, null=True)
+    image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
 
+    class Meta:
+        verbose_name = _("صورة")
+        verbose_name_plural = _("صور")
+    def __str__(self):
+        return f"{self.image_path}" 
 
 # -------------------- City ----------------------------
 
@@ -139,9 +173,5 @@ class City(BaseModel):
     class Meta:
         verbose_name = _("منطقه")
         verbose_name_plural = _("المناطق")
-
     def __str__(self):
-        return self.name if self.name else _("منطقه بدون اسم")
-
-
-    
+        return f"{self.name}" 

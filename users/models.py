@@ -16,7 +16,9 @@ class CustomUser(AbstractUser):
     ]
     user_type=models.CharField(max_length=20,choices=USER_TYPE_CHOICES)
     phone=models.CharField(max_length=20,blank=True)
+
     image = models.ImageField(upload_to='user/%y/%m/%d',default=None)  
+
     # , default='accounts/24/07/29/home4.png'
     
     is_active = models.BooleanField(default=True)
