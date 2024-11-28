@@ -73,7 +73,7 @@
                       
                         <a href="{% url 'approve_hotel_account' order.id %}" class="btn btn-success">الموافقة على الطلب</a>
                           <a href="{% url 'edit_hotel_account_request' order.id %}" class="btn btn-warning">تعديل الطلب</a>
-                          <a href="{% url 'delet_hotel_account_request' order.id %}" class="btn btn-danger">حذف الطلب</a>
+                          <a href="{% url 'delet_hotel_account_request' id_request=order.id %}" class="btn btn-danger">حذف الطلب</a>
                       </div>
                   </div>
               </div>

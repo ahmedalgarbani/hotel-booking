@@ -16,6 +16,11 @@
     <div class="card-body">
         <form method="POST">
             {% csrf_token %}
+            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
             <div class="row">
                 <div class="form-group col-6">
                     <label for="frist_name">User  Name</label>

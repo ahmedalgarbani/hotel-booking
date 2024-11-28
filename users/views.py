@@ -46,8 +46,8 @@ def register(request):
                 return redirect('request_hotel_account')  # تأكد من أن لديك URL باسم 'request_hotel_account'
 
             if user_type == "admin":
-                user.is_superuser = True
-                user.is_staff = True
+                messages.error(request, 'لا يمكنك انشاء حساب مسوول ')
+                return redirect('register') 
             else:
                 user.is_superuser = False
                 user.is_staff = False
