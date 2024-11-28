@@ -29,7 +29,7 @@ admin.site.register(Phone, PhoneAdmin)
 # ----------- Image --------------
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('image_path', 'image_url', 'created_at')
+    list_display = ('image_path', 'image_url','hotel_id', 'created_at')
     search_fields = ('image_path',) 
 
 admin.site.register(Image, ImageAdmin)

@@ -117,45 +117,45 @@ def phone_delete(request, phone_slug):
         return redirect('phone_list')
     return render(request, 'phone_confirm_delete.html', {'phone': phone})
 
+# -------------------- image ----------------------------
 
-# -------------------- Image ----------------------------
-def image_list(request):
-    images = Image.objects.all()
-    return render(request, 'image_list.html', {'images': images})
+def image_list(request, hotel_id):
+    images = Image.objects.filter(hotel_id=hotel_id)
+    return render(request, 'image_list.html', {'images': images, 'hotel_id': hotel_id})
 
-def image_detail(request, image_slug):
-    image = get_object_or_404(Image, slug=image_slug)
-    return render(request, 'image_detail.html', {'image': image})
+def image_detail(request, hotel_id, image_slug):
+    image = get_object_or_404(Image, slug=image_slug, hotel_id=hotel_id)
+    return render(request, 'image_detail.html', {'image': image, 'hotel_id': hotel_id})
 
-def image_create(request):
+def image_create(request, hotel_id):
     if request.method == 'POST':
-        form = ImageForm(request.POST)
+        form = ImageForm(request.POST, request.FILES) 
         if form.is_valid():
-            form.save()
-            return redirect('image_list')
+            image = form.save(commit=False)
+            image.hotel_id_id = hotel_id
+            image.save()
+            return redirect('image_list', hotel_id=hotel_id)
     else:
         form = ImageForm()
-    return render(request, 'image_form.html', {'form': form})
+    return render(request, 'image_form.html', {'form': form, 'hotel_id': hotel_id})
 
-def image_update(request, image_slug):
-    image = get_object_or_404(Image, slug=image_slug)
+def image_update(request, hotel_id, image_slug):
+    image = get_object_or_404(Image, slug=image_slug, hotel_id=hotel_id)
     if request.method == 'POST':
-        form = ImageForm(request.POST, instance=image)
+        form = ImageForm(request.POST, request.FILES, instance=image)  
         if form.is_valid():
             form.save()
-            return redirect('image_list')
+            return redirect('image_list', hotel_id=hotel_id)
     else:
         form = ImageForm(instance=image)
-    return render(request, 'image_form.html', {'form': form})
+    return render(request, 'image_form.html', {'form': form, 'hotel_id': hotel_id})
 
-def image_delete(request, image_slug):
-    image = get_object_or_404(Image, slug=image_slug)
+def image_delete(request, hotel_id, image_slug):
+    image = get_object_or_404(Image, slug=image_slug, hotel_id=hotel_id)
     if request.method == 'POST':
         image.delete()
-        return redirect('image_list')
-    return render(request, 'image_confirm_delete.html', {'image': image})
-
-
+        return redirect('image_list', hotel_id=hotel_id)
+    return render(request, 'image_confirm_delete.html', {'image': image, 'hotel_id': hotel_id})
 # -------------------- City ----------------------------
 def city_list(request):
     cities = City.objects.all()

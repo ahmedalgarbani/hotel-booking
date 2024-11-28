@@ -147,6 +147,7 @@ class Phone(BaseModel):
 class Image(BaseModel):    
     image_path = models.ImageField(upload_to='images/', blank=True, null=True)
     image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
+    hotel_id = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _("صورة")
