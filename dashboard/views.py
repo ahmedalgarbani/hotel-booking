@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from users.models import HotelAccountRequest,CustomUser
+from users.models import ActivityLog, HotelAccountRequest,CustomUser
+from django.contrib import messages
 
-from .forms import HotelAccountRequestForm  # تأكد من استيراد النموذج
-
+from .forms import HotelAccountRequestForm 
 def dashpord(request):
     user = request.user
     
@@ -33,12 +33,12 @@ def approve_hotel_account(request,id):
             user_type="hotel_manager"
         )
         
-        # حفظ المستخدم الجديد
-        user.set_password(user.password)  # استخدام هذه الدالة لتشفير كلمة المرور
+      
+        user.set_password(user.password)  
         user.save()
 
         # تحديث حالة الطلب
-        hotel_request.status = 'approved'  # يجب أن يكون 'approved' بدلاً من 'approve'
+        hotel_request.status = 'approved'
         hotel_request.save()
 
         return redirect('mananghotel')
@@ -48,11 +48,18 @@ def approve_hotel_account(request,id):
 
 def edit_hotel_account_request(request, id):
     hotel_request = get_object_or_404(HotelAccountRequest, id=id)
-
+    user=request.user
     if request.method == 'POST':
         form = HotelAccountRequestForm(request.POST, request.FILES, instance=hotel_request)  # تأكد من تمرير request.FILES
         if form.is_valid():
+           
             form.save()  # حفظ التعديلات
+            ActivityLog.objects.create(
+                custom_user_id=user,
+                table_name='HotelAccountRequest ',
+                record_id=user.id,
+                action='edit_hotel_account_request'
+            )
             return redirect('mananghotel')
     else:
         form = HotelAccountRequestForm(instance=hotel_request)
@@ -61,3 +68,17 @@ def edit_hotel_account_request(request, id):
         'form': form,
         'hotel_request': hotel_request
     })
+def delet_hotel_account_request(request,id_requesr):
+    user=request.user
+    if request.method == 'POST':
+      hotel_request=HotelAccountRequest.objects.get(id=id_requesr)
+      ActivityLog.objects.create(
+                custom_user_id=user,
+                table_name='HotelAccountRequest ',
+                record_id=user.id,
+                action='delet_hotel_account_request'
+            )
+      hotel_request.adelete()
+      return redirect('mananghotel')
+    else:
+        pass

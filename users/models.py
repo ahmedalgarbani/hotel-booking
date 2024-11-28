@@ -52,3 +52,14 @@ class HotelAccountRequest(models.Model):
 
     def __str__(self):
         return f"Request for {self.hotel_name}"
+    
+
+    from django.db import models
+
+class ActivityLog(models.Model):
+    log_id = models.AutoField(primary_key=True)
+    custom_user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    table_name = models.CharField(max_length=100)
+    record_id = models.IntegerField()
+    action = models.CharField(max_length=50)
+    changed_at = models.DateTimeField(auto_now_add=True)

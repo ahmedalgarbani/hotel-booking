@@ -1,0 +1,67 @@
+
+
+
+{% extends "admin/layouts/master.html" %}
+
+{% block title %}سجلات النشاط{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="section-header">
+      <h1>>سجلات النشاط</h1>
+      <div class="section-header-breadcrumb">
+          <div class="breadcrumb-item">DataTables</div>
+      </div>
+  </div>
+
+  <div class="section-body">
+      <h2 class="section-title">Hotel Account Requests</h2>
+      <p class="section-lead">
+          Below are the requests for hotel accounts.
+      </p>
+
+      <div class="row">
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-header">
+                      <h4>Hotel Account Requests Table</h4>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-striped" id="table-1">
+                              <thead>
+                                  <tr>
+                                      
+        <th>ID</th>
+        <th>اسم المستخدم</th>
+        <th>اسم الجدول</th>
+        <th>رقم السجل</th>
+        <th>الإجراء</th>
+        <th>تاريخ التغيير</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {% for log in logs %}
+                                   <td>{{ log.log_id }}</td>
+        <td>{{ log.custom_user_id.username }}</td>
+        <td>{{ log.table_name }}</td>
+        <td>{{ log.record_id }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.changed_at }}</td>
+    </tr>
+    {% endfor %}
+                                  
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+    <!-- CSS إضافية للصفحة -->
+{% endblock %}
