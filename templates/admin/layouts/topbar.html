@@ -9,7 +9,7 @@
           <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a></li>
         </ul>
         <div class="search-element">
-          <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="250">
+          <input class="form-control" type="search" placeholder="بحث" aria-label="Search" data-width="250">
           <button class="btn" type="submit"><i class="fas fa-search"></i></button>
           <div class="search-backdrop"></div>
           <div class="search-result"></div>
@@ -22,7 +22,7 @@
             <i class="far fa-envelope"></i>
           </a>
           <div class="dropdown-menu dropdown-list dropdown-menu-right">
-            <div class="dropdown-header">Messages</div>
+            <div class="dropdown-header">الرسائل</div>
             <!-- يمكنك إضافة قائمة الرسائل هنا -->
           </div>
         </li>
@@ -31,26 +31,23 @@
             <i class="far fa-bell"></i>
           </a>
           <div class="dropdown-menu dropdown-list dropdown-menu-right">
-            <div class="dropdown-header">Notifications</div>
+            <div class="dropdown-header">الإشعارات</div>
             <!-- يمكنك إضافة قائمة الإشعارات هنا -->
           </div>
         </li>
         <li class="dropdown">
           <a href="#" data-toggle="dropdown" class="nav-link nav-link-lg nav-link-user">
-            <img alt="image" src="{% static 'admin_assets/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1">
-            <div class="d-sm-none d-lg-inline-block">Hi, {{ user.username }}</div>
+            <img alt="صورة" src="{% static 'admin_assets/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1">
+            <div class="d-sm-none d-lg-inline-block">مرحبًا، {{ user.username }}</div>
           </a>
           <div class="dropdown-menu dropdown-menu-right">
-            <div class="dropdown-title">Logged in 5 minutes ago</div>
-            {% comment %} <a href="{% url 'profile' %}" class="dropdown-item has-icon"> {% endcomment %}
-              <i class="far fa-user"></i> Profile
-            </a>
+            <div class="dropdown-title">تم تسجيل الدخول منذ 5 دقائق</div>
             <a href="" class="dropdown-item has-icon">
-              <i class="fas fa-cog"></i> Settings
+              <i class="fas fa-cog"></i> الإعدادات
             </a>
             <div class="dropdown-divider"></div>
             <a href="{% url "logout" %}" class="dropdown-item has-icon text-danger">
-              <i class="fas fa-sign-out-alt"></i> Logout
+              <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
             </a>
           </div>
         </li>

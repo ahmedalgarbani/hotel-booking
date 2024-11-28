@@ -1,11 +1,15 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" right>
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <title>{% block title %}Stisla Dashboard{% endblock %}</title>
-
+    <!-- إضافة CSS لـ DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+<!-- إضافة JS لـ jQuery و DataTables -->
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{% static 'admin_assets/modules/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'admin_assets/modules/fontawesome/css/all.min.css' %}">
@@ -66,8 +70,8 @@
     <!-- Template JS File -->
     <script src="{% static 'admin_assets/js/scripts.js' %}"></script>
     <script src="{% static 'admin_assets/js/custom.js' %}"></script>
-
-    <!-- Page Specific JS -->
+    {% comment %} <script async src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Page Specific JS --> {% endcomment %}
     {% block page_js %}{% endblock %}
 </body>
 </html>

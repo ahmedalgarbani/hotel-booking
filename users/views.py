@@ -5,6 +5,8 @@ from .models import CustomUser
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 
+from .models import ActivityLog
+
 # def register(request):
 #     if request.method == 'POST':
 #         form = CustomUser_CreationForm(request.POST)
@@ -44,15 +46,14 @@ def register(request):
                 return redirect('request_hotel_account')  # تأكد من أن لديك URL باسم 'request_hotel_account'
 
             if user_type == "admin":
-                user.is_superuser = True
-                user.is_staff = True
+                messages.error(request, 'لا يمكنك انشاء حساب مسوول ')
+                return redirect('register') 
             else:
                 user.is_superuser = False
                 user.is_staff = False
 
             user.save()
-            return redirect('login')  # إعادة توجيه المستخدم إلى صفحة تسجيل الدخول
-
+            return redirect('login')  
     else:
         form = CustomUser_CreationForm()
     
@@ -60,19 +61,24 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')  # استخدام البريد الإلكتروني
+        email = request.POST.get('email')  
         password = request.POST.get('password')
 
-        # افترض أنك تستخدم نموذج مستخدم يدعم البريد الإلكتروني كاسم مستخدم
+        
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            login(request, user)
-            return redirect('index')  # تغيير 'index' إلى اسم URL الخاص بك
+            if request.user.is_superuser:
+              login(request, user)
+              return redirect('index')  
+            elif user.is_staff:
+                 login(request, user)
+                 return redirect('index')
+        
         else:
             messages.error(request, 'البريد الإلكتروني أو كلمة المرور غير صحيحة.')
 
-    return render(request, 'admin/auth/login.html')  # تأكد من وجود هذا القالب
+    return render(request, 'admin/auth/login.html')  
 
 
 def request_hotel_account(request):
@@ -81,13 +87,19 @@ def request_hotel_account(request):
         if form.is_valid():
             # حفظ الطلب
             request_instance = form.save(commit=False)
-            request_instance.created_user = None  # يمكنك تعيين المستخدم لاحقًا بعد الموافقة
-            request_instance.status = 'pending'  # تعيين الحالة إلى "معلق"
+            request_instance.created_user = None  
+            request_instance.status = 'pending'  
             request_instance.save()
-            return redirect('login')  # وجه المستخدم إلى صفحة النجاح
+            return redirect('login')  
     else:
         form = HotelAccountRequestForm()
     return render(request, 'admin/auth/request_hotel_account.html', {'form': form})
 def logOut(request):
     logout(request)
     return redirect('login')
+
+
+
+def activity_log_view(request):
+    logs = ActivityLog.objects.all()
+    return render(request, 'admin/auth/activity_log.html', {'logs': logs})
