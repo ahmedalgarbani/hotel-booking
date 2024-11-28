@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'HotelManagement',
     "dashboard",
     'rooms',
+    'widget_tweaks',
     
 ]
 
@@ -85,7 +86,7 @@ DATABASES = {
 		'USER': 'root',
 		'PASSWORD': '',
 		'HOST':'localhost',
-		'PORT':'3306',
+		'PORT':'54321',
 	}
 }
 

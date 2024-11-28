@@ -1,0 +1,98 @@
+{% extends "admin/layouts/master.html" %}
+
+{% block title %}تفاصيل الطلب{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="section-header">
+      <h1>تفاصيل الطلب</h1>
+      <div class="section-header-breadcrumb">
+          <div class="breadcrumb-item">DataTables</div>
+      </div>
+  </div>
+
+  <div class="section-body">
+      <h2 class="section-title">تفاصيل الطلب</h2>
+      <p class="section-lead">
+          أدناه تفاصيل الطلب المحدد.
+      </p>
+
+      <div class="row">
+          <div class="col-md-6">
+              <div class="card">
+                  <div class="card-header">
+                      <h4>معلومات الفندق</h4>
+                  </div>
+                  <div class="card-body">
+                      <ul class="list-group">
+                          <li class="list-group-item"><strong>اسم الفندق:</strong> {{ order.hotel_name }}</li>
+                          <li class="list-group-item"><strong>الوصف:</strong> {{ order.hotel_description }}</li>
+                          <li class="list-group-item"><strong>رقم الترخيص:</strong> {{ order.business_license_number }}</li>
+                          <li class="list-group-item"><strong>رقم التحقق:</strong> {{ order.verify_number }}</li>
+                          <li class="list-group-item"><strong>الحالة:</strong> <span class="badge badge-success">{{ order.status }}</span></li>
+                          <li class="list-group-item"><strong>الملاحظات الإدارية:</strong> {{ order.admin_notes|default:"لا توجد ملاحظات" }}</li>
+                          <li class="list-group-item"><strong>تاريخ الإنشاء:</strong> {{ order.created_at }}</li>
+                          <li class="list-group-item"><strong>تاريخ التحديث:</strong> {{ order.updated_at }}</li>
+                          <li class="list-group-item"><strong>الملف المرفق:</strong> 
+                              {% if order.document_path %}
+                                  <a href="{{ order.document_path.url }}" target="_blank" class="btn btn-info btn-sm">فتح الملف</a>
+                              {% else %}
+                                  <span>لا يوجد ملف مرفق</span>
+                              {% endif %}
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+
+          <div class="col-md-6">
+              <div class="card">
+                  <div class="card-header">
+                      <h4>معلومات المالك</h4>
+                  </div>
+                  <div class="card-body">
+                      <ul class="list-group">
+                          <li class="list-group-item"><strong>اسم المالك:</strong> {{ order.owner_name }}</li>
+                          <li class="list-group-item"><strong>البريد الإلكتروني:</strong> {{ order.email }}</li>
+                          <li class="list-group-item"><strong>الهاتف:</strong> {{ order.phone }}</li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="row mt-4">
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-header">
+                      <h4>الإجراءات المتاحة</h4>
+                  </div>
+                  <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                          {% comment %} <a href="{% url 'reject_hotel_account' order.id %}" class="btn btn-danger">رفض الطلب</a> {% endcomment %}
+                      
+                        <a href="{% url 'approve_hotel_account' order.id %}" class="btn btn-success">الموافقة على الطلب</a>
+                          <a href="{% url 'edit_hotel_account_request' order.id %}" class="btn btn-warning">تعديل الطلب</a>
+                          <a href="" class="btn btn-danger" onclick="return confirm('هل أنت متأكد أنك تريد حذف هذا الطلب؟');">حذف الطلب</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .badge-success {
+            background-color: #28a745;
+        }
+    </style>
+{% endblock %}

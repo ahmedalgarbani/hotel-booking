@@ -46,7 +46,7 @@ class HotelAccountRequest(models.Model):
     document_path = models.FileField(upload_to='hotel_documents/')
     verify_number = models.CharField(max_length=50)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    admin_notes = models.TextField(blank=True)
+    admin_notes = models.TextField(blank=True,default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

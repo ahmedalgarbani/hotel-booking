@@ -87,7 +87,7 @@ def request_hotel_account(request):
             return redirect('login')  # وجه المستخدم إلى صفحة النجاح
     else:
         form = HotelAccountRequestForm()
-    return render(request, 'users/request_hotel_account.html', {'form': form})
+    return render(request, 'admin/auth/request_hotel_account.html', {'form': form})
 def logOut(request):
     logout(request)
     return redirect('login')

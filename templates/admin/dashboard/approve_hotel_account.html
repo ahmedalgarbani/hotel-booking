@@ -1,0 +1,70 @@
+{% extends "admin/layouts/master.html" %}
+
+{% block title %}RequestHotelAccount{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="section-header">
+      <h1>Hotel Account Requests</h1>
+      <div class="section-header-breadcrumb">
+          <div class="breadcrumb-item">DataTables</div>
+      </div>
+  </div>
+
+  <div class="section-body">
+      <h2 class="section-title">Hotel Account Requests</h2>
+      <p class="section-lead">
+          Below are the requests for hotel accounts.
+      </p>
+
+      <div class="row">
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-header">
+                      <h4>Hotel Account Requests Table</h4>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-striped" id="table-1">
+                              <thead>
+                                  <tr>
+                                      <th class="text-center">#</th>
+                                      <th>Hotel Name</th>
+                                      <th>Owner Name</th>
+                                      <th>Email</th>
+                                      <th>Phone</th>
+                                      <th>Description</th>
+                                      <th>License Number</th>
+                                      <th>Status</th>
+                                      <th>Action</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {%for hotel_requset in hotel_requset%}
+                                  <tr>
+                                      <td>{{hotel_requset.id}}</td>
+                                      <td>{{hotel_requset.hotel_name}}</td>
+                                      <td>J{{hotel_requset.owner_name}}</td>
+                                      <td>{{hotel_requset.email}}</td>
+                                      <td>{{hotel_requset.phone}}</td>
+                                      <td>{{hotel_requset.hotel_description}}</td>
+                                      <td>{{hotel_requset.business_license_number}}</td>
+                                      <td><div class="badge ">{{hotel_requset.status}}</div></td>
+                                      <td><a href="{% url 'details_hotel_account' id=hotel_requset.id %}" class="btn btn-secondary">Details</a></td>
+                                  </tr>
+                                  {%endfor%}
+                                  
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+    <!-- CSS إضافية للصفحة -->
+{% endblock %}
