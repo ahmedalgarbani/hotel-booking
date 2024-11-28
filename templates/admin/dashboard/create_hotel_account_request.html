@@ -1,16 +1,14 @@
 {% extends "admin/layouts/master.html" %}
 {% load widget_tweaks %}
-{% block title %}تعديل طلب فتح حساب الفندق{% endblock %}
+{% block title %}إنشاء طلب فتح حساب الفندق{% endblock %}
 
 {% block content %}
 <section class="section">
   <div class="section-header">
-      <h1>تعديل طلب فتح حساب الفندق</h1>
+      <h1>إنشاء طلب فتح حساب الفندق</h1>
       <div class="section-header-breadcrumb">
           <div class="breadcrumb-item"><a href="{% url 'mananghotel' %}">قائمة الطلبات</a></div>
-          <div class="breadcrumb-item"><a href="{% url 'details_hotel_account' id=hotel_request.id %}">قائمة تفاصيل الطلبات</a></div>
-          
-          <div class="breadcrumb-item active">تعديل الطلب</div>
+          <div class="breadcrumb-item active">إنشاء طلب</div>
       </div>
   </div>
 
@@ -18,7 +16,7 @@
     <div class="col-md-8 offset-md-2">
       <div class="card">
         <div class="card-header">
-          <h4>تعديل طلب فتح حساب الفندق</h4>
+          <h4>إنشاء طلب فتح حساب الفندق</h4>
         </div>
         <div class="card-body">
           <form method="post" enctype="multipart/form-data">
@@ -43,14 +41,8 @@
                     {{ field|add_class:"form-control" }}  <!-- إضافة فئة Bootstrap -->
                 </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+            <button type="submit" class="btn btn-primary">حفظ الطلب</button>
           </form>
-          <hr>
-          <h5>الملف المرفق:</h5>
-          <ul class="list-group">
-              <li class="list-group-item"><strong>اسم الملف:</strong> {{ hotel_request.document_path.name }}</li>
-              <li class="list-group-item"><strong>تاريخ التحميل:</strong> {{ hotel_request.created_at }}</li>
-          </ul>
         </div>
       </div>
     </div>
