@@ -7,9 +7,12 @@ from django.conf.urls.static import static
 from django.urls import path
 from . import views
 
+app_name = 'HotelManagement'
+
+
 urlpatterns = [
     # ------------- hotels ------------------------  
-    path('hotels/', views.hotel_list, name='hotel_list'),
+    path('', views.index, name='hotel_list'),
     path('hotels/<int:hotel_slug>/', views.hotel_detail, name='hotel_detail'),
     path('hotels/create/', views.hotel_create, name='hotel_create'),
     path('hotels/<int:hotel_slug>/update/', views.hotel_update, name='hotel_update'),

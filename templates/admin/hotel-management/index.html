@@ -1,0 +1,164 @@
+{% extends "admin/layouts/master.html" %}
+ {% block title %} ادارة الفنادق{% endblock %}
+  {% block content %}
+<section class="section">
+  <div class="section-header">
+    <h1>سجلات الفنادق</h1>
+    <div class="section-header-breadcrumb">
+      <div class="breadcrumb-item">
+        <div class="card-header-action">
+          <a href="" class="btn btn-primary"> انشاء جديد </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <h2 class="section-title">سجلات الفنادق</h2>
+    <p class="section-lead">أدناه توجد سجلات النشاط الخاصة بحسابات الفنادق.</p>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>جدول سجلات النشاط</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered" id="table-1">
+                <thead class="thead-light">
+                  <tr>
+                    <th>#</th>
+                    <th>اسم الفندق</th>
+                    <th>الموقع </th>
+                    <th>البريد الإلكتروني</th>
+                    <th>وصف الفندق</th>
+                    <th>تم التحقق</th>
+                    <th>تاريخ التحقق</th>
+                    <th>action </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for hotel in hotels %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ hotel.name }}</td>
+                    <td>{{ hotel.location }}</td>
+                    <td>{{ hotel.email }}</td>
+                    <td>{{ hotel.description }}</td>
+
+                    <td>
+                        {% if hotel.is_verified %}
+                        <div class="badge badge-success">تم التحقق</div>
+                        {% else %}
+                        <div class="badge badge-danger">لم يتم التحقق</div>
+                        {% endif %}
+
+                    </td>
+                    <td>{{ hotel.verification_date|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        <a class='btn btn-success btn-sm  ' href=''><i class='far fa-edit'></i>تعديل</a>
+                        <a class='btn btn-icon btn-danger text-white m-2' data-toggle='modal'  data-target='#modaldemo9' data-del='{{ hotel.id }}'><i class='fas fa-trash'></i> حذف</a>
+                    </td>
+                  </tr>
+
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+         <!-- delete -->
+ <div class="modal fade" id="modaldemo9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+ aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">حذف كود الخصم</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form action="" method="POST">
+            {% comment %} @method('DELETE')
+            @csrf {% endcomment %}
+            <div class="modal-body">
+                <p>هل انت متاكد من عملية الحذف ؟</p><br>
+                <input type="hidden" name="coupon_id" id="coupon_id" >
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                <button type="submit" class="btn btn-danger">تاكيد</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+
+
+ </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+ {% block extra_css %}
+ 
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+<style>
+  .table th,
+  .table td {
+    vertical-align: middle;
+  }
+  .table-striped tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+{% endblock %} {% block extra_js %}
+
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#table-1").DataTable({
+      pageLength: 5,
+      language: {
+        lengthMenu: "عرض _MENU_ سجلات في الصفحة",
+        search: "بحث:",
+        info: "عرض _START_ إلى _END_ من _TOTAL_ سجلات",
+        paginate: {
+          next: "التالي",
+          previous: "السابق",
+        },
+      },
+    });
+  });
+</script>
+<script>
+
+    //deltee
+    $('#modaldemo9').on('show.bs.modal',function (event) {
+        var button = $(event.relatedTarget)
+        var coupon_id = button.data('del')
+        var modal = $(this)
+        modal.find('.modal-body #coupon_id').val(coupon_id)
+
+    })
+
+
+    let table = new DataTable('#myTable');
+    oTable = $("#bigtable").dataTable({
+        columnDefs: [{
+            "defaultContent": "-",
+            "targets": "_all"
+        }]
+    });
+
+</script>
+{% endblock %}

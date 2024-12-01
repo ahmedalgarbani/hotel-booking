@@ -13,6 +13,7 @@
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{% static 'admin_assets/modules/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'admin_assets/modules/fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- CSS Libraries -->
     {% block extra_css %}{% endblock %}
@@ -37,11 +38,10 @@
 <body>
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
-            {% if request.user.is_authenticated %}
-               
-        {% include "admin/layouts/topbar.html" %} 
-        {% include "admin/layouts/sidebar.html" %}
-            {% endif %}
+        
+            {% include "admin/layouts/sidebar.html" %}
+            {% include "admin/layouts/topbar.html" %} 
+
 
             <div class="main-content">
                 {% block content %}
@@ -49,11 +49,10 @@
                 {% endblock %}
             </div>
 
-            {% if request.user.is_authenticated %}
-                {% comment %} {% include "base/footer.html" %} {% endcomment %}
-            {% endif %}
+           
         </div>
     </div>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <!-- General JS Scripts -->
     <script src="{% static 'admin_assets/modules/jquery.min.js' %}"></script>

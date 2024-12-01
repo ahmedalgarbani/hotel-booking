@@ -1,7 +1,7 @@
 # urls.py
-from django.urls import path
+from django.urls import path,include
 from .views import dashpord,Hotel_Account_Request_list,approve_Hotel_Account_Request,create_hotel_account_request,details_hotel_account, edit_hotel_account_request,delete_hotel_account_request
-
+from HotelManagement import urls as hotel_management_urls
 
 urlpatterns = [
     
@@ -13,6 +13,9 @@ urlpatterns = [
     path('create_hotel_account_request/', create_hotel_account_request, name='create_hotel_account_request'),
     path('', dashpord, name='index'),
     path('mananghotel/', Hotel_Account_Request_list, name='mananghotel'),
+    # ------ Hotel Manager Urls --------
+    path('hotel-management/', include((hotel_management_urls, 'HotelManagement'), namespace='HotelManagement')),
+    # ------ Hotel Manager Urls --------
    
    
 ]

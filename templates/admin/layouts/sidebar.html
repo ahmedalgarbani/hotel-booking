@@ -1,3 +1,4 @@
+{% load static %}
 <div class="main-sidebar sidebar-style-2">
   <aside id="sidebar-wrapper">
       <div class="sidebar-brand">
@@ -19,19 +20,13 @@
           {% endif %}
           <li class="menu-header">إدارة لفنادق</li>
           <li class="dropdown">
-              <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>التخطيط</span></a>
+              <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-home"></i> <span>ادارة الفنادق</span></a>
               <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="layout-default.html">التخطيط الافتراضي</a></li>
-                  <li><a class="nav-link" href="layout-transparent.html ">التخطيط الشفاف</a></li>
-              </ul>
+                  <li><a class="nav-link" href="{% url 'HotelManagement:hotel_list' %}">اداره بيانات الفندق</a></li>
+
+                </ul>
           </li>
-          <li class="dropdown">
-              <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-book"></i> <span>المستندات</span></a>
-              <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="documentation.html">المستندات</a></li>
-                  <li><a class="nav-link" href="faq.html">الأسئلة الشائعة</a></li>
-              </ul>
-          </li>
+         
       </ul>
   </aside>
 </div>

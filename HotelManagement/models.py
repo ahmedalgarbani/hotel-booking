@@ -62,6 +62,22 @@ class BaseModel(models.Model):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
 
    
+# -------------------- Location ----------------------------
+
+class Location(BaseModel):
+    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
+    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
+    city = models.ForeignKey(
+        "City",
+        verbose_name=_("موقع الفندق"), 
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = _("الموقع")
+        verbose_name_plural = _("المواقع")
+    def __str__(self):
+        return f"{self.name}" 
 
 
 
@@ -69,7 +85,7 @@ class BaseModel(models.Model):
 
 class Hotel(BaseModel):
     location = models.ForeignKey(
-        "Location",
+        Location,
         verbose_name=_("موقع الفندق"), 
         on_delete=models.CASCADE
     )
@@ -104,22 +120,6 @@ class Hotel(BaseModel):
     def __str__(self):
         return f"{self.name}" 
 
-# -------------------- Location ----------------------------
-
-class Location(BaseModel):
-    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
-    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
-    city = models.ForeignKey(
-        "City",
-        verbose_name=_("موقع الفندق"), 
-        on_delete=models.CASCADE
-    )
-
-    class Meta:
-        verbose_name = _("الموقع")
-        verbose_name_plural = _("المواقع")
-    def __str__(self):
-        return f"{self.name}" 
 
 # -------------------- Phone ----------------------------
 

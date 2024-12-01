@@ -7,7 +7,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logOut, name='logout'),
     path('request_hotel_account/', request_hotel_account, name='request_hotel_account'),
-   
     path('activity_log/', activity_log_view, name='activity_log'),
    
     

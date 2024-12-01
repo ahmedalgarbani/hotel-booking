@@ -5,9 +5,12 @@ from .forms import HotelForm, LocationForm, PhoneForm, ImageForm, CityForm
 
 
 # -------------------- Hotel ----------------------------
-def hotel_list(request):
+def index(request):
     hotels = Hotel.objects.all()
-    return render(request, 'hotel_list.html', {'hotels': hotels})
+    context = {
+        'hotels': hotels
+    }
+    return render(request, 'admin/hotel-management/index.html', context)
 
 def hotel_detail(request, hotel_slug):
     hotel = get_object_or_404(Hotel, slug=hotel_slug)
