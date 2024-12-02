@@ -1,26 +1,71 @@
-from email.charset import QP
-from xml.etree.ElementTree import QName
+
 from django.shortcuts import get_object_or_404, redirect, render
 from users.models import ActivityLog, HotelAccountRequest,CustomUser
 from django.contrib import messages
+from users.forms import CustomUser_CreationForm, HotelAccountRequestForm
 
 from .forms import HotelAccountRequestForm 
 
 
-def create_user(request,):
-    pass
+
+def create_user(request):
+    if request.method == 'POST':
+        form = CustomUser_CreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user_type = form.cleaned_data.get('user_type')
+            
+            
+            if user_type == 'hotel_manager':
+                return redirect('request_hotel_account')  
+
+            if user_type == "admin":
+                messages.error(request, 'لا يمكنك انشاء حساب مسوول ')
+                return redirect('register') 
+            else:
+                user.is_superuser = False
+                user.is_staff = False
+
+            user.save()
+            return redirect('login')  
+    else:
+        form = CustomUser_CreationForm()
+    
+    return render(request, 'admin/dashboard/create_user.html', {'form': form})
 
 
-def list_user(request,):
-
-     pass
-
-def update_user(request,):
-    pass
 
 
-def deleste_user(request,):
-    pass
+def list_user(request):
+    users = CustomUser.objects.all()
+    return render(request, 'admin/dashboard/list_user.html', {'users': users})
+def update_user(request, id):
+    user = get_object_or_404(CustomUser , id=id)
+    if request.method == 'POST':
+        form = CustomUser_CreationForm(request.POST, instance=user) 
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم تحديث المستخدم بنجاح!')
+            return redirect('list_user') 
+    else:
+        form = CustomUser_CreationForm(instance=user)
+
+    return render(request, 'admin/dashboard/update_user.html', {'form': form, 'user': user})
+       
+
+
+def delete_user(request, id):
+    user = get_object_or_404(CustomUser , id=id)
+    if request.method == 'POST':
+         hotelAccountRequest=HotelAccountRequest.objects.filter(hotel_name=user.username)
+         if hotelAccountRequest.exists():
+             
+          hotelAccountRequest.delete()
+          user.delete()
+          messages.success(request, 'تم حذف المستخدم بنجاح!')
+          return redirect('list_user')  
+    return render(request, 'admin/dashboard/delete_user.html', {'user': user})
 
 
 # -------------------- page home dashpord ----------------------------
@@ -31,6 +76,8 @@ def dashpord(request):
     return render(request, 'admin/dashboard/index.html',{'user':user})
 
 # -------------------- view HotelAccountRequest ----------------------------
+
+
 def Hotel_Account_Request_list(request):
     hotel_requset=HotelAccountRequest.objects.all()
 
@@ -39,9 +86,8 @@ def Hotel_Account_Request_list(request):
 
 
 
-def details_hotel_account(request, id):
-    hotel_request = HotelAccountRequest.objects.filter(id=id).first()
-
+def details_hotel_account(request, slug):
+    hotel_request = get_object_or_404(HotelAccountRequest, slug=slug)
     return render(request,'admin/dashboard/ditals_requst_hotel.html',{'order':hotel_request})
 
 def approve_Hotel_Account_Request(request, id):
@@ -60,8 +106,9 @@ def approve_Hotel_Account_Request(request, id):
                 username=hotel_request.hotel_name,
                 email=hotel_request.email,
                 phone=hotel_request.phone,
-                password='123', 
-                user_type="hotel_manager"
+                password=hotel_request.password, 
+                user_type="hotel_manager",
+                is_staff = True
             )
         
             user.set_password(user.password)  
@@ -79,7 +126,7 @@ def approve_Hotel_Account_Request(request, id):
     
 def edit_hotel_account_request(request, id):
     hotel_request = get_object_or_404(HotelAccountRequest, id=id)
-    user=request.user
+    user = request.user
     if request.method == 'POST':
         form = HotelAccountRequestForm(request.POST, request.FILES, instance=hotel_request) 
         if form.is_valid():
@@ -91,8 +138,8 @@ def edit_hotel_account_request(request, id):
                 form.save()  
                 ActivityLog.objects.create(
                 custom_user_id=user,
-                table_name='HotelAccountRequest ',
-                record_id=user.id,
+                table_name='HotelAccountRequest',
+                record_id=hotel_request.id,  
                 action='edit_hotel_account_request'
               )
                 return redirect('mananghotel')

@@ -18,7 +18,7 @@ class CustomUser_CreationForm(UserCreationForm):
 class HotelAccountRequestForm(forms.ModelForm):
     class Meta:
         model = HotelAccountRequest
-        fields = ('hotel_name', 'owner_name', 'email', 'phone', 'hotel_description', 'business_license_number', 'document_path', 'verify_number')
+        fields = ('hotel_name', 'owner_name', 'email', 'phone', 'hotel_description', 'business_license_number', 'document_path', 'verify_number','password')
 
 class LoginForm(AuthenticationForm):
     pass

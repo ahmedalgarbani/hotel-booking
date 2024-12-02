@@ -33,6 +33,7 @@ from .models import ActivityLog
 #         form = CustomUser_CreationForm()
 #     return render(request, 'users/register.html', {'form': form})
 
+
 def register(request):
     if request.method == 'POST':
         form = CustomUser_CreationForm(request.POST)

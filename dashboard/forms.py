@@ -9,10 +9,12 @@ class HotelAccountRequestForm(forms.ModelForm):
             'owner_name', 
             'email', 
             'phone', 
+            'password',
             'hotel_description', 
             'business_license_number', 
             'document_path', 
             'verify_number', 
             'status', 
             'admin_notes'
+           
         ]
