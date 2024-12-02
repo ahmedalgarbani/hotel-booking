@@ -3,9 +3,12 @@ from xml.etree.ElementTree import QName
 from django.shortcuts import get_object_or_404, redirect, render
 from users.models import ActivityLog, HotelAccountRequest,CustomUser
 from django.contrib import messages
+from rooms.models import RoomType,RoomPrice,RoomStatus,Category,Availability,RoomImage
 
-from .forms import HotelAccountRequestForm 
-
+from .forms import HotelAccountRequestForm, RoomImageForm 
+# from django.shortcuts import render, redirect
+# from django.http import HttpResponse
+# from .forms import RoomImageForm 
 # -------------------- page home dashpord ----------------------------
 def dashpord(request):
     user = request.user
@@ -133,3 +136,81 @@ def delete_hotel_account_request(request, id_request):
     else:
        
         pass
+
+
+
+
+
+
+ # -------------------- view romms ----------------------------#
+ 
+ 
+
+#----------------------صفحه الانواع----------------------#
+def rooms_types(request):
+     data_types=RoomType.objects.all()
+     print(data_types)
+     return render(request, 'admin/dashboard/room/rooms_types.html',{'roomType':data_types})
+
+
+
+
+
+#----------------------صفحه التوافر----------------------#
+def rooms_availability(request):
+     data_availability=Availability.objects.all()
+     print(data_availability)
+     return render(request, 'admin/dashboard/room/rooms_availability.html',{'roomavailability':data_availability})
+
+
+
+
+
+#----------------------صفحه الفئات----------------------#
+def rooms_categories(request):
+     data_Category=Category.objects.all()
+     return render(request, 'admin/dashboard/room/rooms_categories.html',{'roomCategory':data_Category})
+
+
+
+
+
+#----------------------صفحه الاسعار----------------------#
+def rooms_prices(request):
+     data_roomPrice=RoomPrice.objects.all()
+     return render(request, 'admin/dashboard/room/rooms_prices.html',{'roomPrice':data_roomPrice})
+
+
+
+
+#----------------------صفحه الحاله----------------------#
+def rooms_status(request):
+     data_roomStatus=RoomStatus.objects.all()
+     return render(request, 'admin/dashboard/room/rooms_status.html',{'roomStatus':data_roomStatus})
+
+
+
+
+#----------------------صفحه الصور----------------------#
+def rooms_images(request):
+     data_roomImage=RoomImage.objects.all()
+     return render(request, 'admin/dashboard/room/rooms_images.html',{'roomImage':data_roomImage})   
+# تأكد من استبدال "YourModel" بنموذجك
+
+ # افترض أن لديك نموذج
+
+def add_rooms_images(request):
+    if request.method == 'POST':
+        created_by=request.user
+        updated_by=request.user
+        form = RoomImageForm(request.POST, request.FILES, created_by=created_by, updated_by=updated_by)
+
+        if form.is_valid():
+            form.save(commit=False)
+            return redirect('rooms_images')  # استبدل بـ URL ناجح
+        else:
+            return render(request, 'admin/dashboard/room/add_rooms_images.html', {'form': form})
+    else:
+        form = RoomImageForm()
+        return render(request, 'admin/dashboard/room/add_rooms_images.html', {'form': form})
+

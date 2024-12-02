@@ -139,10 +139,8 @@ class RoomImage(BaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("نوع الغرفة")
     )
-    image_url = models.URLField(
-        max_length=255,
-        verbose_name=_("رابط الصورة")
-    )
+    image = models.ImageField(upload_to='rooms/img/%y/%m/%d',default=None,
+        verbose_name=_("رابط الصورة"))
 
     class Meta:
         verbose_name = _("صورة الغرفة")

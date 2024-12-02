@@ -26,10 +26,14 @@
               </ul>
           </li>
           <li class="dropdown">
-              <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-book"></i> <span>المستندات</span></a>
+              <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-book"></i> <span>ادارة الغرف</span></a>
               <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="documentation.html">المستندات</a></li>
-                  <li><a class="nav-link" href="faq.html">الأسئلة الشائعة</a></li>
+                  <li><a class="nav-link" href="{%url 'rooms_types'%}">انواع الغرف</a></li>
+                  <li><a class="nav-link" href="{%url 'rooms_prices'%}">اسعار الغرف</a></li>
+                  <li><a class="nav-link" href="{%url 'rooms_status'%}">حالة الغرف</a></li>
+                  <li><a class="nav-link" href="{%url 'rooms_categories'%}">فئة الغرف</a></li>
+                  <li><a class="nav-link" href="{%url 'rooms_images'%}">صور الغرف</a></li>
+                  <li><a class="nav-link" href="{%url 'rooms_availability'%}">توافر الغرف</a></li>
               </ul>
           </li>
       </ul>
