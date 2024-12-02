@@ -6,6 +6,23 @@ from django.contrib import messages
 
 from .forms import HotelAccountRequestForm 
 
+
+def create_user(request,):
+    pass
+
+
+def list_user(request,):
+
+     pass
+
+def update_user(request,):
+    pass
+
+
+def deleste_user(request,):
+    pass
+
+
 # -------------------- page home dashpord ----------------------------
 def dashpord(request):
     user = request.user
@@ -58,21 +75,42 @@ def approve_Hotel_Account_Request(request, id):
     else:
        
         return redirect('mananghotel')
+    
+    
 def edit_hotel_account_request(request, id):
     hotel_request = get_object_or_404(HotelAccountRequest, id=id)
     user=request.user
     if request.method == 'POST':
         form = HotelAccountRequestForm(request.POST, request.FILES, instance=hotel_request) 
         if form.is_valid():
-           
-            form.save()  
-            ActivityLog.objects.create(
+            status= form.cleaned_data.get("status")
+            hotel_name=form.cleaned_data.get('hotel_name')
+
+            if status=="rejected":
+                users=CustomUser.objects.filter(username=hotel_name).delete()
+                form.save()  
+                ActivityLog.objects.create(
                 custom_user_id=user,
                 table_name='HotelAccountRequest ',
                 record_id=user.id,
                 action='edit_hotel_account_request'
-            )
-            return redirect('mananghotel')
+              )
+                return redirect('mananghotel')
+            elif status == "pending":
+                users=CustomUser.objects.filter(username=hotel_name).delete()
+                form.save()  
+                ActivityLog.objects.create(
+                custom_user_id=user,
+                table_name='HotelAccountRequest ',
+                record_id=user.id,
+                action='edit_hotel_account_request'
+              )
+                return redirect('mananghotel')
+
+             
+              
+               
+               
     else:
         form = HotelAccountRequestForm(instance=hotel_request)
 
