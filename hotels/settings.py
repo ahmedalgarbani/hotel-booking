@@ -89,6 +89,9 @@ DATABASES = {
 		'PASSWORD': '',
 		'HOST':'localhost',
 		'PORT':'54321',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
+        },
 	}
 }
 
@@ -121,6 +124,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
 AUTH_USER_MODEL='users.CustomUser'
 
 # Static files (CSS, JavaScript, Images)

@@ -22,13 +22,20 @@ class BaseModel(models.Model):
         settings.AUTH_USER_MODEL,  
         related_name="%(class)s_created",
         verbose_name=_("المنشى"),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+       
+       
     )
     updated_by = models.OneToOneField(
         settings.AUTH_USER_MODEL, 
         related_name="%(class)s_updated",
         verbose_name=_("المعدل"),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        
     )
     
     slug = models.SlugField(

@@ -14,6 +14,8 @@ def dashpord(request):
     return render(request, 'admin/dashboard/index.html',{'user':user})
 
 # -------------------- view HotelAccountRequest ----------------------------
+
+
 def Hotel_Account_Request_list(request):
     hotel_requset=HotelAccountRequest.objects.all()
 
@@ -22,9 +24,8 @@ def Hotel_Account_Request_list(request):
 
 
 
-def details_hotel_account(request, id):
-    hotel_request = HotelAccountRequest.objects.filter(id=id).first()
-
+def details_hotel_account(request, slug):
+    hotel_request = get_object_or_404(HotelAccountRequest, slug=slug)
     return render(request,'admin/dashboard/ditals_requst_hotel.html',{'order':hotel_request})
 
 def approve_Hotel_Account_Request(request, id):
@@ -60,18 +61,18 @@ def approve_Hotel_Account_Request(request, id):
         return redirect('mananghotel')
 def edit_hotel_account_request(request, id):
     hotel_request = get_object_or_404(HotelAccountRequest, id=id)
-    user=request.user
+    user = request.user
     if request.method == 'POST':
         form = HotelAccountRequestForm(request.POST, request.FILES, instance=hotel_request) 
         if form.is_valid():
-           
-            form.save()  
+            form.save()
             ActivityLog.objects.create(
                 custom_user_id=user,
-                table_name='HotelAccountRequest ',
-                record_id=user.id,
+                table_name='HotelAccountRequest',
+                record_id=hotel_request.id,  
                 action='edit_hotel_account_request'
             )
+            messages.success(request, 'تم تعديل الطلب بنجاح!')
             return redirect('mananghotel')
     else:
         form = HotelAccountRequestForm(instance=hotel_request)
