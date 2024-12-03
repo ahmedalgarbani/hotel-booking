@@ -1,0 +1,21 @@
+<div class="modal fade" id="deleteModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-content p-2">
+                    <h4 class="modal-title">حذف</h4>
+                    <p class="mb-4">هل تريد حذف <span id="delete-hotel-name"></span></p>
+                    <form action="{% url 'HotelManagement:hotel_delete' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="hotel_id" id="delete-hotel-id-input" value='4'>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                            <button type="submit" class="btn btn-danger">تاكيد</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

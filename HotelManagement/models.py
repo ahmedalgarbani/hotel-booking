@@ -18,19 +18,19 @@ class BaseModel(models.Model):
         blank=True,
         verbose_name=_("تاريخ الحذف")
     )
-    created_by = models.OneToOneField(
-        settings.AUTH_USER_MODEL,  
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         related_name="%(class)s_created",
-        verbose_name=_("المنشى"),
+        verbose_name="المنشى",
         on_delete=models.CASCADE
     )
-    updated_by = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated",
-        verbose_name=_("المعدل"),
-        on_delete=models.CASCADE
+        verbose_name="المعدل",
+        on_delete=models.CASCADE,
+        null=True
     )
-    
     slug = models.SlugField(
         unique=True,
         max_length=255,

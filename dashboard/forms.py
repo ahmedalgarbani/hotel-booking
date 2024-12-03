@@ -1,5 +1,6 @@
 from django import forms
 from users.models import HotelAccountRequest
+from HotelManagement.models import Hotel
 
 class HotelAccountRequestForm(forms.ModelForm):
     class Meta:

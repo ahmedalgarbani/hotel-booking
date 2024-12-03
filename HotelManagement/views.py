@@ -1,14 +1,20 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Hotel, Location, Phone, Image, City
 from .forms import HotelForm, LocationForm, PhoneForm, ImageForm, CityForm
-
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 
 
 # -------------------- Hotel ----------------------------
 def index(request):
     hotels = Hotel.objects.all()
+    locations = Location.objects.all()
     context = {
-        'hotels': hotels
+        'hotels': hotels,
+        'locations':locations
     }
     return render(request, 'admin/hotel-management/index.html', context)
 
@@ -16,33 +22,70 @@ def hotel_detail(request, hotel_slug):
     hotel = get_object_or_404(Hotel, slug=hotel_slug)
     return render(request, 'hotel_detail.html', {'hotel': hotel})
 
+
+
+
 def hotel_create(request):
     if request.method == 'POST':
         form = HotelForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('hotel_list')
+            hotel = form.save(commit=False) 
+            if request.user.is_authenticated:
+                hotel.created_by = request.user 
+            else:
+                default_user = User.objects.get(id=1)
+                hotel.created_by = default_user
+            hotel.save()  
+            messages.success(request, "تمت الاضافه بنجاح")
+        else:
+            messages.error(request, "حصلت مشكله الرجاء المحاوله لاحقاء")
     else:
         form = HotelForm()
-    return render(request, 'hotel_form.html', {'form': form})
 
-def hotel_update(request, hotel_slug):
-    hotel = get_object_or_404(Hotel, slug=hotel_slug)
-    if request.method == 'POST':
+    hotels = Hotel.objects.all()
+    locations = Location.objects.all()
+
+    context = {
+        'hotels': hotels,
+        'locations': locations,
+    }
+    return render(request, 'admin/hotel-management/index.html', context)
+
+
+
+def hotel_update(request):
+    if request.method == "POST":
+        hotel_id = request.POST.get('hotel_id')
+        hotel = get_object_or_404(Hotel, id=hotel_id)
         form = HotelForm(request.POST, instance=hotel)
         if form.is_valid():
             form.save()
-            return redirect('hotel_list')
+            messages.success(request, "Post updated successfully.")  
+            return redirect('/dashboard/hotel-management') 
+        else:
+            messages.error(request, "Failed to update the post. Check the form.")  
+            print(form.errors)
     else:
-        form = HotelForm(instance=hotel)
-    return render(request, 'hotel_form.html', {'form': form})
+        form = HotelForm()
 
-def hotel_delete(request, hotel_slug):
-    hotel = get_object_or_404(Hotel, slug=hotel_slug)
-    if request.method == 'POST':
-        hotel.delete()
-        return redirect('hotel_list')
-    return render(request, 'hotel_confirm_delete.html', {'hotel': hotel})
+    return render(request, 'admin/hotel-management/index.html', {'form': form})
+
+
+
+def hotel_delete(request):
+    if request.method == "POST":
+        hotel_id = request.POST.get('hotel_id')
+        if not hotel_id:
+            messages.error(request, "Hotel ID is missing.")
+            return redirect('/dashboard/hotel-management')
+        try:
+            hotel = get_object_or_404(Hotel, id=hotel_id)
+            hotel.delete()
+            messages.success(request, "Hotel deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Error deleting hotel: {e}")
+    return redirect('/dashboard/hotel-management')
+
 
 
 # -------------------- Location ----------------------------

@@ -1,13 +1,20 @@
 {% extends "admin/layouts/master.html" %}
- {% block title %} ادارة الفنادق{% endblock %}
-  {% block content %}
+ {% block title %} ادارة الفنادق{%endblock %} 
+ {% block content %}
 <section class="section">
   <div class="section-header">
     <h1>سجلات الفنادق</h1>
     <div class="section-header-breadcrumb">
       <div class="breadcrumb-item">
         <div class="card-header-action">
-          <a href="" class="btn btn-primary"> انشاء جديد </a>
+          <a
+            href="#"
+            data-toggle="modal"
+            data-target="#addModel"
+            data-bs-toggle="addModel"
+            class="btn btn-primary float-end mt-2"
+            >انشاء جديد
+          </a>
         </div>
       </div>
     </div>
@@ -23,6 +30,18 @@
           <div class="card-header">
             <h4>جدول سجلات النشاط</h4>
           </div>
+          {% if messages %}
+          <div id="message-container">
+              {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+              {% endfor %}
+          </div>
+      {% endif %}
+      
+
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-striped table-bordered" id="table-1">
@@ -30,12 +49,12 @@
                   <tr>
                     <th>#</th>
                     <th>اسم الفندق</th>
-                    <th>الموقع </th>
+                    <th>الموقع</th>
                     <th>البريد الإلكتروني</th>
                     <th>وصف الفندق</th>
                     <th>تم التحقق</th>
                     <th>تاريخ التحقق</th>
-                    <th>action </th>
+                    <th>action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -48,17 +67,31 @@
                     <td>{{ hotel.description }}</td>
 
                     <td>
-                        {% if hotel.is_verified %}
-                        <div class="badge badge-success">تم التحقق</div>
-                        {% else %}
-                        <div class="badge badge-danger">لم يتم التحقق</div>
-                        {% endif %}
-
+                      {% if hotel.is_verified %}
+                      <div class="badge badge-success">تم التحقق</div>
+                      {% else %}
+                      <div class="badge badge-danger">لم يتم التحقق</div>
+                      {% endif %}
                     </td>
                     <td>{{ hotel.verification_date|date:"Y-m-d H:i" }}</td>
                     <td>
-                        <a class='btn btn-success btn-sm  ' href=''><i class='far fa-edit'></i>تعديل</a>
-                        <a class='btn btn-icon btn-danger text-white m-2' data-toggle='modal'  data-target='#modaldemo9' data-del='{{ hotel.id }}'><i class='fas fa-trash'></i> حذف</a>
+                      {% comment %}
+                      <a
+                        class="btn btn-success btn-sm"
+                        onclick="openEditDialog('{{hotel.id}}','{{ hotel.name }}', '{{ hotel.location.id }}', '{{ hotel.email }}', '{{hotel.description}}', '{{hotel.is_verified}}','{{ hotel.verification_date }}')"
+                        ><i class="far fa-edit"></i>تعديل</a
+                      >
+                      {% endcomment %}
+                      <a
+                        class="btn btn-success btn-sm"
+                        onclick="openEditDialog('{{ hotel.id|escapejs }}', '{{ hotel.name|escapejs }}', '{{ hotel.location.id|escapejs }}', '{{ hotel.email|escapejs }}', '{{ hotel.description|escapejs }}', '{{ hotel.is_verified|escapejs }}', '{{ hotel.verification_date|escapejs }}')"
+                        ><i class="far fa-edit"></i>تعديل</a
+                      >
+                      <a
+                        class="btn btn-icon btn-danger text-white m-2"
+                        onclick="openDeleteModal('{{ hotel.id|escapejs }}', '{{ hotel.name|escapejs }}')"
+                        ><i class="fas fa-trash"></i> حذف</a
+                      >
                     </td>
                   </tr>
 
@@ -68,45 +101,35 @@
             </div>
           </div>
         </div>
-
-
-         <!-- delete -->
- <div class="modal fade" id="modaldemo9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
- aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">حذف كود الخصم</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <form action="" method="POST">
-            {% comment %} @method('DELETE')
-            @csrf {% endcomment %}
-            <div class="modal-body">
-                <p>هل انت متاكد من عملية الحذف ؟</p><br>
-                <input type="hidden" name="coupon_id" id="coupon_id" >
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
-                <button type="submit" class="btn btn-danger">تاكيد</button>
-            </div>
-        </form>
-    </div>
-</div>
-</div>
-
-
-
-
- </div>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- Add  Modal -->
+{% include "admin/hotel-management/modals/add-modal.html" %}
+<!-- Add  Modal -->
+
+<!-- Edit Details Modal -->
+{% include "admin/hotel-management/modals/edit-modal.html" %}
+
+<!-- /Edit Details Modal -->
+
+<!-- Delete Modal -->
+
+{% include "admin/hotel-management/modals/delete-modal.html" %}
+<!-- /Delete Modal -->
+
 {% endblock %}
+<style>
+  .fade-out {
+      opacity: 0;
+      transition: opacity 1s ease-out;
+  }
+</style>
+
  {% block extra_css %}
- 
+
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -120,9 +143,93 @@
     background-color: #f1f1f1;
   }
 </style>
-{% endblock %} {% block extra_js %}
+{% endblock %} 
+{% block extra_js %}
 
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const alerts = document.querySelectorAll("#message-container .alert");
+      alerts.forEach(alert => {
+          setTimeout(() => {
+              alert.classList.add("fade-out"); 
+              setTimeout(() => alert.remove(), 1000); 
+          }, 4000);
+      });
+  });
+</script>
+
+
+
+<script>
+
+  function openEditDialog(
+    hotelId,
+    hotelName,
+    hotelLocationId,
+    hotelEmail,
+    hotelDescription,
+    hotelIsVerified,
+    hotelVerificationDate
+  ) {
+    document.getElementById("edit-hotel-name-input").value = hotelName;
+    document.getElementById("edit-hotel-description-input").value =
+      hotelDescription;
+    document.getElementById("edit-hotel-email-input").value = hotelEmail;
+    document.getElementById("edit-hotel-id-input").value = hotelId;
+
+    const locationDropdown = document.getElementById(
+      "edit-hotel-location-input"
+    );
+    locationDropdown.value = hotelLocationId;
+
+    const isVerifiedDropdown = document.getElementById(
+      "edit-hotel-is_verified-input"
+    );
+    isVerifiedDropdown.value = hotelIsVerified.toString();
+
+    const verificationDateInput = document.getElementById(
+      "edit-hotel-date-input"
+    );
+    verificationDateInput.value = hotelVerificationDate;
+
+    const editModal = new bootstrap.Modal(document.getElementById("editModel"));
+    console.log(
+      "Showing modal with:",
+      hotelId,
+      hotelName,
+      hotelLocationId,
+      hotelEmail,
+      hotelDescription,
+      hotelIsVerified,
+      hotelVerificationDate
+    );
+    editModal.show();
+  }
+
+  function openDeleteModal(hotelId, hotelName) {
+    document.getElementById("delete-hotel-name").innerText = hotelName;
+
+    document.getElementById("delete-hotel-id-input").value = hotelId;
+
+    var deleteModal = new bootstrap.Modal(
+      document.getElementById("deleteModel")
+    );
+    deleteModal.show();
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var toastElements = document.querySelectorAll(".toast");
+    toastElements.forEach(function (toastEl) {
+      var toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    });
+  });
+</script>
 
 <script>
   $(document).ready(function () {
@@ -141,24 +248,22 @@
   });
 </script>
 <script>
+  //deltee
+  $("#modaldemo9").on("show.bs.modal", function (event) {
+    var button = $(event.relatedTarget);
+    var hotel_id = button.data("del");
+    var modal = $(this);
+    modal.find(".modal-body #hotel_id").val(hotel_id);
+  });
 
-    //deltee
-    $('#modaldemo9').on('show.bs.modal',function (event) {
-        var button = $(event.relatedTarget)
-        var coupon_id = button.data('del')
-        var modal = $(this)
-        modal.find('.modal-body #coupon_id').val(coupon_id)
-
-    })
-
-
-    let table = new DataTable('#myTable');
-    oTable = $("#bigtable").dataTable({
-        columnDefs: [{
-            "defaultContent": "-",
-            "targets": "_all"
-        }]
-    });
-
+  let table = new DataTable("#myTable");
+  oTable = $("#bigtable").dataTable({
+    columnDefs: [
+      {
+        defaultContent: "-",
+        targets: "_all",
+      },
+    ],
+  });
 </script>
 {% endblock %}
