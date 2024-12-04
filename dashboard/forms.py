@@ -1,5 +1,6 @@
 from django import forms
 from users.models import HotelAccountRequest
+from django.forms import modelformset_factory
 
 class HotelAccountRequestForm(forms.ModelForm):
     class Meta:
@@ -16,5 +17,7 @@ class HotelAccountRequestForm(forms.ModelForm):
             'verify_number', 
             'status', 
             'admin_notes'
-           
         ]
+
+# استخدم النموذج (model) بدلاً من النموذج (form)
+HotelAccountRequestFormSet = modelformset_factory(HotelAccountRequest, form=HotelAccountRequestForm, extra=1)

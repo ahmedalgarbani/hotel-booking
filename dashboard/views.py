@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from users.models import ActivityLog, HotelAccountRequest,CustomUser
 from django.contrib import messages
 from users.forms import CustomUser_CreationForm, HotelAccountRequestForm
-
-from .forms import HotelAccountRequestForm 
+from django.forms import inlineformset_factory
+from .forms import HotelAccountRequestForm,HotelAccountRequestFormSet
 
 
 
@@ -35,8 +35,55 @@ def create_user(request):
     return render(request, 'admin/dashboard/create_user.html', {'form': form})
 
 
+# def create_user(request):
+#     # تعيين قيمة افتراضية لـ formset
+#     formset = None
 
+#     if request.method == 'POST':
+#         # إنشاء نموذج المستخدم باستخدام البيانات المرسلة
+#         user_form = CustomUser_CreationForm(request.POST)
+        
+#         if user_form.is_valid():
+#             # حفظ المستخدم الجديد
+#             user = user_form.save()
+            
+#             # إنشاء InlineFormSet لطلبات الحساب الفندقي
+#             HotelAccountRequestFormSet = inlineformset_factory(
+#                 CustomUser ,
+#                 HotelAccountRequest,
+#                 form=HotelAccountRequestForm,
+#                 extra=1,
+#                 fk_name='user'  # استخدام 'user' كاسم ForeignKey
+#             )
+            
+#             # إنشاء نموذج المجموعة باستخدام البيانات المرسلة
+#             formset = HotelAccountRequestFormSet(request.POST, instance=user)
+            
+#             if formset.is_valid():
+#                 # حفظ الطلبات
+#                 formset.save()
+#                 messages.success(request, 'تم إنشاء المستخدم وطلبات الحساب بنجاح!')
+#                 return redirect('list_user')  # إعادة التوجيه إلى قائمة المستخدمين
+#             else:
+#                 messages.error(request, 'هناك خطأ في طلبات الحساب. يرجى التحقق من المدخلات.')
+#         else:
+#             messages.error(request, 'هناك خطأ في تفاصيل المستخدم. يرجى التحقق من المدخلات.')
+#     else:
+#         # إذا كانت الطريقة GET، إنشاء نماذج فارغة
+#         user_form = CustomUser_CreationForm()
+#         HotelAccountRequestFormSet = inlineformset_factory(
+#             CustomUser ,
+#             HotelAccountRequest,
+#             form=HotelAccountRequestForm,
+#             extra=1,
+#             fk_name='user'  # استخدام 'user' كاسم ForeignKey
+#         )
+#         formset = HotelAccountRequestFormSet(queryset=HotelAccountRequest.objects.none())  # لا تظهر أي طلبات موجودة
 
+#     return render(request, 'admin/dashboard/create_user_with_requests.html', {
+#         'user_form': user_form,
+#         'formset': formset,
+#     })
 def list_user(request):
     users = CustomUser.objects.all()
     return render(request, 'admin/dashboard/list_user.html', {'users': users})
@@ -166,23 +213,21 @@ def edit_hotel_account_request(request, id):
         'hotel_request': hotel_request
     })
 
+
+
 def create_hotel_account_request(request):
     if request.method == 'POST':
-        form = HotelAccountRequestForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        formset = HotelAccountRequestFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+           
+            formset.save()
             messages.success(request, 'تم إنشاء طلب فتح الحساب بنجاح!')
             return redirect('mananghotel')  
     else:
-        form = HotelAccountRequestForm()
+        # استخدم FormSet جديد بدون أي بيانات موجودة
+        formset = HotelAccountRequestFormSet(queryset=HotelAccountRequest.objects.none())
 
-    return render(request, 'admin/dashboard/create_hotel_account_request.html', {'form': form})
-
-
-
-
-
-
+    return render(request, 'admin/dashboard/create_hotel_account_request.html', {'formset': formset})
 
 
 def delete_hotel_account_request(request, id_request):

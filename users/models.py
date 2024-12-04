@@ -47,7 +47,8 @@ class HotelAccountRequest(BaseModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="حالة الطلب")
     admin_notes = models.TextField(blank=True, default=None, verbose_name="ملاحظات المسؤول")
     password= models.CharField(max_length=255, verbose_name="كلمه السر ")
-    
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='hotel_requests')
+   
     def __str__(self):
         return f"Request for {self.hotel_name}"
 
