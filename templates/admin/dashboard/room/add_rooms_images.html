@@ -21,7 +21,7 @@
                 <div class="form-group col-6">
                     <label for="frist_name"> hotel</label>
                     <select id="user_type" class="form-control" name="user_type">
-                        {% for choice in form.fields.hotel.choices %}
+                        {% for choice in form.fields.hotel.queryset %}
                         <option value="{{ choice.id }}">{{ choice.name }}</option>
                         {% endfor %}
                     </select>

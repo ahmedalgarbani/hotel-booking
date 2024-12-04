@@ -1,11 +1,12 @@
 from email.charset import QP
 from xml.etree.ElementTree import QName
 from django.shortcuts import get_object_or_404, redirect, render
+from dashboard.forms import HotelAccountRequestForm, RoomImageForm
 from users.models import ActivityLog, HotelAccountRequest,CustomUser
 from django.contrib import messages
 from rooms.models import RoomType,RoomPrice,RoomStatus,Category,Availability,RoomImage
 
-from .forms import HotelAccountRequestForm, RoomImageForm 
+from django import forms 
 # from django.shortcuts import render, redirect
 # from django.http import HttpResponse
 # from .forms import RoomImageForm 
@@ -202,16 +203,18 @@ def rooms_images(request):
 
 def add_rooms_images(request):
     if request.method == 'POST':
-        created_by=request.user
-        updated_by=request.user
+        created_by = request.user
+        updated_by = request.user
         form = RoomImageForm(request.POST, request.FILES, created_by=created_by, updated_by=updated_by)
 
         if form.is_valid():
-            form.save(commit=False)
+            instance = form.save(commit=False)
+            instance.save()
             return redirect('rooms_images')  # استبدل بـ URL ناجح
         else:
             return render(request, 'admin/dashboard/room/add_rooms_images.html', {'form': form})
     else:
         form = RoomImageForm()
         return render(request, 'admin/dashboard/room/add_rooms_images.html', {'form': form})
-
+    
+    
