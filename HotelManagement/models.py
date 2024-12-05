@@ -21,15 +21,32 @@ class BaseModel(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_created",
+<<<<<<< HEAD
+        verbose_name=_("المنشى"),
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+       
+       
+=======
         verbose_name="المنشى",
         on_delete=models.CASCADE
+>>>>>>> main
     )
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated",
+<<<<<<< HEAD
+        verbose_name=_("المعدل"),
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        
+=======
         verbose_name="المعدل",
         on_delete=models.CASCADE,
         null=True
+>>>>>>> main
     )
     slug = models.SlugField(
         unique=True,
