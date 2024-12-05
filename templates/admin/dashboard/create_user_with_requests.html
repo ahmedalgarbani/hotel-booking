@@ -1,0 +1,62 @@
+{% extends "admin/layouts/master.html" %}
+
+{% block content %}
+
+
+
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<form method="POST">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ formset.management_form }}
+    <div id="formset-container">
+        {% for form in formset %}
+            <div class="formset-row">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" id="add-more" class="btn btn-secondary">إضافة المزيد</button>
+    <button type="submit" class="btn btn-primary">إنشاء مستخدم وطلبات</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('add-more').addEventListener('click', function() {
+        // عدد النماذج الحالية
+        var formsetContainer = document.getElementById('formset-container');
+        var totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        var currentFormCount = parseInt(totalForms.value);
+
+        // نسخ النموذج الأخير
+        var newForm = formsetContainer.lastElementChild.cloneNode(true);
+
+        // تحديث الحقول في النموذج الجديد
+        var inputs = newForm.getElementsByTagName('input');
+        for (var i = 0; i < inputs.length; i++) {
+            var name = inputs[i].name.replace(/-\d+/, '-' + currentFormCount);
+            inputs[i].name = name;
+            inputs[i].id = name.replace(/-/g, '_');
+            inputs[i].value = ''; // تفريغ القيمة
+        }
+
+        // تحديث الحقول المحددة
+        var selects = newForm.getElementsByTagName('select');
+        for (var j = 0; j < selects.length; j++) {
+            var name = selects[j].name.replace(/-\d+/, '-' + currentFormCount);
+            selects[j].name = name;
+            selects[j].id = name.replace(/-/g, '_');
+            selects[j].selectedIndex = 0; // إعادة تعيين الاختيار
+        }
+
+        // إضافة النموذج الجديد إلى الحاوية
+        formsetContainer.appendChild(newForm);
+
+        // تحديث العدد الإجمالي للنماذج
+        totalForms.value = currentFormCount + 1;
+    });
+</script>
+{% endblock %}

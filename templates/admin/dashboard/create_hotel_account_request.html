@@ -1,3 +1,4 @@
+
 {% extends "admin/layouts/master.html" %}
 {% load widget_tweaks %}
 {% block title %}إنشاء طلب فتح حساب الفندق{% endblock %}
@@ -7,7 +8,7 @@
   <div class="section-header">
       <h1>إنشاء طلب فتح حساب الفندق</h1>
       <div class="section-header-breadcrumb">
-          <div class="breadcrumb-item"><a href="{% url 'mananghotel' %}">قائمة الطلبات</a></div>
+          <div class="breadcrumb-item"><a href="{% url 'users:mananghotel' %}">قائمة الطلبات</a></div>
           <div class="breadcrumb-item active">إنشاء طلب</div>
       </div>
   </div>
@@ -21,26 +22,29 @@
         <div class="card-body">
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {% if form.errors %}
-                <div class="alert alert-danger">
-                    <ul>
+            <div id="formset-container">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    <div class="form-group">
+                        <h4>نموذج {{ forloop.counter }}</h4>
+                        
                         {% for field in form %}
-                            {% for error in field.errors %}
-                                <li>{{ field.label }}: {{ error }}</li>
-                            {% endfor %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field|add_class:"form-control" }}  <!-- إضافة فئة Bootstrap -->
+                                {% if field.errors %}
+                                    <div class="text-danger">
+                                        {% for error in field.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         {% endfor %}
-                        {% for error in form.non_field_errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:"form-control" }}  <!-- إضافة فئة Bootstrap -->
-                </div>
-            {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addForm()">إضافة نموذج</button>
             <button type="submit" class="btn btn-primary">حفظ الطلب</button>
           </form>
         </div>
@@ -48,4 +52,63 @@
     </div>
   </div>
 </section>
+
+<script>
+    let formsetCounter = {{ formset.total_form_count }}; // عدد النماذج الحالية
+
+    function addForm() {
+        const formsetContainer = document.getElementById('formset-container');
+        const newForm = document.createElement('div');
+        newForm.innerHTML = `
+            <div class="form-group">
+                <h4>نموذج ${formsetCounter + 1}</h4>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-hotel_name">اسم الفندق:</label>
+                    <input type="text" name="${formsetCounter}-hotel_name" id="id_${formsetCounter}-hotel_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-owner_name">اسم المالك:</label>
+                    <input type="text" name="${formsetCounter}-owner_name" id="id_${formsetCounter}-owner_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-email">البريد الإلكتروني:</label>
+                    <input type="email" name="${formsetCounter}-email" id="id_${formsetCounter}-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-phone">رقم الهاتف:</label>
+                    <input type="text" name="${formsetCounter}-phone" id="id_${formsetCounter}-phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-password">كلمة المرور:</label>
+                    <input type="password" name="${formsetCounter}-password" id="id_${formsetCounter}-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-hotel_description">وصف الفندق:</label>
+                    <textarea name="${formsetCounter}-hotel_description" id="id_${formsetCounter}-hotel_description" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-business_license_number">رقم الترخيص التجاري:</label>
+                    <input type=" text" name="${formsetCounter}-business_license_number" id="id_${formsetCounter}-business_license_number" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-document_path">مسار الوثيقة:</label>
+                    <input type="file" name="${formsetCounter}-document_path" id="id_${formsetCounter}-document_path" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-verify_number">رقم التحقق:</label>
+                    <input type="text" name="${formsetCounter}-verify_number" id="id_${formsetCounter}-verify_number" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-status">الحالة:</label>
+                    <input type="text" name="${formsetCounter}-status" id="id_${formsetCounter}-status" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_${formsetCounter}-admin_notes">ملاحظات الإدارة:</label>
+                    <textarea name="${formsetCounter}-admin_notes" id="id_${formsetCounter}-admin_notes" class="form-control"></textarea>
+                </div>
+            </div>`;
+        formsetContainer.appendChild(newForm);
+        formsetCounter++;
+    }
+</script>
 {% endblock %}
