@@ -13,7 +13,7 @@
         <div class="section-body">
             <div class="card">
                 <div class="card-body">
-                    <a href="{% url 'create_user' %}" class="btn btn-primary mb-3">إنشاء مستخدم جديد</a>
+                    <a href="{% url 'users:create_user' %}" class="btn btn-primary mb-3">إنشاء مستخدم جديد</a>
                     <table id="userTable" class="table table-striped">
                         <thead>
                             <tr>
@@ -30,8 +30,8 @@
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.user_type }}</td>
                                 <td>
-                                    <a href="{% url 'update_user' user.id %}" class="btn btn-warning">تحديث</a>
-                                    <a href="{% url 'delete_user' user.id %}" class="btn btn-danger">حذف</a>
+                                    <a href="{% url 'users:update_user' user.id %}" class="btn btn-warning">تحديث</a>
+                                    <a href="{% url 'users:delete_user' user.id %}" class="btn btn-danger">حذف</a>
                                 </td>
                             </tr>
                             {% endfor %}

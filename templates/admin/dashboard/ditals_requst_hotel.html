@@ -7,7 +7,7 @@
   <div class="section-header">
       <h1>تفاصيل الطلب</h1>
       <div class="section-header-breadcrumb">
-          <div class="breadcrumb-item"><a href="{% url 'mananghotel' %}">قائمة الطلبات</a></div>
+          <div class="breadcrumb-item"><a href="{% url 'users:mananghotel' %}">قائمة الطلبات</a></div>
           <div class="breadcrumb-item active">تعديل الطلب</div>
       </div>
   </div>
@@ -75,15 +75,15 @@
                  <div class="card-body">
     <div class="d-flex justify-content-between">
         <!-- رابط الموافقة -->
-        <a href="{% url 'approve_hotel_account' order.id %}" class="btn btn-success">الموافقة على الطلب</a>
+        <a href="{% url 'users:approve_hotel_account' order.id %}" class="btn btn-success">الموافقة على الطلب</a>
         
         <!-- رابط التعديل -->
-        <a href="{% url 'edit_hotel_account_request' order.id %}" class="btn btn-warning">تعديل الطلب</a>
+        <a href="{% url 'users:edit_hotel_account_request' order.id %}" class="btn btn-warning">تعديل الطلب</a>
 
         <!-- رابط الحذف -->
         <form method="POST">
             {% csrf_token %}
-            <a href="{% url 'delet_hotel_account_request' id_request=order.id %}" class="btn btn-danger">حذف الطلب</a>
+            <a href="{% url 'users:delet_hotel_account_request' id_request=order.id %}" class="btn btn-danger">حذف الطلب</a>
         </form>
     </div>
 </div>

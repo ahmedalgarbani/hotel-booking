@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .forms import CustomUser_CreationForm, HotelAccountRequestForm
 from .models import CustomUser
 from django.contrib.auth import authenticate, login,logout
@@ -26,17 +27,17 @@ def create_user(request):
             
             
             if user_type == 'hotel_manager':
-                return redirect('request_hotel_account')  
+                return redirect(reverse('users:request_hotel_account')  )
 
             if user_type == "admin":
                 messages.error(request, 'لا يمكنك انشاء حساب مسوول ')
-                return redirect('register') 
+                return redirect(reverse('users:register') )
             else:
                 user.is_superuser = False
                 user.is_staff = False
 
             user.save()
-            return redirect('login')  
+            return redirect(reverse('users:login'))  
     else:
         form = CustomUser_CreationForm()
     
@@ -102,7 +103,7 @@ def update_user(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, 'تم تحديث المستخدم بنجاح!')
-            return redirect('list_user') 
+            return redirect(reverse('users:list_user')) 
     else:
         form = CustomUser_CreationForm(instance=user)
 
@@ -121,11 +122,11 @@ def delete_user(request, id):
                   h.save()
               user.delete()
               messages.success(request, 'تم حذف المستخدم بنجاح!')
-              return redirect('list_user') 
+              return redirect(reverse('users:list_user')) 
          else:
            user.delete()
            messages.success(request, 'تم حذف المستخدم بنجاح!')
-           return redirect('list_user') 
+           return redirect(reverse('users:list_user')) 
     return render(request, 'admin/dashboard/delete_user.html', {'user': user})
 
 
@@ -157,11 +158,11 @@ def approve_Hotel_Account_Request(request, id):
     if hotel_request:
         if CustomUser .objects.filter(username=hotel_request.hotel_name).exists():
             messages.error(request, 'اسم المستخدم موجود بالفعل')
-            return redirect('mananghotel')  
+            return redirect(reverse('users:mananghotel'))  
             
         elif CustomUser .objects.filter(email=hotel_request.email).exists():
             messages.error(request, 'البريد الإلكتروني موجود بالفعل')
-            return redirect('mananghotel') 
+            return redirect(reverse('users:mananghotel')) 
         else:    
             user = CustomUser  (
                 username=hotel_request.hotel_name,
@@ -179,10 +180,10 @@ def approve_Hotel_Account_Request(request, id):
             hotel_request.status = 'approved'
             hotel_request.save()
 
-            return redirect('mananghotel') 
+            return redirect(reverse('users:mananghotel'))
     else:
        
-        return redirect('mananghotel')
+        return redirect(reverse('users:mananghotel'))
     
     
 def edit_hotel_account_request(request, id):
@@ -203,7 +204,7 @@ def edit_hotel_account_request(request, id):
                 record_id=hotel_request.id,  
                 action='edit_hotel_account_request'
               )
-                return redirect('mananghotel')
+                return redirect(reverse('users:mananghotel'))
             elif status == "pending":
                 users=CustomUser.objects.filter(username=hotel_name).delete()
                 form.save()  
@@ -213,7 +214,7 @@ def edit_hotel_account_request(request, id):
                 record_id=user.id,
                 action='edit_hotel_account_request'
               )
-                return redirect('mananghotel')
+                return redirect(reverse('users:mananghotel'))
 
              
               
@@ -236,7 +237,7 @@ def create_hotel_account_request(request):
            
             formset.save()
             messages.success(request, 'تم إنشاء طلب فتح الحساب بنجاح!')
-            return redirect('mananghotel')  
+            return redirect(reverse('users:mananghotel'))  
     else:
         # استخدم FormSet جديد بدون أي بيانات موجودة
         formset = HotelAccountRequestFormSet(queryset=HotelAccountRequest.objects.none())
@@ -256,7 +257,7 @@ def delete_hotel_account_request(request, id_request):
                 associated_user = CustomUser .objects.get(username=hotel_request.hotel_name)
             except CustomUser .DoesNotExist:
                 messages.error(request, 'Associated user not found')
-                return redirect('mananghotel')
+                return redirect(reverse('users:mananghotel'))
 
             
             hotel_request.delete()
@@ -270,10 +271,10 @@ def delete_hotel_account_request(request, id_request):
                 action='delete_hotel_account_request'
             )
 
-            return redirect('mananghotel')
+            return redirect(reverse('users:mananghotel'))
         except HotelAccountRequest.DoesNotExist:
             messages.error(request, 'Hotel account request not found')
-            return redirect('mananghotel')
+            return redirect(reverse('users:mananghotel'))
     else:
        
         pass
@@ -345,10 +346,10 @@ def login_view(request):
         if user is not None:
             if request.user.is_superuser:
               login(request, user)
-              return redirect('index')  
+              return redirect(reverse('users:index'))  
             elif user.is_staff:
                  login(request, user)
-                 return redirect('index')
+                 return redirect(reverse('users:index'))
         
         else:
             messages.error(request, 'البريد الإلكتروني أو كلمة المرور غير صحيحة.')
@@ -365,13 +366,13 @@ def request_hotel_account(request):
             request_instance.created_user = None  
             request_instance.status = 'pending'  
             request_instance.save()
-            return redirect('login')  
+            return redirect(reverse('users:login'))  
     else:
         form = HotelAccountRequestForm()
     return render(request, 'admin/auth/request_hotel_account.html', {'form': form})
 def logOut(request):
     logout(request)
-    return redirect('login')
+    return redirect(reverse('users:login'))
 
 
 
