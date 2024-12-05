@@ -18,26 +18,36 @@ class BaseModel(models.Model):
         blank=True,
         verbose_name=_("تاريخ الحذف")
     )
-    created_by = models.OneToOneField(
-        settings.AUTH_USER_MODEL,  
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         related_name="%(class)s_created",
+<<<<<<< HEAD
         verbose_name=_("المنشى"),
         on_delete=models.CASCADE,
         blank=True,
         null=True,
        
        
+=======
+        verbose_name="المنشى",
+        on_delete=models.CASCADE
+>>>>>>> main
     )
-    updated_by = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated",
+<<<<<<< HEAD
         verbose_name=_("المعدل"),
         on_delete=models.CASCADE,
         blank=True,
         null=True,
         
+=======
+        verbose_name="المعدل",
+        on_delete=models.CASCADE,
+        null=True
+>>>>>>> main
     )
-    
     slug = models.SlugField(
         unique=True,
         max_length=255,
@@ -69,6 +79,22 @@ class BaseModel(models.Model):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
 
    
+# -------------------- Location ----------------------------
+
+class Location(BaseModel):
+    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
+    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
+    city = models.ForeignKey(
+        "City",
+        verbose_name=_("موقع الفندق"), 
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = _("الموقع")
+        verbose_name_plural = _("المواقع")
+    def __str__(self):
+        return f"{self.name}" 
 
 
 
@@ -76,7 +102,7 @@ class BaseModel(models.Model):
 
 class Hotel(BaseModel):
     location = models.ForeignKey(
-        "Location",
+        Location,
         verbose_name=_("موقع الفندق"), 
         on_delete=models.CASCADE
     )
@@ -111,22 +137,6 @@ class Hotel(BaseModel):
     def __str__(self):
         return f"{self.name}" 
 
-# -------------------- Location ----------------------------
-
-class Location(BaseModel):
-    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
-    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
-    city = models.ForeignKey(
-        "City",
-        verbose_name=_("موقع الفندق"), 
-        on_delete=models.CASCADE
-    )
-
-    class Meta:
-        verbose_name = _("الموقع")
-        verbose_name_plural = _("المواقع")
-    def __str__(self):
-        return f"{self.name}" 
 
 # -------------------- Phone ----------------------------
 

@@ -28,6 +28,7 @@ urlpatterns = [
     path('request_hotel_account/', views.request_hotel_account, name='request_hotel_account'),
    
     path('activity_log/', views.activity_log_view, name='activity_log'),
+    
    
     
 ]
