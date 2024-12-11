@@ -89,14 +89,10 @@ DATABASES = {
 		'USER': 'root',
 		'PASSWORD': '',
 		'HOST':'localhost',
-<<<<<<< HEAD
 		'PORT':'54322',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         },
-=======
-		'PORT':'3306',
->>>>>>> a0c3b72647354296af6f0f44394056a3e10b169e
 	}
 }
 
