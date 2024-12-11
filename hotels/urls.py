@@ -21,9 +21,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls',namespace='users')),
+    path('HotelManagement/', include('HotelManagement.urls',namespace='HotelManagementz')),
     
-
-    path('hotel-management/', include('HotelManagement.urls')),
+    
     path('rooms/', include('rooms.urls')),
     path('reviews/', include('reviews.urls')),
     path('services/', include('services.urls')),

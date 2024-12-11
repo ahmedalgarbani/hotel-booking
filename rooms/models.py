@@ -16,7 +16,7 @@ class RoomType(BaseModel):
     category_id = models.IntegerField(verbose_name=_("رقم التصنيف"))
     name = models.CharField(
         max_length=100,
-        verbose_name=_("اسم نوع الغرفة")
+        verbose_name=_("اسم نوع الغرفة"),default="Default Name"
     )
     description = models.TextField(
         blank=True, null=True,

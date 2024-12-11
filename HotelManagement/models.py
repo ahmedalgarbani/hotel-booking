@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
 from django.urls import reverse
+
 from django.utils.translation import gettext_lazy as _
 
 class BaseModel(models.Model):
@@ -18,8 +19,8 @@ class BaseModel(models.Model):
         blank=True,
         verbose_name=_("تاريخ الحذف")
     )
-    created_by = models.OneToOneField(
-        settings.AUTH_USER_MODEL,  
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         related_name="%(class)s_created",
         verbose_name=_("المنشى"),
         on_delete=models.CASCADE,
@@ -28,8 +29,8 @@ class BaseModel(models.Model):
        
        
     )
-    updated_by = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated",
         verbose_name=_("المعدل"),
         on_delete=models.CASCADE,
@@ -37,7 +38,6 @@ class BaseModel(models.Model):
         null=True,
         
     )
-    
     slug = models.SlugField(
         unique=True,
         max_length=255,
@@ -69,6 +69,22 @@ class BaseModel(models.Model):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
 
    
+# -------------------- Location ----------------------------
+
+class Location(BaseModel):
+    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
+    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
+    city = models.ForeignKey(
+        "City",
+        verbose_name=_("موقع الفندق"), 
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = _("الموقع")
+        verbose_name_plural = _("المواقع")
+    def __str__(self):
+        return f"{self.name}" 
 
 
 
@@ -76,7 +92,7 @@ class BaseModel(models.Model):
 
 class Hotel(BaseModel):
     location = models.ForeignKey(
-        "Location",
+        Location,
         verbose_name=_("موقع الفندق"), 
         on_delete=models.CASCADE
     )
@@ -104,6 +120,15 @@ class Hotel(BaseModel):
         blank=True, 
         verbose_name=_("تاريخ التحقق")
     )
+    manager = models.OneToOneField(
+       settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        limit_choices_to={'user_type': 'hotel_manager'},
+        verbose_name=_("مدير الفندق")
+    )
+
 
     class Meta:
         verbose_name = _("فندق")
@@ -111,22 +136,6 @@ class Hotel(BaseModel):
     def __str__(self):
         return f"{self.name}" 
 
-# -------------------- Location ----------------------------
-
-class Location(BaseModel):
-    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
-    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
-    city = models.ForeignKey(
-        "City",
-        verbose_name=_("موقع الفندق"), 
-        on_delete=models.CASCADE
-    )
-
-    class Meta:
-        verbose_name = _("الموقع")
-        verbose_name_plural = _("المواقع")
-    def __str__(self):
-        return f"{self.name}" 
 
 # -------------------- Phone ----------------------------
 
@@ -139,7 +148,12 @@ class Phone(BaseModel):
         max_length=5, 
         verbose_name=_("رمز الدوله")
     )
-
+    hotel = models.ForeignKey(
+        Hotel,
+        on_delete=models.CASCADE,
+        verbose_name=_("الفندق"),
+        related_name='phones'
+    )
     class Meta:
         verbose_name = _("رقم هاتف")
         verbose_name_plural = _("أرقام الهواتف")

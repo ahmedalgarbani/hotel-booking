@@ -10,8 +10,11 @@
                     <div class="login-brand">
                         <img src="assets/img/stisla-fill.svg" alt="logo" width="100" class="shadow-light rounded-circle">
                     </div>
+
+                     <div class="card-header">هل انت مدير فندق ؟<a href="{%url 'users:request_hotel_account'%}">أنشئ واحداً</a>
+                    </div>
 <div class="card card-primary">
-    <div class="card-header"><h4>Register</h4></div>
+    <div class="card-header"><h4>التسجيل</h4></div>
 
     <div class="card-body">
         <form method="POST">
@@ -59,7 +62,7 @@
                     <input type="checkbox" onclick="togglePasswordVisibility('password2')">show Password
                 </div>
             </div>
-
+{% comment %} 
             <div class="form-group">
                 <label for="user_type">User  Type</label>
                 <select id="user_type" class="form-control" name="user_type">
@@ -67,7 +70,7 @@
                     <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                     {% endfor %}
                 </select>
-            </div>
+            </div> {% endcomment %}
 
             <div class="form-group">
                 <label for="phone">Phone</label>
