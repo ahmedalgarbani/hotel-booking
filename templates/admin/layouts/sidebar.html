@@ -8,7 +8,7 @@
           <a href="index.html">ست</a>
       </div>
       <ul class="sidebar-menu">
-        {% if user.is_superuser %}
+        {% comment %} {% if user.is_superuser %} {% endcomment %}
           <li class="menu-header">لوحة التحكم</li>
           <li class="dropdown">
               <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>إدارة</span></a>
@@ -19,7 +19,7 @@
                   <li><a class="nav-link" href="{%url 'users:activity_log'%}">سجل نشاط حساب الفندق</a></li>
               </ul> 
           </li>
-          {% endif %}
+          {% comment %} {% endif %} {% endcomment %}
           <li class="menu-header">إدارة لفنادق</li>
           <li class="dropdown">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-home"></i> <span>ادارة الفنادق</span></a>
@@ -30,5 +30,6 @@
           </li>
          
       </ul>
+      
   </aside>
 </div>

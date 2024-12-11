@@ -19,7 +19,7 @@
                                     <div class="alert alert-danger">{{ message }}</div>
                                 {% endfor %}
                             {% endif %}
-                            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate="">
+                            <form method="POST" enctype="multipart/form-data" class="needs-validation" action="{%url 'users:request_hotel_account'%}" novalidate="">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="hotel_name">اسم الفندق</label>

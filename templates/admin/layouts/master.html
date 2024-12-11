@@ -46,6 +46,8 @@
             <div class="main-content">
                 {% block content %}
                     <!-- Default content -->
+
+                    
                 {% endblock %}
             </div>
 
@@ -63,14 +65,16 @@
     <script src="{% static 'admin_assets/modules/moment.min.js' %}"></script>
     <script src="{% static 'admin_assets/js/stisla.js' %}"></script>
     
+  <!-- Page Specific JS File -->
+  <script src="{% static 'admin_assets/js/page/modules-sweetalert.js' %}"></script>
+  
     <!-- JS Libraries -->
     {% block extra_js %}{% endblock %}
 
     <!-- Template JS File -->
     <script src="{% static 'admin_assets/js/scripts.js' %}"></script>
     <script src="{% static 'admin_assets/js/custom.js' %}"></script>
-    {% comment %} <script async src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Page Specific JS --> {% endcomment %}
+    
     {% block page_js %}{% endblock %}
 </body>
 </html>
