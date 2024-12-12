@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'HotelManagement',
-    'bookings',
     'rooms',
+    'bookings',
+    
     'reviews',
     'services',
     'widget_tweaks',
@@ -149,67 +150,84 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": "Hotel Management System",
-    "site_header": "Hotel Management System",
-    "site_brand": "Hotel System",
-    "welcome_sign": "Welcome to Hotel Management System",
-    "copyright": "All rights reserved 2024",
-    
-    # إضافة دعم RTL
-    "show_ui_builder": True,
-    "custom_css": None,
-    "custom_js": None,
-    "related_modal_active": True,
-   
-    "changeform_format": "horizontal_tabs",
-    "language_chooser": True,
+    "site_title": ("نظام إدارة الفنادق"),
+    "site_header": ("نظام إدارة الفنادق"),
+    "site_brand": ("نظام الفنادق"),
+    "login_logo": None,
+    "login_logo_dark": None,
+    "site_logo_classes": "img-circle",
+    "site_icon": None,
+    "welcome_sign": ("مرحباً بك في نظام إدارة الفنادق"),
+    "copyright": ("جميع الحقوق محفوظة © 2024"),
+    "search_model": ["auth.User", "HotelManagement.Hotel"],
+    "user_avatar": None,
+
+    # القوائم
+    "topmenu_links": [
+        {"name": ("الرئيسية"), "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+        {"model": "HotelManagement.Hotel"},
+    ],
+
+    # قائمة المستخدم
+    "usermenu_links": [
+        {"model": "auth.user"}
+    ],
+
+    # القائمة الجانبية
     "show_sidebar": True,
     "navigation_expanded": True,
-    
-    # تخصيص القوائم
-    "order_with_respect_to": ["auth", "users", "HotelManagement"],
+    "hide_apps": [],
+    "hide_models": [],
+    "order_with_respect_to": ["auth", "HotelManagement", "rooms", "bookings"],
     
     # الأيقونات
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        "users.CustomUser": "fas fa-user-circle",
         "HotelManagement.Hotel": "fas fa-hotel",
+        "rooms.RoomType": "fas fa-bed",
+        "bookings.Booking": "fas fa-calendar-check",
     },
+
+    # تخصيص الواجهة
+    "custom_css": None,
+    "custom_js": None,
+    "use_google_fonts_cdn": True,
+    "show_ui_builder": True,
+    "changeform_format": "horizontal_tabs",
+    "language_chooser": True,
 }
-
-
-
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
     "body_small_text": False,
     "brand_small_text": False,
-    "brand_colour": "navbar-success",
-    "accent": "accent-teal",
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
     "navbar": "navbar-dark",
     "no_navbar_border": False,
-    "navbar_fixed": False,
+    "navbar_fixed": True,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-info",
+    "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": False,
+    "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "default",
-    "dark_mode_theme": None,
+    "theme": "slate",
+    "dark_mode_theme": "slate",
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
-        "success": "btn-success",
-    },
+        "success": "btn-success"
+    }
 }

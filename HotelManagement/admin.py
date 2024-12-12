@@ -1,9 +1,9 @@
 from django.contrib import admin
+
+from users.models import CustomUser
 from .models import Hotel, Location, Phone, Image, City
 from django.contrib.auth import get_user_model
 from django import forms
-
-
 
 User = get_user_model()
 
@@ -90,16 +90,28 @@ class LocationAdmin(admin.ModelAdmin):
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
            
             form.base_fields['city'].queryset = City.objects.filter(location__hotel__manager=request.user)
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].widget.attrs['readonly'] = True
+                form.base_fields['created_by'].required = False
         return form
 
     def save_model(self, request, obj, form, change):
         if not obj.pk and request.user.user_type == 'hotel_manager':
-            # حفظ الموقع وربطه بفندق المدير
+           
             obj.save()
             hotel = Hotel.objects.get(manager=request.user)
-            hotel.location = obj
-            hotel.save()
+            obj.hotel = hotel
+            obj.created_by = request.user
+            obj.updated_by = request.user
+            obj.save()
         else:
+            obj.updated_by = request.user
             super().save_model(request, obj, form, change)
 
 # ----------- Phone --------------
@@ -145,22 +157,39 @@ class PhoneAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-           
+            
             hotel = Hotel.objects.get(manager=request.user)
             form.base_fields['hotel'].queryset = Hotel.objects.filter(id=hotel.id)
             form.base_fields['hotel'].initial = hotel
-            form.base_fields['hotel'].widget.attrs['disabled'] = True
-            form.base_fields['hotel'].required = False
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].widget.attrs['readonly'] = True
+                form.base_fields['created_by'].required = False
         return form
 
     def save_model(self, request, obj, form, change):
-        if not obj.pk and request.user.user_type == 'hotel_manager':
-           
-            obj.hotel = Hotel.objects.get(manager=request.user)
+        if not change: 
+            if request.user.user_type == 'hotel_manager':
+                obj.hotel = Hotel.objects.get(manager=request.user)
+            obj.created_by = request.user
+            obj.updated_by = request.user
+        else:  
+            if request.user.user_type == 'hotel_manager':
+                
+                if not obj.hotel:
+                    obj.hotel = Hotel.objects.get(manager=request.user)
+            obj.updated_by = request.user
+        
         super().save_model(request, obj, form, change)
 
 # ----------- Image --------------
-
 
 class ImageAdminForm(forms.ModelForm):
     class Meta:
@@ -168,13 +197,23 @@ class ImageAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
         
-        if hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
+        if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
             hotel = Hotel.objects.get(manager=request.user)
             self.fields['hotel_id'].initial = hotel
             self.fields['hotel_id'].disabled = True
+            
+            if 'updated_by' in self.fields:
+                self.fields['updated_by'].initial = request.user
+                self.fields['updated_by'].disabled = True
+                self.fields['updated_by'].required = False
+            
+            if 'created_by' in self.fields:
+                self.fields['created_by'].initial = request.user
+                self.fields['created_by'].disabled = True
+                self.fields['created_by'].required = False
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
@@ -188,15 +227,28 @@ class ImageAdmin(admin.ModelAdmin):
             
             form.base_fields['hotel_id'].queryset = Hotel.objects.filter(manager=request.user)
             form.base_fields['hotel_id'].initial = Hotel.objects.filter(manager=request.user).first()
-            form.base_fields['hotel_id'].widget.attrs['disabled'] = True
+            form.base_fields['hotel_id'].widget.attrs['readonly'] = True
             form.base_fields['hotel_id'].required = False
-
+            
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].widget.attrs['readonly'] = True
+                form.base_fields['created_by'].required = False
         return form
 
     def save_model(self, request, obj, form, change):
         if not obj.pk and request.user.user_type == 'hotel_manager':
            
             obj.hotel_id = Hotel.objects.filter(manager=request.user).first()
+            obj.created_by = request.user
+            obj.updated_by = request.user
+        else:
+            obj.updated_by = request.user
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):

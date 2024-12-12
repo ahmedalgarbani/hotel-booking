@@ -7,16 +7,47 @@ from .models import CustomUser, HotelAccountRequest
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    list_display = ['username', 'email', 'user_type', 'is_active']
-    list_filter = ['user_type', 'is_active']
-    search_fields = ['username', 'email']
+    list_display = ('username', 'email', 'first_name', 'last_name', 'user_type', 'is_active')
+    list_filter = ('user_type', 'is_active', 'is_staff')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    ordering = ('username',)
     
     fieldsets = (
         (_('معلومات الحساب'), {'fields': ('username', 'password')}),
-        (_('المعلومات الشخصية'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
-        (_('الصلاحيات'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_type', 'groups', 'user_permissions')}),
+        (_('المعلومات الشخصية'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('نوع المستخدم'), {'fields': ('user_type',)}),
+        (_('الصلاحيات'), {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
         (_('تواريخ مهمة'), {'fields': ('last_login', 'date_joined')}),
     )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2', 'user_type'),
+        }),
+    )
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser
+    def get_readonly_fields(self, request, obj=None):
+        if obj: 
+            return ['username', 'date_joined', 'last_login']
+        return []
+
+    def save_model(self, request, obj, form, change):
+        if not change and obj.user_type == 'hotel_manager':
+            obj.is_staff = True
+            obj.save()
+            hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
+            obj.groups.add(hotel_group)
+        super().save_model(request, obj, form, change)
 
     def username_display(self, obj):
         return obj.username
