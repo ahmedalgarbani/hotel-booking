@@ -1,39 +1,49 @@
 # users/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
+from .models import CustomUser, HotelAccountRequest
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'email', 'user_type', 'is_active']
     list_filter = ['user_type', 'is_active']
     search_fields = ['username', 'email']
-    
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        # إذا كان المستخدم مدير نظام
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return queryset
-        # إذا كان المستخدم مدير فندق
-        elif request.user.user_type == 'hotel_manager':
-            # يمكنه رؤية نفسه فقط
-            return queryset.filter(id=request.user.id)
-        # إذا كان المستخدم عميل
-        return queryset.filter(id=request.user.id)
 
-    def has_add_permission(self, request):
-        # فقط مدير النظام يمكنه إضافة مستخدمين
-        return request.user.is_superuser or request.user.user_type == 'admin'
+@admin.register(HotelAccountRequest)
+class HotelAccountRequestAdmin(admin.ModelAdmin):
+    list_display = ['hotel_name', 'owner_name', 'email', 'status']
+    list_filter = ['status']
+    actions = ['approve_hotel_request']
 
-    def has_change_permission(self, request, obj=None):
-        if not obj:
-            return True
-        # مدير النظام يمكنه تعديل أي مستخدم
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        # المستخدم يمكنه تعديل بياناته فقط
-        return obj.id == request.user.id
-
-    def has_delete_permission(self, request, obj=None):
-        # فقط مدير النظام يمكنه حذف المستخدمين
-        return request.user.is_superuser or request.user.user_type == 'admin'
+    def approve_hotel_request(self, request, queryset):
+        for hotel_request in queryset:
+            try:
+                # إنشاء حساب مستخدم جديد
+                user = CustomUser.objects.create(
+                    username=hotel_request.hotel_name,
+                    email=hotel_request.email,
+                    first_name=hotel_request.owner_name,
+                    user_type='hotel_manager',
+                    phone=hotel_request.phone,
+                    password=make_password(hotel_request.password),
+                    is_active=True
+                )
+                
+                # تحديث حالة الطلب إلى مقبول
+                hotel_request.status = 'approved'
+                hotel_request.save()
+                
+                self.message_user(
+                    request,
+                    f"تم إنشاء حساب المستخدم بنجاح للفندق: {hotel_request.hotel_name}",
+                    level=messages.SUCCESS
+                )
+            except Exception as e:
+                self.message_user(
+                    request,
+                    f"خطأ في إنشاء حساب المستخدم للفندق {hotel_request.hotel_name}: {str(e)}",
+                    level=messages.ERROR
+                )
+    approve_hotel_request.short_description = "الموافقة على طلبات الفنادق المحددة"
