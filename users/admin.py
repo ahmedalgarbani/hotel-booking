@@ -98,28 +98,62 @@ class HotelAccountRequestAdmin(admin.ModelAdmin):
         for hotel_request in queryset:
             try:
                 # Create user account
-                user = CustomUser.objects.create(
+                if CustomUser.objects.filter(username=hotel_request.email).exists() and hotel_request.status == 'cancelled':
+                    messages.success(request, 'تم تحديث حاله الحساب للفندق')
+                    user = CustomUser.objects.filter(
+                    username=hotel_request.hotel_name,
+                    email=hotel_request.email,
+                    user_type='hotel_manager'
+                ).first()
+                
+                    if user:
+                      user.is_active = True
+                      user.save()
+                      
+                       # Update request status
+                      hotel_request.status = 'approved'
+                      hotel_request.save()
+                    
+                    
+                elif CustomUser.objects.filter(email=hotel_request.email).exists() and hotel_request.status == 'cancelled':
+                    messages.success(request, 'تم تحديث حاله الحساب للفندق')
+                    user = CustomUser.objects.filter(
+                    username=hotel_request.hotel_name,
+                    email=hotel_request.email,
+                    user_type='hotel_manager'
+                ).first()
+                
+                    if user:
+                     user.is_active = True
+                     user.save()
+                     
+                      # Update request status
+                     hotel_request.status = 'approved'
+                     hotel_request.save()
+                    
+                else:
+                    user = CustomUser.objects.create(
                     username=hotel_request.email,  # Using email as username for uniqueness
                     email=hotel_request.email,
                     first_name=hotel_request.owner_name,
                     user_type='hotel_manager',
                     is_staff=True,  # Give them access to admin panel
                 )
-                user.set_password(hotel_request.password)
-                user.save()
+                    user.set_password(hotel_request.password)
+                    user.save()
 
-                # Add user to hotel managers group
-                hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
-                user.groups.add(hotel_group)
+                     # Add user to hotel managers group
+                    hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
+                    user.groups.add(hotel_group)
 
-                # Update request status
-                hotel_request.status = 'approved'
-                hotel_request.save()
+                    # Update request status
+                    hotel_request.status = 'approved'
+                    hotel_request.save()
 
-                messages.success(
-                    request,
-                    _(f'تم إنشاء حساب مدير الفندق بنجاح: {hotel_request.hotel_name}')
-                )
+                    messages.success(
+                     request,
+                     _(f'تم إنشاء حساب مدير الفندق بنجاح: {hotel_request.hotel_name}')
+                      )
             except Exception as e:
                 messages.error(
                     request,

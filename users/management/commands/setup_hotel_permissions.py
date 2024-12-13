@@ -5,6 +5,7 @@ from HotelManagement.models import Hotel
 from rooms.models import RoomType
 # from bookings.models import Booking
 from reviews.models import Review
+from services.models import Offer,Service
 
 class Command(BaseCommand):
     help = 'Sets up permissions for hotel managers'
@@ -19,6 +20,8 @@ class Command(BaseCommand):
             RoomType: ['add', 'change', 'view', 'delete'],
             # Booking: ['view', 'change'],
             Review: ['view'],
+            Offer:['add', 'change', 'view', 'delete'],
+            Service:['add', 'change', 'view', 'delete'],
         }
 
         # Create and assign permissions

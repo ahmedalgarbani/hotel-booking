@@ -75,8 +75,10 @@ class RoomTypeAdmin(BaseModelAdmin):
     search_fields = ['name', 'hotel__name']
     list_filter = ['hotel', 'category_id']
 
+
+
 @admin.register(Category)
-class CategoryAdmin(BaseModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'hotel']
     search_fields = ['name', 'hotel__name']
     list_filter = ['hotel']
