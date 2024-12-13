@@ -159,7 +159,6 @@ JAZZMIN_SETTINGS = {
     "login_logo": None,
     "login_logo_dark": None,
 
-
     # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
     "site_icon": None,
@@ -198,12 +197,13 @@ JAZZMIN_SETTINGS = {
     },
 
     # تخصيص الواجهة
-    "custom_css": None,
-    "custom_js": None,
-    },
-    # Icons that are used when one is not manually specified
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
+    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
+    "custom_js": 'admin_assets/js/script.js',
+    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    "use_google_fonts_cdn": True,
+    "show_ui_builder": True,
+    "changeform_format": "horizontal_tabs",
+    "language_chooser": True,
 
     #################
     # Related Modal #
@@ -212,17 +212,12 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": False,
 
     #############
-    # UI Tweaks #
+    # Default Icons #
     #############
-    # Relative paths to custom CSS/JS scripts (must be present in static files)
-    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
-    "custom_js": 'admin_assets/js/script.js',
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
-    "use_google_fonts_cdn": True,
-    "show_ui_builder": True,
-    "changeform_format": "horizontal_tabs",
-    "language_chooser": True,
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
 }
+
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
