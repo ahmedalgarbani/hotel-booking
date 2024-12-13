@@ -42,9 +42,10 @@ INSTALLED_APPS = [
     'HotelManagement',
     'bookings',
     'rooms',
+    'payments',
     'reviews',
     'services',
-    'widget_tweaks',
+    'rest_framework',
     
 ]
 
@@ -89,14 +90,10 @@ DATABASES = {
 		'USER': 'root',
 		'PASSWORD': '',
 		'HOST':'localhost',
-<<<<<<< HEAD
-		'PORT':'54322',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         },
-=======
 		'PORT':'3306',
->>>>>>> a0c3b72647354296af6f0f44394056a3e10b169e
 	}
 }
 
@@ -174,6 +171,7 @@ JAZZMIN_SETTINGS = {
 
     # Logo to use for login form in dark themes (defaults to login_logo)
     "login_logo_dark": None,
+
 
     # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
@@ -274,8 +272,8 @@ JAZZMIN_SETTINGS = {
     # UI Tweaks #
     #############
     # Relative paths to custom CSS/JS scripts (must be present in static files)
-    "custom_css": 'admin_assets/css/components.css',
-    "custom_js": None,
+    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
+    "custom_js": 'admin_assets/js/script.js',
     # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
     "use_google_fonts_cdn": True,
     # Whether to show the UI customizer on the sidebar
@@ -295,4 +293,16 @@ JAZZMIN_SETTINGS = {
     "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
     # Add a language dropdown into the admin
     
+}
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }
