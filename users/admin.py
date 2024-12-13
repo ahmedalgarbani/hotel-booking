@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Group
 from .models import CustomUser, HotelAccountRequest
 
 @admin.register(CustomUser)
@@ -96,35 +97,36 @@ class HotelAccountRequestAdmin(admin.ModelAdmin):
     def approve_hotel_request(self, request, queryset):
         for hotel_request in queryset:
             try:
-               
+                # Create user account
                 user = CustomUser.objects.create(
-                    username=hotel_request.hotel_name,
+                    username=hotel_request.email,  # Using email as username for uniqueness
                     email=hotel_request.email,
                     first_name=hotel_request.owner_name,
                     user_type='hotel_manager',
-                    phone=hotel_request.phone,
-                    password=make_password(hotel_request.password),
-                    is_active=True
+                    is_staff=True,  # Give them access to admin panel
                 )
-                
-               
+                user.set_password(hotel_request.password)
+                user.save()
+
+                # Add user to hotel managers group
+                hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
+                user.groups.add(hotel_group)
+
+                # Update request status
                 hotel_request.status = 'approved'
                 hotel_request.save()
-                
-                self.message_user(
+
+                messages.success(
                     request,
-                    f"تم إنشاء حساب المستخدم بنجاح للفندق: {hotel_request.hotel_name}",
-                    level=messages.SUCCESS
+                    _(f'تم إنشاء حساب مدير الفندق بنجاح: {hotel_request.hotel_name}')
                 )
             except Exception as e:
-                self.message_user(
+                messages.error(
                     request,
-                    f"خطأ في إنشاء حساب المستخدم للفندق {hotel_request.hotel_name}: {str(e)}",
-                    level=messages.ERROR
+                    _(f'حدث خطأ أثناء إنشاء حساب مدير الفندق {hotel_request.hotel_name}: {str(e)}')
                 )
+
     approve_hotel_request.short_description = _("الموافقة على طلبات الفنادق المحددة")
-
-
 
 
     def deactivate_hotel_request(self, request, queryset):

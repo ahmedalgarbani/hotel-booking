@@ -56,3 +56,54 @@ class Service(BaseModel):
     def save(self, *args, **kwargs):
         self.clean()  
         super(Service, self).save(*args, **kwargs)
+
+
+
+# -------------------- Offer ----------------------------
+
+class Offer(BaseModel):
+    hotel_id = models.ForeignKey(
+        Hotel, 
+        on_delete=models.CASCADE,
+        verbose_name=_("الفندق"),
+        related_name='service_offers'  # Changed from review_offers to service_offers
+    )
+    offer_name = models.CharField(
+        max_length=100,
+        verbose_name=_("اسم العرض")
+    )
+    offer_description = models.TextField(
+        verbose_name=_("وصف العرض")
+    )
+    offer_start_date = models.DateField(
+        verbose_name=_("تاريخ بداية العرض")
+    )
+    offer_end_date = models.DateField(
+        verbose_name=_("تاريخ نهاية العرض")
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='service_offers_created',  # Added specific related_name
+        verbose_name=_("تم الإنشاء بواسطة")
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='service_offers_updated',  # Added specific related_name
+        verbose_name=_("تم التحديث بواسطة")
+    )
+    
+    class Meta:
+        verbose_name = _("عرض")
+        verbose_name_plural = _("العروض")
+        db_table = 'service_offers'  # Changed from review_offers to service_offers
+
+    def __str__(self):
+        return self.offer_name
+
+    def clean(self):
+        if self.offer_end_date < self.offer_start_date:
+            raise ValidationError(_("تاريخ نهاية العرض يجب أن يكون بعد تاريخ البداية"))

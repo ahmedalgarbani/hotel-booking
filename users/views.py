@@ -14,8 +14,7 @@ from django.contrib import messages
 from users.forms import CustomUser_CreationForm, HotelAccountRequestForm
 from django.forms import inlineformset_factory
 from .forms import HotelAccountRequestForm,HotelAccountRequestFormSet
-
-
+from django.contrib.auth.models import Group
 
 def create_user(request):
     if request.method == 'POST':
@@ -160,33 +159,37 @@ def approve_Hotel_Account_Request(request, id):
     hotel_request = HotelAccountRequest.objects.filter(id=id).first()
     
     if hotel_request:
-        if CustomUser .objects.filter(username=hotel_request.hotel_name).exists():
+        if CustomUser.objects.filter(username=hotel_request.hotel_name).exists():
             messages.error(request, 'اسم المستخدم موجود بالفعل')
             return redirect(reverse('users:mananghotel'))  
             
-        elif CustomUser .objects.filter(email=hotel_request.email).exists():
+        elif CustomUser.objects.filter(email=hotel_request.email).exists():
             messages.error(request, 'البريد الإلكتروني موجود بالفعل')
             return redirect(reverse('users:mananghotel')) 
         else:    
-            user = CustomUser  (
+            # Create the user
+            user = CustomUser(
                 username=hotel_request.hotel_name,
                 email=hotel_request.email,
                 phone=hotel_request.phone,
-                password=hotel_request.password, 
                 user_type="hotel_manager",
-                is_staff = True
+                is_staff=True
             )
-        
-            user.set_password(user.password)  
+            user.set_password(hotel_request.password)
             user.save()
 
-           
+            # Add user to hotel managers group
+            hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
+            user.groups.add(hotel_group)
+
+            # Update request status
             hotel_request.status = 'approved'
             hotel_request.save()
 
+            messages.success(request, f'تم إنشاء حساب مدير الفندق بنجاح: {hotel_request.hotel_name}')
             return redirect(reverse('users:mananghotel'))
     else:
-       
+        messages.error(request, 'لم يتم العثور على طلب الفندق')
         return redirect(reverse('users:mananghotel'))
     
     
@@ -220,20 +223,7 @@ def edit_hotel_account_request(request, id):
               )
                 return redirect(reverse('users:mananghotel'))
 
-             
-              
-               
-               
-    else:
-        form = HotelAccountRequestForm(instance=hotel_request)
-
-    return render(request, 'admin/dashboard/users/edit_hotel_account_request.html', {
-        'form': form,
-        'hotel_request': hotel_request
-    })
-
-
-
+      
 def create_hotel_account_request(request):
     if request.method == 'POST':
         formset = HotelAccountRequestFormSet(request.POST, request.FILES)
@@ -259,7 +249,7 @@ def delete_hotel_account_request(request, id_request):
             
             try:
                 associated_user = CustomUser.objects.get(username=hotel_request.hotel_name)
-            except CustomUser .DoesNotExist:
+            except CustomUser.DoesNotExist:
                 messages.error(request, 'Associated user not found')
                 return redirect(reverse('users:mananghotel'))
 

@@ -191,33 +191,33 @@ class PhoneAdmin(admin.ModelAdmin):
 
 # ----------- Image --------------
 
-class ImageAdminForm(forms.ModelForm):
-    class Meta:
-        model = Image
-        fields = '__all__'
+# class ImageAdminForm(forms.ModelForm):
+#     class Meta:
+#         model = Image
+#         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        request = kwargs.pop('request', None)
-        super().__init__(*args, **kwargs)
+#     def __init__(self, *args, **kwargs):
+#         request = kwargs.pop('request', None)
+#         super().__init__(*args, **kwargs)
         
-        if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
-            hotel = Hotel.objects.get(manager=request.user)
-            self.fields['hotel_id'].initial = hotel
-            self.fields['hotel_id'].disabled = True
+#         if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
+#             hotel = Hotel.objects.get(manager=request.user)
+#             self.fields['hotel_id'].initial = hotel
+#             self.fields['hotel_id'].disabled = True
             
-            if 'updated_by' in self.fields:
-                self.fields['updated_by'].initial = request.user
-                self.fields['updated_by'].disabled = True
-                self.fields['updated_by'].required = False
+#             if 'updated_by' in self.fields:
+#                 self.fields['updated_by'].initial = request.user
+#                 self.fields['updated_by'].disabled = True
+#                 self.fields['updated_by'].required = False
             
-            if 'created_by' in self.fields:
-                self.fields['created_by'].initial = request.user
-                self.fields['created_by'].disabled = True
-                self.fields['created_by'].required = False
+#             if 'created_by' in self.fields:
+#                 self.fields['created_by'].initial = request.user
+#                 self.fields['created_by'].disabled = True
+#                 self.fields['created_by'].required = False
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    form = ImageAdminForm
+    # form = ImageAdminForm
     list_display = ('image_path', 'image_url', 'hotel_id', 'created_at')
     search_fields = ('image_path',)
 

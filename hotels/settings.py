@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'HotelManagement',
     'rooms',
     'bookings',
-    
+    'guests.apps.GuestsConfig',
     'reviews',
     'services',
     'widget_tweaks',
