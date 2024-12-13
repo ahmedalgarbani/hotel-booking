@@ -72,7 +72,7 @@ class Location(BaseModel):
     name = models.CharField(max_length=255, verbose_name=_("الموقع"))
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
     city = models.ForeignKey(
-        "City",
+        "HotelManagement.City",
         verbose_name=_("موقع الفندق"), 
         on_delete=models.CASCADE
     )
