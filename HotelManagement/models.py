@@ -21,25 +21,19 @@ class BaseModel(models.Model):
     )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-   
+        related_name="%(class)s_created",
         verbose_name=_("المنشى"),
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="%(class)s_created"
-
     )
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated",
-
-
         verbose_name=_("المعدل"),
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        
-
     )
     slug = models.SlugField(
         unique=True,
@@ -71,7 +65,7 @@ class BaseModel(models.Model):
     def get_absolute_url(self):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
 
-   
+
 # -------------------- Location ----------------------------
 
 class Location(BaseModel):

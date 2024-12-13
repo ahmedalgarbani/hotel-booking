@@ -31,6 +31,7 @@ urlpatterns = [
     path('rooms/', include('rooms.urls')),
     path('reviews/', include('reviews.urls')),
     path('services/', include('services.urls')),
+    path('api/', include('api.urls')),
     # ----------------------
     # مسار تغير الغه 
     path('i18n/setlang/', set_language, name='set_language'),

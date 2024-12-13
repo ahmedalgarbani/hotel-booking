@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'rooms',
     'bookings',
     'guests.apps.GuestsConfig',
+    'rooms',
+    'payments',
     'reviews',
     'services',
-    'widget_tweaks',
+    'rest_framework',
     
 ]
 
@@ -95,6 +97,7 @@ DATABASES = {
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         },
+		'PORT':'3306',
 	}
 }
 
@@ -155,6 +158,8 @@ JAZZMIN_SETTINGS = {
     "site_brand": ("نظام الفنادق"),
     "login_logo": None,
     "login_logo_dark": None,
+
+    # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
     "site_icon": None,
     "welcome_sign": ("مرحباً بك في نظام إدارة الفنادق"),
@@ -192,13 +197,27 @@ JAZZMIN_SETTINGS = {
     },
 
     # تخصيص الواجهة
-    "custom_css": None,
-    "custom_js": None,
+    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
+    "custom_js": 'admin_assets/js/script.js',
+    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
     "use_google_fonts_cdn": True,
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
     "language_chooser": True,
+
+    #################
+    # Related Modal #
+    #################
+    # Use modals instead of popups
+    "related_modal_active": False,
+
+    #############
+    # Default Icons #
+    #############
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
 }
+
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
@@ -230,4 +249,16 @@ JAZZMIN_UI_TWEAKS = {
         "danger": "btn-danger",
         "success": "btn-success"
     }
+}
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }

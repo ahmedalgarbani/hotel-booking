@@ -32,15 +32,14 @@ class Service(BaseModel):
         related_name="services",
         verbose_name=_("الفندق")
     )
-    #TODO------- add this column when abdullah done room model
-    # room = models.ForeignKey(
-    #     "Room",  
-    #     null=True,
-    #     blank=True,
-    #     on_delete=models.CASCADE,
-    #     related_name="services",
-    #     verbose_name=_("الغرفة")
-    # )
+    room = models.ForeignKey(
+        "rooms.RoomType",  
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="services",
+        verbose_name=_("الغرفة")
+    )
 
     class Meta:
         verbose_name = _("خدمة")
