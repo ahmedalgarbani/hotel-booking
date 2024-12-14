@@ -13,7 +13,7 @@ class BaseModelAdmin(admin.ModelAdmin):
         return queryset.none()
 
     def has_add_permission(self, request):
-        return request.user.is_superuser or request.user.user_type == 'admin' or request.user.user_type == 'hotel_manager'
+        return request.user.is_superuser or request.user.user_type in ['admin', 'hotel_manager']
 
     def has_change_permission(self, request, obj=None):
         if not obj:
@@ -56,24 +56,16 @@ class BaseModelAdmin(admin.ModelAdmin):
         return form
 
     def save_model(self, request, obj, form, change):
-        if not change: 
+        if not change:
             if request.user.user_type == 'hotel_manager':
-                obj.hotel = Hotel.objects.get(manager=request.user)
-            obj.created_by = request.user
-            obj.updated_by = request.user
-        else: 
-            if request.user.user_type == 'hotel_manager':
-                if not obj.hotel:
-                    obj.hotel = Hotel.objects.get(manager=request.user)
-            obj.updated_by = request.user
-        
+                obj.hotel = request.user.hotel
         super().save_model(request, obj, form, change)
 
 @admin.register(RoomType)
 class RoomTypeAdmin(BaseModelAdmin):
-    list_display = ['name', 'hotel', 'category_id', 'default_capacity', 'max_capacity', 'rooms_count']
+    list_display = ['name', 'hotel', 'category', 'default_capacity', 'max_capacity', 'rooms_count']
     search_fields = ['name', 'hotel__name']
-    list_filter = ['hotel', 'category_id']
+    list_filter = ['hotel', 'category']
 
 @admin.register(Category)
 class CategoryAdmin(BaseModelAdmin):
@@ -83,24 +75,24 @@ class CategoryAdmin(BaseModelAdmin):
 
 @admin.register(RoomStatus)
 class RoomStatusAdmin(BaseModelAdmin):
-    list_display = ['status_title', 'status_code', 'hotel']
-    search_fields = ['status_title', 'status_code', 'hotel__name']
-    list_filter = ['hotel']
+    list_display = ['name', 'code', 'hotel', 'is_available']
+    search_fields = ['name', 'code', 'hotel__name']
+    list_filter = ['hotel', 'is_available']
 
 @admin.register(Availability)
 class AvailabilityAdmin(BaseModelAdmin):
-    list_display = ['room_type', 'hotel', 'availability_date', 'available_rooms', 'price']
+    list_display = ['room_type', 'hotel', 'date', 'available_rooms', 'price']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'availability_date', 'room_type']
+    list_filter = ['hotel', 'date', 'room_type']
 
 @admin.register(RoomPrice)
 class RoomPriceAdmin(BaseModelAdmin):
-    list_display = ['room_type', 'hotel', 'price']
+    list_display = ['room_type', 'hotel', 'price', 'date_from', 'date_to', 'is_special_offer']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'room_type']
+    list_filter = ['hotel', 'room_type', 'is_special_offer']
 
 @admin.register(RoomImage)
 class RoomImageAdmin(BaseModelAdmin):
-    list_display = ['room_type', 'hotel', 'image_url']
+    list_display = ['room_type', 'hotel', 'image', 'is_main']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'room_type']
+    list_filter = ['hotel', 'room_type', 'is_main']

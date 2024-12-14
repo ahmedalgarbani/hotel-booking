@@ -4,31 +4,45 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
-from .models import CustomUser, HotelAccountRequest
+from django.utils.html import format_html
+from .models import CustomUser, HotelAccountRequest, ActivityLog
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_name', 'user_type', 'is_active')
-    list_filter = ('user_type', 'is_active', 'is_staff')
-    search_fields = ('username', 'email', 'first_name', 'last_name')
-    ordering = ('username',)
+    list_display = ('username_display', 'email_display', 'full_name_display', 'user_type_display', 'phone_display', 'is_active_display')
+    list_filter = ('user_type', 'is_active', 'is_staff', 'created_at')
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'phone')
+    ordering = ('-created_at',)
     
     fieldsets = (
-        (_('معلومات الحساب'), {'fields': ('username', 'password')}),
-        (_('المعلومات الشخصية'), {'fields': ('first_name', 'last_name', 'email')}),
-        (_('نوع المستخدم'), {'fields': ('user_type',)}),
+        (_('معلومات الحساب'), {
+            'fields': ('username', 'password', 'email', 'phone')
+        }),
+        (_('المعلومات الشخصية'), {
+            'fields': ('first_name', 'last_name', 'image')
+        }),
+        (_('نوع المستخدم'), {
+            'fields': ('user_type',)
+        }),
         (_('الصلاحيات'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'classes': ('collapse',)
         }),
-        (_('تواريخ مهمة'), {'fields': ('last_login', 'date_joined')}),
+        (_('تواريخ مهمة'), {
+            'fields': ('last_login', 'date_joined', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'user_type'),
+            'fields': ('username', 'email', 'phone', 'password1', 'password2', 'user_type', 'first_name', 'last_name'),
         }),
     )
+
+    readonly_fields = ('created_at', 'updated_at', 'last_login', 'date_joined')
+
     def has_add_permission(self, request):
         return request.user.is_superuser
 
@@ -37,10 +51,11 @@ class CustomUserAdmin(UserAdmin):
 
     def has_view_permission(self, request, obj=None):
         return request.user.is_superuser
+
     def get_readonly_fields(self, request, obj=None):
         if obj: 
-            return ['username', 'date_joined', 'last_login']
-        return []
+            return ['username', 'date_joined', 'last_login', 'created_at', 'updated_at']
+        return ['created_at', 'updated_at']
 
     def save_model(self, request, obj, form, change):
         if not change and obj.user_type == 'hotel_manager':
@@ -58,6 +73,14 @@ class CustomUserAdmin(UserAdmin):
         return obj.email
     email_display.short_description = _('البريد الإلكتروني')
 
+    def full_name_display(self, obj):
+        return obj.get_full_name()
+    full_name_display.short_description = _('الاسم الكامل')
+
+    def phone_display(self, obj):
+        return obj.phone or '-'
+    phone_display.short_description = _('رقم الهاتف')
+
     def user_type_display(self, obj):
         return obj.get_user_type_display()
     user_type_display.short_description = _('نوع المستخدم')
@@ -67,14 +90,40 @@ class CustomUserAdmin(UserAdmin):
     is_active_display.short_description = _('نشط')
     is_active_display.boolean = True
 
-    list_display = ['username_display', 'email_display', 'user_type_display', 'is_active_display']
-
 @admin.register(HotelAccountRequest)
 class HotelAccountRequestAdmin(admin.ModelAdmin):
-    list_filter = ['status']
+    list_display = [
+        'hotel_name_display', 
+        'owner_name_display', 
+        'email_display', 
+        'phone_display',
+        'status_display', 
+        'created_at_display'
+    ]
+    list_filter = ['status', 'created_at']
     list_display_links = ['hotel_name_display']
-    search_fields = ['hotel_name', 'owner_name', 'email']
-    actions = ['approve_hotel_request', 'deactivate_hotel_request']
+    search_fields = ['hotel_name', 'owner_name', 'email', 'phone']
+    readonly_fields = ['created_at', 'updated_at']
+    actions = ['approve_hotel_request', 'reject_hotel_request', 'deactivate_hotel_request']
+
+    fieldsets = (
+        (_('معلومات الفندق'), {
+            'fields': ('hotel_name', 'hotel_description', 'business_license_number')
+        }),
+        (_('معلومات المالك'), {
+            'fields': ('owner_name', 'email', 'phone')
+        }),
+        (_('المستندات'), {
+            'fields': ('document_path', 'verify_number')
+        }),
+        (_('حالة الطلب'), {
+            'fields': ('status', 'admin_notes')
+        }),
+        (_('معلومات النظام'), {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
 
     def hotel_name_display(self, obj):
         return obj.hotel_name
@@ -88,75 +137,168 @@ class HotelAccountRequestAdmin(admin.ModelAdmin):
         return obj.email
     email_display.short_description = _('البريد الإلكتروني')
 
+    def phone_display(self, obj):
+        return obj.phone
+    phone_display.short_description = _('رقم الهاتف')
+
     def status_display(self, obj):
-        return obj.get_status_display()
+        status_colors = {
+            'pending': 'orange',
+            'approved': 'green',
+            'rejected': 'red',
+            'cancelled': 'gray'
+        }
+        return format_html(
+            '<span style="color: {};">{}</span>',
+            status_colors.get(obj.status, 'black'),
+            obj.get_status_display()
+        )
     status_display.short_description = _('الحالة')
 
-    list_display = ['hotel_name_display', 'owner_name_display', 'email_display', 'status_display']
+    def created_at_display(self, obj):
+        return obj.created_at.strftime("%Y-%m-%d %H:%M")
+    created_at_display.short_description = _('تاريخ الطلب')
 
     def approve_hotel_request(self, request, queryset):
         for hotel_request in queryset:
-            try:
-                # Create user account
-                user = CustomUser.objects.create(
-                    username=hotel_request.email,  # Using email as username for uniqueness
-                    email=hotel_request.email,
-                    first_name=hotel_request.owner_name,
-                    user_type='hotel_manager',
-                    is_staff=True,  # Give them access to admin panel
+            if hotel_request.status != 'pending':
+                messages.warning(
+                    request,
+                    _(f'لا يمكن الموافقة على الطلب {hotel_request.hotel_name} لأن حالته {hotel_request.get_status_display()}')
                 )
-                user.set_password(hotel_request.password)
-                user.save()
+                continue
 
-                # Add user to hotel managers group
-                hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
-                user.groups.add(hotel_group)
+            try:
+                # التحقق من وجود المستخدم
+                user = CustomUser.objects.filter(email=hotel_request.email).first()
+                
+                if user:
+                    if not user.is_active:
+                        user.is_active = True
+                        user.save()
+                        messages.success(request, _(f'تم إعادة تفعيل حساب الفندق: {hotel_request.hotel_name}'))
+                    else:
+                        messages.warning(request, _(f'حساب الفندق {hotel_request.hotel_name} نشط بالفعل'))
+                else:
+                    # إنشاء حساب جديد
+                    user = CustomUser.objects.create(
+                        username=hotel_request.email,
+                        email=hotel_request.email,
+                        first_name=hotel_request.owner_name,
+                        phone=hotel_request.phone,
+                        user_type='hotel_manager',
+                        is_staff=True
+                    )
+                    user.set_password(hotel_request.password)
+                    user.save()
 
-                # Update request status
+                    # إضافة المستخدم إلى مجموعة مدراء الفنادق
+                    hotel_group = Group.objects.get_or_create(name='Hotel Managers')[0]
+                    user.groups.add(hotel_group)
+
+                    messages.success(request, _(f'تم إنشاء حساب مدير الفندق بنجاح: {hotel_request.hotel_name}'))
+
+                # تحديث حالة الطلب
                 hotel_request.status = 'approved'
                 hotel_request.save()
 
-                messages.success(
-                    request,
-                    _(f'تم إنشاء حساب مدير الفندق بنجاح: {hotel_request.hotel_name}')
-                )
             except Exception as e:
                 messages.error(
                     request,
-                    _(f'حدث خطأ أثناء إنشاء حساب مدير الفندق {hotel_request.hotel_name}: {str(e)}')
+                    _(f'حدث خطأ أثناء معالجة طلب الفندق {hotel_request.hotel_name}: {str(e)}')
                 )
 
-    approve_hotel_request.short_description = _("الموافقة على طلبات الفنادق المحددة")
+    approve_hotel_request.short_description = _("الموافقة على الطلبات المحددة")
 
+    def reject_hotel_request(self, request, queryset):
+        for hotel_request in queryset:
+            if hotel_request.status != 'pending':
+                messages.warning(
+                    request,
+                    _(f'لا يمكن رفض الطلب {hotel_request.hotel_name} لأن حالته {hotel_request.get_status_display()}')
+                )
+                continue
+
+            try:
+                hotel_request.status = 'rejected'
+                hotel_request.save()
+                messages.success(request, _(f'تم رفض طلب الفندق: {hotel_request.hotel_name}'))
+            except Exception as e:
+                messages.error(
+                    request,
+                    _(f'حدث خطأ أثناء رفض طلب الفندق {hotel_request.hotel_name}: {str(e)}')
+                )
+
+    reject_hotel_request.short_description = _("رفض الطلبات المحددة")
 
     def deactivate_hotel_request(self, request, queryset):
         for hotel_request in queryset:
+            if hotel_request.status != 'approved':
+                messages.warning(
+                    request,
+                    _(f'لا يمكن إلغاء تفعيل الطلب {hotel_request.hotel_name} لأن حالته {hotel_request.get_status_display()}')
+                )
+                continue
+
             try:
-                
-                user = CustomUser.objects.filter(
-                    username=hotel_request.hotel_name,
-                    email=hotel_request.email,
-                    user_type='hotel_manager'
-                ).first()
+                user = CustomUser.objects.filter(email=hotel_request.email).first()
                 
                 if user:
                     user.is_active = False
                     user.save()
-                    
-               
+                    hotel_request.status = 'cancelled'
+                    hotel_request.save()
+                    messages.success(request, _(f'تم إلغاء تفعيل حساب الفندق: {hotel_request.hotel_name}'))
+                else:
+                    messages.warning(request, _(f'لم يتم العثور على حساب للفندق: {hotel_request.hotel_name}'))
 
-                hotel_request.status = 'cancelled'
-                hotel_request.save()
-                
-                self.message_user(
-                    request,
-                    f"تم إلغاء تفعيل حساب المستخدم للفندق: {hotel_request.hotel_name}",
-                    level=messages.SUCCESS
-                )
             except Exception as e:
-                self.message_user(
+                messages.error(
                     request,
-                    f"خطأ في إلغاء تفعيل حساب المستخدم للفندق {hotel_request.hotel_name}: {str(e)}",
-                    level=messages.ERROR
+                    _(f'حدث خطأ أثناء إلغاء تفعيل حساب الفندق {hotel_request.hotel_name}: {str(e)}')
                 )
-    deactivate_hotel_request.short_description = _("إلغاء تفعيل الفنادق المحددة")
+
+    deactivate_hotel_request.short_description = _("إلغاء تفعيل الحسابات المحددة")
+
+@admin.register(ActivityLog)
+class ActivityLogAdmin(admin.ModelAdmin):
+    list_display = ['user_display', 'action_display', 'table_name_display', 'created_at_display']
+    list_filter = ['action', 'created_at', 'user__user_type']
+    search_fields = ['user__username', 'user__email', 'table_name', 'details']
+    readonly_fields = ['user', 'action', 'table_name', 'record_id', 'details', 'ip_address', 'created_at']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def user_display(self, obj):
+        return f"{obj.user.get_full_name()} ({obj.user.get_user_type_display()})"
+    user_display.short_description = _('المستخدم')
+
+    def action_display(self, obj):
+        action_colors = {
+            'create': 'green',
+            'update': 'orange',
+            'delete': 'red',
+            'login': 'blue',
+            'logout': 'gray'
+        }
+        return format_html(
+            '<span style="color: {};">{}</span>',
+            action_colors.get(obj.action, 'black'),
+            obj.get_action_display()
+        )
+    action_display.short_description = _('الإجراء')
+
+    def table_name_display(self, obj):
+        return obj.table_name
+    table_name_display.short_description = _('الجدول')
+
+    def created_at_display(self, obj):
+        return obj.created_at.strftime("%Y-%m-%d %H:%M")
+    created_at_display.short_description = _('التاريخ')

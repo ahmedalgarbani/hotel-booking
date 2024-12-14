@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     'HotelManagement',
     'rooms',
     'bookings',
-    'guests.apps.GuestsConfig',
-    'rooms',
+    
     'payments',
     'reviews',
     'services',
@@ -87,18 +86,17 @@ WSGI_APPLICATION = 'hotels.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'hotels-booking',
-		'USER': 'root',
-		'PASSWORD': '',
-		'HOST':'localhost',
-		'PORT':'54322',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'hotels-booking',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '54322',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
-        },
-		'PORT':'3306',
-	}
+        }
+    }
 }
 
 # Password validation

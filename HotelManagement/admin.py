@@ -35,11 +35,12 @@ class HotelAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.user_type == 'admin':
             return True
         
-        return request.user.user_type == 'hotel_manager' and request.user in obj.city.all()
+        # return request.user.user_type == 'hotel_manager' and request.user in obj.location.all()
 
     def has_delete_permission(self, request, obj=None):
        
         return request.user.is_superuser or request.user.user_type == 'admin'
+    
 # ---------- Hotel -------------
 
 # ----------- Location --------------
@@ -92,7 +93,7 @@ class LocationAdmin(admin.ModelAdmin):
             form.base_fields['city'].queryset = City.objects.filter(location__hotel__manager=request.user)
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
-                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].widget.attrs['readonly'] = False
                 form.base_fields['updated_by'].required = False
             
             if 'created_by' in form.base_fields:
@@ -191,33 +192,33 @@ class PhoneAdmin(admin.ModelAdmin):
 
 # ----------- Image --------------
 
-# class ImageAdminForm(forms.ModelForm):
-#     class Meta:
-#         model = Image
-#         fields = '__all__'
+class ImageAdminForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = '__all__'
 
-#     def __init__(self, *args, **kwargs):
-#         request = kwargs.pop('request', None)
-#         super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
         
-#         if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
-#             hotel = Hotel.objects.get(manager=request.user)
-#             self.fields['hotel_id'].initial = hotel
-#             self.fields['hotel_id'].disabled = True
+        if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
+            hotel = Hotel.objects.get(manager=request.user)
+            self.fields['hotel_id'].initial = hotel
+            self.fields['hotel_id'].disabled = True
             
-#             if 'updated_by' in self.fields:
-#                 self.fields['updated_by'].initial = request.user
-#                 self.fields['updated_by'].disabled = True
-#                 self.fields['updated_by'].required = False
+            if 'updated_by' in self.fields:
+                self.fields['updated_by'].initial = request.user
+                self.fields['updated_by'].disabled = True
+                self.fields['updated_by'].required = False
             
-#             if 'created_by' in self.fields:
-#                 self.fields['created_by'].initial = request.user
-#                 self.fields['created_by'].disabled = True
-#                 self.fields['created_by'].required = False
+            if 'created_by' in self.fields:
+                self.fields['created_by'].initial = request.user
+                self.fields['created_by'].disabled = True
+                self.fields['created_by'].required = False
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    # form = ImageAdminForm
+    form = ImageAdminForm
     list_display = ('image_path', 'image_url', 'hotel_id', 'created_at')
     search_fields = ('image_path',)
 
@@ -232,12 +233,13 @@ class ImageAdmin(admin.ModelAdmin):
             
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
-                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
             
             if 'created_by' in form.base_fields:
+                
+                form.base_fields['created_by'].widget.attrs['disabled'] = True
                 form.base_fields['created_by'].initial = request.user
-                form.base_fields['created_by'].widget.attrs['readonly'] = True
                 form.base_fields['created_by'].required = False
         return form
 
@@ -255,7 +257,11 @@ class ImageAdmin(admin.ModelAdmin):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
             return queryset
-        return queryset.filter(hotel_id__manager=request.user)
+        elif request.user.user_type == 'hotel_manager':
+             return queryset.filter(hotel_id__manager=request.user)
+        
+        return queryset.none()
+       
 
     def has_add_permission(self, request):
         return request.user.is_superuser or request.user.user_type == 'admin' or request.user.user_type == 'hotel_manager'
