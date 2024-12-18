@@ -18,20 +18,25 @@ class HotelManagerAdminMixin:
         return qs.none()
 
     def has_module_permission(self, request):
-        # التحقق من صلاحيات الوصول للوحدة
         if request.user.is_superuser:
             return True
         if not request.user.is_authenticated:
             return False
-        if hasattr(request.user, 'user_type'):
-            if request.user.user_type == 'admin':
-                return True
-            if request.user.user_type == 'hotel_manager':
-                user_permissions = UserPermission.objects.filter(
-                    user=request.user,
-                    is_active=True
-                )
-                return user_permissions.exists()
+        
+        # التحقق من صلاحيات عرض الجدول
+        user_permission = UserPermission.objects.filter(
+            user=request.user,
+            is_active=True
+        ).first()
+        
+        if user_permission:
+            permission_group = user_permission.permission_group
+            model_name = self.model._meta.model_name.lower()
+            
+            # التحقق من صلاحية عرض الجدول المحدد
+            if hasattr(permission_group, f'can_view_{model_name}_model'):
+                return getattr(permission_group, f'can_view_{model_name}_model')
+        
         return False
 
     def has_permission(self, request, permission_name, obj=None):

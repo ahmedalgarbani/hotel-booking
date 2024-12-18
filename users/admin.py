@@ -22,27 +22,27 @@ class UserPermissionInline(admin.TabularInline):
     verbose_name_plural = 'الصلاحيات'
     fields = ('permission_group', 'is_active')
     autocomplete_fields = ['permission_group']
-
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'user_type', 'hotel', 'is_active')
     list_filter = ('user_type', 'hotel', 'is_active', 'date_joined')
     search_fields = ('username', 'first_name', 'last_name', 'email')
     ordering = ('-date_joined',)
+    inlines = [UserPermissionInline]
     
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('معلومات شخصية'), {'fields': ('first_name', 'last_name', 'email', 'phone', 'image')}),
         (_('معلومات الوظيفة'), {'fields': ('user_type', 'hotel')}),
-        (_('الصلاحيات'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (_('الحالة والصلاحيات الأساسية'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
     
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2', 'user_type', 'hotel'),
+            'fields': ('username', 'password1', 'password2', 'email', 'first_name', 'last_name', 
+                      'phone', 'user_type', 'hotel', 'is_active', 'is_staff'),
         }),
     )
-    
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:

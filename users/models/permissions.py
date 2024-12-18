@@ -42,21 +42,21 @@ class PermissionGroup(BaseModel):
         help_text=_('إذا كانت True، فهذه مجموعة نظام لا يمكن تعديلها')
     )
     
+    # التحكم في عرض الجداول
+    can_view_hotel_model = models.BooleanField(default=True, verbose_name=_('عرض جدول الفنادق'))
+    can_view_image_model = models.BooleanField(default=True, verbose_name=_('عرض جدول الصور'))
+    can_view_location_model = models.BooleanField(default=True, verbose_name=_('عرض جدول المواقع'))
+    can_view_city_model = models.BooleanField(default=True, verbose_name=_('عرض جدول المدن'))
+    can_view_room_model = models.BooleanField(default=True, verbose_name=_('عرض جدول الغرف'))
+    can_view_booking_model = models.BooleanField(default=True, verbose_name=_('عرض جدول الحجوزات'))
+    can_view_review_model = models.BooleanField(default=True, verbose_name=_('عرض جدول التقييمات'))
+    can_view_service_model = models.BooleanField(default=True, verbose_name=_('عرض جدول الخدمات'))
+    can_view_payment_model = models.BooleanField(default=True, verbose_name=_('عرض جدول المدفوعات'))
+    can_view_offer_model = models.BooleanField(default=True, verbose_name=_('عرض جدول العروض'))
+    
     # الصلاحيات العامة
     is_superuser = models.BooleanField(default=False, verbose_name='مدير النظام')
     can_view_admin = models.BooleanField(default=False, verbose_name='الوصول للوحة التحكم')
-    
-    # صلاحيات عرض الجداول في لوحة التحكم
-    can_view_hotel_model = models.BooleanField(default=True, verbose_name='عرض جدول الفنادق')
-    can_view_image_model = models.BooleanField(default=True, verbose_name='عرض جدول الصور')
-    can_view_location_model = models.BooleanField(default=True, verbose_name='عرض جدول المواقع')
-    can_view_city_model = models.BooleanField(default=True, verbose_name='عرض جدول المدن')
-    can_view_room_model = models.BooleanField(default=True, verbose_name='عرض جدول الغرف')
-    can_view_booking_model = models.BooleanField(default=True, verbose_name='عرض جدول الحجوزات')
-    can_view_review_model = models.BooleanField(default=True, verbose_name='عرض جدول التقييمات')
-    can_view_service_model = models.BooleanField(default=True, verbose_name='عرض جدول الخدمات')
-    can_view_payment_model = models.BooleanField(default=True, verbose_name='عرض جدول المدفوعات')
-    can_view_offer_model = models.BooleanField(default=True, verbose_name='عرض جدول العروض')
     
     # صلاحيات المستخدمين
     can_view_users = models.BooleanField(default=False, verbose_name='عرض المستخدمين')
