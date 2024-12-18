@@ -19,7 +19,7 @@ class Command(BaseCommand):
         models_permissions = {
             Hotel: ['add', 'change', 'view', 'delete'],
             RoomType: ['add', 'change', 'view', 'delete'],
-            Booking: ['view', 'change'],
+            Booking: ['add','view', 'change'],
             Review: ['view'],
             Offer:['add', 'change', 'view', 'delete'],
             Service:['add', 'change', 'view', 'delete'],

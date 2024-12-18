@@ -88,50 +88,37 @@ class Location(BaseModel):
 # -------------------- Hotel ----------------------------
 
 class Hotel(BaseModel):
-    location = models.ForeignKey(
-        Location,
-        verbose_name=_("موقع الفندق"), 
-        on_delete=models.CASCADE
-    )
     name = models.CharField(
         max_length=255, 
-        blank=True, 
         verbose_name=_("اسم الفندق")
     )
-    email = models.EmailField(
-        max_length=255, 
-        blank=True, 
-        verbose_name=_("البريد الإلكتروني")
-    )
     description = models.TextField(
-        max_length=3000, 
-        blank=True, 
-        verbose_name=_("وصف الفندق")
-    )
-    is_verified = models.BooleanField(
-        default=False, 
-        verbose_name=_("تم التحقق")
-    )
-    verification_date = models.DateTimeField(
-        null=True, 
-        blank=True, 
-        verbose_name=_("تاريخ التحقق")
+        verbose_name=_("وصف الفندق"),
+        blank=True,
+        null=True
     )
     manager = models.OneToOneField(
-       settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True,
-        limit_choices_to={'user_type': 'hotel_manager'},
-        verbose_name=_("مدير الفندق")
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("مدير الفندق"),
+        related_name='managed_hotel',
+        limit_choices_to={'user_type': 'hotel_manager'}
     )
-
+    location = models.ForeignKey(
+        Location,
+        verbose_name=_("موقع الفندق"),
+        on_delete=models.CASCADE,
+        related_name='hotels',
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name = _("فندق")
-        verbose_name_plural = _("فنادق")
+        verbose_name_plural = _("الفنادق")
+
     def __str__(self):
-        return f"{self.name}" 
+        return self.name
 
 
 # -------------------- Phone ----------------------------

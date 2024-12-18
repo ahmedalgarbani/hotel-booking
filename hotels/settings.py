@@ -38,16 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'HotelManagement',
-    'rooms',
-    'bookings',
     
-    'payments',
-    'reviews',
-    'services',
+    # Local apps
+    'HotelManagement.apps.HotelmanagementConfig',  # First because it contains BaseModel
+    'users.apps.UsersConfig',
+    'rooms.apps.RoomsConfig',
+    'bookings.apps.BookingsConfig',
+    'reviews.apps.ReviewsConfig',
+    'services.apps.ServicesConfig',
+    'payments.apps.PaymentsConfig',
+    
+    # Third party apps
     'rest_framework',
-    
 ]
 
 MIDDLEWARE = [
@@ -59,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.AdminTablePermissionsMiddleware',  # إضافة middleware الصلاحيات
 ]
 
 ROOT_URLCONF = 'hotels.urls'
@@ -94,32 +97,38 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '54322',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'",
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+            'autocommit': True,
+            'isolation_level': 'read committed',
+            'sql_mode': 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',
         }
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+DATABASE_OPTIONS = {
+    'timeout': 20,
+    'connect_timeout': 10,
+}
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'OPTIONS': {
+            'min_length': 4,  # الحد الأدنى لطول كلمة المرور 4 أحرف
+        }
     },
 ]
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+]
 
 # Internationalization settings
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ar'
+
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
@@ -134,7 +143,8 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-AUTH_USER_MODEL='users.CustomUser'
+# User Model
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -151,94 +161,116 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": ("نظام إدارة الفنادق"),
-    "site_header": ("نظام إدارة الفنادق"),
-    "site_brand": ("نظام الفنادق"),
-    "login_logo": None,
-    "login_logo_dark": None,
-
-    # CSS classes that are applied to the logo above
-    "site_logo_classes": "img-circle",
-    "site_icon": None,
-    "welcome_sign": ("مرحباً بك في نظام إدارة الفنادق"),
-    "copyright": ("جميع الحقوق محفوظة © 2024"),
-    "search_model": ["auth.User", "HotelManagement.Hotel"],
+    "site_title": "نظام حجز الفنادق",
+    "site_header": "نظام حجز الفنادق",
+    "site_brand": "نظام حجز الفنادق",
+    "site_logo": "images/logo.png",
+    "welcome_sign": "مرحباً بك في نظام حجز الفنادق",
+    "copyright": "جميع الحقوق محفوظة",
+    "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
     "user_avatar": None,
-
-    # القوائم
+    
     "topmenu_links": [
-        {"name": ("الرئيسية"), "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"model": "auth.User"},
-        {"model": "HotelManagement.Hotel"},
+        {"name": "الرئيسية", "url": "admin:index"},
+        {"name": "الموقع", "url": "home", "new_window": True},
     ],
 
-    # قائمة المستخدم
-    "usermenu_links": [
-        {"model": "auth.user"}
-    ],
-
-    # القائمة الجانبية
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
-    "order_with_respect_to": ["auth", "HotelManagement", "rooms", "bookings"],
     
-    # الأيقونات
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
-        "HotelManagement.Hotel": "fas fa-hotel",
-        "rooms.RoomType": "fas fa-bed",
-        "bookings.Booking": "fas fa-calendar-check",
+    "order_with_respect_to": [
+        "users",
+        "users.CustomUser",
+        "users.PermissionGroup",
+        "users.UserPermission",
+        "users.HotelAccountRequest",
+        "users.ActivityLog",
+        "HotelManagement",
+        "HotelManagement.Hotel",
+        "HotelManagement.Location",
+        "HotelManagement.Phone",
+        "HotelManagement.Image",
+        "HotelManagement.City",
+        "rooms",
+        "bookings",
+        "reviews",
+    ],
+    
+    "custom_links": {
+        "users": [
+            {
+                "name": "إدارة الصلاحيات", 
+                "url": "admin:users_permissiongroup_changelist", 
+                "icon": "fas fa-users-cog"
+            }
+        ],
+        "HotelManagement": [
+            {
+                "name": "إدارة الفنادق",
+                "url": "admin:HotelManagement_hotel_changelist",
+                "icon": "fas fa-hotel"
+            }
+        ]
     },
-
-    # تخصيص الواجهة
-    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
-    "custom_js": 'admin_assets/js/script.js',
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
-    "use_google_fonts_cdn": True,
-    "show_ui_builder": True,
+    
+    "icons": {
+        "users": "fas fa-users",
+        "users.CustomUser": "fas fa-user",
+        "users.PermissionGroup": "fas fa-users-cog",
+        "users.UserPermission": "fas fa-key",
+        "users.HotelAccountRequest": "fas fa-user-plus",
+        "users.ActivityLog": "fas fa-history",
+        "HotelManagement": "fas fa-hotel",
+        "HotelManagement.Hotel": "fas fa-building",
+        "HotelManagement.Location": "fas fa-map-marker-alt",
+        "HotelManagement.Phone": "fas fa-phone",
+        "HotelManagement.Image": "fas fa-image",
+        "HotelManagement.City": "fas fa-city",
+        "rooms.Room": "fas fa-bed",
+        "bookings.Booking": "fas fa-calendar-check",
+        "reviews.Review": "fas fa-star",
+    },
+    
+    "related_modal_active": True,
+    "custom_css": None,
+    "custom_js": None,
+    "show_ui_builder": False,
+    
     "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "users.CustomUser": "collapsible",
+        "users.PermissionGroup": "horizontal_tabs",
+        "users.UserPermission": "horizontal_tabs",
+        "auth.group": "collapsible",
+        "HotelManagement.Hotel": "horizontal_tabs",
+    },
     "language_chooser": True,
-
-    #################
-    # Related Modal #
-    #################
-    # Use modals instead of popups
-    "related_modal_active": False,
-
-    #############
-    # Default Icons #
-    #############
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
 }
-
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
     "body_small_text": False,
     "brand_small_text": False,
-    "brand_colour": "navbar-dark",
-    "accent": "accent-primary",
+    "brand_colour": "navbar-success",
+    "accent": "accent-teal",
     "navbar": "navbar-dark",
     "no_navbar_border": False,
-    "navbar_fixed": True,
+    "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-primary",
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-success",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": True,
+    "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "slate",
-    "dark_mode_theme": "slate",
+    "theme": "cyborg",
+    "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
@@ -248,8 +280,6 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
-
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
