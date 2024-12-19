@@ -14,7 +14,11 @@ class HotelManagerAdminMixin:
         if request.user.is_superuser:
             return qs
         if hasattr(request.user, 'user_type') and request.user.user_type == 'hotel_manager':
-            return qs.filter(hotel__manager=request.user)
+            model_name = self.model._meta.model_name.lower()
+            if model_name == 'hotel':
+                return qs.filter(manager=request.user)
+            elif model_name in ['location', 'phone', 'image']:
+                return qs.filter(hotel__manager=request.user)
         return qs.none()
 
     def has_module_permission(self, request):
@@ -58,7 +62,12 @@ class HotelManagerAdminMixin:
                 )
                 if obj is None:
                     return has_perm
-                return has_perm and obj.hotel.manager == request.user
+                
+                model_name = obj._meta.model_name.lower()
+                if model_name == 'hotel':
+                    return has_perm and obj.manager == request.user
+                else:
+                    return has_perm and obj.hotel.manager == request.user
         return False
 
     def has_view_permission(self, request, obj=None):
@@ -68,25 +77,28 @@ class HotelManagerAdminMixin:
         return self.has_permission(request, 'can_edit_hotel', obj)
 
     def has_delete_permission(self, request, obj=None):
-        return self.has_permission(request, 'can_delete_rooms', obj)  # نستخدم صلاحية حذف الغرف كمثال
+        return self.has_permission(request, 'can_delete_hotel', obj)  
 
     def has_add_permission(self, request):
-        return self.has_permission(request, 'can_add_rooms')  # نستخدم صلاحية إضافة الغرف كمثال
+        return self.has_permission(request, 'can_add_hotel') 
 
 @admin.register(Hotel)
 class HotelAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'manager', 'location', 'created_at']
     search_fields = ['name', 'manager__username', 'manager__email']
     list_filter = ['location', 'created_at']
-    raw_id_fields = ['manager']
+    
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        if hasattr(request.user, 'user_type') and request.user.user_type == 'hotel_manager':
-            return qs.filter(manager=request.user)
-        return qs.none()
+        queryset = super().get_queryset(request)
+        
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+       
+        elif request.user.user_type == 'hotel_manager':
+            return queryset.filter(manager=request.user)
+        
+        return queryset.none()
 
 @admin.register(Location)
 class LocationAdmin(HotelManagerAdminMixin, admin.ModelAdmin):

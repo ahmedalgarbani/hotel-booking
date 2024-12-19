@@ -277,9 +277,24 @@ class PermissionGroup(BaseModel):
         return assignable_permissions
 
     def save(self, *args, **kwargs):
-        if self.staff_type:
-            # تعيين الصلاحيات الافتراضية حسب نوع الموظف
-            self.set_default_permissions_by_type()
+        # إذا كانت المجموعة موجودة مسبقاً
+        if self.pk:
+            try:
+                old_instance = PermissionGroup.objects.get(pk=self.pk)
+                # الحفاظ على قيمة is_system_group
+                self.is_system_group = old_instance.is_system_group
+                
+                # إذا تغير نوع الموظف، نسأل عما إذا كنا نريد تعيين الصلاحيات الافتراضية
+                if self.staff_type and self.staff_type != old_instance.staff_type:
+                    # تعيين الصلاحيات الافتراضية فقط إذا كان نوع الموظف قد تغير
+                    self.set_default_permissions_by_type()
+            except PermissionGroup.DoesNotExist:
+                pass
+        else:
+            # إذا كانت مجموعة جديدة وتم تحديد نوع الموظف
+            if self.staff_type:
+                self.set_default_permissions_by_type()
+        
         super().save(*args, **kwargs)
 
     def set_default_permissions_by_type(self):
