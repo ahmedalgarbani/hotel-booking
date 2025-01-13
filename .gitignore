@@ -69,7 +69,7 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-admin/
+
 rest_framework/
 local_settings.py
 production_settings.py

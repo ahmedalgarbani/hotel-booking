@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="TechyDevs" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{% block title %}Trizen - User Dashboard {% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+
+    <!-- Template CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-rtl.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/line-awesome.css' %}" />
+    <!-- jQuery UI CSS قبل Bootstrap لتجنب تعارض النوافذ المنبثقة -->
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery.filer.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style-rtl.css' %}" />
+
+
+
+
+    
+    {% block extra_css %}
+    {% endblock extra_css %}
+  </head>
+  <body>
+  
+
+
+    {% include "admin/user_dashboard/components/sidebar.html" %}
+
+    <section class="dashboard-area">
+        <div class="dashboard-nav">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="menu-wrapper">
+                  <div class="logo me-5">
+                    <a href="index.html"><img src="images/logo2.png" alt="logo"></a>
+                    <div class="menu-toggler">
+                      <i class="la la-bars"></i>
+                      <i class="la la-times"></i>
+                    </div>
+                    <!-- end menu-toggler -->
+                    <div class="user-menu-open">
+                      <i class="la la-user"></i>
+                    </div>
+                    <!-- end user-menu-open -->
+                  </div>
+                  <div class="dashboard-search-box">
+                    <div class="contact-form-action">
+                      <form action="#">
+                        <div class="form-group mb-0">
+                          <input class="form-control" type="text" name="text" placeholder="ابحث هنا">
+                          <button class="search-btn">
+                            <i class="la la-search"></i>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="nav-btn ms-auto">
+                    <div class="notification-wrap d-flex align-items-center">
+                      <div class="notification-item me-2">
+                        <div class="dropdown">
+                          <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" id="notificationDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="la la-bell"></i>
+                            <span class="noti-count">4</span>
+                          </a>
+                          <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
+                            <div class="dropdown-header drop-reveal-header">
+                              <h6 class="title">
+                                لديك
+                                <strong class="text-black"> 4 </strong> إشعارات
+                              </h6>
+                            </div>
+                            <div class="list-group drop-reveal-list">
+                              <a href="#" class="list-group-item list-group-item-action">
+                                <div class="msg-body d-flex align-items-center">
+                                  <div class="icon-element flex-shrink-0 me-3 ms-0">
+                                    <i class="la la-bell"></i>
+                                  </div>
+                                  <div class="msg-content w-100">
+                                    <h3 class="title pb-1">تم ارسال طلبك</h3>
+                                    <p class="msg-text">قبل دقيقتين</p>
+                                  </div>
+                                </div>
+                                <!-- end msg-body -->
+                              </a>
+                           
+                            </div>
+                            <a href="#" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
+                          </div>
+                          <!-- end dropdown-menu -->
+                        </div>
+                      </div>
+                      <!-- end notification-item -->
+                      <div class="notification-item">
+                        <div class="dropdown">
+                          <a href="#" class="dropdown-toggle" id="userDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                              <div class="avatar avatar-sm flex-shrink-0 me-2">
+                                <img src="images/team8.jpg" alt="team-img">
+                              </div>
+                              <span class="font-size-14 font-weight-bold">علي توفان</span>
+                            </div>
+                          </a>
+                          <div class="dropdown-menu dropdown-reveal dropdown-menu-md dropdown-menu-right">
+                            <div class="dropdown-item drop-reveal-header user-reveal-header">
+                              <h6 class="title text-uppercase">أهلا بك!</h6>
+                            </div>
+                            <div class="list-group drop-reveal-list user-drop-reveal-list">
+                              <a href="user-dashboard-profile.html" class="list-group-item list-group-item-action">
+                                <div class="msg-body">
+                                  <div class="msg-content">
+                                    <h3 class="title">
+                                      <i class="la la-user me-2"></i>ملفي
+                                    </h3>
+                                  </div>
+                                </div>
+                                <!-- end msg-body -->
+                              </a>
+                              <a href="user-dashboard-booking.html" class="list-group-item list-group-item-action">
+                                <div class="msg-body">
+                                  <div class="msg-content">
+                                    <h3 class="title">
+                                      <i class="la la-shopping-cart me-2"></i>الحجز
+                                    </h3>
+                                  </div>
+                                </div>
+                                <!-- end msg-body -->
+                              </a>
+                              <a href="user-dashboard-reviews.html" class="list-group-item list-group-item-action">
+                                <div class="msg-body">
+                                  <div class="msg-content">
+                                    <h3 class="title">
+                                      <i class="la la-heart me-2"></i>تعليقاتي
+                                    </h3>
+                                  </div>
+                                </div>
+                                <!-- end msg-body -->
+                              </a>
+                              <a href="user-dashboard-settings.html" class="list-group-item list-group-item-action">
+                                <div class="msg-body">
+                                  <div class="msg-content">
+                                    <h3 class="title">
+                                      <i class="la la-gear me-2"></i>الإعدادات
+                                    </h3>
+                                  </div>
+                                </div>
+                                <!-- end msg-body -->
+                              </a>
+                              <div class="section-block"></div>
+                              <a href="index.html" class="list-group-item list-group-item-action">
+                                <div class="msg-body">
+                                  <div class="msg-content">
+                                    <h3 class="title">
+                                      <i class="la la-power-off me-2"></i>تسجيل
+                                      خروج
+                                    </h3>
+                                  </div>
+                                </div>
+                                <!-- end msg-body -->
+                              </a>
+                            </div>
+                          </div>
+                          <!-- end dropdown-menu -->
+                        </div>
+                      </div>
+                      <!-- end notification-item -->
+                    </div>
+                  </div>
+                  <!-- end nav-btn -->
+                </div>
+                <!-- end menu-wrapper -->
+              </div>
+              <!-- end col-lg-12 -->
+            </div>
+            <!-- end row -->
+          </div>
+          <!-- end container-fluid -->
+        </div>
+        <!-- end dashboard-nav -->
+        <div class="dashboard-content-wrap">
+          <div class="dashboard-bread dashboard--bread">
+            <div class="container-fluid">
+              <div class="row align-items-center">
+                <div class="col-lg-6">
+                  <div class="breadcrumb-content">
+                    <div class="section-heading">
+                      <h2 class="sec__title font-size-30 text-white">تعليقاتي</h2>
+                    </div>
+                  </div>
+                  <!-- end breadcrumb-content -->
+                </div>
+                <!-- end col-lg-6 -->
+                <div class="col-lg-6">
+                  <div class="breadcrumb-list text-end">
+                    <ul class="list-items">
+                      <li>
+                        <a href="index.html" class="text-white">الصفحة الرئيسية</a>
+                      </li>
+                      <li>لوحة القيادة</li>
+                      <li>تعليقاتي</li>
+                    </ul>
+                  </div>
+                  <!-- end breadcrumb-list -->
+                </div>
+                <!-- end col-lg-6 -->
+              </div>
+              <!-- end row -->
+            </div>
+          </div>
+          <!-- end dashboard-bread -->
+         
+<!-- Page Content -->
+{% block content %}
+      
+{% endblock content %}
+<!-- /Page Content -->
+          <!-- end dashboard-main-content -->
+        </div>
+        <!-- end dashboard-content-wrap -->
+      </section>
+
+
+
+    <!-- Template JS Files -->
+    <!-- Core JS Libraries - الترتيب مهم جداً -->
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <!-- jQuery UI قبل Bootstrap -->
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    
+    <!-- Essential Plugins -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/select2.min.js' %}"></script>
+    
+    <!-- UI Enhancement Plugins -->
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/jquery.countTo.min.js' %}"></script>
+    <script src="{% static 'js/jquery.filer.min.js' %}"></script>
+    <script src="{% static 'js/jquery.ripples-min.js' %}"></script>
+    <script src="{% static 'js/jquery.superslides.min.js' %}"></script>
+    
+    <!-- Date & Time Plugins -->
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="{% static 'js/animated-headline.js' %}"></script>
+    <script src="{% static 'js/quantity-input.js' %}"></script>
+    <script src="{% static 'js/superslider-script.js' %}"></script>
+    
+    <!-- Initialize Scripts -->
+    <script src="{% static 'js/main-rtl.js' %}"></script>
+
+
+    {% block extra_js %}
+    {% endblock extra_js %}    
+    <script>
+        // حل مشكلة تعارض النوافذ المنبثقة
+        $.widget.bridge('uibutton', $.ui.button);
+        $.widget.bridge('uitooltip', $.ui.tooltip);
+        
+        $(document).ready(function() {
+            // منع التعارض بين jQuery UI dialog و Bootstrap modal
+            $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+            
+            // تهيئة Select2
+            if ($.fn.select2) {
+                $('.select-contain-select').select2({
+                    dropdownParent: $('body') // لحل مشكلة ظهور Select2 في النوافذ المنبثقة
+                });
+            }
+            
+            // تهيئة DateRangePicker
+            if ($.fn.daterangepicker) {
+                $('input[name="daterange"]').daterangepicker({
+                    locale: {
+                        direction: 'rtl',
+                        format: 'YYYY/MM/DD'
+                    },
+                    autoUpdateInput: false // لمنع التحديث التلقائي للتاريخ
+                });
+                
+                // معالجة اختيار التاريخ
+                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+                });
+            }
+            
+            // تهيئة Owl Carousel
+            if ($.fn.owlCarousel) {
+                $('.owl-carousel').owlCarousel({
+                    rtl: true,
+                    loop: true,
+                    margin: 10,
+                    nav: true,
+                    responsive: {
+                        0: { items: 1 },
+                        600: { items: 3 },
+                        1000: { items: 5 }
+                    }
+                });
+            }
+            
+            // تهيئة FancyBox للنوافذ المنبثقة
+            if ($.fn.fancybox) {
+                $('[data-fancybox]').fancybox({
+                    touch: false, // لمنع مشاكل اللمس على الموبايل
+                    autoFocus: false, // لمنع التركيز التلقائي
+                    backFocus: false, // لمنع مشاكل التركيز عند الإغلاق
+                    trapFocus: false // لمنع حصر التركيز داخل النافذة
+                });
+            }
+            
+            // تهيئة Bootstrap Modals
+            $('.modal').on('shown.bs.modal', function() {
+                $(this).find('[autofocus]').focus();
+            });
+        });
+        
+        // دالة مساعدة لفتح النوافذ المنبثقة
+        function openModal(modalId) {
+            $('#' + modalId).modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: true
+            });
+        }
+    </script>
+  </body>
+</html>
