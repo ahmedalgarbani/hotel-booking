@@ -28,9 +28,12 @@ wheels/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media/
-static/
-staticfiles/
+/media/
+**/media/
+**/static/
+doctors_appointment/static/
+/static/
+/staticfiles/
 
 # IDE - VSCode
 .vscode/*
@@ -66,9 +69,8 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-media/
-static/admin/
-static/rest_framework/
+admin/
+rest_framework/
 local_settings.py
 production_settings.py
 
@@ -112,3 +114,7 @@ celerybeat.pid
 .env.development
 .env.test
 .env.production
+
+# Django Migrations
+*/migrations/*.py
+!*/migrations/__init__.py

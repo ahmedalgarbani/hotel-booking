@@ -1,0 +1,210 @@
+{% load static %}
+
+<section class="hero-wrapper hero-wrapper2">
+    <div class="hero-box pb-0">
+      <div id="fullscreen-slide-contain">
+        <ul class="slides-container">
+          <li><img src="{% static 'images/hero-bg2.jpg"' %} alt="" /></li>
+          <li><img src="{% static 'images/hero--bg2.jpg' %}" alt="" /></li>
+          <li><img src="{% static 'images/hero--bg3.jpg' %}" alt="" /></li>
+        </ul>
+      </div>
+      <!-- End background slider -->
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="hero-content pb-5">
+              <div class="section-heading">
+                <p class="sec__desc pb-2">الإقامة في الفندق ، ملاذ الحلم</p>
+                <h2 class="sec__title">
+                  ابحث عن المكان المثالي للإقامة <br />
+                  لرحلتك القادمة
+                </h2>
+              </div>
+            </div>
+            <!-- end hero-content -->
+            <div class="search-fields-container">
+              <div class="contact-form-action">
+                <form action="#" class="row">
+                  <div class="col-lg-3 pe-0">
+                    <div class="input-box">
+                      <label class="label-text">الوجهة / اسم الفندق</label>
+                      <div class="form-group">
+                        <span class="la la-map-marker form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="Enter City or property"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-3 -->
+                  <div class="col-lg-3 pe-0">
+                    <div class="input-box">
+                      <label class="label-text">تسجيل دخول تسجيل خروج</label>
+                      <div class="form-group">
+                        <span class="la la-calendar form-icon"></span>
+                        <input
+                          class="date-picker-multiple form-control"
+                          type="text"
+                          name="date"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-3 -->
+                  <div class="col-lg-3 pe-0">
+                    <div class="input-box">
+                      <label class="label-text">نوع الغرفة</label>
+                      <div class="form-group select2-container-wrapper">
+                        <div
+                          class="select-contain select-contain-shadow w-auto"
+                        >
+                          <select class="select-contain-select">
+                            <option value="0">اختر صنف</option>
+                            <option value="1">غير مرتبطة</option>
+                            <option value="2">مزدوج</option>
+                            <option value="3">ثلاثية</option>
+                            <option value="4">رباعية</option>
+                            <option value="5">ملكة</option>
+                            <option value="6">ملك</option>
+                            <option value="7">التوأم</option>
+                            <option value="8">ضعف الضعف</option>
+                            <option value="9">ستوديو</option>
+                            <option value="10">جناح</option>
+                            <option value="11">جناح صغير</option>
+                            <option value="12">جناح الرئيس</option>
+                            <option value="13">جناح الرئيس</option>
+                            <option value="14">شقق سكنية</option>
+                            <option value="15">غرف متصلة</option>
+                            <option value="16">غرفة مورفي</option>
+                            <option value="17">
+                              غرفة لذوي الاحتياجات الخاصة
+                            </option>
+                            <option value="18">كابانا</option>
+                            <option value="19">الغرف المجاورة</option>
+                            <option value="20">الغرف المجاورة</option>
+                            <option value="21">فيلا</option>
+                            <option value="22">الطابق التنفيذي</option>
+                            <option value="23">غرفة التدخين</option>
+                            <option value="24">غرفة لغير المدخنين</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-3 -->
+                  <div class="col-lg-3">
+                    <div class="input-box">
+                      <label class="label-text">ضيوف</label>
+                      <div class="form-group">
+                        <div class="dropdown dropdown-contain gty-container">
+                          <a
+                            class="dropdown-toggle dropdown-btn"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            data-bs-auto-close="outside"
+                          >
+                            <span
+                              class="adult"
+                              data-text="الكبار"
+                              data-text-multi="الكبار"
+                              >0 الكبار</span
+                            >
+                            -
+                            <span
+                              class="children"
+                              data-text="طفل"
+                              data-text-multi="أطفال"
+                              >0 أطفال</span
+                            >
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-wrap">
+                            <div class="dropdown-item">
+                              <div
+                                class="qty-box d-flex align-items-center justify-content-between"
+                              >
+                                <label>غرف</label>
+                                <div class="qtyBtn d-flex align-items-center">
+                                  <div class="qtyDec">
+                                    <i class="la la-minus"></i>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    name="room_number"
+                                    value="0"
+                                    class="qty-input"
+                                  />
+                                  <div class="qtyInc">
+                                    <i class="la la-plus"></i>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-item">
+                              <div
+                                class="qty-box d-flex align-items-center justify-content-between"
+                              >
+                                <label>الكبار</label>
+                                <div class="qtyBtn d-flex align-items-center">
+                                  <div class="qtyDec">
+                                    <i class="la la-minus"></i>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    name="adult_number"
+                                    value="0"
+                                  />
+                                  <div class="qtyInc">
+                                    <i class="la la-plus"></i>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-item">
+                              <div
+                                class="qty-box d-flex align-items-center justify-content-between"
+                              >
+                                <label>أطفال</label>
+                                <div class="qtyBtn d-flex align-items-center">
+                                  <div class="qtyDec">
+                                    <i class="la la-minus"></i>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    name="child_number"
+                                    value="0"
+                                  />
+                                  <div class="qtyInc">
+                                    <i class="la la-plus"></i>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- end dropdown -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-3 -->
+                </form>
+                <div class="btn-box pt-2">
+                  <a href="room-search-result.html" class="theme-btn"
+                    >ابحث الآن</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end col-lg-12 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </div>
+  </section>

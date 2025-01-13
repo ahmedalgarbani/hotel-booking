@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls',namespace='users')),
     path('HotelManagement/', include('HotelManagement.urls',namespace='HotelManagementz')),
-    
+    path('', include('home.urls',namespace='home'),name='home'),
     path('rooms/', include('rooms.urls')),
     path('reviews/', include('reviews.urls')),
     path('services/', include('services.urls')),

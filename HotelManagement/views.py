@@ -237,4 +237,5 @@ def city_delete(request, city_slug):
     if request.method == 'POST':
         city.delete()
         return redirect('city_list')
+    
     return render(request, 'city_confirm_delete.html', {'city': city})

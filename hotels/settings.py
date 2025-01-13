@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'users',
     'HotelManagement',
     'rooms',
+    'home',
     'bookings',
-    
     'payments',
     'reviews',
     'services',
@@ -92,7 +92,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '54322',
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
@@ -237,8 +237,8 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "slate",
-    "dark_mode_theme": "slate",
+    "theme": "default",
+    "dark_mode_theme": "default",
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
