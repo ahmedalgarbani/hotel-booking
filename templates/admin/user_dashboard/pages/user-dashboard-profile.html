@@ -1,0 +1,143 @@
+{% extends "admin/user_dashboard/index.html" %}
+{% block section_title %}
+user profile
+{% endblock section_title %}
+{% block path_title %}
+user profile
+{% endblock path_title %}
+{% block content %}
+{% load static %}
+<div class="dashboard-main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-box">
+            <div class="form-title-wrap border-bottom-0 pb-0">
+              <h3 class="title">معلومات الملف الشخصي</h3>
+            </div>
+            <div class="form-content">
+              <div class="table-form table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="ps-0">
+                        <div class="table-content">
+                          <h3 class="title font-weight-medium">
+                            الاسم الاول
+                          </h3>
+                        </div>
+                      </td>
+                      <td>:</td>
+                      <td>علي</td>
+                    </tr>
+                    <tr>
+                      <td class="ps-0">
+                        <div class="table-content">
+                          <h3 class="title font-weight-medium">الكنية</h3>
+                        </div>
+                      </td>
+                      <td>:</td>
+                      <td>توفان</td>
+                    </tr>
+                    <tr>
+                      <td class="ps-0">
+                        <div class="table-content">
+                          <h3 class="title font-weight-medium">
+                            عنوان البريد الالكترونى
+                          </h3>
+                        </div>
+                      </td>
+                      <td>:</td>
+                      <td>alitufan@gmail.com</td>
+                    </tr>
+                    <tr>
+                      <td class="ps-0">
+                        <div class="table-content">
+                          <h3 class="title font-weight-medium">
+                            رقم الهاتف
+                          </h3>
+                        </div>
+                      </td>
+                      <td>:</td>
+                      <td>+01 4561 3214</td>
+                    </tr>
+                    <tr>
+                      <td class="ps-0">
+                        <div class="table-content">
+                          <h3 class="title font-weight-medium">
+                            تاريخ الولادة
+                          </h3>
+                        </div>
+                      </td>
+                      <td>:</td>
+                      <td>03 يونيو 1990</td>
+                    </tr>
+                    <tr>
+                      <td class="ps-0">
+                        <div class="table-content">
+                          <h3 class="title font-weight-medium">عنوان</h3>
+                        </div>
+                      </td>
+                      <td>:</td>
+                      <td>
+                        8800 Orchard Lake Road، Suite 180 فارمنجتون هيلز ،
+                        الولايات المتحدة الأمريكية
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="section-block"></div>
+              <div class="btn-box mt-4">
+                <a href="user-dashboard-settings.html" class="theme-btn"
+                  >تعديل الملف الشخصي</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-12 -->
+      </div>
+      <!-- end row -->
+      <div class="border-top mt-4"></div>
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <div class="copy-right padding-top-30px">
+            <p class="copy__desc">
+              &copy; Copyright Trizen 2020. Made with
+              <span class="la la-heart"></span> by
+              <a href="https://themeforest.net/user/techydevs/portfolio"
+                >TechyDevs</a
+              >
+            </p>
+          </div>
+          <!-- end copy-right -->
+        </div>
+        <!-- end col-lg-7 -->
+        <div class="col-lg-5">
+          <div class="footer-social-box text-end padding-top-30px">
+            <ul class="social-profile">
+              <li>
+                <a href="#"><i class="lab la-facebook-f"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-twitter"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-instagram"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-linkedin-in"></i></a>
+              </li>
+            </ul>
+          </div>
+          <!-- end copy-right-content -->
+        </div>
+        <!-- end col-lg-5 -->
+      </div>
+      <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+  </div>
+{% endblock content %}

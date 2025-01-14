@@ -1,0 +1,330 @@
+{% extends "admin/user_dashboard/index.html" %}
+{% block section_title %}
+bookings
+{% endblock section_title %}
+{% block path_title %}
+bookings
+{% endblock path_title %}
+{% block content %}
+{% load static %}
+<div class="dashboard-main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="form-box">
+          <div class="form-title-wrap">
+            <div
+              class="d-flex align-items-center justify-content-between"
+            >
+              <div>
+                <h3 class="title">نتائج الحجز</h3>
+                <p class="font-size-14">
+                  إظهار 1 إلى 7 من أصل 17 مُدخل
+                </p>
+              </div>
+              <span
+                >إجمالي الحجوزات
+                <strong class="color-text"> (17) </strong></span
+              >
+            </div>
+          </div>
+          <div class="form-content">
+            <div class="table-form table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">نوع</th>
+                    <th scope="col">عنوان</th>
+                    <th scope="col">موقعك</th>
+                    <th scope="col">تاريخ الطلب</th>
+                    <th scope="col">تاريخ التنفيذ</th>
+                    <th scope="col">السعر</th>
+                    <th scope="col">الحالة</th>
+                    <th scope="col">عمل</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-plane me-1 font-size-18"></i>طيران
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">من لندن إلى مدينة نيويورك</h3>
+                      </div>
+                    </td>
+                    <td>مدينة نيويورك</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-info py-1 px-2"
+                        >قيد الانتظار</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-car me-1 font-size-18"></i>سيارة
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">مرسيدس بنز A 200 CDI</h3>
+                      </div>
+                    </td>
+                    <td>لندن الكبرى ، المملكة المتحدة</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-success py-1 px-2"
+                        >منجز</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-tree me-1 font-size-18"></i>جولة
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">
+                          إنتركونتيننتال نيويورك باركلي
+                        </h3>
+                      </div>
+                    </td>
+                    <td>اسطنبول، تركيا</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-warning py-1 px-2"
+                        >تأخر</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-ship me-1 font-size-18"></i>رحلة
+                      بحرية
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">
+                          رحلة بحرية لمدة 5 ليالٍ في برمودا
+                        </h3>
+                      </div>
+                    </td>
+                    <td>ميامي، فلوريدا</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-info py-1 px-2"
+                        >في الموعد المحدد</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-building me-1 font-size-18"></i
+                      >الفندق
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">فندق ميليا وايت هاوس</h3>
+                      </div>
+                    </td>
+                    <td>بوسطن، ماساتشوستس</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-success py-1 px-2"
+                        >منجز</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-tree me-1 font-size-18"></i>جولة
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">كوخ في جولة بلو واتر بيتش</h3>
+                      </div>
+                    </td>
+                    <td>124 نيفادا ، لاس فيغاس</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-success py-1 px-2"
+                        >منجز</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <i class="la la-plane me-1 font-size-18"></i>طيران
+                    </th>
+                    <td>
+                      <div class="table-content">
+                        <h3 class="title">من روما إلى أستراليا</h3>
+                      </div>
+                    </td>
+                    <td>مدينة نيويورك</td>
+                    <td>30/6/2020</td>
+                    <td>2/6/2020</td>
+                    <td>$350</td>
+                    <td>
+                      <span class="badge text-bg-success py-1 px-2"
+                        >منجز</span
+                      >
+                    </td>
+                    <td>
+                      <div class="table-content">
+                        <button class="theme-btn theme-btn-small">
+                          إلغاء
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- end form-box -->
+      </div>
+      <!-- end col-lg-12 -->
+    </div>
+    <!-- end row -->
+    <div class="row">
+      <div class="col-lg-12">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a
+                class="page-link page-link-nav"
+                href="#"
+                aria-label="Previous"
+              >
+                <span aria-hidden="true"
+                  ><i class="la la-angle-left"></i
+                ></span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link page-link-nav" href="#">1</a>
+            </li>
+            <li class="page-item active">
+              <a class="page-link page-link-nav" href="#"
+                >2 <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="page-item">
+              <a class="page-link page-link-nav" href="#">3</a>
+            </li>
+            <li class="page-item">
+              <a
+                class="page-link page-link-nav"
+                href="#"
+                aria-label="Next"
+              >
+                <span aria-hidden="true"
+                  ><i class="la la-angle-right"></i
+                ></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- end col-lg-12 -->
+    </div>
+    <!-- end row -->
+    <div class="border-top mt-5"></div>
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <div class="copy-right padding-top-30px">
+          <p class="copy__desc">
+            &copy; Copyright Trizen 2020. Made with
+            <span class="la la-heart"></span> by
+            <a href="https://themeforest.net/user/techydevs/portfolio"
+              >TechyDevs</a
+            >
+          </p>
+        </div>
+        <!-- end copy-right -->
+      </div>
+      <!-- end col-lg-7 -->
+      <div class="col-lg-5">
+        <div class="footer-social-box text-end padding-top-30px">
+          <ul class="social-profile">
+            <li>
+              <a href="#"><i class="lab la-facebook-f"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="lab la-twitter"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="lab la-instagram"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="lab la-linkedin-in"></i></a>
+            </li>
+          </ul>
+        </div>
+        <!-- end copy-right-content -->
+      </div>
+      <!-- end col-lg-5 -->
+    </div>
+    <!-- end row -->
+  </div>
+  <!-- end container-fluid -->
+</div>
+{% endblock content %}
