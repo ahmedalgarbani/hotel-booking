@@ -9,7 +9,7 @@ class HotelForm(forms.ModelForm):
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
-        fields = ['name', 'address', 'city']
+        fields = [ 'address', 'city']
 
 class PhoneForm(forms.ModelForm):
     class Meta:
@@ -24,4 +24,4 @@ class ImageForm(forms.ModelForm):
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
-        fields = ['name', 'state', 'country']
+        fields = [ 'state', 'country']

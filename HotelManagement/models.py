@@ -69,7 +69,6 @@ class BaseModel(models.Model):
 # -------------------- Location ----------------------------
 
 class Location(BaseModel):
-    name = models.CharField(max_length=255, verbose_name=_("الموقع"))
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
     city = models.ForeignKey(
         "HotelManagement.City",
@@ -81,7 +80,7 @@ class Location(BaseModel):
         verbose_name = _("الموقع")
         verbose_name_plural = _("المواقع")
     def __str__(self):
-        return f"{self.name}" 
+        return f"{self.address}" 
 
 
 
@@ -173,10 +172,6 @@ class Image(BaseModel):
 # -------------------- City ----------------------------
 
 class City(BaseModel): 
-    name = models.CharField(
-        _("المدينه"), 
-        max_length=255
-    )
     state = models.CharField(
         _("المحافظة"), 
         max_length=255
@@ -190,4 +185,4 @@ class City(BaseModel):
         verbose_name = _("منطقه")
         verbose_name_plural = _("المناطق")
     def __str__(self):
-        return f"{self.name}" 
+        return f"{self.state}" 

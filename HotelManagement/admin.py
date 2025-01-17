@@ -9,8 +9,7 @@ User = get_user_model()
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ['name', 'location', 'created_at']
-    search_fields = ['name']
+    list_display = [ 'location', 'created_at']
     list_filter = ['location', 'created_at']
 
     def get_queryset(self, request):
@@ -46,9 +45,8 @@ class HotelAdmin(admin.ModelAdmin):
 # ----------- Location --------------
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'city', 'slug', 'created_at')
+    list_display = ( 'address', 'city', 'slug', 'created_at')
     readonly_fields = ('slug',)
-    search_fields = ('name', 'city__name')
     list_filter = ('city',)
 
     def get_queryset(self, request):
@@ -283,9 +281,9 @@ class ImageAdmin(admin.ModelAdmin):
 # ----------- City --------------
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ('name', 'state', 'country', 'slug', 'created_at')
+    list_display = ( 'state', 'country', 'slug', 'created_at')
     readonly_fields = ('slug',)
-    search_fields = ('name', 'state', 'country')
+    search_fields = ( 'state', 'country')
     list_filter = ('state', 'country')
 
     def get_queryset(self, request):
