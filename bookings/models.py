@@ -117,7 +117,7 @@ class Booking(BaseModel):
 
     def __str__(self):
         guest_name = self.guests.first().name if self.guests.exists() else _("لا يوجد ضيف")
-        return f"{guest_name} - {self.room} ({self.get_status_display()})"
+        return f"{guest_name} - {self.room}"
 
     @property
     def duration(self):
