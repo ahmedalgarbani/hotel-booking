@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.db.models import Count, Sum
+from django.db.models import Count
 from django.http import HttpResponse
 from django.utils import timezone
-from django.template.loader import render_to_string
+from django.db.models.functions import TruncHour
 import arabic_reshaper
 from bidi.algorithm import get_display
 from reportlab.lib import colors
@@ -11,9 +11,6 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from django.db.models.functions import TruncHour
-from django.db.models import Q
-from datetime import timedelta
 from .models import Booking, BookingStatus, Guest, BookingDetail
 
 @admin.register(Booking)
@@ -31,7 +28,7 @@ class BookingAdmin(admin.ModelAdmin):
     def generate_pdf(self, title, headers, data):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="{title}.pdf"'
-
+        
         # إنشاء مستند PDF
         doc = SimpleDocTemplate(
             response,
@@ -45,7 +42,7 @@ class BookingAdmin(admin.ModelAdmin):
         # تسجيل الخط العربي
         pdfmetrics.registerFont(TTFont('Arabic', 'static/fonts/NotoKufiArabic-Regular.ttf'))
 
-        # إنشاء نمط للعنوان
+        # إنشاء الأنماط
         styles = getSampleStyleSheet()
         title_style = ParagraphStyle(
             'CustomTitle',
@@ -56,27 +53,76 @@ class BookingAdmin(admin.ModelAdmin):
             spaceAfter=30
         )
 
+        # نمط للخلايا
+        cell_style = ParagraphStyle(
+            'CustomCell',
+            parent=styles['Normal'],
+            fontName='Arabic',
+            fontSize=10,
+            alignment=2,  # محاذاة لليمين
+            leading=14,
+            spaceBefore=5,
+            spaceAfter=5
+        )
+
         elements = []
         
         # إضافة العنوان
-        elements.append(Paragraph(get_display(arabic_reshaper.reshape(title)), title_style))
+        title_text = get_display(arabic_reshaper.reshape(title))
+        elements.append(Paragraph(title_text, title_style))
         elements.append(Spacer(1, 20))
 
+        # معالجة البيانات
+        formatted_data = []
+        
+        # معالجة العناوين
+        header_cells = []
+        for header in headers:
+            text = get_display(arabic_reshaper.reshape(str(header)))
+            header_cells.append(Paragraph(text, cell_style))
+        formatted_data.append(header_cells)
+        
+        # معالجة الصفوف
+        for row in data:
+            row_cells = []
+            for cell in row:
+                # عدم معالجة التواريخ والأرقام
+                if isinstance(cell, (int, float)) or (isinstance(cell, str) and any(c.isdigit() for c in cell)):
+                    text = str(cell)
+                else:
+                    text = get_display(arabic_reshaper.reshape(str(cell)))
+                row_cells.append(Paragraph(text, cell_style))
+            formatted_data.append(row_cells)
+
+        # حساب عرض الأعمدة
+        available_width = landscape(A4)[0] - doc.leftMargin - doc.rightMargin
+        col_widths = [
+            available_width * 0.20,  # اسم الضيف
+            available_width * 0.15,  # الفندق
+            available_width * 0.15,  # الغرفة
+            available_width * 0.15,  # تاريخ الدخول
+            available_width * 0.15,  # تاريخ الخروج
+            available_width * 0.10,  # المبلغ
+            available_width * 0.10   # الحالة
+        ]
+
         # إنشاء الجدول
-        table = Table([headers] + data)
+        table = Table(formatted_data, colWidths=col_widths, repeatRows=1)
         table.setStyle(TableStyle([
             ('FONT', (0, 0), (-1, -1), 'Arabic'),
-            ('FONTSIZE', (0, 0), (-1, 0), 14),
-            ('FONTSIZE', (0, 1), (-1, -1), 12),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2d3748')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+            ('LEFTPADDING', (0, 0), (-1, -1), 8),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
             ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f7fafc')]),
-            ('LEFTPADDING', (0, 0), (-1, -1), 10),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]))
 
         elements.append(table)
@@ -85,26 +131,26 @@ class BookingAdmin(admin.ModelAdmin):
 
     def export_bookings_report(self, request, queryset):
         headers = [
-            get_display(arabic_reshaper.reshape('اسم الضيف')),
-            get_display(arabic_reshaper.reshape('الفندق')),
-            get_display(arabic_reshaper.reshape('الغرفة')),
-            get_display(arabic_reshaper.reshape('تاريخ الدخول')),
-            get_display(arabic_reshaper.reshape('تاريخ الخروج')),
-            get_display(arabic_reshaper.reshape('المبلغ')),
-            get_display(arabic_reshaper.reshape('الحالة'))
+            "اسم الضيف",
+            "الفندق",
+            "الغرفة",
+            "تاريخ الدخول",
+            "تاريخ الخروج",
+            "المبلغ",
+            "الحالة"
         ]
 
         data = []
         for booking in queryset:
             guest = booking.guests.first()
             data.append([
-                get_display(arabic_reshaper.reshape(guest.name if guest else "لا يوجد ضيف")),
-                get_display(arabic_reshaper.reshape(str(booking.hotel))),
-                get_display(arabic_reshaper.reshape(str(booking.room))),
+                guest.name if guest else "لا يوجد ضيف",
+                str(booking.hotel),
+                str(booking.room),
                 booking.check_in_date.strftime('%Y-%m-%d %H:%M') if booking.check_in_date else '',
                 booking.check_out_date.strftime('%Y-%m-%d %H:%M') if booking.check_out_date else '',
                 str(booking.amount),
-                get_display(arabic_reshaper.reshape(str(booking.status)))
+                str(booking.status)
             ])
 
         return self.generate_pdf('تقرير_الحجوزات', headers, data)
@@ -114,21 +160,31 @@ class BookingAdmin(admin.ModelAdmin):
         now = timezone.now()
         upcoming = queryset.filter(check_in_date__gt=now).order_by('check_in_date')
         
+        # تحديد عرض الأعمدة للتقرير
+        available_width = landscape(A4)[0] - 60  # 60 = rightMargin + leftMargin
+        col_widths = [
+            available_width * 0.25,  # اسم الضيف
+            available_width * 0.25,  # الفندق
+            available_width * 0.25,  # الغرفة
+            available_width * 0.15,  # تاريخ الدخول
+            available_width * 0.10   # المبلغ
+        ]
+
         headers = [
-            get_display(arabic_reshaper.reshape('اسم الضيف')),
-            get_display(arabic_reshaper.reshape('الفندق')),
-            get_display(arabic_reshaper.reshape('الغرفة')),
-            get_display(arabic_reshaper.reshape('تاريخ الدخول')),
-            get_display(arabic_reshaper.reshape('المبلغ'))
+            "اسم الضيف",
+            "الفندق",
+            "الغرفة",
+            "تاريخ الدخول",
+            "المبلغ"
         ]
 
         data = []
         for booking in upcoming:
             guest = booking.guests.first()
             data.append([
-                get_display(arabic_reshaper.reshape(guest.name if guest else "لا يوجد ضيف")),
-                get_display(arabic_reshaper.reshape(str(booking.hotel))),
-                get_display(arabic_reshaper.reshape(str(booking.room))),
+                guest.name if guest else "لا يوجد ضيف",
+                str(booking.hotel),
+                str(booking.room),
                 booking.check_in_date.strftime('%Y-%m-%d %H:%M'),
                 str(booking.amount)
             ])
@@ -139,21 +195,31 @@ class BookingAdmin(admin.ModelAdmin):
     def export_cancelled_bookings(self, request, queryset):
         cancelled = queryset.filter(status__booking_status_name='ملغي')
         
+        # تحديد عرض الأعمدة للتقرير
+        available_width = landscape(A4)[0] - 60
+        col_widths = [
+            available_width * 0.25,  # اسم الضيف
+            available_width * 0.25,  # الفندق
+            available_width * 0.20,  # الغرفة
+            available_width * 0.15,  # تاريخ الإلغاء
+            available_width * 0.15   # المبلغ
+        ]
+
         headers = [
-            get_display(arabic_reshaper.reshape('اسم الضيف')),
-            get_display(arabic_reshaper.reshape('الفندق')),
-            get_display(arabic_reshaper.reshape('الغرفة')),
-            get_display(arabic_reshaper.reshape('تاريخ الإلغاء')),
-            get_display(arabic_reshaper.reshape('المبلغ'))
+            "اسم الضيف",
+            "الفندق",
+            "الغرفة",
+            "تاريخ الإلغاء",
+            "المبلغ"
         ]
 
         data = []
         for booking in cancelled:
             guest = booking.guests.first()
             data.append([
-                get_display(arabic_reshaper.reshape(guest.name if guest else "لا يوجد ضيف")),
-                get_display(arabic_reshaper.reshape(str(booking.hotel))),
-                get_display(arabic_reshaper.reshape(str(booking.room))),
+                guest.name if guest else "لا يوجد ضيف",
+                str(booking.hotel),
+                str(booking.room),
                 booking.updated_at.strftime('%Y-%m-%d %H:%M'),
                 str(booking.amount)
             ])
@@ -162,28 +228,46 @@ class BookingAdmin(admin.ModelAdmin):
     export_cancelled_bookings.short_description = "تصدير تقرير الحجوزات الملغاة"
 
     def export_peak_times(self, request, queryset):
-        # تحليل أوقات الذروة بناءً على ساعات تسجيل الدخول
         peak_hours = queryset.annotate(
             hour=TruncHour('check_in_date')
         ).values('hour').annotate(
             count=Count('id')
-        ).order_by('-count')[:10]  # أعلى 10 ساعات ذروة
+        ).order_by('-count')[:10]
+
+        # تحديد عرض الأعمدة للتقرير
+        available_width = landscape(A4)[0] - 60
+        col_widths = [
+            available_width * 0.40,  # الوقت
+            available_width * 0.30,  # عدد الحجوزات
+            available_width * 0.30   # النسبة المئوية
+        ]
 
         headers = [
-            get_display(arabic_reshaper.reshape('الوقت')),
-            get_display(arabic_reshaper.reshape('عدد الحجوزات')),
-            get_display(arabic_reshaper.reshape('النسبة المئوية'))
+            "الوقت",
+            "عدد الحجوزات",
+            "النسبة المئوية"
         ]
 
         total_bookings = sum(ph['count'] for ph in peak_hours)
         data = []
         for ph in peak_hours:
-            percentage = (ph['count'] / total_bookings) * 100
+            percentage = (ph['count'] / total_bookings) * 100 if total_bookings > 0 else 0
             data.append([
                 ph['hour'].strftime('%Y-%m-%d %H:00'),
                 str(ph['count']),
                 f"{percentage:.1f}%"
             ])
+
+        # إنشاء ملخص إحصائي
+        summary_data = [
+            ["إجمالي الحجوزات:", str(total_bookings), ""],
+            ["متوسط الحجوزات في الساعة:", f"{total_bookings/len(peak_hours):.1f}" if peak_hours else "0", ""],
+            ["أعلى عدد حجوزات في ساعة:", str(peak_hours[0]['count']) if peak_hours else "0", ""]
+        ]
+
+        # إضافة مسافة فارغة بين البيانات والملخص
+        data.append(["", "", ""])
+        data.extend(summary_data)
 
         return self.generate_pdf('تقرير_أوقات_الذروة', headers, data)
     export_peak_times.short_description = "تصدير تقرير أوقات الذروة"
