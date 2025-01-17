@@ -61,17 +61,43 @@ class HotelAdmin(admin.ModelAdmin):
         elif request.user.user_type == 'hotel_manager':
             return queryset.filter(manager=request.user)
         return queryset.none()
-
+    
     def changelist_view(self, request, extra_context=None):
-        # إحصائيات عامة
-        stats = {
-            'total_hotels': self.get_queryset(request).count(),
-            'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
-            'hotels_by_city': self.get_queryset(request).values('location__city__name').annotate(count=Count('id')),
-        }
-        
         if not extra_context:
             extra_context = {}
+
+        # إحصائيات للأدمن
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            stats = {
+                'total_hotels': self.get_queryset(request).count(),
+                'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
+                'unverified_hotels': self.get_queryset(request).filter(is_verified=False).count(),
+                'hotels_by_city': self.get_queryset(request).values('location__city__name').annotate(count=Count('id')),
+                'recent_hotels': self.get_queryset(request).order_by('-created_at')[:5],
+                'user_type': 'admin'
+            }
+        # إحصائيات لمدير الفندق
+        elif request.user.user_type == 'hotel_manager':
+            hotel = self.get_queryset(request).first()
+            if hotel:
+                stats = {
+                    'hotel_name': hotel.name,
+                    'verification_status': hotel.is_verified,
+                    'verification_date': hotel.verification_date,
+                    'total_phones': hotel.phones.count(),
+                    'location_info': {
+                        'city': hotel.location.city.name if hotel.location and hotel.location.city else '',
+                        'address': hotel.location.address if hotel.location else '',
+                    },
+                    'total_images': Image.objects.filter(hotel_id=hotel).count(),
+                    'user_type': 'hotel_manager'
+                }
+            else:
+                stats = {
+                    'message': 'لا يوجد فندق مرتبط بحسابك',
+                    'user_type': 'hotel_manager'
+                }
+        
         extra_context['stats'] = stats
         return super().changelist_view(request, extra_context=extra_context)
 
@@ -187,7 +213,7 @@ class ImageAdminForm(forms.ModelForm):
         
         if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
             hotel = Hotel.objects.get(manager=request.user)
-            self.fields['hotel_id'].initial = hotel
+            self.fields['hotel_id'].initial = request.user
             self.fields['hotel_id'].disabled = True
             
             if 'updated_by' in self.fields:
