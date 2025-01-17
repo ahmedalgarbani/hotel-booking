@@ -1,0 +1,288 @@
+{% extends "admin/hotel_manager_dashboard/index.html" %}
+{% load static %}
+{% block section_title %}
+الطلبات
+{% endblock section_title %}
+
+{% block path_title %}
+الطلبات
+{% endblock path_title %}
+
+{% block content %}
+
+<div class="dashboard-main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <h3 class="title">قوائم الطلبات</h3>
+                  <p class="font-size-14">عرض 1 إلى 8 من 20 نتيجة</p>
+                </div>
+                <div class="select-contain select2-container-wrapper">
+                  <select class="select-contain-select select2-hidden-accessible" data-select2-id="select2-data-1-4qx5" tabindex="-1" aria-hidden="true">
+                    <option value="1" data-select2-id="select2-data-3-mnyw">في أي وقت</option>
+                    <option value="2">آخر</option>
+                    <option value="3">الأقدم</option>
+                  </select><span class="select2 select2-container select2-container--default" dir="rtl" data-select2-id="select2-data-2-srmd" style="width: 98.5167px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-18dk-container" aria-controls="select2-18dk-container"><span class="select2-selection__rendered" id="select2-18dk-container" role="textbox" aria-readonly="true" title="في أي وقت">في أي وقت</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-content">
+              <div class="table-form table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">البريد الإلكتروني للعميل</th>
+                      <th scope="col">اسم الزبون</th>
+                      <th scope="col">اسم الحزمة</th>
+                      <th scope="col">التكلفة الإجمالية</th>
+                      <th scope="col">طريقة الدفع او السداد</th>
+                      <th scope="col">الحالة</th>
+                      <th scope="col">عمل</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">alexsmith@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">أليكس سميث</h3>
+                        </div>
+                      </td>
+                      <td>رحلة نيويورك - اكتشف أمريكا</td>
+                      <td>$399</td>
+                      <td>باي بال</td>
+                      <td>
+                        <span class="badge text-bg-success py-1 px-2">منجز</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">markhardson@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">مارك هاردسون</h3>
+                        </div>
+                      </td>
+                      <td>المتنزهات الوطنية الأمريكية مع دنفر</td>
+                      <td>$399</td>
+                      <td>بايونير</td>
+                      <td>
+                        <span class="badge text-bg-warning text-white py-1 px-2">قيد الانتظار</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">davidmartin@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">ديفيد مارتن</h3>
+                        </div>
+                      </td>
+                      <td>الاكتشاف الشرقي يبدأ نيو أورلينز</td>
+                      <td>$399</td>
+                      <td>سكريل</td>
+                      <td>
+                        <span class="badge text-bg-info py-1 px-2">في الانتظار</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">johndoe@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">فلان الفلاني</h3>
+                        </div>
+                      </td>
+                      <td>نيويورك إلى بكين</td>
+                      <td>$399</td>
+                      <td>باي بال</td>
+                      <td>
+                        <span class="badge text-bg-danger py-1 px-2">تأخر</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <th scope="row">joshpurdil@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">جوش بورديلا</h3>
+                        </div>
+                      </td>
+                      <td>لوس أنجلوس إلى سان فرانسيسكو إكسبرس</td>
+                      <td>$399</td>
+                      <td>باي بال</td>
+                      <td>
+                        <span class="badge text-bg-success py-1 px-2">منجز</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">kamranadi@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">كمران عدي</h3>
+                        </div>
+                      </td>
+                      <td>اسطنبول إلى دكا</td>
+                      <td>$399</td>
+                      <td>باي بال</td>
+                      <td>
+                        <span class="badge text-bg-success py-1 px-2">منجز</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">markdoe@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">مارك دو</h3>
+                        </div>
+                      </td>
+                      <td>من لندن إلى دبي</td>
+                      <td>$399</td>
+                      <td>نيتيلر</td>
+                      <td>
+                        <span class="badge text-bg-success py-1 px-2">منجز</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">brendoneich@gmail.com</th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">بريندون إيش</h3>
+                        </div>
+                      </td>
+                      <td>نيويورك: متحف الفن الحديث</td>
+                      <td>$399</td>
+                      <td>شريط</td>
+                      <td>
+                        <span class="badge text-bg-success py-1 px-2">منجز</span>
+                      </td>
+                      <td>
+                        <div class="table-content">
+                          <a href="admin-dashboard-orders-details.html" class="theme-btn theme-btn-small me-2" data-bs-toggle="tooltip" data-placement="top" aria-label="عرض التفاصيل" data-bs-original-title="عرض التفاصيل"><i class="la la-eye"></i></a>
+                          <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#modalPopup"><i class="la la-envelope"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-12 -->
+      </div>
+      <!-- end row -->
+      <div class="row">
+        <div class="col-lg-12">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#" aria-label="Previous">
+                  <span aria-hidden="true"><i class="la la-angle-left"></i></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#">1</a>
+              </li>
+              <li class="page-item active">
+                <a class="page-link page-link-nav" href="#">2 <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#" aria-label="Next">
+                  <span aria-hidden="true"><i class="la la-angle-right"></i></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div class="border-top mt-5"></div>
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <div class="copy-right padding-top-30px">
+            <p class="copy__desc">
+              © Copyright Trizen 2020. Made with
+              <span class="la la-heart"></span> by
+              <a href="https://themeforest.net/user/techydevs/portfolio">TechyDevs</a>
+            </p>
+          </div>
+          <!-- end copy-right -->
+        </div>
+        <!-- end col-lg-7 -->
+        <div class="col-lg-5">
+          <div class="footer-social-box text-end padding-top-30px">
+            <ul class="social-profile">
+              <li>
+                <a href="#"><i class="lab la-facebook-f"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-twitter"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-instagram"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-linkedin-in"></i></a>
+              </li>
+            </ul>
+          </div>
+          <!-- end copy-right-content -->
+        </div>
+        <!-- end col-lg-5 -->
+      </div>
+      <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+  </div>
+{% endblock content %}
+
+

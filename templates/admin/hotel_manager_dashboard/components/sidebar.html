@@ -1,0 +1,99 @@
+{% load static %}
+<div class="sidebar-nav sidebar--nav">
+    <div class="sidebar-nav-body">
+      <div class="side-menu-close">
+        <i class="la la-times"></i>
+      </div>
+      <!-- end menu-toggler -->
+      <div class="author-content">
+        <div class="d-flex align-items-center">
+          <div class="author-img avatar-sm">
+            <img src="{% static 'images/team9.jpg' %}" alt="testimonial image" />
+          </div>
+          <div class="author-bio">
+            <h4 class="author__title">فندق فوسيزون</h4>
+            <span class="author__meta">مرحبًا بك في فندق فوسيزون </span>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-menu-wrap">
+        <ul class="sidebar-menu toggle-menu list-items">
+          <li class="{% if request.resolver_match.url_name == 'hotel_manager_dashboard_index' %} page-active {% endif %}">
+            <a href="{% url 'payments:hotel_manager_dashboard_index' %}"
+              ><i class="la la-dashboard me-2"></i>لوحة القيادة</a
+            >
+          </li>
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard_booking' %} page-active {% endif %}">
+            <a href="{% url 'payments:admin_dashboard_booking' %}"
+              ><i class="la la-shopping-cart me-2 text-color"></i>الحجز</a
+            >
+          </li>
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard_orders' %} page-active {% endif %}">
+            <span class="side-menu-icon toggle-menu-icon">
+              <i class="la la-angle-down"></i>
+            </span>
+            <a href="{% url 'payments:admin_dashboard_orders' %}"
+              ><i class="la la-list me-2 text-color-2"></i>الطلب</a
+            >
+            <ul class="toggle-drop-menu">
+              <li>
+                <a href="{% url 'payments:admin_dashboard_orders_detail' %}">تفاصيل الطلب</a>
+              </li>
+            </ul>
+          </li>
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard_users' %} page-active {% endif %}">
+            <span class="side-menu-icon toggle-menu-icon">
+              <i class="la la-angle-down"></i>
+            </span>
+            <a href="{% url 'payments:admin_dashboard_users' %}"
+              ><i class="la la-users me-2 text-color-3"></i>المستخدمين</a
+            >
+            <ul class="toggle-drop-menu">
+              <li>
+                <a href="{% url 'payments:admin_dashboard_user_detail' %}"
+                  >تفاصيل المستخدم</a
+                >
+              </li>
+            </ul>
+          </li>
+         
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard_reviews' %} page-active {% endif %}">
+            <a href="{% url 'payments:admin_dashboard_reviews' %}"
+              ><i class="la la-star me-2 text-color-5"></i>المراجعات</a
+            >
+          </li>
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard_wishlist' %} page-active {% endif %}">
+            <a href="{% url 'payments:admin_dashboard_wishlist' %}"
+              ><i class="la la-heart me-2 text-color-6"></i>قائمة الرغبات</a
+            >
+          </li>
+         
+          <li class="{% if request.resolver_match.url_name == 'admin_invoice' %} page-active {% endif %}">
+            <span class="side-menu-icon toggle-menu-icon">
+              <i class="la la-angle-down"></i>
+            </span>
+            <a href="{% url 'payments:admin_invoice' %}"
+              ><i class="la la-area-chart me-2 text-color-8"></i>المالية</a
+            >
+            <ul class="toggle-drop-menu">
+              <li><a href="{% url 'payments:admin_invoice' %}">فاتورة</a></li>
+              <li><a href="{% url 'payments:admin_payments' %}">المدفوعات</a></li>
+              <li><a href="{% url 'payments:admin_currency_list' %}">قائمة العملات</a></li>
+            </ul>
+          </li>
+         
+          <li class="{% if request.resolver_match.url_name == 'admin_dashboard_settings' %} page-active {% endif %}">
+            <a href="{% url 'payments:admin_dashboard_settings' %}"
+              ><i class="la la-cog me-2 text-color-10"></i>الإعدادات</a
+            >
+          </li>
+          <li >
+            <a href="index.html"
+              ><i class="la la-power-off me-2 text-color-11"></i>تسجيل خروج</a
+            >
+          </li>
+        </ul>
+      </div>
+      <!-- end sidebar-menu-wrap -->
+    </div>
+  </div>

@@ -1,0 +1,324 @@
+{% extends "admin/hotel_manager_dashboard/index.html" %}
+{% load static %}
+{% block section_title %}
+الإعدادات 
+{% endblock section_title %}
+
+{% block path_title %}
+ الإعدادات
+{% endblock path_title %}
+
+{% block content %}
+<div class="dashboard-main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <h3 class="title">إعداد الملف الشخصي</h3>
+            </div>
+            <div class="form-content">
+              <div class="user-profile-action d-flex align-items-center pb-4">
+                <div class="user-pro-img">
+                  <img src="{% static 'images/team1.jpg' %}" alt="user-image">
+                </div>
+                <div class="upload-btn-box">
+                  <form action="#" method="post" enctype="multipart/form-data">
+                    <input type="file" name="files[]" class="filer_input" multiple="multiple">
+                    <button class="theme-btn theme-btn-small" type="button">
+                      إزالة الصورة
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <div class="contact-form-action">
+                <form action="#">
+                  <div class="row">
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">عنوان الموقع</label>
+                        <div class="form-group">
+                          <span class="la la-user form-icon"></span>
+                          <input class="form-control" type="text" value="وكالة سفر روييل">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">عنوان البريد الإلكتروني</label>
+                        <div class="form-group">
+                          <span class="la la-envelope form-icon"></span>
+                          <input class="form-control" type="text" value="royeltravelagency@gmail.com">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">هاتف</label>
+                        <div class="form-group">
+                          <span class="la la-phone form-icon"></span>
+                          <input class="form-control" type="text" value="+ 00 222 44 5678">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">عنوان</label>
+                        <div class="form-group">
+                          <span class="la la-map form-icon"></span>
+                          <input class="form-control" type="text" value="124/6 إطلالة على الشارع ، الولايات المتحدة الأمريكية">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-12">
+                      <div class="btn-box">
+                        <button class="theme-btn" type="button">
+                          حفظ التغييرات
+                        </button>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                  </div>
+                  <!-- end row -->
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-6 -->
+        <div class="col-lg-6">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <h3 class="title">تغيير الايميل</h3>
+            </div>
+            <div class="form-content">
+              <div class="contact-form-action">
+                <form action="#">
+                  <div class="row">
+                    <div class="col-lg-12 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">الايميل الحالي</label>
+                        <div class="form-group">
+                          <span class="la la-envelope form-icon"></span>
+                          <input class="form-control" type="text" placeholder="الايميل الحالي">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                    <div class="col-lg-12 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">بريد إلكتروني جديد</label>
+                        <div class="form-group">
+                          <span class="la la-envelope form-icon"></span>
+                          <input class="form-control" type="text" placeholder="بريد إلكتروني جديد">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                    <div class="col-lg-12 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">بريد إلكتروني جديد مرة أخرى</label>
+                        <div class="form-group">
+                          <span class="la la-envelope form-icon"></span>
+                          <input class="form-control" type="text" placeholder="بريد إلكتروني جديد مرة أخرى">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                    <div class="col-lg-12">
+                      <div class="btn-box">
+                        <button class="theme-btn" type="button">
+                          تغيير الايميل
+                        </button>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                  </div>
+                  <!-- end row -->
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-6 -->
+        <div class="col-lg-6">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <h3 class="title">غير كلمة السر</h3>
+            </div>
+            <div class="form-content">
+              <div class="contact-form-action">
+                <form action="#">
+                  <div class="row">
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">كلمة السر الحالية</label>
+                        <div class="form-group">
+                          <span class="la la-lock form-icon"></span>
+                          <input class="form-control" type="text" placeholder="كلمة السر الحالية">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">كلمة مرور جديدة</label>
+                        <div class="form-group">
+                          <span class="la la-lock form-icon"></span>
+                          <input class="form-control" type="text" placeholder="كلمة مرور جديدة">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-6 responsive-column">
+                      <div class="input-box">
+                        <label class="label-text">كلمة المرور الجديدة مرة أخرى</label>
+                        <div class="form-group">
+                          <span class="la la-lock form-icon"></span>
+                          <input class="form-control" type="text" placeholder="كلمة المرور الجديدة مرة أخرى">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-12">
+                      <div class="btn-box">
+                        <button class="theme-btn" type="button">
+                          غير كلمة السر
+                        </button>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                  </div>
+                  <!-- end row -->
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-6 -->
+        <div class="col-lg-6">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <h3 class="title">إعدادات حساب الدفع</h3>
+            </div>
+            <div class="form-content">
+              <div class="contact-form-action">
+                <form method="post">
+                  <div class="row">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="input-box">
+                        <label class="label-text">الاسم على البطاقة</label>
+                        <div class="form-group">
+                          <span class="la la-pencil form-icon"></span>
+                          <input class="form-control" type="text" name="text" value="Amex">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-4 -->
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="input-box">
+                        <label class="label-text">رقم البطاقة</label>
+                        <div class="form-group">
+                          <span class="la la-pencil form-icon"></span>
+                          <input class="form-control" type="text" name="text" value="3275476222500">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-4 -->
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="input-box">
+                        <label class="label-text">شهر انتهاء الصلاحية</label>
+                        <div class="form-group">
+                          <span class="la la-pencil form-icon"></span>
+                          <input class="form-control" type="text" name="text" value="MM">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-4 -->
+                    <div class="col-lg-6 col-sm-6">
+                      <div class="input-box">
+                        <label class="label-text">سنة انتهاء الصلاحية</label>
+                        <div class="form-group">
+                          <span class="la la-pencil form-icon"></span>
+                          <input class="form-control" type="text" name="text" value="YY">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-6 col-sm-6">
+                      <div class="input-box">
+                        <label class="label-text">CVV</label>
+                        <div class="form-group">
+                          <span class="la la-pencil form-icon"></span>
+                          <input class="form-control" type="text" name="text" value="CVV">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end col-lg-6 -->
+                    <div class="col-lg-12">
+                      <div class="btn-box">
+                        <button class="theme-btn" type="submit">
+                          حفظ التغييرات
+                        </button>
+                      </div>
+                    </div>
+                    <!-- end col-lg-12 -->
+                  </div>
+                  <!-- end row -->
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-6 -->
+      </div>
+      <!-- end row -->
+      <div class="border-top mt-4"></div>
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <div class="copy-right padding-top-30px">
+            <p class="copy__desc">
+              © Copyright Trizen 2020. Made with
+              <span class="la la-heart"></span> by
+              <a href="https://themeforest.net/user/techydevs/portfolio">TechyDevs</a>
+            </p>
+          </div>
+          <!-- end copy-right -->
+        </div>
+        <!-- end col-lg-7 -->
+        <div class="col-lg-5">
+          <div class="footer-social-box text-end padding-top-30px">
+            <ul class="social-profile">
+              <li>
+                <a href="#"><i class="lab la-facebook-f"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-twitter"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-instagram"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-linkedin-in"></i></a>
+              </li>
+            </ul>
+          </div>
+          <!-- end copy-right-content -->
+        </div>
+        <!-- end col-lg-5 -->
+      </div>
+      <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+  </div>
+{% endblock content %}
+
+
