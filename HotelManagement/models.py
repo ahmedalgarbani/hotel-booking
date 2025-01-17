@@ -191,3 +191,4 @@ class City(BaseModel):
         verbose_name_plural = _("المناطق")
     def __str__(self):
         return f"{self.name}" 
+    

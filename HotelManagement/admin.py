@@ -1,47 +1,82 @@
 from django.contrib import admin
-
+from django.db.models import Count
+from django.http import HttpResponse
+import xlwt
+from django.utils import timezone
 from users.models import CustomUser
 from .models import Hotel, Location, Phone, Image, City
 from django.contrib.auth import get_user_model
 from django import forms
+from django.utils.html import format_html
 
 User = get_user_model()
 
+def export_to_excel(modeladmin, request, queryset):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="hotels_report.xls"'
+    
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Hotels Report')
+    
+    # العناوين
+    row_num = 0
+    columns = ['اسم الفندق', 'الموقع', 'المدينة', 'البريد الإلكتروني', 'حالة التحقق', 'تاريخ الإنشاء']
+    
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num])
+        
+    # البيانات
+    rows = queryset.values_list('name', 'location__name', 'location__city__name', 'email', 'is_verified', 'created_at')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]))
+            
+    wb.save(response)
+    return response
+
+export_to_excel.short_description = "تصدير الفنادق المحددة إلى Excel"
+
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ['name', 'location', 'created_at']
-    search_fields = ['name']
-    list_filter = ['location', 'created_at']
+    list_display = ['name', 'location', 'email', 'verification_status', 'phone_count', 'created_at']
+    search_fields = ['name', 'email', 'location__name']
+    list_filter = ['location__city', 'is_verified', 'created_at']
+    actions = [export_to_excel]
+    
+    def verification_status(self, obj):
+        if obj.is_verified:
+            return format_html('<span style="color: green;">✓ تم التحقق</span>')
+        return format_html('<span style="color: red;">✗ لم يتم التحقق</span>')
+    verification_status.short_description = "حالة التحقق"
+
+    def phone_count(self, obj):
+        return obj.phones.count()
+    phone_count.short_description = "عدد أرقام الهاتف"
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        
         if request.user.is_superuser or request.user.user_type == 'admin':
             return queryset
-       
         elif request.user.user_type == 'hotel_manager':
             return queryset.filter(manager=request.user)
-        
         return queryset.none()
 
-    def has_add_permission(self, request):
+    def changelist_view(self, request, extra_context=None):
+        # إحصائيات عامة
+        stats = {
+            'total_hotels': self.get_queryset(request).count(),
+            'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
+            'hotels_by_city': self.get_queryset(request).values('location__city__name').annotate(count=Count('id')),
+        }
         
-        return request.user.is_superuser or request.user.user_type == 'admin'
+        if not extra_context:
+            extra_context = {}
+        extra_context['stats'] = stats
+        return super().changelist_view(request, extra_context=extra_context)
 
-    def has_view_permission(self, request, obj=None):
-        if not obj:
-            return True
-        
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        
-        # return request.user.user_type == 'hotel_manager' and request.user in obj.location.all()
-
-    def has_delete_permission(self, request, obj=None):
-       
-        return request.user.is_superuser or request.user.user_type == 'admin'
-    
 # ---------- Hotel -------------
+
 
 # ----------- Location --------------
 @admin.register(Location)
@@ -59,32 +94,6 @@ class LocationAdmin(admin.ModelAdmin):
            
             return queryset.filter(hotel__manager=request.user)
         return queryset.none()
-
-    def has_add_permission(self, request):
-       
-        return request.user.is_superuser or request.user.user_type == 'admin' or request.user.user_type == 'hotel_manager'
-
-    def has_change_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        
-        return request.user.user_type == 'hotel_manager' and obj.hotel_set.filter(manager=request.user).exists()
-
-    def has_delete_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel_set.filter(manager=request.user).exists()
-
-    def has_view_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel_set.filter(manager=request.user).exists()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -129,31 +138,6 @@ class PhoneAdmin(admin.ModelAdmin):
         elif request.user.user_type == 'hotel_manager':
             return queryset.filter(hotel__manager=request.user)
         return queryset.none()
-
-    def has_add_permission(self, request):
-        
-        return request.user.is_superuser or request.user.user_type == 'admin' or request.user.user_type == 'hotel_manager'
-
-    def has_change_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel.manager == request.user
-
-    def has_delete_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel.manager == request.user
-
-    def has_view_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel.manager == request.user
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -244,6 +228,8 @@ class ImageAdmin(admin.ModelAdmin):
         return form
 
     def save_model(self, request, obj, form, change):
+        
+        
         if not obj.pk and request.user.user_type == 'hotel_manager':
            
             obj.hotel_id = Hotel.objects.filter(manager=request.user).first()
@@ -263,23 +249,6 @@ class ImageAdmin(admin.ModelAdmin):
         return queryset.none()
        
 
-    def has_add_permission(self, request):
-        return request.user.is_superuser or request.user.user_type == 'admin' or request.user.user_type == 'hotel_manager'
-
-    def has_change_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel_id.manager == request.user
-
-    def has_delete_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.hotel_id.manager == request.user
-
 # ----------- City --------------
 
 class CityAdmin(admin.ModelAdmin):
@@ -296,28 +265,4 @@ class CityAdmin(admin.ModelAdmin):
            
             return queryset.filter(location__hotel__manager=request.user)
         return queryset.none()
-
-    def has_add_permission(self, request):
-        return request.user.is_superuser or request.user.user_type == 'admin'
-
-    def has_change_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.location_set.filter(hotel__manager=request.user).exists()
-
-    def has_delete_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.location_set.filter(hotel__manager=request.user).exists()
-
-    def has_view_permission(self, request, obj=None):
-        if not obj:
-            return True
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return True
-        return request.user.user_type == 'hotel_manager' and obj.location_set.filter(hotel__manager=request.user).exists()
 admin.site.register(City, CityAdmin)

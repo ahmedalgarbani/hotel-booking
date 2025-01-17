@@ -7,6 +7,23 @@ from django.contrib.auth.models import Group
 from django.utils.html import format_html
 from .models import CustomUser, HotelAccountRequest, ActivityLog
 
+from django.contrib.auth.models import Permission
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+@receiver(post_save, sender=CustomUser)
+def assign_permissions(sender, instance, created, **kwargs):
+    if created:
+        if instance.user_type == 'admin':
+            instance.user_permissions.add(
+                Permission.objects.get(codename='can_approve_request'),
+                Permission.objects.get(codename='can_reject_request')
+            )
+        elif instance.user_type == 'hotel_manager':
+            instance.user_permissions.add(
+                Permission.objects.get(codename='can_approve_request')
+            )
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     list_display = ('username_display', 'email_display', 'full_name_display', 'user_type_display', 'phone_display', 'is_active_display')

@@ -66,11 +66,7 @@ class CustomUser(AbstractUser):
         full_name = self.get_full_name()
         return f"{full_name or self.username} ({self.get_user_type_display()})"
 
-    def clean(self):
-        super().clean()
-        if self.user_type == 'hotel_manager' and not hasattr(self, 'hotel'):
-            raise ValidationError(_('مدير الفندق يجب أن يكون مرتبطًا بفندق'))
-
+    
     @property
     def is_hotel_manager(self):
         return self.user_type == 'hotel_manager'
@@ -167,7 +163,11 @@ class HotelAccountRequest(BaseModel):
         verbose_name = _('طلب حساب فندق')
         verbose_name_plural = _('طلبات حسابات الفنادق')
         ordering = ['-created_at']
-
+    class Meta:
+        permissions = [
+            ("can_approve_request", "Can approve hotel account request"),
+            ("can_reject_request", "Can reject hotel account request"),
+        ]
     def __str__(self):
         return f"{self.hotel_name} - {self.get_status_display()}"
 
