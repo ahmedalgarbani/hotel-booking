@@ -1,0 +1,99 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block content_title %}
+    <h1>إدارة الفنادق</h1>
+{% endblock %}
+
+{% block result_list %}
+    <div class="results">
+        <!-- إحصائيات للأدمن -->
+        {% if stats.user_type == 'admin' %}
+        <div class="module" style="margin-bottom: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
+            <h2>لوحة التحكم الرئيسية</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px;">
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin: 0;">إجمالي الفنادق</h3>
+                    <p style="font-size: 24px; color: #3498db; margin: 10px 0;">{{ stats.total_hotels }}</p>
+                </div>
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin: 0;">الفنادق المُتحقق منها</h3>
+                    <p style="font-size: 24px; color: #27ae60; margin: 10px 0;">{{ stats.verified_hotels }}</p>
+                </div>
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3 style="color: #2c3e50; margin: 0;">الفنادق غير المُتحقق منها</h3>
+                    <p style="font-size: 24px; color: #e74c3c; margin: 10px 0;">{{ stats.unverified_hotels }}</p>
+                </div>
+            </div>
+
+            <!-- توزيع الفنادق حسب المدن -->
+            <div style="margin-top: 20px;">
+                <h3 style="color: #2c3e50;">توزيع الفنادق حسب المدن</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px;">
+                    {% for city in stats.hotels_by_city %}
+                    <div style="background-color: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="margin: 0; color: #34495e;">{{ city.location__city__name|default:"غير محدد" }}</h4>
+                        <p style="font-size: 18px; color: #3498db; margin: 5px 0;">{{ city.count }} فندق</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- أحدث الفنادق -->
+            <div style="margin-top: 20px;">
+                <h3 style="color: #2c3e50;">أحدث الفنادق المضافة</h3>
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        {% for hotel in stats.recent_hotels %}
+                        <li style="padding: 10px; border-bottom: 1px solid #eee;">
+                            <strong>{{ hotel.name }}</strong>
+                            <span style="color: #7f8c8d; margin-right: 10px;">{{ hotel.created_at|date:"Y-m-d" }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- إحصائيات لمدير الفندق -->
+        {% elif stats.user_type == 'hotel_manager' %}
+        <div class="module" style="margin-bottom: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
+            {% if stats.message %}
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <p style="color: #e74c3c; margin: 0;">{{ stats.message }}</p>
+                </div>
+            {% else %}
+                <h2>معلومات الفندق - {{ stats.hotel_name }}</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px;">
+                    <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin: 0;">حالة التحقق</h3>
+                        {% if stats.verification_status %}
+                            <p style="font-size: 18px; color: #27ae60; margin: 10px 0;">✓ تم التحقق</p>
+                            {% if stats.verification_date %}
+                                <small style="color: #7f8c8d;">تاريخ التحقق: {{ stats.verification_date|date:"Y-m-d" }}</small>
+                            {% endif %}
+                        {% else %}
+                            <p style="font-size: 18px; color: #e74c3c; margin: 10px 0;">✗ لم يتم التحقق بعد</p>
+                        {% endif %}
+                    </div>
+
+                    <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin: 0;">معلومات الموقع</h3>
+                        <p style="margin: 5px 0;"><strong>المدينة:</strong> {{ stats.location_info.city }}</p>
+                        <p style="margin: 5px 0;"><strong>العنوان:</strong> {{ stats.location_info.address }}</p>
+                    </div>
+
+                    <div style="background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2c3e50; margin: 0;">إحصائيات</h3>
+                        <p style="margin: 5px 0;"><strong>عدد أرقام الهاتف:</strong> {{ stats.total_phones }}</p>
+                        <p style="margin: 5px 0;"><strong>عدد الصور:</strong> {{ stats.total_images }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- قائمة الفنادق الأصلية -->
+        {{ block.super }}
+    </div>
+{% endblock %}

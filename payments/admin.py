@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Currency, PaymentStatus, PaymentMethod, Payment
+from .models import Currency, HotelPaymentMethod, PaymentStatus, PaymentOption, Payment
+
+
+
+@admin.register(HotelPaymentMethod)
+class HotelPaymentMethodAdmin(admin.ModelAdmin):
+    list_display = ('hotel', 'payment_option', 'account_name', 'is_active')
+    search_fields = ('hotel__name', 'payment_option__method_name', 'account_name')
+    list_filter = ('is_active', 'hotel', 'payment_option')
+    list_editable = ('is_active',)
 
 @admin.register(Currency)
 class CurrencyAdmin(admin.ModelAdmin):
@@ -7,17 +16,21 @@ class CurrencyAdmin(admin.ModelAdmin):
     search_fields = ('currency_name', 'currency_symbol')
     list_filter = ('hotel',)
 
+
 @admin.register(PaymentStatus)
 class PaymentStatusAdmin(admin.ModelAdmin):
     list_display = ('payment_status_name', 'status_code')
     search_fields = ('payment_status_name',)
     list_filter = ('status_code',)
 
-@admin.register(PaymentMethod)
-class PaymentMethodAdmin(admin.ModelAdmin):
-    list_display = ('method_name', 'country', 'currency', 'activate_state')
-    search_fields = ('method_name', 'country')
-    list_filter = ('activate_state', 'currency')
+
+@admin.register(PaymentOption)
+class PaymentOptionAdmin(admin.ModelAdmin):
+    list_display = ('method_name', 'currency', 'is_active')
+    search_fields = ('method_name', 'currency__currency_name')
+    list_filter = ('is_active', 'currency')
+    list_editable = ('is_active',)
+
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
@@ -33,11 +46,15 @@ class PaymentAdmin(admin.ModelAdmin):
         'payment_type'
     )
     search_fields = (
-        'payment_method__method_name', 
+        'payment_method__payment_option__method_name', 
         'payment_status__payment_status_name', 
-        'payment_currency__currency_name', 
+        'payment_currency', 
         'booking__id'
     )
     list_filter = ('payment_status', 'payment_method', 'payment_currency', 'payment_date', 'payment_type')
-    readonly_fields = ('payment_date',)  
+    readonly_fields = ('payment_date', 'payment_totalamount')  # جعل الحقول الحسابية للقراءة فقط
+    autocomplete_fields = ('payment_method', 'payment_status', 'booking')  # تحسين البحث في العلاقات الأجنبية
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related('payment_method', 'payment_status', 'booking')
