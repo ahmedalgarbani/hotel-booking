@@ -23,6 +23,7 @@
             <li class="{% if request.resolver_match.url_name == 'user_dashboard_index' %} page-active {% endif %}">
             <a href="{% url 'payments:user_dashboard_index' %}"><i class="la la-dashboard me-2"></i>لوحة القيادة</a>
           </li>
+          
           <li class="{% if request.resolver_match.url_name == 'user_dashboard_bookings' %} page-active {% endif %}">
             <a href="{% url 'payments:user_dashboard_bookings' %}"><i class="la la-shopping-cart me-2 text-color"></i>الحجز</a>
           </li>
