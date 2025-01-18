@@ -40,6 +40,9 @@ urlpatterns = [
     path('cities/create/', views.city_create, name='city_create'),
     path('cities/<int:city_id>/update/', views.city_update, name='city_update'),
     path('cities/<int:city_id>/delete/', views.city_delete, name='city_delete'),
+
+    path('add-hotel/', views.add_hotel, name='add_hotel'), 
+    
 ]
 
 

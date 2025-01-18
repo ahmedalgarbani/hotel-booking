@@ -9,6 +9,10 @@ from django.http import HttpResponseForbidden
 
 
 # -------------------- Hotel ----------------------------
+
+def add_hotel(request):
+    return render(request, 'frontend/home/pages/add-hotel.html')
+
 def index(request):
     hotels = Hotel.objects.all()
     locations = Location.objects.all()
