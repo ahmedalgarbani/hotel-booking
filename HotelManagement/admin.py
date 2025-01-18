@@ -39,7 +39,7 @@ def export_to_excel(modeladmin, request, queryset):
         ws.write(row_num, col_num, columns[col_num])
         
     # البيانات
-    rows = queryset.values_list('name', 'location__name', 'location__city__name', 'email', 'is_verified', 'created_at')
+    rows = queryset.values_list('name', 'email', 'is_verified', 'created_at')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
@@ -53,7 +53,7 @@ export_to_excel.short_description = "تصدير الفنادق المحددة إ
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
     list_display = ['name', 'location', 'email', 'verification_status', 'phone_count', 'created_at']
-    search_fields = ['name', 'email', 'location__name']
+    search_fields = ['name', 'email']
     list_filter = ['location__city', 'is_verified', 'created_at']
     actions = [export_to_excel, 'export_to_pdf']
     
@@ -85,7 +85,7 @@ class HotelAdmin(admin.ModelAdmin):
                 'total_hotels': self.get_queryset(request).count(),
                 'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
                 'unverified_hotels': self.get_queryset(request).filter(is_verified=False).count(),
-                'hotels_by_city': self.get_queryset(request).values('location__city__name').annotate(count=Count('id')),
+                'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
                 'recent_hotels': self.get_queryset(request).order_by('-created_at')[:5],
                 'user_type': 'admin'
             }
