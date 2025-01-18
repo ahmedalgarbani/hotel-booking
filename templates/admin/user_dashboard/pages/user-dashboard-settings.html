@@ -1,385 +1,356 @@
 {% extends "admin/user_dashboard/index.html" %}
-{% block section_title %}
-settings
-{% endblock section_title %}
-{% block path_title %}
-settings
-{% endblock path_title %}
-{% block content %}
 {% load static %}
+{% block section_title %} settings {% endblock section_title %}
+{% block path_title %} settings {%endblock path_title %}
+{% block content %}
 <div class="dashboard-main-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="form-box">
-            <div class="form-title-wrap">
-              <h3 class="title">معلومات شخصية</h3>
-            </div>
-            <div class="form-content">
-              <div
-                class="user-profile-action d-flex align-items-center pb-4"
-              >
-                <div class="user-pro-img">
-                  <img src="images/team1.jpg" alt="user-image" />
-                </div>
-                <div class="upload-btn-box">
-                  <p class="pb-2 font-size-15 line-height-24">
-                    الحد الأقصى لحجم الملف هو 5 ميجا بايت ، والحد الأدنى
-                    للأبعاد: 150 × 150 والملفات المناسبة هي .jpg & amp؛
-                    .بي إن جي
-                  </p>
-                  <form
-                    action="#"
-                    method="post"
-                    enctype="multipart/form-data"
-                  >
-                    <div class="d-flex align-items-center">
-                      <input
-                        type="file"
-                        name="files[]"
-                        class="filer_input"
-                        multiple="multiple"
-                      />
-                      <button
-                        class="theme-btn theme-btn-small ms-2 mt-n3"
-                        type="button"
-                      >
-                        إزالة الصورة
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <div class="contact-form-action">
-                <form action="#">
-                  <div class="row">
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">الاسم الاول</label>
-                        <div class="form-group">
-                          <span class="la la-user form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value="علي"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">الكنية</label>
-                        <div class="form-group">
-                          <span class="la la-user form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value="توفان"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text"
-                          >عنوان البريد الالكترونى</label
-                        >
-                        <div class="form-group">
-                          <span class="la la-envelope form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value="alitufan@gmail.com"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">رقم الهاتف</label>
-                        <div class="form-group">
-                          <span class="la la-phone form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value="+01 4561 3214"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">تاريخ الولادة</label>
-                        <div class="form-group">
-                          <span class="la la-user form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value="03 يونيو 1990"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">عنوان</label>
-                        <div class="form-group">
-                          <span class="la la-map form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value="8800 Orchard Lake Road، Suite 180 فارمنجتون هيلز ، الولايات المتحدة الأمريكية"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-12">
-                      <div class="btn-box">
-                        <button class="theme-btn" type="button">
-                          حفظ التغييرات
-                        </button>
-                      </div>
-                    </div>
-                    <!-- end col-lg-12 -->
-                  </div>
-                  <!-- end row -->
-                </form>
-              </div>
-            </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-box">
+          <div class="form-title-wrap">
+            <h3 class="title">معلومات شخصية</h3>
           </div>
-          <!-- end form-box -->
-        </div>
-        <!-- end col-lg-6 -->
-        <div class="col-lg-6">
-          <div class="form-box">
-            <div class="form-title-wrap">
-              <h3 class="title">تغيير الايميل</h3>
-            </div>
-            <div class="form-content">
-              <div class="contact-form-action">
-                <form action="#">
-                  <div class="row">
-                    <div class="col-lg-12 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">الايميل الحالي</label>
-                        <div class="form-group">
-                          <span class="la la-envelope form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="الايميل الحالي"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-12 -->
-                    <div class="col-lg-12 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text"
-                          >بريد إلكتروني جديد</label
-                        >
-                        <div class="form-group">
-                          <span class="la la-envelope form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="بريد إلكتروني جديد"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-12 -->
-                    <div class="col-lg-12 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text"
-                          >بريد إلكتروني جديد مرة أخرى</label
-                        >
-                        <div class="form-group">
-                          <span class="la la-envelope form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="بريد إلكتروني جديد مرة أخرى"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-12 -->
-                    <div class="col-lg-12">
-                      <div class="btn-box">
-                        <button class="theme-btn" type="button">
-                          تغيير الايميل
-                        </button>
-                      </div>
-                    </div>
-                    <!-- end col-lg-12 -->
-                  </div>
-                  <!-- end row -->
-                </form>
+          <div class="form-content">
+            <div class="user-profile-action d-flex align-items-center pb-4">
+              <div class="user-pro-img">
+                <img src="images/team1.jpg" alt="user-image" />
               </div>
-            </div>
-          </div>
-          <!-- end form-box -->
-        </div>
-        <!-- end col-lg-6 -->
-        <div class="col-lg-6">
-          <div class="form-box">
-            <div class="form-title-wrap">
-              <h3 class="title">غير كلمة السر</h3>
-            </div>
-            <div class="form-content">
-              <div class="contact-form-action">
-                <form action="#">
-                  <div class="row">
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text"
-                          >كلمة المرور الحالي</label
-                        >
-                        <div class="form-group">
-                          <span class="la la-lock form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="كلمة المرور الحالي"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">كلمة سر جديدة</label>
-                        <div class="form-group">
-                          <span class="la la-lock form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="كلمة سر جديدة"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text"
-                          >كلمة المرور الجديدة مرة أخرى</label
-                        >
-                        <div class="form-group">
-                          <span class="la la-lock form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="كلمة المرور الجديدة مرة أخرى"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end col-lg-6 -->
-                    <div class="col-lg-12">
-                      <div class="btn-box">
-                        <button class="theme-btn" type="button">
-                          غير كلمة السر
-                        </button>
-                      </div>
-                    </div>
-                    <!-- end col-lg-12 -->
-                  </div>
-                  <!-- end row -->
-                </form>
-              </div>
-            </div>
-          </div>
-          <!-- end form-box -->
-        </div>
-        <!-- end col-lg-6 -->
-        <div class="col-lg-6">
-          <div class="form-box">
-            <div class="form-title-wrap">
-              <h3 class="title pb-2">هل نسيت كلمة المرور</h3>
-              <p class="font-size-15 line-height-24">
-                أدخل البريد الإلكتروني لحسابك لإعادة تعيين كلمة المرور. ثم
-                سوف تتلقى رابطًا إلى البريد الإلكتروني <br />
-                لإعادة تعيين كلمة المرور. إذا كانت لديك أي مشكلة بشأن
-                إعادة تعيين كلمة المرور ،
-                <a href="contact.html" class="color-text"> فاتصل بنا </a>
-              </p>
-            </div>
-            <div class="form-content">
-              <div class="contact-form-action">
-                <form action="#">
-                  <div class="input-box">
-                    <label class="label-text"
-                      >عنوان البريد الالكترونى</label
+              <div class="upload-btn-box">
+                <p class="pb-2 font-size-15 line-height-24">
+                  الحد الأقصى لحجم الملف هو 5 ميجا بايت ، والحد الأدنى للأبعاد:
+                  150 × 150 والملفات المناسبة هي .jpg & amp؛ .بي إن جي
+                </p>
+                <form action="#" method="post" enctype="multipart/form-data">
+                  <div class="d-flex align-items-center">
+                    <input
+                      type="file"
+                      name="files[]"
+                      class="filer_input"
+                      multiple="multiple"
+                    />
+                    <button
+                      class="theme-btn theme-btn-small ms-2 mt-n3"
+                      type="button"
                     >
-                    <div class="form-group">
-                      <span class="la la-envelope form-icon"></span>
-                      <input
-                        class="form-control"
-                        type="text"
-                        placeholder="عنوان البريد الالكترونى"
-                      />
-                    </div>
-                  </div>
-                  <div class="btn-box">
-                    <button class="theme-btn" type="button">
-                      إستعادة كلمة المرور
+                      إزالة الصورة
                     </button>
                   </div>
                 </form>
               </div>
             </div>
+            <div class="contact-form-action">
+              <form action="#">
+                <div class="row">
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">الاسم الاول</label>
+                      <div class="form-group">
+                        <span class="la la-user form-icon"></span>
+                        <input class="form-control" type="text" value="علي" />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">الكنية</label>
+                      <div class="form-group">
+                        <span class="la la-user form-icon"></span>
+                        <input class="form-control" type="text" value="توفان" />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">عنوان البريد الالكترونى</label>
+                      <div class="form-group">
+                        <span class="la la-envelope form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value="alitufan@gmail.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">رقم الهاتف</label>
+                      <div class="form-group">
+                        <span class="la la-phone form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value="+01 4561 3214"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">تاريخ الولادة</label>
+                      <div class="form-group">
+                        <span class="la la-user form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value="03 يونيو 1990"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">عنوان</label>
+                      <div class="form-group">
+                        <span class="la la-map form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value="8800 Orchard Lake Road، Suite 180 فارمنجتون هيلز ، الولايات المتحدة الأمريكية"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-12">
+                    <div class="btn-box">
+                      <button class="theme-btn" type="button">
+                        حفظ التغييرات
+                      </button>
+                    </div>
+                  </div>
+                  <!-- end col-lg-12 -->
+                </div>
+                <!-- end row -->
+              </form>
+            </div>
           </div>
-          <!-- end form-box -->
         </div>
-        <!-- end col-lg-6 -->
+        <!-- end form-box -->
       </div>
-      <!-- end row -->
-      <div class="border-top mt-4"></div>
-      <div class="row align-items-center">
-        <div class="col-lg-7">
-          <div class="copy-right padding-top-30px">
-            <p class="copy__desc">
-              &copy; Copyright Trizen 2020. Made with
-              <span class="la la-heart"></span> by
-              <a href="https://themeforest.net/user/techydevs/portfolio"
-                >TechyDevs</a
-              >
+      <!-- end col-lg-6 -->
+      <div class="col-lg-6">
+        <div class="form-box">
+          <div class="form-title-wrap">
+            <h3 class="title">تغيير الايميل</h3>
+          </div>
+          <div class="form-content">
+            <div class="contact-form-action">
+              <form action="#">
+                <div class="row">
+                  <div class="col-lg-12 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">الايميل الحالي</label>
+                      <div class="form-group">
+                        <span class="la la-envelope form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="الايميل الحالي"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-12 -->
+                  <div class="col-lg-12 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">بريد إلكتروني جديد</label>
+                      <div class="form-group">
+                        <span class="la la-envelope form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="بريد إلكتروني جديد"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-12 -->
+                  <div class="col-lg-12 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text"
+                        >بريد إلكتروني جديد مرة أخرى</label
+                      >
+                      <div class="form-group">
+                        <span class="la la-envelope form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="بريد إلكتروني جديد مرة أخرى"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-12 -->
+                  <div class="col-lg-12">
+                    <div class="btn-box">
+                      <button class="theme-btn" type="button">
+                        تغيير الايميل
+                      </button>
+                    </div>
+                  </div>
+                  <!-- end col-lg-12 -->
+                </div>
+                <!-- end row -->
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- end form-box -->
+      </div>
+      <!-- end col-lg-6 -->
+      <div class="col-lg-6">
+        <div class="form-box">
+          <div class="form-title-wrap">
+            <h3 class="title">غير كلمة السر</h3>
+          </div>
+          <div class="form-content">
+            <div class="contact-form-action">
+              <form action="#">
+                <div class="row">
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">كلمة المرور الحالي</label>
+                      <div class="form-group">
+                        <span class="la la-lock form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="كلمة المرور الحالي"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text">كلمة سر جديدة</label>
+                      <div class="form-group">
+                        <span class="la la-lock form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="كلمة سر جديدة"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-6 responsive-column">
+                    <div class="input-box">
+                      <label class="label-text"
+                        >كلمة المرور الجديدة مرة أخرى</label
+                      >
+                      <div class="form-group">
+                        <span class="la la-lock form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="كلمة المرور الجديدة مرة أخرى"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end col-lg-6 -->
+                  <div class="col-lg-12">
+                    <div class="btn-box">
+                      <button class="theme-btn" type="button">
+                        غير كلمة السر
+                      </button>
+                    </div>
+                  </div>
+                  <!-- end col-lg-12 -->
+                </div>
+                <!-- end row -->
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- end form-box -->
+      </div>
+      <!-- end col-lg-6 -->
+      <div class="col-lg-6">
+        <div class="form-box">
+          <div class="form-title-wrap">
+            <h3 class="title pb-2">هل نسيت كلمة المرور</h3>
+            <p class="font-size-15 line-height-24">
+              أدخل البريد الإلكتروني لحسابك لإعادة تعيين كلمة المرور. ثم سوف
+              تتلقى رابطًا إلى البريد الإلكتروني <br />
+              لإعادة تعيين كلمة المرور. إذا كانت لديك أي مشكلة بشأن إعادة تعيين
+              كلمة المرور ،
+              <a href="contact.html" class="color-text"> فاتصل بنا </a>
             </p>
           </div>
-          <!-- end copy-right -->
-        </div>
-        <!-- end col-lg-7 -->
-        <div class="col-lg-5">
-          <div class="footer-social-box text-end padding-top-30px">
-            <ul class="social-profile">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
+          <div class="form-content">
+            <div class="contact-form-action">
+              <form action="#">
+                <div class="input-box">
+                  <label class="label-text">عنوان البريد الالكترونى</label>
+                  <div class="form-group">
+                    <span class="la la-envelope form-icon"></span>
+                    <input
+                      class="form-control"
+                      type="text"
+                      placeholder="عنوان البريد الالكترونى"
+                    />
+                  </div>
+                </div>
+                <div class="btn-box">
+                  <button class="theme-btn" type="button">
+                    إستعادة كلمة المرور
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <!-- end copy-right-content -->
         </div>
-        <!-- end col-lg-5 -->
+        <!-- end form-box -->
       </div>
-      <!-- end row -->
+      <!-- end col-lg-6 -->
     </div>
-    <!-- end container-fluid -->
+    <!-- end row -->
+    <div class="border-top mt-4"></div>
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <div class="copy-right padding-top-30px">
+          <p class="copy__desc">
+            &copy; Copyright TeamSoft 2025. Made with
+            <span class="la la-heart"></span> by
+            <a href="https://ahmed-div.netlify.app">TeamSoft</a>
+          </p>
+        </div>
+        <!-- end copy-right -->
+      </div>
+      <!-- end col-lg-7 -->
+      <div class="col-lg-5">
+        <div class="footer-social-box text-end padding-top-30px">
+          <ul class="social-profile">
+            <li>
+              <a href="#"><i class="lab la-facebook-f"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="lab la-twitter"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="lab la-instagram"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="lab la-linkedin-in"></i></a>
+            </li>
+          </ul>
+        </div>
+        <!-- end copy-right-content -->
+      </div>
+      <!-- end col-lg-5 -->
+    </div>
+    <!-- end row -->
   </div>
+  <!-- end container-fluid -->
+</div>
 {% endblock content %}

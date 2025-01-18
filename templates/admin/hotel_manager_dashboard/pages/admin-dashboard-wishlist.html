@@ -1,0 +1,196 @@
+{% extends "admin/hotel_manager_dashboard/index.html" %}
+{% load static %}
+{% block section_title %}
+قائمة المحفوظات
+{% endblock section_title %}
+
+{% block path_title %}
+قائمة المحوظات
+{% endblock path_title %}
+
+{% block content %}
+<div class="dashboard-main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <div class="d-flex align-items-center justify-content-between">
+                <h3 class="title">قائمة الإشارات المرجعية</h3>
+                <div class="select-contain select2-container-wrapper">
+                  <select class="select-contain-select select2-hidden-accessible" data-select2-id="select2-data-1-cjuo" tabindex="-1" aria-hidden="true">
+                    <option value="1" data-select2-id="select2-data-3-hgx5">في أي وقت</option>
+                    <option value="2">آخر</option>
+                    <option value="3">الأقدم</option>
+                  </select><span class="select2 select2-container select2-container--default" dir="rtl" data-select2-id="select2-data-2-e327" style="width: 98.5167px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-erhi-container" aria-controls="select2-erhi-container"><span class="select2-selection__rendered" id="select2-erhi-container" role="textbox" aria-readonly="true" title="في أي وقت">في أي وقت</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-content pb-2">
+              <div class="card-item card-item-list">
+                <div class="card-img">
+                  <img src="{% static 'images/img1.jpg' %}" alt="hotel-img">
+                </div>
+                <div class="card-body">
+                  <p class="card-meta pb-1">الفندق</p>
+                  <h3 class="card-title">فندق لافيستا أستوتيل</h3>
+                  <p class="card-meta pt-2 pb-3">
+                    Lorem ipsum dolor sit amet، consectetur adipisicing
+                    elit. يجب أن يكون لديك مثل هذا الرجل الذي لا يريد أن
+                    يبتعد عن العمل! Animi eius fugit repudiandae.
+                  </p>
+                  <div class="btn-box">
+                    <a href="#" class="theme-btn theme-btn-small theme-btn-transparent"><i class="la la-eye me-1"></i>عرض العنصر</a>
+                  </div>
+                </div>
+                <div class="action-btns">
+                  <a href="hotel-single.html" class="theme-btn theme-btn-small bg-danger"><i class="la la-times me-1"></i>إلغاء</a>
+                </div>
+              </div>
+              <!-- end card-item -->
+              <div class="card-item car-card card-item-list">
+                <div class="card-img">
+                  <img src="{% static 'images/car-img2.png' %}" alt="car-img">
+                </div>
+                <div class="card-body">
+                  <p class="card-meta pb-1">سيارة</p>
+                  <h3 class="card-title">
+                    فولكس فاجن جيتا 2 أبواب أو ما شابه ذلك
+                  </h3>
+                  <p class="card-meta pt-2 pb-3">
+                    Lorem ipsum dolor sit amet، consectetur adipisicing
+                    elit. يجب أن يكون لديك مثل هذا الرجل الذي لا يريد أن
+                    يبتعد عن العمل! Animi eius fugit repudiandae.
+                  </p>
+                  <div class="btn-box">
+                    <a href="#" class="theme-btn theme-btn-small theme-btn-transparent"><i class="la la-eye me-1"></i>عرض العنصر</a>
+                  </div>
+                </div>
+                <div class="action-btns">
+                  <a href="car-single.html" class="theme-btn theme-btn-small bg-danger"><i class="la la-times me-1"></i>إلغاء</a>
+                </div>
+              </div>
+              <!-- end card-item -->
+              <div class="card-item cruise--card card-item-list">
+                <div class="card-img">
+                  <a href="cruise-details.html" class="d-block">
+                    <img src="{% static 'images/cruise-img6.jpg' %}" alt="cruise-img">
+                  </a>
+                </div>
+                <div class="card-body">
+                  <p class="card-meta pb-1">رحلة بحرية</p>
+                  <h3 class="card-title">
+                    7 ليالٍ في منطقة البحر الكاريبي الجنوبية
+                  </h3>
+                  <p class="card-meta pt-2 pb-3">
+                    Lorem ipsum dolor sit amet، consectetur adipisicing
+                    elit. يجب أن يكون لديك مثل هذا الرجل الذي لا يريد أن
+                    يبتعد عن العمل! Animi eius fugit repudiandae.
+                  </p>
+                  <div class="btn-box">
+                    <a href="#" class="theme-btn theme-btn-small theme-btn-transparent"><i class="la la-eye me-1"></i>عرض العنصر</a>
+                  </div>
+                </div>
+                <div class="action-btns">
+                  <a href="cruise-details.html" class="theme-btn theme-btn-small bg-danger"><i class="la la-times me-1"></i>إلغاء</a>
+                </div>
+              </div>
+              <!-- end card-item -->
+              <div class="card-item card-item-list">
+                <div class="card-img">
+                  <img src="{% static 'images/img9.jpg' %}" alt="hotel-img">
+                </div>
+                <div class="card-body">
+                  <p class="card-meta pb-1">جولة</p>
+                  <h3 class="card-title">صيف شمال كاليفورنيا 2019</h3>
+                  <p class="card-meta pt-2 pb-3">
+                    Lorem ipsum dolor sit amet، consectetur adipisicing
+                    elit. يجب أن يكون لديك مثل هذا الرجل الذي لا يريد أن
+                    يبتعد عن العمل! Animi eius fugit repudiandae.
+                  </p>
+                  <div class="btn-box">
+                    <a href="#" class="theme-btn theme-btn-small theme-btn-transparent"><i class="la la-eye me-1"></i>عرض العنصر</a>
+                  </div>
+                </div>
+                <div class="action-btns">
+                  <a href="tour-details.html" class="theme-btn theme-btn-small bg-danger"><i class="la la-times me-1"></i>إلغاء</a>
+                </div>
+              </div>
+              <!-- end card-item -->
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-12 -->
+      </div>
+      <!-- end row -->
+      <div class="row">
+        <div class="col-lg-12">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#" aria-label="Previous">
+                  <span aria-hidden="true"><i class="la la-angle-left"></i></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#">1</a>
+              </li>
+              <li class="page-item active">
+                <a class="page-link page-link-nav" href="#">2 <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#" aria-label="Next">
+                  <span aria-hidden="true"><i class="la la-angle-right"></i></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div class="border-top mt-5"></div>
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <div class="copy-right padding-top-30px">
+            <p class="copy__desc">
+              © Copyright Trizen 2020. Made with
+              <span class="la la-heart"></span> by
+              <a href="https://themeforest.net/user/techydevs/portfolio">TechyDevs</a>
+            </p>
+          </div>
+          <!-- end copy-right -->
+        </div>
+        <!-- end col-lg-7 -->
+        <div class="col-lg-5">
+          <div class="footer-social-box text-end padding-top-30px">
+            <ul class="social-profile">
+              <li>
+                <a href="#"><i class="lab la-facebook-f"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-twitter"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-instagram"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-linkedin-in"></i></a>
+              </li>
+            </ul>
+          </div>
+          <!-- end copy-right-content -->
+        </div>
+        <!-- end col-lg-5 -->
+      </div>
+      <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+  </div>
+{% endblock content %}
+
+

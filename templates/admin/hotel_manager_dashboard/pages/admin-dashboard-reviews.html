@@ -1,0 +1,262 @@
+{% extends "admin/hotel_manager_dashboard/index.html" %}
+{% load static %}
+{% block section_title %}
+المراجعات
+{% endblock section_title %}
+
+{% block path_title %}
+المراجعات
+{% endblock path_title %}
+
+{% block content %}
+<div class="dashboard-main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-box">
+            <div class="form-title-wrap">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <h3 class="title">مراجعة القوائم</h3>
+                  <p class="font-size-14">
+                    إظهار 1 إلى 4 من أصل 20 مدخلات
+                  </p>
+                </div>
+                <div class="select-contain select2-container-wrapper">
+                  <select class="select-contain-select select2-hidden-accessible" data-select2-id="select2-data-1-rge2" tabindex="-1" aria-hidden="true">
+                    <option value="1" data-select2-id="select2-data-3-3t5x">في أي وقت</option>
+                    <option value="2">آخر</option>
+                    <option value="3">الأقدم</option>
+                  </select><span class="select2 select2-container select2-container--default" dir="rtl" data-select2-id="select2-data-2-su8e" style="width: 98.5167px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-qoyy-container" aria-controls="select2-qoyy-container"><span class="select2-selection__rendered" id="select2-qoyy-container" role="textbox" aria-readonly="true" title="في أي وقت">في أي وقت</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-content">
+              <div class="comments-list">
+                <div class="comment">
+                  <div class="comment-avatar">
+                    <img class="avatar__img" alt="" src="{% static 'images/team8.jpg' %}">
+                  </div>
+                  <div class="comment-body">
+                    <div class="meta-data">
+                      <h3 class="comment__author">
+                        جراند بلازا للشقق الفندقية
+                      </h3>
+                      <div class="meta-data-inner d-flex">
+                        <p class="comment__meta me-1">
+                          بواسطة <a href="#"> John Smith </a>
+                        </p>
+                        <span class="ratings d-flex align-items-center me-1">
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                        </span>
+                        <p class="comment__date">5 أبريل 2019</p>
+                      </div>
+                    </div>
+                    <p class="comment-content">
+                      كانت إقامتنا ممتعة ومرحبة. بقينا في شقة مخصصة لثلاثة
+                      بالغين مع مرافق المطبخ. كانت خدمات التنظيف رائعة.
+                      لقد أحببنا خدمات الغسيل وتنظيف المطبخ بالإضافة إلى
+                      خدمات التنظيف المنتظمة.
+                    </p>
+                    <div class="comment-reply">
+                      <a class="theme-btn" href="#" data-bs-toggle="modal" data-bs-target="#modalPopup">
+                        <span class="la la-mail-reply me-1"></span>الرد
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- end comments -->
+                <div class="comment">
+                  <div class="comment-avatar">
+                    <img class="avatar__img" alt="" src="{% static 'images/team8.jpg' %}">
+                  </div>
+                  <div class="comment-body">
+                    <div class="meta-data">
+                      <h3 class="comment__author">
+                        جولة غداء في الشاطئ الجنوبي لمدة ثلاث ساعات
+                      </h3>
+                      <div class="meta-data-inner d-flex">
+                        <p class="comment__meta me-1">
+                          بواسطة <a href="#"> Alex smith </a>
+                        </p>
+                        <span class="ratings d-flex align-items-center me-1">
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                        </span>
+                        <p class="comment__date">5 أبريل 2019</p>
+                      </div>
+                    </div>
+                    <p class="comment-content">
+                      كانت إقامتنا ممتعة ومرحبة. بقينا في شقة مخصصة لثلاثة
+                      بالغين مع مرافق المطبخ. كانت خدمات التنظيف رائعة.
+                      لقد أحببنا خدمات الغسيل وتنظيف المطبخ بالإضافة إلى
+                      خدمات التنظيف المنتظمة.
+                    </p>
+                    <div class="comment-reply">
+                      <a class="theme-btn" href="#" data-bs-toggle="modal" data-bs-target="#modalPopup">
+                        <span class="la la-mail-reply me-1"></span>الرد
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- end comments -->
+                <div class="comment">
+                  <div class="comment-avatar">
+                    <img class="avatar__img" alt="" src="{% static 'images/team8.jpg' %}">
+                  </div>
+                  <div class="comment-body">
+                    <div class="meta-data">
+                      <h3 class="comment__author">
+                        رحلة بحرية في غرب الكاريبي لمدة 7 ليال
+                      </h3>
+                      <div class="meta-data-inner d-flex">
+                        <p class="comment__meta me-1">
+                          بواسطة <a href="#"> Alex smith </a>
+                        </p>
+                        <span class="ratings d-flex align-items-center me-1">
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                        </span>
+                        <p class="comment__date">5 أبريل 2019</p>
+                      </div>
+                    </div>
+                    <p class="comment-content">
+                      كانت إقامتنا ممتعة ومرحبة. بقينا في شقة مخصصة لثلاثة
+                      بالغين مع مرافق المطبخ. كانت خدمات التنظيف رائعة.
+                      لقد أحببنا خدمات الغسيل وتنظيف المطبخ بالإضافة إلى
+                      خدمات التنظيف المنتظمة.
+                    </p>
+                    <div class="comment-reply">
+                      <a class="theme-btn" href="#" data-bs-toggle="modal" data-bs-target="#modalPopup">
+                        <span class="la la-mail-reply me-1"></span>الرد
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- end comments -->
+                <div class="comment mb-0 pb-0 border-bottom-0">
+                  <div class="comment-avatar">
+                    <img class="avatar__img" alt="" src="{% static 'images/team8.jpg' %}">
+                  </div>
+                  <div class="comment-body">
+                    <div class="meta-data">
+                      <h3 class="comment__author">
+                        جولة مشي لمدة ساعتين في مانهاتن
+                      </h3>
+                      <div class="meta-data-inner d-flex">
+                        <p class="comment__meta me-1">
+                          بواسطة <a href="#"> Alex smith </a>
+                        </p>
+                        <span class="ratings d-flex align-items-center me-1">
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                          <i class="la la-star"></i>
+                        </span>
+                        <p class="comment__date">5 أبريل 2019</p>
+                      </div>
+                    </div>
+                    <p class="comment-content">
+                      كانت إقامتنا ممتعة ومرحبة. بقينا في شقة مخصصة لثلاثة
+                      بالغين مع مرافق المطبخ. كانت خدمات التنظيف رائعة.
+                      لقد أحببنا خدمات الغسيل وتنظيف المطبخ بالإضافة إلى
+                      خدمات التنظيف المنتظمة.
+                    </p>
+                    <div class="comment-reply">
+                      <a class="theme-btn" href="#" data-bs-toggle="modal" data-bs-target="#modalPopup">
+                        <span class="la la-mail-reply me-1"></span>الرد
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- end comments -->
+              </div>
+              <!-- end comments-list -->
+            </div>
+          </div>
+          <!-- end form-box -->
+        </div>
+        <!-- end col-lg-12 -->
+      </div>
+      <!-- end row -->
+      <div class="row">
+        <div class="col-lg-12">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#" aria-label="Previous">
+                  <span aria-hidden="true"><i class="la la-angle-left"></i></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#">1</a>
+              </li>
+              <li class="page-item active">
+                <a class="page-link page-link-nav" href="#">2 <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link page-link-nav" href="#" aria-label="Next">
+                  <span aria-hidden="true"><i class="la la-angle-right"></i></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div class="border-top mt-5"></div>
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <div class="copy-right padding-top-30px">
+            <p class="copy__desc">
+              © Copyright Trizen 2020. Made with
+              <span class="la la-heart"></span> by
+              <a href="https://themeforest.net/user/techydevs/portfolio">TechyDevs</a>
+            </p>
+          </div>
+          <!-- end copy-right -->
+        </div>
+        <!-- end col-lg-7 -->
+        <div class="col-lg-5">
+          <div class="footer-social-box text-end padding-top-30px">
+            <ul class="social-profile">
+              <li>
+                <a href="#"><i class="lab la-facebook-f"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-twitter"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-instagram"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="lab la-linkedin-in"></i></a>
+              </li>
+            </ul>
+          </div>
+          <!-- end copy-right-content -->
+        </div>
+        <!-- end col-lg-5 -->
+      </div>
+      <!-- end row -->
+    </div>
+    <!-- end container-fluid -->
+  </div>
+{% endblock content %}
+
+

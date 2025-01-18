@@ -4,12 +4,12 @@ from .models import Hotel, Location, Phone, Image, City
 class HotelForm(forms.ModelForm):
     class Meta:
         model = Hotel
-        fields = ['location', 'name', 'email', 'description', 'is_verified', 'verification_date']
+        fields = [ 'name', 'email', 'description', 'is_verified', 'verification_date']
 
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
-        fields = ['name', 'address', 'city']
+        fields = [ 'address', 'city']
 
 class PhoneForm(forms.ModelForm):
     class Meta:
@@ -24,4 +24,4 @@ class ImageForm(forms.ModelForm):
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
-        fields = ['name', 'state', 'country']
+        fields = [ 'state', 'country']
