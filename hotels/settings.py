@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'reviews',
     'services',
     'rest_framework',
+    'menu_generator',
     
 ]
 
@@ -92,7 +93,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '54322',
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
@@ -264,3 +265,51 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+
+
+
+####################################################################################
+# Example: setting.py
+####################################################################################
+
+
+NAV_MENU_TOP = [
+    {
+        "name": "الرئيسي",
+        "url": "login_url_view",  
+    },
+    {
+        "name": "عنا",
+        "url": "register_view_url",  
+    },
+    {
+        "name": "الفنادق",
+        "url": "/acount",
+        "submenu": [
+            {
+                "name": "Profile",
+                "url": "/account/profile",
+            },
+            {
+                "name": "Account Balance",
+                "url": "/account/balance",
+            },
+            {
+                "name": "Account Secrets",
+                "url": "/account/secrets",
+            }
+        ],
+    },
+    {
+        "name": "الغرف",
+        "url": "register_view_url",  
+    },
+    {
+        "name": "اشترك معنا",
+        "url": "register_view_url",  
+    },
+    {
+        "name": "المقالات ",
+        "url": "register_view_url",  
+    },
+]
