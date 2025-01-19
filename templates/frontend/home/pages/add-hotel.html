@@ -62,8 +62,8 @@
                 >
               </p>
             </div>
-              <form method="post" enctype="multipart/form-data">
-                 {% csrf_token %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
             <div class="form-box">
               <div class="form-title-wrap">
                 <h3 class="title">
@@ -79,7 +79,12 @@
                       <label class="label-text">اسمك</label>
                       <div class="form-group">
                         <span class="la la-user form-icon"></span>
-                           {{ form.name }}
+                        <input
+                          class="form-control"
+                          type="text"
+                          name="name"
+                          placeholder="اسمك"
+                        />
                       </div>
                     </div>
                   </div>
@@ -89,7 +94,12 @@
                       <label class="label-text">بريدك الالكتروني</label>
                       <div class="form-group">
                         <span class="la la-envelope-o form-icon"></span>
-                          {{ form.email }}
+                        <input
+                          class="form-control"
+                          type="email"
+                          name="email"
+                          placeholder="بريدك الالكتروني"
+                        />
                       </div>
                     </div>
                   </div>
@@ -100,7 +110,27 @@
                       <div
                         class="form-group select2-container-wrapper select-contain w-100"
                       >
-                         {{ form.role }}
+                        <select name="role" class="select-contain-select">
+                          <option value="">اختر واحدة</option>
+                          <option value="OWNER">صاحب</option>
+                          <option value="GENERAL_MANAGER">مدير عام</option>
+                          <option value="INNKEEPER">إنكيبر</option>
+                          <option value="AGENCY_CONSULTANT">
+                            وكالة / مستشار
+                          </option>
+                          <option value="ACCOUNTING_FINANCE">
+                            المحاسبة والمالية
+                          </option>
+                          <option value="GUEST_SERVICES">
+                            خدمات الضيوف / المكتب الأمامي
+                          </option>
+                          <option value="MARKETING">تسويق</option>
+                          <option value="REVENUE_MANAGEMENT">
+                            إدارة العائدات
+                          </option>
+                          <option value="SALES">مبيعات</option>
+                          <option value="OTHER">آخر</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -126,7 +156,12 @@
                       <label class="label-text">الاسم التجاري الرسمي</label>
                       <div class="form-group">
                         <span class="la la-briefcase form-icon"></span>
-                       {{ form.official_name }}
+                          <input
+                          class="form-control"
+                          type="text"
+                          name="official_name"
+                          placeholder="الاسم التجاري الرسمي"
+                        />
                       </div>
                     </div>
                   </div>
@@ -137,7 +172,14 @@
                       <div
                         class="form-group select2-container-wrapper select-contain w-100"
                       >
-                     {{ form.country }}
+                      <select name="country" class="select-contain-select">
+                          <option value="">اختر دولة</option>
+                          <option value="Afghanistan">Afghanistan</option>
+                          <option value="Åland Islands">Åland Islands</option>
+                          <option value="Albania">Albania</option>
+                          <option value="Algeria">Algeria</option>
+                         
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -149,7 +191,12 @@
                       >
                       <div class="form-group">
                         <span class="la la-map form-icon"></span>
-                         {{ form.city }}
+                         <input
+                          class="form-control"
+                          type="text"
+                          name="city"
+                          placeholder="مثال: نيويورك"
+                        />
                       </div>
                     </div>
                   </div>
@@ -160,7 +207,12 @@
                       <label class="label-text">عنوان الشارع</label>
                       <div class="form-group">
                         <span class="la la-map-marker form-icon"></span>
-                           {{ form.street_address }}
+                         <input
+                          class="form-control"
+                          type="text"
+                          name="street_address"
+                          placeholder="رقم المبنى واسم الشارع مثال: 123 Main Street"
+                        />
                       </div>
                     </div>
                   </div>
@@ -172,13 +224,18 @@
                       >
                       <div class="form-group">
                         <span class="la la-map-marker form-icon"></span>
-                         {{ form.additional_address_info }}
+                         <input
+                          class="form-control"
+                          type="text"
+                           name="additional_address_info"
+                          placeholder="رقم الجناح ، تقاطع ، ساحة ، مربع"
+                        />
                       </div>
                     </div>
                   </div>
                   <!-- end col-lg-12 -->
                 </div>
-               
+                
               </div>
               <!-- end form-content -->
             </div>
@@ -198,7 +255,13 @@
                       <label class="label-text">خط الطول</label>
                       <div class="form-group">
                         <span class="la la-map form-icon"></span>
-                         {{ form.longitude }}
+                        <input
+                          class="form-control"
+                          id="longitude"
+                          type="text"
+                          name="longitude"
+                          placeholder="خريطة خط الطول"
+                        />
                       </div>
                     </div>
                   </div>
@@ -208,7 +271,13 @@
                       <label class="label-text">خط العرض</label>
                       <div class="form-group">
                         <span class="la la-map form-icon"></span>
-                        {{ form.latitude }}
+                         <input
+                          class="form-control"
+                          id="latitude"
+                          type="text"
+                           name="latitude"
+                          placeholder="خريطة Latitude"
+                        />
                       </div>
                     </div>
                   </div>
@@ -230,9 +299,9 @@
                     </div>
                   </div>
                   <!-- end col-lg-12 -->
-                
+                  
                 </div>
-               
+                
               </div>
               <!-- end form-content -->
             </div>
@@ -245,14 +314,19 @@
               </div>
               <!-- form-title-wrap -->
               <div class="form-content contact-form-action">
-               
+                
                   <div class="row">
                   <div class="col-lg-6">
                     <div class="input-box">
                       <label class="label-text">هاتف</label>
                       <div class="form-group">
                         <span class="la la-phone form-icon"></span>
-                          {{ form.phone }}
+                         <input
+                          class="form-control"
+                          type="text"
+                             name="phone"
+                          placeholder="+1(1)8547632521"
+                        />
                       </div>
                     </div>
                   </div>
@@ -262,7 +336,12 @@
                       <label class="label-text">فاكس</label>
                       <div class="form-group">
                         <span class="la la-print form-icon"></span>
-                         {{ form.fax }}
+                         <input
+                          class="form-control"
+                          type="text"
+                           name="fax"
+                          placeholder="+1(1)1147521433"
+                        />
                       </div>
                     </div>
                   </div>
@@ -274,7 +353,12 @@
                       >
                       <div class="form-group">
                         <span class="la la-globe form-icon"></span>
-                            {{ form.website }}
+                        <input
+                          class="form-control"
+                          type="text"
+                           name="website"
+                          placeholder="https://www.techydevs.com"
+                        />
                       </div>
                     </div>
                   </div>
@@ -284,7 +368,12 @@
                       <label class="label-text">Facebook Page</label>
                       <div class="form-group">
                         <span class="la la-facebook form-icon"></span>
-                         {{ form.facebook }}
+                        <input
+                          class="form-control"
+                          type="text"
+                           name="facebook"
+                          placeholder="https://www.facebook.com"
+                        />
                       </div>
                     </div>
                   </div>
@@ -294,7 +383,12 @@
                       <label class="label-text">Instagram Page</label>
                       <div class="form-group">
                         <span class="la la-instagram form-icon"></span>
-                          {{ form.instagram }}
+                         <input
+                          class="form-control"
+                          type="text"
+                             name="instagram"
+                          placeholder="https://www.instagram.com"
+                        />
                       </div>
                     </div>
                   </div>
@@ -304,7 +398,12 @@
                       <label class="label-text">Twitter Page</label>
                       <div class="form-group">
                         <span class="la la-twitter form-icon"></span>
-                            {{ form.twitter }}
+                          <input
+                          class="form-control"
+                          type="text"
+                            name="twitter"
+                          placeholder="https://www.twitter.com"
+                        />
                       </div>
                     </div>
                   </div>
@@ -314,13 +413,18 @@
                       <label class="label-text">Linkedin Page</label>
                       <div class="form-group">
                         <span class="la la-linkedin form-icon"></span>
-                          {{ form.linkedin }}
+                         <input
+                          class="form-control"
+                          type="text"
+                             name="linkedin"
+                          placeholder="https://www.linkedin.com"
+                        />
                       </div>
                     </div>
                   </div>
                   <!-- end col-lg-6 -->
                 </div>
-                
+               
               </div>
               <!-- end form-content -->
             </div>
@@ -334,7 +438,7 @@
               </div>
               <!-- form-title-wrap -->
               <div class="form-content contact-form-action">
-                
+                  
                   <div class="row">
                   <div class="col-lg-12">
                     <div class="input-box">
@@ -343,7 +447,12 @@
                       >
                       <div class="form-group">
                         <span class="la la-pencil form-icon"></span>
-                          {{ form.total_rooms }}
+                         <input
+                          class="form-control"
+                          type="text"
+                           name="total_rooms"
+                          placeholder="إجمالي عدد الغرف والأجنحة"
+                        />
                       </div>
                     </div>
                   </div>
@@ -352,9 +461,19 @@
                     <div class="input-box">
                       <label class="label-text">نطاق السعر (في الليلة)</label>
                       <div class="form-group d-flex align-items-center">
-                       {{ form.price_range_min }}
+                         <input
+                          class="form-control ps-3"
+                          type="text"
+                           name="price_range_min"
+                          placeholder="دقيقة"
+                        />
                         <span class="px-2">إلى</span>
-                          {{ form.price_range_max }}
+                         <input
+                          class="form-control ps-3"
+                          type="text"
+                            name="price_range_max"
+                          placeholder="ماكس"
+                        />
                       </div>
                     </div>
                   </div>
@@ -365,7 +484,26 @@
                       <div
                         class="form-group select2-container-wrapper select-contain w-100"
                       >
-                       {{ form.currency }}
+                         <select class="select-contain-select" name="currency">
+                          <option value="">-- اختر العملة --</option>
+                          <option value="USD">USD U.S. Dollars</option>
+                          <option value="GBP">GBP British Pounds</option>
+                          <option value="EUR">EUR Euros</option>
+                          <option value="CAD">CAD Canadian Dollars</option>
+                          <option value="CHF">CHF Swiss Francs</option>
+                          <option value="AUD">AUD Australian Dollars</option>
+                          <option value="JPY">JPY Japanese Yen</option>
+                          <option value="CNY">CNY Chinese Yuan</option>
+                          <option value="INR">INR Indian Rupees</option>
+                          <option value="SEK">SEK Swedish Krona</option>
+                          <option value="BRL">BRL Brazilian Real</option>
+                          <option value="TRY">TRY Turkish Lira</option>
+                          <option value="">---------------------------</option>
+                          <option value="AED">AED UAE Dirham</option>
+                          <option value="AFN">AFN Afghan Afghanis</option>
+                          <option value="ALL">ALL Albanian Lek</option>
+                          <option value="AMD">AMD Armenian Dram</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -380,7 +518,11 @@
                       </p>
                       <div class="form-group">
                         <span class="la la-pencil form-icon"></span>
-                          {{ form.description }}
+                        <textarea
+                          class="message-control form-control"
+                          name="description"
+                          placeholder="باللغة الإنجليزية فقط ، بدون HTML ، بدون عنوان ويب أو بريد إلكتروني ، بدون أحرف كبيرة"
+                        ></textarea>
                       </div>
                     </div>
                   </div>
@@ -396,16 +538,49 @@
                       <div
                         class="form-group select2-container-wrapper select-contain w-100"
                       >
+                        <select class="select-contain-select">
+                          <option value="">-- اختر لغة --</option>
+                          <option value="ar">Arabic</option>
+                          <option value="zh">Chinese</option>
+                          <option value="cs">Czech</option>
+                          <option value="da">Danish</option>
+                          <option value="nl">Dutch</option>
+                          <option value="fi">Finnish</option>
+                          <option value="fr">French</option>
+                          <option value="de">German</option>
+                          <option value="el">Greek</option>
+                          <option value="iw">Hebrew</option>
+                          <option value="hu">Hungarian</option>
+                          <option value="in">Indonesian</option>
+                          <option value="it">Italian</option>
+                          <option value="ja">Japanese</option>
+                          <option value="ko">Korean</option>
+                          <option value="no">Norwegian</option>
+                          <option value="pl">Polish</option>
+                          <option value="pt">Portuguese</option>
+                          <option value="ru">Russian</option>
+                          <option value="sr">Serbian</option>
+                          <option value="sk">Slovak</option>
+                          <option value="es">Spanish</option>
+                          <option value="sv">Swedish</option>
+                          <option value="th">Thai</option>
+                          <option value="tr">Turkish</option>
+                          <option value="vi">Vietnamese</option>
+                        </select>
                       </div>
                       <div class="form-group">
                         <span class="la la-pencil form-icon"></span>
-                           {{ form.additional_description }}
+                       <textarea
+                          class="message-control form-control"
+                             name="additional_description"
+                          placeholder="لا يوجد HTML ولا ويب أو عنوان بريد إلكتروني ، ولا تستخدم الأحرف الكبيرة"
+                        ></textarea>
                       </div>
                     </div>
                   </div>
-                    <!-- end col-lg-12 -->
+                  <!-- end col-lg-12 -->
                   
-                </div>
+                </form>
               </div>
               <!-- end form-content -->
             </div>
@@ -422,75 +597,142 @@
                   <div class="row">
                   <div class="col-lg-6">
                     <div class="custom-checkbox">
-                      {{ form.airport_transportation }}
-                      <label for="id_airport_transportation">مواصلات المطار</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="AirportTransportation"
+                           name="airport_transportation"
+                      />
+                      <label for="AirportTransportation">مواصلات المطار</label>
                     </div>
                     <div class="custom-checkbox">
-                      {{ form.bar_lounge }}
-                      <label for="id_bar_lounge">بار / ردهة</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="BarLounge"
+                          name="bar_lounge"
+                      />
+                      <label for="BarLounge">بار / ردهة</label>
                     </div>
                     <div class="custom-checkbox">
-                      {{ form.beach }}
-                      <label for="id_beach">شاطئ بحر</label>
-                    </div>
-                    
-                    <div class="custom-checkbox">
-                     {{ form.swimming_pool }}
-                      <label for="id_swimming_pool">حمام السباحة</label>
-                    </div>
-                    <div class="custom-checkbox">
-                     {{ form.wifi }}
-                      <label for="id_wifi">وفي</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="Beach"
+                           name="beach"
+                      />
+                      <label for="Beach">شاطئ بحر</label>
                     </div>
                    
                     <div class="custom-checkbox">
-                      {{ form.air_conditioning }}
-                      <label for="id_air_conditioning">تكييف</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="SwimmingPool"
+                            name="swimming_pool"
+                      />
+                      <label for="SwimmingPool">حمام السباحة</label>
+                    </div>
+                    <div class="custom-checkbox">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="WIFI"
+                           name="wifi"
+                      />
+                      <label for="WIFI">وفي</label>
                     </div>
                     
                     <div class="custom-checkbox">
-                      {{ form.elevator }}
-                      <label for="id_elevator">مصعد في المبنى</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="AirConditioning"
+                           name="air_conditioning"
+                      />
+                      <label for="AirConditioning">تكييف</label>
+                    </div>
+                   
+                    <div class="custom-checkbox">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="ElevatorInBuilding"
+                            name="elevator"
+                      />
+                      <label for="ElevatorInBuilding">مصعد في المبنى</label>
                     </div>
                     
                   </div>
                   <!-- end col-lg-6 -->
                   <div class="col-lg-6">
                     <div class="custom-checkbox">
-                        {{ form.wheelchair_access }}
-                      <label for="id_wheelchair_access"
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="WheelchairAccess"
+                        name="wheelchair_access"
+                      />
+                      <label for="WheelchairAccess"
                         >مسموح الكرسي المتحركة</label
                       >
                     </div>
                     <div class="custom-checkbox">
-                         {{ form.fitness_facility }}
-                      <label for="id_fitness_facility">مرافق اللياقة البدنية</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="FitnessFacility"
+                          name="fitness_facility"
+                      />
+                      <label for="FitnessFacility">مرافق اللياقة البدنية</label>
                     </div>
                     <div class="custom-checkbox">
-                      {{ form.breakfast }}
-                      <label for="id_breakfast">وجبة افطار</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="Breakfast"
+                            name="breakfast"
+                      />
+                      <label for="Breakfast">وجبة افطار</label>
                     </div>
-                    
+                   
                     <div class="custom-checkbox">
-                        {{ form.pets_allowed }}
-                      <label for="id_pets_allowed"
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="PetsAllowed"
+                           name="pets_allowed"
+                      />
+                      <label for="PetsAllowed"
                         >مسموح بدخول الحيوانات الأليفة</label
                       >
                     </div>
                     
                     <div class="custom-checkbox">
-                      {{ form.restaurant }}
-                      <label for="id_restaurant">مطعم</label>
-                    </div>
-                   
-                    <div class="custom-checkbox">
-                     {{ form.free_parking }}
-                      <label for="id_free_parking">موقف سيارات مجاني</label>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="Restaurant"
+                           name="restaurant"
+                      />
+                      <label for="Restaurant">مطعم</label>
                     </div>
                     
+                    <div class="custom-checkbox">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="FreeParking"
+                            name="free_parking"
+                      />
+                      <label for="FreeParking">موقف سيارات مجاني</label>
+                    </div>
+                   
                   </div>
                   <!-- end col-lg-6 -->
-                
+               
+                </div>
+               
               </div>
               <!-- end form-content -->
             </div>
@@ -504,11 +746,17 @@
               </div>
               <!-- form-title-wrap -->
               <div class="form-content contact-form-action">
-               
+                
                   <div class="row">
                   <div class="col-lg-12">
                     <div class="file-upload-wrap">
-                          {{ form.image }}
+                      <input
+                        type="file"
+                        name="image"
+                        class="multi file-upload-input with-preview"
+                        multiple
+                        maxlength="3"
+                      />
                       <span class="file-upload-text"
                         ><i class="la la-upload me-2"></i>انقر أو اسحب الصور هنا
                         للتحميل</span
@@ -517,6 +765,7 @@
                   </div>
                   <!-- end col-lg-12 -->
                 </div>
+                
               </div>
               <!-- end form-content -->
             </div>

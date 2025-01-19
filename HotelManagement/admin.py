@@ -8,7 +8,7 @@ import os
 from django.template.loader import render_to_string
 from io import BytesIO
 from users.models import CustomUser
-from .models import Hotel, Location, Phone, Image, City
+from .models import Hotel, Location, Phone, Image, City , HotelRequest
 from django.contrib.auth import get_user_model
 from django import forms
 from django.utils.html import format_html
@@ -379,3 +379,9 @@ class CityAdmin(admin.ModelAdmin):
             return queryset.filter(location__hotel__manager=request.user)
         return queryset.none()
 admin.site.register(City, CityAdmin)
+
+class HotelRequestAdmin(admin.ModelAdmin):
+    # define your admin model here
+    pass
+
+admin.site.register(HotelRequest, HotelRequestAdmin)
