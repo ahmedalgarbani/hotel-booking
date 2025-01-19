@@ -92,6 +92,7 @@ class HotelAdmin(admin.ModelAdmin):
                 'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
                 'unverified_hotels': self.get_queryset(request).filter(is_verified=False).count(),
                 'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
+                'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
                 'recent_hotels': self.get_queryset(request).order_by('-created_at')[:5],
                 'user_type': 'admin'
             }
