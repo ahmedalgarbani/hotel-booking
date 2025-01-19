@@ -97,11 +97,13 @@ class Hotel(BaseModel):
         blank=True, 
         verbose_name=_("اسم الفندق")
     )
-    email = models.EmailField(
-        max_length=255, 
-        blank=True, 
-        verbose_name=_("البريد الإلكتروني")
+    slug = models.SlugField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("Slug"),
+        blank=True
     )
+    profile_picture = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
     description = models.TextField(
         max_length=3000, 
         blank=True, 
@@ -131,6 +133,21 @@ class Hotel(BaseModel):
         verbose_name_plural = _("فنادق")
     def __str__(self):
         return f"{self.name}" 
+    
+    def save(self, *args, **kwargs):
+        if not self.slug and self.name:  
+            base_slug = slugify(self.name)
+            slug = base_slug
+            num = 1
+
+            while Hotel.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{num}"
+                num += 1
+
+            self.slug = slug
+        super(Hotel, self).save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('home:hotel_detail', args=[self.slug])
 
 
 # -------------------- Phone ----------------------------
@@ -159,9 +176,9 @@ class Phone(BaseModel):
 # ---------------------- Image -------------------------------
 
 class Image(BaseModel):    
-    image_path = models.ImageField(upload_to='images/', blank=True, null=True)
+    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
     image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
-    hotel_id = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE,related_name='image')
 
     class Meta:
         verbose_name = _("صورة")

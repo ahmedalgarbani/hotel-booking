@@ -1,5 +1,5 @@
 {% extends "frontend/layout/master.html" %}
-
+{% load static %}
 {% block content %}
 
     <!-- ================================
@@ -12,8 +12,8 @@
         <div class="breadcrumb-list breadcrumb-top-list">
           <ul class="list-items bg-transparent radius-none p-0">
             <li><a href="index.html">الصفحة الرئيسية</a></li>
-            <li>فرنسا</li>
-            <li>فندق ومنتجعات هيلتون</li>
+            <li>{{hotel.location.city.country}}</li>
+            <li>{{hotel.name}}</li>
           </ul>
         </div>
         <!-- end breadcrumb-list -->
@@ -39,17 +39,18 @@ START BREADCRUMB AREA
         <div class="col-lg-12">
           <div class="breadcrumb-btn">
             <div class="btn-box">
-              <a
+              {% comment %} <a
                 class="theme-btn"
                 data-fancybox="video"
                 data-src="https://www.youtube.com/watch?v=5u1WISBbo5I"
                 data-speed="700"
               >
                 <i class="la la-video-camera me-2"></i>فيديو
-              </a>
+              </a> {% endcomment %}
+              
               <a
                 class="theme-btn"
-                data-src="images/img1.jpg"
+                data-src="{{hotel.profile_picture.url}}"
                 data-fancybox="gallery"
                 data-caption="Showing image - 01"
                 data-speed="700"
@@ -57,27 +58,16 @@ START BREADCRUMB AREA
                 <i class="la la-photo me-2"></i>المزيد من الصور
               </a>
             </div>
-            <a
-              class="d-none"
-              data-fancybox="gallery"
-              data-src="images/img2.jpg"
-              data-caption="Showing image - 02"
-              data-speed="700"
-            ></a>
-            <a
-              class="d-none"
-              data-fancybox="gallery"
-              data-src="images/img3.jpg"
-              data-caption="Showing image - 03"
-              data-speed="700"
-            ></a>
-            <a
-              class="d-none"
-              data-fancybox="gallery"
-              data-src="images/img4.jpg"
-              data-caption="Showing image - 04"
-              data-speed="700"
-            ></a>
+           {% for hot in hotel.image.all %}
+           <a
+           class="d-none"
+           data-fancybox="gallery"
+           data-src="{{hot.image_path.url}}"
+           data-caption="Showing image - 02"
+           data-speed="700"
+         ></a>
+           
+           {% endfor %}
           </div>
           <!-- end breadcrumb-btn -->
         </div>
@@ -155,10 +145,10 @@ START TOUR DETAIL AREA
           <div class="single-content-wrap padding-top-60px">
             <div id="description" class="page-scroll">
               <div class="single-content-item pb-4">
-                <h3 class="title font-size-26">فندق ومنتجعات هيلتون</h3>
+                <h3 class="title font-size-26">فندق {{hotel.name}} </h3>
                 <div class="d-flex align-items-center pt-2">
                   <p class="me-2">
-                    بوسطن ، ماساتشوستس ، الولايات المتحدة الأمريكية
+                    {{hotel.location.city.state}} ، {{hotel.location.address}} ،{{hotel.location.city.country}}
                   </p>
                   <p>
                     <span
@@ -333,22 +323,11 @@ START TOUR DETAIL AREA
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
               >
-                <h3 class="title font-size-20">حول فندق ومنتجع هيلتون</h3>
+                <h3 class="title font-size-20">حول {{hotel.name}}  </h3>
                 <p class="py-3">
-                  أثناء تصوير الشباب ، مع مرات nibh المشتركة القوة لأخذ
-                  الرجال والبلاغة. يبدو أن بلاغي قد تُرك دون أن يتم ،
-                  وبلاغته ستذهب ، لأنها كذلك ، والتي يجب أن تكون ديمقراطية.
-                  هذا هو السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                  سيرتي الذاتية ، غير مسلح أو نحو ذلك. هل من السهل الأداء ،
-                  كما Vulputate لكنه مستمر.
+                 {{hotel.description}}
                 </p>
-                <p>
-                  عندما وافقوا على ميناندر. واجبات قنصله ، نيابة عن ، وملح
-                  البحر الجديد شهريًا ، لكنها قد تكون غير لائقة لأي سبب.
-                  الذرات لتطوير كرة القدم ، وهذا ما تبحث عنه. أي من هؤلاء
-                  الرجال هو. لئلا يزول الألم في أي وقت بدلاً من طعام الخير
-                  العام.
-                </p>
+               
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
@@ -468,7 +447,7 @@ START TOUR DETAIL AREA
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
                     <div class="cabin-type-img flex-shrink-0">
-                      <img src="images/inside-cabin.jpg" alt="" />
+                      <img src="{% static 'images/inside-cabin.jpg' %}" alt="" />
                     </div>
                     <div class="cabin-type-detail">
                       <h3 class="title">غرفة قياسية عائلية</h3>
@@ -551,38 +530,7 @@ START TOUR DETAIL AREA
                         <!-- end col-lg-6 -->
                       </div>
                       <!-- end row -->
-                      <div class="room-photos">
-                        <a
-                          class="btn theme-btn-hover-gray"
-                          data-src="images/img1.jpg"
-                          data-fancybox="gallery"
-                          data-caption="Showing image - 01"
-                          data-speed="700"
-                        >
-                          <i class="la la-photo me-2"></i>صور الغرفة
-                        </a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img2.jpg"
-                          data-caption="Showing image - 02"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img3.jpg"
-                          data-caption="Showing image - 03"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img4.jpg"
-                          data-caption="Showing image - 04"
-                          data-speed="700"
-                        ></a>
-                      </div>
+                     
                     </div>
                     <div class="cabin-price">
                       <p class="text-uppercase font-size-14">
@@ -611,7 +559,7 @@ START TOUR DETAIL AREA
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
                     <div class="cabin-type-img flex-shrink-0">
-                      <img src="images/oceanview-cabin.jpg" alt="" />
+                      <img src="{% static 'images/oceanview-cabin.jpg' %}" alt="" />
                     </div>
                     <div class="cabin-type-detail">
                       <h3 class="title">غرفة سوبيريور مزدوجة</h3>
@@ -694,38 +642,7 @@ START TOUR DETAIL AREA
                         <!-- end col-lg-6 -->
                       </div>
                       <!-- end row -->
-                      <div class="room-photos">
-                        <a
-                          class="btn theme-btn-hover-gray"
-                          data-src="images/img1.jpg"
-                          data-fancybox="gallery"
-                          data-caption="Showing image - 01"
-                          data-speed="700"
-                        >
-                          <i class="la la-photo me-2"></i>صور الغرفة
-                        </a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img2.jpg"
-                          data-caption="Showing image - 02"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img3.jpg"
-                          data-caption="Showing image - 03"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img4.jpg"
-                          data-caption="Showing image - 04"
-                          data-speed="700"
-                        ></a>
-                      </div>
+                      
                     </div>
                     <div class="cabin-price">
                       <p class="text-uppercase font-size-14">
@@ -754,7 +671,7 @@ START TOUR DETAIL AREA
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
                     <div class="cabin-type-img flex-shrink-0">
-                      <img src="images/balcony-cabin.jpg" alt="" />
+                      <img src="{% static 'images/balcony-cabin.jpg' %}" alt="" />
                     </div>
                     <div class="cabin-type-detail">
                       <h3 class="title">غرفة ديلوكس مفردة</h3>
@@ -837,38 +754,7 @@ START TOUR DETAIL AREA
                         <!-- end col-lg-6 -->
                       </div>
                       <!-- end row -->
-                      <div class="room-photos">
-                        <a
-                          class="btn theme-btn-hover-gray"
-                          data-src="images/img1.jpg"
-                          data-fancybox="gallery"
-                          data-caption="Showing image - 01"
-                          data-speed="700"
-                        >
-                          <i class="la la-photo me-2"></i>صور الغرفة
-                        </a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img2.jpg"
-                          data-caption="Showing image - 02"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img3.jpg"
-                          data-caption="Showing image - 03"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img4.jpg"
-                          data-caption="Showing image - 04"
-                          data-speed="700"
-                        ></a>
-                      </div>
+                     
                     </div>
                     <div class="cabin-price">
                       <p class="text-uppercase font-size-14">
@@ -897,7 +783,7 @@ START TOUR DETAIL AREA
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
                     <div class="cabin-type-img flex-shrink-0">
-                      <img src="images/suite-cabin.jpg" alt="" />
+                      <img src="{% static 'images/suite-cabin.jpg' %}" alt="" />
                     </div>
                     <div class="cabin-type-detail">
                       <h3 class="title">غرفة نوم مفردة</h3>
@@ -980,38 +866,7 @@ START TOUR DETAIL AREA
                         <!-- end col-lg-6 -->
                       </div>
                       <!-- end row -->
-                      <div class="room-photos">
-                        <a
-                          class="btn theme-btn-hover-gray"
-                          data-src="images/img1.jpg"
-                          data-fancybox="gallery"
-                          data-caption="Showing image - 01"
-                          data-speed="700"
-                        >
-                          <i class="la la-photo me-2"></i>صور الغرفة
-                        </a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img2.jpg"
-                          data-caption="Showing image - 02"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img3.jpg"
-                          data-caption="Showing image - 03"
-                          data-speed="700"
-                        ></a>
-                        <a
-                          class="d-none"
-                          data-fancybox="gallery"
-                          data-src="images/img4.jpg"
-                          data-caption="Showing image - 04"
-                          data-speed="700"
-                        ></a>
-                      </div>
+                      
                     </div>
                     <div class="cabin-price">
                       <p class="text-uppercase font-size-14">
@@ -1749,186 +1604,39 @@ START TOUR DETAIL AREA
             <!-- end reviews -->
             <div class="review-box">
               <div class="single-content-item padding-top-40px">
-                <h3 class="title font-size-20">عرض 3 تقييمات من النزلاء</h3>
+                <h3 class="title font-size-20">عرض {{reviews.count}} تقييمات من النزلاء</h3>
                 <div class="comments-list padding-top-50px">
+                  {% for review in reviews %}
                   <div class="comment">
                     <div class="comment-avatar">
                       <img
                         class="avatar__img"
-                        alt=""
-                        src="images/team8.jpg"
-                      />
+                        alt="{{ review.user.username }}"
+                        src="{{ review.user.profile.image.url|default:'images/default-avatar.jpg' }}" />
                     </div>
                     <div class="comment-body">
                       <div class="meta-data">
-                        <h3 class="comment__author">جيني دو</h3>
+                        <h3 class="comment__author">{{ review.user.username }}</h3>
                         <div class="meta-data-inner d-flex">
-                          <span
-                            class="ratings d-flex align-items-center me-1"
-                          >
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
+                          <span class="ratings d-flex align-items-center me-1">
+                            <i class="la {% if review.rating_service > 0 %} la-star {% else %} la-star-o {% endif %}"></i>
+                            <i class="la {% if review.rating_service > 1 %} la-star {% else %} la-star-o {% endif %}"></i>
+                            <i class="la {% if review.rating_service > 2 %} la-star {% else %} la-star-o {% endif %}"></i>
+                            <i class="la {% if review.rating_service > 3 %} la-star {% else %} la-star-o {% endif %}"></i>
+                            <i class="la {% if review.rating_service > 4 %} la-star {% else %} la-star-o {% endif %}"></i>
+                            
                           </span>
-                          <p class="comment__date">5 أبريل 2019</p>
+                          <p class="comment__date">{{ review.created_at|date:"d M Y" }}</p>
                         </div>
                       </div>
-                      <p class="comment-content">
-                        لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن
-                        المواطنين يعيشون في تمويله ، فمن المهم تريتاني بحر.
-                        للقول أن هذا قد يكون صحيحًا هو حساسية euripidis
-                        السهلة
-                      </p>
-                      <div
-                        class="comment-reply d-flex align-items-center justify-content-between"
-                      >
-                        <a
-                          class="theme-btn"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#replayPopupForm"
-                        >
-                          <span class="la la-mail-reply me-1"></span>الرد
-                        </a>
-                        <div class="reviews-reaction">
-                          <a href="#" class="comment-like"
-                            ><i class="la la-thumbs-up"></i> 13</a
-                          >
-                          <a href="#" class="comment-dislike"
-                            ><i class="la la-thumbs-down"></i> 2</a
-                          >
-                          <a href="#" class="comment-love"
-                            ><i class="la la-heart-o"></i> 5</a
-                          >
-                        </div>
-                      </div>
+                      <p class="comment-content">{{ review.review }}</p>
+                     
                     </div>
                   </div>
-                  <!-- end comments -->
-                  <div class="comment comment-reply-item">
-                    <div class="comment-avatar">
-                      <img
-                        class="avatar__img"
-                        alt=""
-                        src="images/team9.jpg"
-                      />
-                    </div>
-                    <div class="comment-body">
-                      <div class="meta-data">
-                        <h3 class="comment__author">جيني دو</h3>
-                        <div class="meta-data-inner d-flex">
-                          <span
-                            class="ratings d-flex align-items-center me-1"
-                          >
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                          </span>
-                          <p class="comment__date">5 أبريل 2019</p>
-                        </div>
-                      </div>
-                      <p class="comment-content">
-                        لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن
-                        المواطنين يعيشون في تمويله ، فمن المهم تريتاني بحر.
-                        للقول أن هذا قد يكون صحيحًا هو حساسية euripidis
-                        السهلة
-                      </p>
-                      <div
-                        class="comment-reply d-flex align-items-center justify-content-between"
-                      >
-                        <a
-                          class="theme-btn"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#replayPopupForm"
-                        >
-                          <span class="la la-mail-reply me-1"></span>الرد
-                        </a>
-                        <div class="reviews-reaction">
-                          <a href="#" class="comment-like"
-                            ><i class="la la-thumbs-up"></i> 13</a
-                          >
-                          <a href="#" class="comment-dislike"
-                            ><i class="la la-thumbs-down"></i> 2</a
-                          >
-                          <a href="#" class="comment-love"
-                            ><i class="la la-heart-o"></i> 5</a
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end comments -->
-                  <div class="comment">
-                    <div class="comment-avatar">
-                      <img
-                        class="avatar__img"
-                        alt=""
-                        src="images/team10.jpg"
-                      />
-                    </div>
-                    <div class="comment-body">
-                      <div class="meta-data">
-                        <h3 class="comment__author">جيني دو</h3>
-                        <div class="meta-data-inner d-flex">
-                          <span
-                            class="ratings d-flex align-items-center me-1"
-                          >
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                          </span>
-                          <p class="comment__date">5 أبريل 2019</p>
-                        </div>
-                      </div>
-                      <p class="comment-content">
-                        لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن
-                        المواطنين يعيشون في تمويله ، فمن المهم تريتاني بحر.
-                        للقول أن هذا قد يكون صحيحًا هو حساسية euripidis
-                        السهلة
-                      </p>
-                      <div
-                        class="comment-reply d-flex align-items-center justify-content-between"
-                      >
-                        <a
-                          class="theme-btn"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#replayPopupForm"
-                        >
-                          <span class="la la-mail-reply me-1"></span>الرد
-                        </a>
-                        <div class="reviews-reaction">
-                          <a href="#" class="comment-like"
-                            ><i class="la la-thumbs-up"></i> 13</a
-                          >
-                          <a href="#" class="comment-dislike"
-                            ><i class="la la-thumbs-down"></i> 2</a
-                          >
-                          <a href="#" class="comment-love"
-                            ><i class="la la-heart-o"></i> 5</a
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end comments -->
-                  <div class="btn-box load-more text-center">
-                    <button
-                      class="theme-btn theme-btn-small theme-btn-transparent"
-                      type="button"
-                    >
-                      تحميل المزيد من المراجعة
-                    </button>
-                  </div>
+                  {% empty %}
+                  <p>لا توجد تقييمات حتى الآن.</p>
+                  {% endfor %}
                 </div>
-                <!-- end comments-list -->
                 <div class="comment-forum padding-top-40px">
                   <div class="form-box">
                     <div class="form-title-wrap">
@@ -1936,293 +1644,111 @@ START TOUR DETAIL AREA
                     </div>
                     <!-- form-title-wrap -->
                     <div class="form-content">
-                      <div class="rate-option p-2">
-                        <div class="row">
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>الخدمات</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst1"
-                                  value="1"
-                                />
-                                <label for="lst1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst2"
-                                  value="2"
-                                />
-                                <label for="lst2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst3"
-                                  value="3"
-                                />
-                                <label for="lst3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst4"
-                                  value="4"
-                                />
-                                <label for="lst4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst5"
-                                  value="5"
-                                />
-                                <label for="lst5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>موقعك</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l1"
-                                  value="1"
-                                />
-                                <label for="l1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l2"
-                                  value="2"
-                                />
-                                <label for="l2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l3"
-                                  value="3"
-                                />
-                                <label for="l3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l4"
-                                  value="4"
-                                />
-                                <label for="l4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l5"
-                                  value="5"
-                                />
-                                <label for="l5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>قيمة المال</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm1"
-                                  value="1"
-                                />
-                                <label for="vm1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm2"
-                                  value="2"
-                                />
-                                <label for="vm2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm3"
-                                  value="3"
-                                />
-                                <label for="vm3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm4"
-                                  value="4"
-                                />
-                                <label for="vm4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm5"
-                                  value="5"
-                                />
-                                <label for="vm5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>النظافة</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln1"
-                                  value="1"
-                                />
-                                <label for="cln1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln2"
-                                  value="2"
-                                />
-                                <label for="cln2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln3"
-                                  value="3"
-                                />
-                                <label for="cln3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln4"
-                                  value="4"
-                                />
-                                <label for="cln4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln5"
-                                  value="5"
-                                />
-                                <label for="cln5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>مرافق</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f1"
-                                  value="1"
-                                />
-                                <label for="f1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f2"
-                                  value="2"
-                                />
-                                <label for="f2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f3"
-                                  value="3"
-                                />
-                                <label for="f3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f4"
-                                  value="4"
-                                />
-                                <label for="f4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f5"
-                                  value="5"
-                                />
-                                <label for="f5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                        </div>
-                        <!-- end row -->
-                      </div>
-                      <!-- end rate-option -->
-                      <div class="contact-form-action">
-                        <form method="post">
+                      <form method="post" action="{% url 'reviews:hotel_review_create' %}">
+                        {% csrf_token %}
+                        <input id="hotel_id" type="hidden" name="hotel_id" value="{{hotel.id}}" />
+                        <div class="rate-option p-2">
                           <div class="row">
-                            <div class="col-lg-6 responsive-column">
-                              <div class="input-box">
-                                <label class="label-text">اسم</label>
-                                <div class="form-group">
-                                  <span class="la la-user form-icon"></span>
-                                  <input
-                                    class="form-control"
-                                    type="text"
-                                    name="text"
-                                    placeholder="اسمك"
-                                  />
+                            <div class="col-lg-4 responsive-column">
+                              <div class="rate-option-item">
+                                <label>الخدمات</label>
+                                <div class="rate-stars-option star-rating">
+                                  <input id="service-5" type="radio" name="rating_service" value="5" />
+                                  <label for="service-5" title="5 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="service-4" type="radio" name="rating_service" value="4" />
+                                  <label for="service-4" title="4 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="service-3" type="radio" name="rating_service" value="3" />
+                                  <label for="service-3" title="3 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="service-2" type="radio" name="rating_service" value="2" />
+                                  <label for="service-2" title="2 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="service-1" type="radio" name="rating_service" value="1" />
+                                  <label for="service-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
                             </div>
-                            <div class="col-lg-6 responsive-column">
-                              <div class="input-box">
-                                <label class="label-text"
-                                  >البريد الإلكتروني</label
-                                >
-                                <div class="form-group">
-                                  <span
-                                    class="la la-envelope-o form-icon"
-                                  ></span>
-                                  <input
-                                    class="form-control"
-                                    type="email"
-                                    name="email"
-                                    placeholder="عنوان البريد الالكترونى"
-                                  />
+                            <!-- col-lg-4 -->
+                            <div class="col-lg-4 responsive-column">
+                              <div class="rate-option-item">
+                                <label>موقع الفندق</label>
+                                <div class="rate-stars-option star-rating">
+                                  <input id="location-5" type="radio" name="rating_location" value="5" />
+                                  <label for="location-5" title="5 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="location-4" type="radio" name="rating_location" value="4" />
+                                  <label for="location-4" title="4 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="location-3" type="radio" name="rating_location" value="3" />
+                                  <label for="location-3" title="3 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="location-2" type="radio" name="rating_location" value="2" />
+                                  <label for="location-2" title="2 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="location-1" type="radio" name="rating_location" value="1" />
+                                  <label for="location-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
                             </div>
-                            <div class="col-lg-12">
-                              <div class="input-box">
-                                <label class="label-text">رسالة</label>
-                                <div class="form-group">
-                                  <span
-                                    class="la la-pencil form-icon"
-                                  ></span>
-                                  <textarea
-                                    class="message-control form-control"
-                                    name="message"
-                                    placeholder="اكتب رسالة"
-                                  ></textarea>
+                            <!-- col-lg-4 -->
+                            <div class="col-lg-4 responsive-column">
+                              <div class="rate-option-item">
+                                <label>سعر الفندق </label>
+                                <div class="rate-stars-option star-rating">
+                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" />
+                                  <label for="value-5" title="5 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" />
+                                  <label for="value-4" title="4 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" />
+                                  <label for="value-3" title="3 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" />
+                                  <label for="value-2" title="2 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" />
+                                  <label for="value-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
                             </div>
-                            <div class="col-lg-12">
-                              <div class="btn-box">
-                                <button type="button" class="theme-btn">
-                                  ترك التعليق
-                                </button>
+                            <!-- col-lg-4 -->
+                            <div class="col-lg-4 responsive-column">
+                              <div class="rate-option-item">
+                                <label>النظافة</label>
+                                <div class="rate-stars-option star-rating">
+                                  <input id="rating_cleanliness-5" type="radio" name="rating_cleanliness" value="5" />
+                                  <label for="rating_cleanliness-5" title="5 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="rating_cleanliness-4" type="radio" name="rating_cleanliness" value="4" />
+                                  <label for="rating_cleanliness-4" title="4 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="rating_cleanliness-3" type="radio" name="rating_cleanliness" value="3" />
+                                  <label for="rating_cleanliness-3" title="3 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="rating_cleanliness-2" type="radio" name="rating_cleanliness" value="2" />
+                                  <label for="rating_cleanliness-2" title="2 stars"><i class="active fa fa-star"></i></label>
+                                  <input id="rating_cleanliness-1" type="radio" name="rating_cleanliness" value="1" />
+                                  <label for="rating_cleanliness-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </form>
-                      </div>
-                      <!-- end contact-form-action -->
+                          <!-- end row -->
+                        </div>
+                        <!-- end rate-option -->
+                        <div class="mb-3">
+                          <label class="mb-2">رسالتك</label>
+                          <textarea
+                            id="review_desc"
+                            name="review"
+                            class="form-control"
+                            maxlength="100"
+                            placeholder="اكتب رسالتك"
+                          ></textarea>
+                          <div class="d-flex justify-content-between mt-3">
+                            <small class="text-muted">
+                              <span id="chars">100</span> حرف متبقي
+                            </small>
+                          </div>
+                        </div>
+                        <div class="submit-section">
+                          <button type="submit" class="theme-btn btn-primary">إضافة المراجعة</button>
+                        </div>
+                      </form>
                     </div>
                     <!-- end form-content -->
                   </div>
                   <!-- end form-box -->
                 </div>
+                
                 <!-- end comment-forum -->
               </div>
               <!-- end single-content-item -->
@@ -2365,80 +1891,7 @@ START TOUR DETAIL AREA
                 </div>
               </div>
             </div>
-            <!-- end sidebar-widget -->
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">نموذج الاستفسار</h3>
-              <div class="enquiry-forum">
-                <div class="form-box">
-                  <div class="form-content">
-                    <div class="contact-form-action">
-                      <form method="post">
-                        <div class="input-box">
-                          <label class="label-text">اسمك</label>
-                          <div class="form-group">
-                            <span class="la la-user form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              name="text"
-                              placeholder="اسمك"
-                            />
-                          </div>
-                        </div>
-                        <div class="input-box">
-                          <label class="label-text">بريدك الالكتروني</label>
-                          <div class="form-group">
-                            <span class="la la-envelope-o form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="email"
-                              name="email"
-                              placeholder="عنوان البريد الالكترونى"
-                            />
-                          </div>
-                        </div>
-                        <div class="input-box">
-                          <label class="label-text">رسالة</label>
-                          <div class="form-group">
-                            <span class="la la-pencil form-icon"></span>
-                            <textarea
-                              class="message-control form-control"
-                              name="message"
-                              placeholder="اكتب رسالة"
-                            ></textarea>
-                          </div>
-                        </div>
-                        <div class="input-box">
-                          <div class="form-group">
-                            <div class="custom-checkbox mb-0">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="agreeChb"
-                              />
-                              <label for="agreeChb"
-                                >أوافق على <a href="#"> شروط الخدمة </a> و
-                                <a href="#"> بيان الخصوصية </a>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="btn-box">
-                          <button type="button" class="theme-btn">
-                            إرسال الاستفسار
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- end contact-form-action -->
-                  </div>
-                  <!-- end form-content -->
-                </div>
-                <!-- end form-box -->
-              </div>
-              <!-- end enquiry-forum -->
-            </div>
-            <!-- end sidebar-widget -->
+           
             <div class="sidebar-widget single-content-widget">
               <h3 class="title stroke-shape">نوع حساب؟</h3>
               <div class="sidebar-list">
@@ -2538,6 +1991,8 @@ END TOUR DETAIL AREA
 <!-- ================================
 START RELATE TOUR AREA
 ================================= -->
+{% if hotels.count == 0 %}
+
 <section class="related-tour-area section--padding">
   <div class="container">
     <div class="row">
@@ -2551,13 +2006,15 @@ START RELATE TOUR AREA
     </div>
     <!-- end row -->
     <div class="row padding-top-50px">
+      {% for hotels in hotels %}
+      <!-- end col-lg-4 -->
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
           <div class="card-img">
-            <a href="hotel-single.html" class="d-block">
-              <img src="images/img1.jpg" alt="hotel-img" />
+            <a href="{{hotels.get_absolute_url}}" class="d-block">
+              <img src="{{hotels.profile_picture.url}}" alt="hotel-img" />
             </a>
-            <span class="badge">الأكثر مبيعا</span>
+            {% comment %} <span class="badge">متميز</span> {% endcomment %}
             <div
               class="add-to-wishlist icon-element"
               data-bs-toggle="tooltip"
@@ -2569,9 +2026,9 @@ START RELATE TOUR AREA
           </div>
           <div class="card-body">
             <h3 class="card-title">
-              <a href="hotel-single.html">ميلينيوم هيلتون نيويورك</a>
+              <a href="{{hotels.get_absolute_url}}">{{hotel.name}}</a>
             </h3>
-            <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
+            <p class="card-meta">{{hotel.location.city.state}} , {{hotel.location.address}}</p>
             <div class="card-rating">
               <span class="badge text-white">4.4/5</span>
               <span class="review__text">معدل</span>
@@ -2585,7 +2042,7 @@ START RELATE TOUR AREA
                 <span class="price__num">$88.00</span>
                 <span class="price__text">لليلة الواحدة</span>
               </p>
-              <a href="hotel-single.html" class="btn-text"
+              <a href="{{hotels.get_absolute_url}}" class="btn-text"
                 >انظر التفاصيل<i class="la la-angle-right"></i
               ></a>
             </div>
@@ -2594,96 +2051,15 @@ START RELATE TOUR AREA
         <!-- end card-item -->
       </div>
       <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item">
-          <div class="card-img">
-            <a href="hotel-single.html" class="d-block">
-              <img src="images/img2.jpg" alt="hotel-img" />
-            </a>
-            <div
-              class="add-to-wishlist icon-element"
-              data-bs-toggle="tooltip"
-              data-placement="top"
-              title="المرجعية"
-            >
-              <i class="la la-heart-o"></i>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="hotel-single.html">فندق بست ويسترن جرانت بارك</a>
-            </h3>
-            <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-            <div class="card-rating">
-              <span class="badge text-white">4.4/5</span>
-              <span class="review__text">معدل</span>
-              <span class="rating__text">(30 التعليقات)</span>
-            </div>
-            <div
-              class="card-price d-flex align-items-center justify-content-between"
-            >
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$58.00</span>
-                <span class="price__text">لليلة الواحدة</span>
-              </p>
-              <a href="hotel-single.html" class="btn-text"
-                >انظر التفاصيل<i class="la la-angle-right"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item">
-          <div class="card-img">
-            <a href="hotel-single.html" class="d-block">
-              <img src="images/img3.jpg" alt="hotel-img" />
-            </a>
-            <span class="badge">متميز</span>
-            <div
-              class="add-to-wishlist icon-element"
-              data-bs-toggle="tooltip"
-              data-placement="top"
-              title="المرجعية"
-            >
-              <i class="la la-heart-o"></i>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="hotel-single.html">منتجع وسبا حياة ريجنسي ماوي</a>
-            </h3>
-            <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-            <div class="card-rating">
-              <span class="badge text-white">4.4/5</span>
-              <span class="review__text">معدل</span>
-              <span class="rating__text">(30 التعليقات)</span>
-            </div>
-            <div
-              class="card-price d-flex align-items-center justify-content-between"
-            >
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$88.00</span>
-                <span class="price__text">لليلة الواحدة</span>
-              </p>
-              <a href="hotel-single.html" class="btn-text"
-                >انظر التفاصيل<i class="la la-angle-right"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-4 -->
+      {% endfor %}
     </div>
     <!-- end row -->
   </div>
   <!-- end container -->
 </section>
+
+
+{% endif %}
 <!-- end related-tour-area -->
 <!-- ================================
 END RELATE TOUR AREA

@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'services',
     'rest_framework',
     'menu_generator',
-    
 ]
 
 MIDDLEWARE = [
@@ -284,7 +283,7 @@ NAV_MENU_TOP = [
     },
     {
         "name": "الفنادق",
-        "url": "/acount",
+        "url": "/hotels",
         "submenu": [
             {
                 "name": "Profile",

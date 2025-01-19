@@ -39,7 +39,7 @@ def export_to_excel(modeladmin, request, queryset):
         ws.write(row_num, col_num, columns[col_num])
         
     # البيانات
-    rows = queryset.values_list('name', 'location__name', 'location__city__name', 'email', 'is_verified', 'created_at')
+    rows = queryset.values_list('name', 'is_verified', 'created_at')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
@@ -52,11 +52,17 @@ export_to_excel.short_description = "تصدير الفنادق المحددة إ
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ['name', 'location', 'email', 'verification_status', 'phone_count', 'created_at']
-    search_fields = ['name', 'email', 'location__name']
-    list_filter = ['location__city', 'is_verified', 'created_at']
+    list_display = ['name', 'location','get_absolute_url_link',  'verification_status', 'phone_count', 'created_at']
+    search_fields = ['name',]
+    list_filter = [ 'is_verified', 'created_at']
     actions = [export_to_excel, 'export_to_pdf']
-    
+    prepopulated_fields = {'slug': ('name',)}
+    def get_absolute_url_link(self, obj):
+        if obj.slug:
+            return f'<a href="{obj.get_absolute_url()}">{obj.name}</a>'
+        return '-'
+    get_absolute_url_link.short_description = 'Hotel URL'
+    get_absolute_url_link.allow_tags = True
     def verification_status(self, obj):
         if obj.is_verified:
             return format_html('<span style="color: green;">✓ تم التحقق</span>')
@@ -85,7 +91,7 @@ class HotelAdmin(admin.ModelAdmin):
                 'total_hotels': self.get_queryset(request).count(),
                 'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
                 'unverified_hotels': self.get_queryset(request).filter(is_verified=False).count(),
-                'hotels_by_city': self.get_queryset(request).values('location__city__name').annotate(count=Count('id')),
+                'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
                 'recent_hotels': self.get_queryset(request).order_by('-created_at')[:5],
                 'user_type': 'admin'
             }
@@ -98,10 +104,7 @@ class HotelAdmin(admin.ModelAdmin):
                     'verification_status': hotel.is_verified,
                     'verification_date': hotel.verification_date,
                     'total_phones': hotel.phones.count(),
-                    'location_info': {
-                        'city': hotel.location.city.name if hotel.location and hotel.location.city else '',
-                        'address': hotel.location.address if hotel.location else '',
-                    },
+                 
                     'total_images': Image.objects.filter(hotel_id=hotel).count(),
                     'user_type': 'hotel_manager'
                 }
@@ -156,8 +159,6 @@ class HotelAdmin(admin.ModelAdmin):
                 str(index),
                 get_display(arabic_reshaper.reshape(str(hotel.name))),
                 get_display(arabic_reshaper.reshape(str(hotel.location.name if hotel.location else ''))),
-                get_display(arabic_reshaper.reshape(str(hotel.location.city.name if hotel.location and hotel.location.city else ''))),
-                hotel.email,
                 get_display(arabic_reshaper.reshape('تم التحقق' if hotel.is_verified else 'لم يتم التحقق')),
                 str(hotel.phones.count()),
                 hotel.created_at.strftime('%Y-%m-%d')
