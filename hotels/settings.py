@@ -301,7 +301,7 @@ NAV_MENU_TOP = [
     },
     {
         "name": "الغرف",
-        "url": "register_view_url",  
+        "url": "/rooms",  
     },
     {
         "name": "اشترك معنا",
