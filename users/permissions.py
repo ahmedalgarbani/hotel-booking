@@ -19,6 +19,7 @@ def create_hotel_staff_groups(sender, **kwargs):
         # قائمة بالتطبيقات والموديلات التي يحتاج مدير الفندق للوصول إليها
         manager_apps_and_models = {
             'users': ['customuser'],  # للتحكم في الموظفين
+            'auth': ['user'],  # للتحكم في المستخدمين
             'rooms': ['room', 'roomtype', 'roomamenity'],  # للتحكم في الغرف
             'bookings': ['booking', 'bookingservice'],  # للتحكم في الحجوزات
             'services': ['service'],  # للتحكم في الخدمات
@@ -45,7 +46,12 @@ def create_hotel_staff_groups(sender, **kwargs):
                     if app_label == 'users' and model_name == 'customuser':
                         perms = Permission.objects.filter(
                             content_type=content_type,
-                            codename__in=['add_customuser', 'change_customuser', 'view_customuser']
+                            codename__in=['add_customuser', 'change_customuser', 'view_customuser', 'delete_customuser']
+                        )
+                    elif app_label == 'auth' and model_name == 'user':
+                        perms = Permission.objects.filter(
+                            content_type=content_type,
+                            codename__in=['add_user', 'change_user', 'view_user', 'delete_user']
                         )
                     elif app_label == 'reviews' and model_name == 'review':
                         perms = Permission.objects.filter(

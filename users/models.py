@@ -11,6 +11,8 @@ class CustomUser(AbstractUser):
         ('admin', _('مدير النظام')),
         ('hotel_manager', _('مدير فندق')),
         ('customer', _('عميل')),
+        ('hotel_staff',_('موظف')),
+        
     ]
     
     user_type = models.CharField(
