@@ -97,11 +97,7 @@ class Hotel(BaseModel):
         blank=True, 
         verbose_name=_("اسم الفندق")
     )
-    email = models.EmailField(
-        max_length=255, 
-        blank=True, 
-        verbose_name=_("البريد الإلكتروني")
-    )
+
     description = models.TextField(
         max_length=3000, 
         blank=True, 
@@ -124,8 +120,6 @@ class Hotel(BaseModel):
         limit_choices_to={'user_type': 'hotel_manager'},
         verbose_name=_("مدير الفندق")
     )
-
-
     class Meta:
         verbose_name = _("فندق")
         verbose_name_plural = _("فنادق")
