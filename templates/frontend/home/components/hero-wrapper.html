@@ -4,7 +4,7 @@
     <div class="hero-box pb-0">
       <div id="fullscreen-slide-contain">
         <ul class="slides-container">
-          <li><img src="{% static 'images/hero-bg2.jpg"' %} alt="" /></li>
+          <li><img src="{% static 'images/hero-bg2.jpg' %} alt="" /></li>
           <li><img src="{% static 'images/hero--bg2.jpg' %}" alt="" /></li>
           <li><img src="{% static 'images/hero--bg3.jpg' %}" alt="" /></li>
         </ul>
@@ -55,6 +55,7 @@
                     </div>
                   </div>
                   <!-- end col-lg-3 -->
+                  {% if roomTypes.count > 0 %}
                   <div class="col-lg-3 pe-0">
                     <div class="input-box">
                       <label class="label-text">نوع الغرفة</label>
@@ -63,38 +64,19 @@
                           class="select-contain select-contain-shadow w-auto"
                         >
                           <select class="select-contain-select">
-                            <option value="0">اختر صنف</option>
-                            <option value="1">غير مرتبطة</option>
-                            <option value="2">مزدوج</option>
-                            <option value="3">ثلاثية</option>
-                            <option value="4">رباعية</option>
-                            <option value="5">ملكة</option>
-                            <option value="6">ملك</option>
-                            <option value="7">التوأم</option>
-                            <option value="8">ضعف الضعف</option>
-                            <option value="9">ستوديو</option>
-                            <option value="10">جناح</option>
-                            <option value="11">جناح صغير</option>
-                            <option value="12">جناح الرئيس</option>
-                            <option value="13">جناح الرئيس</option>
-                            <option value="14">شقق سكنية</option>
-                            <option value="15">غرف متصلة</option>
-                            <option value="16">غرفة مورفي</option>
-                            <option value="17">
-                              غرفة لذوي الاحتياجات الخاصة
-                            </option>
-                            <option value="18">كابانا</option>
-                            <option value="19">الغرف المجاورة</option>
-                            <option value="20">الغرف المجاورة</option>
-                            <option value="21">فيلا</option>
-                            <option value="22">الطابق التنفيذي</option>
-                            <option value="23">غرفة التدخين</option>
-                            <option value="24">غرفة لغير المدخنين</option>
+                            <option value="all">اختر صنف</option>
+                            {% for roomType in roomTypes %}
+                            <option value="{{roomType.name}}">{{roomType.name}}</option>
+                            {% endfor %}
                           </select>
                         </div>
                       </div>
                     </div>
                   </div>
+                 
+
+                  {% endif %}
+                
                   <!-- end col-lg-3 -->
                   <div class="col-lg-3">
                     <div class="input-box">
@@ -194,7 +176,7 @@
                   <!-- end col-lg-3 -->
                 </form>
                 <div class="btn-box pt-2">
-                  <a href="room-search-result.html" class="theme-btn"
+                  <a href="{% url 'home:room-search-result' %}" class="theme-btn"
                     >ابحث الآن</a
                   >
                 </div>

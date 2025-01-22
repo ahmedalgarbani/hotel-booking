@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'reviews',
     'services',
     'rest_framework',
-    
+    'menu_generator',
 ]
 
 MIDDLEWARE = [
@@ -264,3 +264,51 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+
+
+
+####################################################################################
+# Example: setting.py
+####################################################################################
+
+
+NAV_MENU_TOP = [
+    {
+        "name": "الرئيسي",
+        "url": "/",  
+    },
+    {
+        "name": "عنا",
+        "url": "register_view_url",  
+    },
+    {
+        "name": "الفنادق",
+        "url": "/hotels",
+        # "submenu": [
+        #     {
+        #         "name": "Profile",
+        #         "url": "/account/profile",
+        #     },
+        #     {
+        #         "name": "Account Balance",
+        #         "url": "/account/balance",
+        #     },
+        #     {
+        #         "name": "Account Secrets",
+        #         "url": "/account/secrets",
+        #     }
+        # ],
+    },
+    {
+        "name": "الغرف",
+        "url": "/rooms",  
+    },
+    {
+        "name": "اشترك معنا",
+        "url": "register_view_url",  
+    },
+    {
+        "name": "المقالات ",
+        "url": "register_view_url",  
+    },
+]

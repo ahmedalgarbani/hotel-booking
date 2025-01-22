@@ -1,5 +1,5 @@
 {% extends "frontend/layout/master.html" %}
-
+{% load static %}
 {% block content %}
 
     <!-- ================================
@@ -64,7 +64,7 @@ START CARD AREA
             class="filter-top d-flex align-items-center justify-content-between pb-4"
           >
             <div>
-              <h3 class="title font-size-24">تم العثور على 2224 الفنادق</h3>
+              <h3 class="title font-size-24">تم العثور على {{hotels.count}} الفنادق</h3>
               <p class="font-size-14">
                 <span class="me-1 pt-1">احجز بثقة: </span> لا توجد رسوم على
                 حجز الفنادق
@@ -370,353 +370,54 @@ START CARD AREA
     <div class="row">
       <div class="col-lg-8">
         <div class="row">
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img1.jpg" alt="hotel-img" />
+          {% for hotel in hotels %}         
+             <!-- end col-lg-6 -->
+             <div class="col-lg-6 responsive-column">
+              <div class="card-item">
+                <div class="card-img">
+                 {% if hotel.profile_picture %}
+                 <a href="{{hotel.get_absolute_url}}" class="d-block">
+                  <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
                 </a>
-                <span class="badge">الأكثر مبيعا</span>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">ميلينيوم هيلتون نيويورك</a>
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img2.jpg" alt="hotel-img" />
-                </a>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">فندق بست ويسترن جرانت بارك</a>
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$58.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img3.jpg" alt="hotel-img" />
-                </a>
-                <span class="badge">متميز</span>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html"
-                    >منتجع وسبا حياة ريجنسي ماوي</a
+                 {% endif %}
+                  <div
+                    class="add-to-wishlist icon-element"
+                    data-bs-toggle="tooltip"
+                    data-placement="top"
+                    title="المرجعية"
                   >
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
+                    <i class="la la-heart-o"></i>
+                  </div>
                 </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img4.jpg" alt="hotel-img" />
-                </a>
-                <span class="badge">جمع</span>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html"
-                    >منتجع فور سيزونز ماوي في ويليا</a
+                <div class="card-body">
+                  <h3 class="card-title">
+                    <a href="{{hotel.get_absolute_url}}">{{hotel.name}}</a>
+                  </h3>
+                  <p class="card-meta">{{hotel.location}},{{hotel.location.city.state}}</p>
+                  <div class="card-rating">
+                    <span class="badge text-white">4.4/5</span>
+                    <span class="review__text">معدل</span>
+                    <span class="rating__text">(30 التعليقات)</span>
+                  </div>
+                  <div
+                    class="card-price d-flex align-items-center justify-content-between"
                   >
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
+                    <p>
+                      <span class="price__from">من عند</span>
+                      <span class="price__num">$58.00</span>
+                      <span class="price__text">لليلة الواحدة</span>
+                    </p>
+                    <a href="{{hotel.get_absolute_url}}" class="btn-text"
+                      >انظر التفاصيل<i class="la la-angle-right"></i
+                    ></a>
+                  </div>
                 </div>
               </div>
+              <!-- end card-item -->
             </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img5.jpg" alt="hotel-img" />
-                </a>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">إيبيس ستايلز لندن هيثرو</a>
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img6.jpg" alt="hotel-img" />
-                </a>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html"
-                    >فندق Europe Saint Severin باريس</a
-                  >
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img5.jpg" alt="hotel-img" />
-                </a>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">إيبيس ستايلز لندن هيثرو</a>
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
-          <div class="col-lg-6 responsive-column">
-            <div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="images/img6.jpg" alt="hotel-img" />
-                </a>
-                <div
-                  class="add-to-wishlist icon-element"
-                  data-bs-toggle="tooltip"
-                  data-placement="top"
-                  title="المرجعية"
-                >
-                  <i class="la la-heart-o"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html"
-                    >فندق Europe Saint Severin باريس</a
-                  >
-                </h3>
-                <p class="card-meta">124 شارع لافيستا ، نيويورك</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div
-                  class="card-price d-flex align-items-center justify-content-between"
-                >
-                  <p>
-                    <span class="price__from">من عند</span>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text"
-                    >انظر التفاصيل<i class="la la-angle-right"></i
-                  ></a>
-                </div>
-              </div>
-            </div>
-            <!-- end card-item -->
-          </div>
-          <!-- end col-lg-6 -->
+            <!-- end col-lg-6 -->
+          {% endfor %}
+       
         </div>
         <!-- end row -->
         <div class="row">
@@ -725,7 +426,7 @@ START CARD AREA
               <button type="button" class="theme-btn">
                 <i class="la la-refresh me-1"></i>تحميل المزيد
               </button>
-              <p class="font-size-13 pt-2">عرض 1 - 8 من 2224 فنادق</p>
+              <p class="font-size-13 pt-2">عرض 1 - 8 من {{hotels.count}} فنادق</p>
             </div>
             <!-- end btn-box -->
           </div>
@@ -1027,126 +728,7 @@ START CARD AREA
               </a>
             </div>
           </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">موضوع الفندق</h3>
-            <div class="sidebar-category">
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="ht1" />
-                <label for="ht1">القيمة الأفضل</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="ht2" />
-                <label for="ht2">متجر</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="ht3" />
-                <label for="ht3">ميزانية</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="ht4" />
-                <label for="ht4">اعمال</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="ht5" />
-                <label for="ht5">ساحر</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="ht6" />
-                <label for="ht6">كلاسيك</label>
-              </div>
-              <div class="collapse" id="hotelThemeMenu">
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht7"
-                  />
-                  <label for="ht7">أخضر</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht8"
-                  />
-                  <label for="ht8">فخم. ترف</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht9"
-                  />
-                  <label for="ht9">متوسط ​​المدى</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht10"
-                  />
-                  <label for="ht10">حفل</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht11"
-                  />
-                  <label for="ht11">جذابة</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht12"
-                  />
-                  <label for="ht12">الى حد كبير</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht14"
-                  />
-                  <label for="ht14">رومانسي</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht15"
-                  />
-                  <label for="ht15">اساسي</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="ht16"
-                  />
-                  <label for="ht16">عصري</label>
-                </div>
-              </div>
-              <a
-                class="btn-text"
-                data-bs-toggle="collapse"
-                href="#hotelThemeMenu"
-                role="button"
-                aria-expanded="false"
-                aria-controls="hotelThemeMenu"
-              >
-                <span class="show-more"
-                  >أظهر المزيد <i class="la la-angle-down"></i
-                ></span>
-                <span class="show-less"
-                  >عرض أقل <i class="la la-angle-up"></i
-                ></span>
-              </a>
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
+         
         </div>
         <!-- end sidebar -->
       </div>
@@ -1219,69 +801,6 @@ START INFO AREA
 <!-- end info-area -->
 <!-- ================================
 END INFO AREA
-================================= -->
-
-<!-- ================================
-START CTA AREA
-================================= -->
-<section
-  class="cta-area subscriber-area section-bg-2 padding-top-60px padding-bottom-60px"
->
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="cta-content">
-          <div class="section-heading">
-            <h2 class="sec__title font-size-30 text-white">
-              اشترك للحصول على عرض حصري عبر البريد الإلكتروني
-            </h2>
-          </div>
-          <!-- end section-heading -->
-        </div>
-      </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="subscriber-box">
-          <div class="contact-form-action">
-            <form action="#">
-              <div class="input-box">
-                <label class="label-text text-white"
-                  >أدخل عنوان البريد الالكتروني</label
-                >
-                <div class="form-group mb-0">
-                  <span class="la la-envelope form-icon"></span>
-                  <input
-                    class="form-control"
-                    type="email"
-                    name="email"
-                    placeholder="عنوان البريد الالكترونى"
-                  />
-                  <button
-                    class="theme-btn theme-btn-small submit-btn"
-                    type="submit"
-                  >
-                    الإشتراك
-                  </button>
-                  <span class="font-size-15 pt-1 text-white-50"
-                    ><i class="la la-lock me-1"></i>لا تقلق معلوماتك آمنة
-                    معنا.
-                  </span>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-5 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
-<!-- end cta-area -->
-<!-- ================================
-END CTA AREA
 ================================= -->
 
 {% endblock content %}

@@ -1,3 +1,4 @@
+{% load menu_generator %}
 {% load static %}
 <header class="header-area">
   <div class="header-top-bar padding-right-100px padding-left-100px">
@@ -179,7 +180,7 @@
           <div class="menu-wrapper justify-content-between">
             <a href="#" class="down-button"><i class="la la-angle-down"></i></a>
             <div class="logo">
-              <a href="index.html"><img src="{% static 'images/logo.png' %}" alt="logo" /></a>
+              <a href="{% url 'home:index' %}"><img src="{% static 'images/logo.png' %}" alt="logo" /></a>
               <div class="menu-toggler">
                 <i class="la la-bars"></i>
                 <i class="la la-times"></i>
@@ -189,265 +190,34 @@
             <!-- end logo -->
             <div class="main-menu-content pe-0 ms-0">
               <nav>
+                {% get_menu "NAV_MENU_TOP" as top_menu %}
                 <ul>
+                  {% for item in top_menu %}
                   <li>
-                    <a href="#"
-                      >الصفحة الرئيسية <i class="la la-angle-down"></i
-                    ></a>
+                    <a href="{{ item.url }}">
+                      {{ item.name }}
+                      {% if item.submenu %}
+                      <i class="la la-angle-down"></i>
+                      {% endif %}
+                    </a>
+              
+                    {% if item.submenu %}
                     <ul class="dropdown-menu-item">
+                      {% for menu in item.submenu %}
                       <li>
-                        <a href="index.html">الصفحة الرئيسية - الرئيسية</a>
+                        <a href="{{ menu.url }}">{{ menu.name }}</a>
                       </li>
-                      <li>
-                        <a href="index2.html">الصفحة الرئيسية - فندق</a>
-                      </li>
-                      <li>
-                        <a href="index3.html">الصفحة الرئيسية - النشاط</a>
-                      </li>
-                      <li>
-                        <a href="index4.html">الصفحة الرئيسية - السيارة</a>
-                      </li>
-                      <li>
-                        <a href="index5.html">الصفحة الرئيسية - كروز</a>
-                      </li>
-                      <li><a href="index6.html">المنزل - رحلة</a></li>
-                      <li>
-                        <a href="{% url 'home:about' %}"
-                          >المنزل - جولة في المدينة
-                        </a>
-                      </li>
+                      {% endfor %}
                     </ul>
+                    {% endif %}
                   </li>
-                  <li>
-                    <a href="#">جولة <i class="la la-angle-down"></i></a>
-                    <ul class="dropdown-menu-item">
-                      <li>
-                        <a href="tour-fullwidth.html">العرض الكامل للجولة</a>
-                      </li>
-                      <li><a href="tour-grid.html">شبكة الرحلات</a></li>
-                      <li><a href="tour-list.html">قائمة الجولات</a></li>
-                      <li>
-                        <a href="tour-left-sidebar.html"
-                          >جولة في الشريط الجانبي الأيسر</a
-                        >
-                      </li>
-                      <li>
-                        <a href="tour-right-sidebar.html"
-                          >جولة الشريط الجانبي الأيمن</a
-                        >
-                      </li>
-                      <li><a href="tour-details.html">تفاصيل الجولة</a></li>
-                      <li><a href="tour-booking.html">حجز الرحلات</a></li>
-                      <li>
-                        <a href="tour-search-result.html"
-                          >نتيجة البحث عن الجولة</a
-                        >
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">رحلة بحرية <i class="la la-angle-down"></i></a>
-                    <ul class="dropdown-menu-item">
-                      <li><a href="cruises.html">الرحلات البحرية</a></li>
-                      <li>
-                        <a href="cruises-list.html">قائمة الرحلات البحرية</a>
-                      </li>
-                      <li>
-                        <a href="cruise-sidebar.html">كروز الشريط الجانبي</a>
-                      </li>
-                      <li>
-                        <a href="cruise-details.html">تفاصيل الرحلة</a>
-                      </li>
-                      <li>
-                        <a href="cruise-booking.html">حجز الرحلات البحرية</a>
-                      </li>
-                      <li>
-                        <a href="cruise-search-result.html"
-                          >نتيجة بحث الرحلات البحرية</a
-                        >
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">الصفحات <i class="la la-angle-down"></i></a>
-                    <div class="dropdown-menu-item mega-menu">
-                      <ul class="row no-gutters">
-                        <li class="col-lg-3 mega-menu-item">
-                          <ul>
-                            <li>
-                              <a href="add-hotel.html">إضافة فندق </a>
-                            </li>
-                            <li><a href="add-flight.html">أضف رحلة </a></li>
-                            <li><a href="add-tour.html">أضف جولة </a></li>
-                            <li>
-                              <a href="add-cruise.html">أضف رحلة بحرية </a>
-                            </li>
-                            <li><a href="add-car.html">أضف سيارة</a></li>
-                            <li>
-                              <a href="user-dashboard.html"
-                                >لوحة تحكم المستخدم</a
-                              >
-                            </li>
-                            <li>
-                              <a href="admin-dashboard.html"
-                                >لوحة تحكم المسؤول</a
-                              >
-                            </li>
-                            <li>
-                              <a href="career.html"
-                                >مسار مهني مسار وظيفي
-                                <span class="badge bg-2 text-white"
-                                  >New</span
-                                ></a
-                              >
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="col-lg-3 mega-menu-item">
-                          <ul>
-                            <li>
-                              <a href="career-details.html"
-                                >تفاصيل المهنة
-                                <span class="badge bg-2 text-white"
-                                  >New</span
-                                ></a
-                              >
-                            </li>
-                            <li>
-                              <a href="user-profile.html"
-                                >ملف تعريفي للمستخدم</a
-                              >
-                            </li>
-
-                            <li><a href="contact.html">اتصل</a></li>
-                            <li><a href="cart.html">عربة التسوق</a></li>
-                            <li><a href="checkout.html">الدفع</a></li>
-                            <li>
-                              <a href="recover.html">إستعادة كلمة المرور</a>
-                            </li>
-                            <li>
-                              <a href="payment-received.html"
-                                >تم استلام الدفع</a
-                              >
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="col-lg-3 mega-menu-item">
-                          <ul>
-                            <li>
-                              <a href="payment-complete.html">الدفع تم</a>
-                            </li>
-                            <li><a href="destinations.html">الأماكن</a></li>
-                            <li><a href="about.html">حول</a></li>
-                            <li><a href="services.html">خدماتنا</a></li>
-                            <li><a href="gallery.html">صالة عرض</a></li>
-                            <li><a href="pricing.html">التسعير</a></li>
-                            <li><a href="faq.html">التعليمات</a></li>
-                          </ul>
-                        </li>
-                        <li class="col-lg-3 mega-menu-item">
-                          <ul>
-                            <li>
-                              <a href="blog-full-width.html"
-                                >بلوق كاملة العرض</a
-                              >
-                            </li>
-                            <li><a href="blog-grid.html">شبكة بلوق</a></li>
-                            <li>
-                              <a href="blog-sidebar.html"
-                                >الشريط الجانبي للمدونة</a
-                              >
-                            </li>
-                            <li>
-                              <a href="blog-single.html">تفاصيل المدونة</a>
-                            </li>
-                            <li><a href="coming-soon.html">قريبا</a></li>
-                            <li><a href="page-404.html">404 صفحة</a></li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                  <li>
-                    <a href="#">طيران <i class="la la-angle-down"></i></a>
-                    <ul class="dropdown-menu-item">
-                      <li><a href="flight-grid.html">شبكة الطيران</a></li>
-                      <li><a href="flight-list.html">قائمة الرحلات</a></li>
-                      <li>
-                        <a href="flight-sidebar.html">الشريط الجانبي للرحلة</a>
-                      </li>
-                      <li>
-                        <a href="flight-single.html">تفاصيل الرحلة</a>
-                      </li>
-                      <li>
-                        <a href="flight-booking.html">حجز رحلة طيران </a>
-                      </li>
-                      <li>
-                        <a href="flight-search-result.html"
-                          >نتيجة بحث الرحلة
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">الفندق <i class="la la-angle-down"></i></a>
-                    <ul class="dropdown-menu-item">
-                      <li><a href="hotel-grid.html">فندق الشبكة </a></li>
-                      <li><a href="hotel-list.html">قائمة الفنادق</a></li>
-                      <li>
-                        <a href="hotel-sidebar.html"> فندق الشريط الجانبي</a>
-                      </li>
-                      <li><a href="hotel-single.html">تفاصيل الفندق</a></li>
-                      <li><a href="hotel-booking.html">حجز الفندق</a></li>
-                      <li>
-                        <a href="hotel-search-result.html">نتيجة بحث الفندق</a>
-                      </li>
-                      <li>
-                        <a href="#">غرف <i class="la la-plus"></i></a>
-                        <ul class="sub-menu">
-                          <li><a href="room-list.html">قائمة غرفة</a></li>
-                          <li><a href="room-grid.html">شبكة الغرفة</a></li>
-                          <li>
-                            <a href="room-search-result.html">نتيجة البحث</a>
-                          </li>
-                          <li>
-                            <a href="room-search-result-list.html"
-                              >قائمة نتائج البحث</a
-                            >
-                          </li>
-                          <li>
-                            <a href="room-details.html">تفاصيل الغرفة</a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">سيارة <i class="la la-angle-down"></i></a>
-                    <ul class="dropdown-menu-item">
-                      <li><a href="car-grid.html">شبكة السيارة</a></li>
-                      <li><a href="car-list.html">قائمة سيارة</a></li>
-                      <li>
-                        <a href="car-sidebar.html">الشريط الجانبي للسيارة </a>
-                      </li>
-                      <li><a href="car-single.html">تفاصيل السيارة</a></li>
-                      <li><a href="car-booking.html">حجز السيارة</a></li>
-                      <li>
-                        <a href="car-search-result.html"
-                          >نتيجة البحث عن سيارة</a
-                        >
-                      </li>
-                    </ul>
-                  </li>
+                  {% endfor %}
                 </ul>
               </nav>
+              
             </div>
             <!-- end main-menu-content -->
-            <div class="nav-btn" style="visibility: collapse; display: revert">
-              <a href="become-local-expert.html" class="theme-btn"
-                >كن خبيرًا محليًا</a
-              >
-            </div>
+            <a href="{% url 'HotelManagement:add_hotel' %}" class="theme-btn">أضف فندقك الآن</a> 
             <!-- end nav-btn -->
           </div>
           <!-- end menu-wrapper -->

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Payment, PaymentMethod, PaymentStatus, Currency
+from .models import Payment, PaymentOption, Currency
 
 
 class PaymentForm(forms.ModelForm):
@@ -11,14 +11,10 @@ class PaymentForm(forms.ModelForm):
 
 class PaymentMethodForm(forms.ModelForm):
     class Meta:
-        model = PaymentMethod
+        model = PaymentOption
         fields = ['method_name', 'activate_state']
 
 
-class PaymentStatusForm(forms.ModelForm):
-    class Meta:
-        model = PaymentStatus
-        fields = ['payment_status_name', 'activate_state']
 
 
 class CurrencyForm(forms.ModelForm):
