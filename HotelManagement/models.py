@@ -126,8 +126,6 @@ class Hotel(BaseModel):
         limit_choices_to={'user_type': 'hotel_manager'},
         verbose_name=_("مدير الفندق")
     )
-
-
     class Meta:
         verbose_name = _("فندق")
         verbose_name_plural = _("فنادق")

@@ -19,10 +19,19 @@ class BookingAdmin(admin.ModelAdmin):
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
     actions = ['export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
-
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+        elif request.user.user_type == 'hotel_manager':
+           
+            return queryset.filter(hotel__manager=request.user)
+        return queryset.none()
+   
     def get_guest_name(self, obj):
         guest = obj.guests.first()
         return guest.name if guest else "لا يوجد ضيف"
+   
     get_guest_name.short_description = "اسم الضيف"
 
     def generate_pdf(self, title, headers, data):
@@ -156,41 +165,41 @@ class BookingAdmin(admin.ModelAdmin):
         return self.generate_pdf('تقرير_الحجوزات', headers, data)
     export_bookings_report.short_description = "تصدير تقرير الحجوزات"
 
-    def export_upcoming_bookings(self, request, queryset):
-        now = timezone.now()
-        upcoming = queryset.filter(check_in_date__gt=now).order_by('check_in_date')
+    # def export_upcoming_bookings(self, request, queryset):
+    #     now = timezone.now()
+    #     upcoming = queryset.filter(check_in_date__gt=now).order_by('check_in_date')
         
-        # تحديد عرض الأعمدة للتقرير
-        available_width = landscape(A4)[0] - 60  # 60 = rightMargin + leftMargin
-        col_widths = [
-            available_width * 0.25,  # اسم الضيف
-            available_width * 0.25,  # الفندق
-            available_width * 0.25,  # الغرفة
-            available_width * 0.15,  # تاريخ الدخول
-            available_width * 0.10   # المبلغ
-        ]
+    #     # تحديد عرض الأعمدة للتقرير
+    #     available_width = landscape(A4)[0] - 60  # 60 = rightMargin + leftMargin
+    #     col_widths = [
+    #         available_width * 0.25,  # اسم الضيف
+    #         available_width * 0.25,  # الفندق
+    #         available_width * 0.25,  # الغرفة
+    #         available_width * 0.15,  # تاريخ الدخول
+    #         available_width * 0.10   # المبلغ
+    #     ]
 
-        headers = [
-            "اسم الضيف",
-            "الفندق",
-            "الغرفة",
-            "تاريخ الدخول",
-            "المبلغ"
-        ]
+    #     headers = [
+    #         "اسم الضيف",
+    #         "الفندق",
+    #         "الغرفة",
+    #         "تاريخ الدخول",
+    #         "المبلغ"
+    #     ]
 
-        data = []
-        for booking in upcoming:
-            guest = booking.guests.first()
-            data.append([
-                guest.name if guest else "لا يوجد ضيف",
-                str(booking.hotel),
-                str(booking.room),
-                booking.check_in_date.strftime('%Y-%m-%d %H:%M'),
-                str(booking.amount)
-            ])
+    #     data = []
+    #     for booking in upcoming:
+    #         guest = booking.guests.first()
+    #         data.append([
+    #             guest.name if guest else "لا يوجد ضيف",
+    #             str(booking.hotel),
+    #             str(booking.room),
+    #             booking.check_in_date.strftime('%Y-%m-%d %H:%M'),
+    #             str(booking.amount)
+    #         ])
 
-        return self.generate_pdf('تقرير_الحجوزات_القادمة', headers, data)
-    export_upcoming_bookings.short_description = "تصدير تقرير الحجوزات القادمة"
+    #     return self.generate_pdf('تقرير_الحجوزات_القادمة', headers, data)
+    # export_upcoming_bookings.short_description = "تصدير تقرير الحجوزات القادمة"
 
     def export_cancelled_bookings(self, request, queryset):
         cancelled = queryset.filter(status__booking_status_name='ملغي')

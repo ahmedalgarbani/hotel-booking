@@ -275,7 +275,7 @@ REST_FRAMEWORK = {
 NAV_MENU_TOP = [
     {
         "name": "الرئيسي",
-        "url": "login_url_view",  
+        "url": "/",  
     },
     {
         "name": "عنا",
@@ -284,20 +284,20 @@ NAV_MENU_TOP = [
     {
         "name": "الفنادق",
         "url": "/hotels",
-        "submenu": [
-            {
-                "name": "Profile",
-                "url": "/account/profile",
-            },
-            {
-                "name": "Account Balance",
-                "url": "/account/balance",
-            },
-            {
-                "name": "Account Secrets",
-                "url": "/account/secrets",
-            }
-        ],
+        # "submenu": [
+        #     {
+        #         "name": "Profile",
+        #         "url": "/account/profile",
+        #     },
+        #     {
+        #         "name": "Account Balance",
+        #         "url": "/account/balance",
+        #     },
+        #     {
+        #         "name": "Account Secrets",
+        #         "url": "/account/secrets",
+        #     }
+        # ],
     },
     {
         "name": "الغرف",

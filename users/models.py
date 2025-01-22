@@ -11,6 +11,8 @@ class CustomUser(AbstractUser):
         ('admin', _('مدير النظام')),
         ('hotel_manager', _('مدير فندق')),
         ('customer', _('عميل')),
+        ('hotel_staff',_('موظف')),
+        
     ]
     
     user_type = models.CharField(
@@ -55,6 +57,16 @@ class CustomUser(AbstractUser):
         auto_now=True,
         verbose_name=_('تاريخ التحديث'),
         help_text=_('تاريخ آخر تحديث للحساب')
+    )
+    
+    chield = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('الموظف المعين'),
+        related_name='employees',
+        help_text=_('الموظف المعين من قبل مدير الفندق')
     )
 
     class Meta:
