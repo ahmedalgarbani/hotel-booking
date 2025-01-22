@@ -85,12 +85,12 @@ class HotelAdmin(admin.ModelAdmin):
                 'total_hotels': self.get_queryset(request).count(),
                 'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
                 'unverified_hotels': self.get_queryset(request).filter(is_verified=False).count(),
-                'hotels_by_city': self.get_queryset(request).values('location__city__name').annotate(count=Count('id')),
+                'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
                 'recent_hotels': self.get_queryset(request).order_by('-created_at')[:5],
                 'user_type': 'admin'
             }
         # إحصائيات لمدير الفندق
-        elif request.user.user_type == 'hotel_manager':
+        elif request.user.is_hotel_manager and request.user.user_type == 'hotel_manager':
             hotel = self.get_queryset(request).first()
             if hotel:
                 stats = {
@@ -99,7 +99,7 @@ class HotelAdmin(admin.ModelAdmin):
                     'verification_date': hotel.verification_date,
                     'total_phones': hotel.phones.count(),
                     'location_info': {
-                        'city': hotel.location.city.name if hotel.location and hotel.location.city else '',
+                        'city': hotel.location.city.state if hotel.location and hotel.location.city else '',
                         'address': hotel.location.address if hotel.location else '',
                     },
                     'total_images': Image.objects.filter(hotel_id=hotel).count(),

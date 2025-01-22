@@ -30,9 +30,10 @@ def assign_permissions(sender, instance, created, **kwargs):
                 Permission.objects.get(codename='can_approve_request')
             )
 
+
 class CustomGroupAdmin(GroupAdmin):
     list_display = ['name', 'permissions_count']
-    
+
     def permissions_count(self, obj):
         return obj.permissions.count()
     permissions_count.short_description = 'عدد الصلاحيات'
@@ -50,32 +51,32 @@ class CustomGroupAdmin(GroupAdmin):
 
     def manage_permissions_view(self, request, group_id):
         group = Group.objects.get(id=group_id)
-        
+
         if request.method == 'POST':
             # حذف كل الصلاحيات الحالية
             group.permissions.clear()
-            
+
             # إضافة الصلاحيات المحددة
             selected_permissions = request.POST.getlist('permissions')
             permissions = Permission.objects.filter(id__in=selected_permissions)
             group.permissions.add(*permissions)
-            
+
             messages.success(request, f'تم تحديث صلاحيات مجموعة {group.name} بنجاح')
             return redirect('admin:auth_group_changelist')
 
         # تنظيم الصلاحيات حسب نوع المحتوى
         content_types = ContentType.objects.all().order_by('app_label', 'model')
-        
+
         organized_permissions = {}
         for ct in content_types:
             permissions = Permission.objects.filter(content_type=ct)
             if permissions.exists():
                 app_label = ct.app_label.replace('_', ' ').title()
                 model_name = ct.model.replace('_', ' ').title()
-                
+
                 if app_label not in organized_permissions:
                     organized_permissions[app_label] = {}
-                
+
                 organized_permissions[app_label][model_name] = {
                     'permissions': permissions,
                     'selected': group.permissions.all()
@@ -102,6 +103,7 @@ class CustomGroupAdmin(GroupAdmin):
             request, object_id, form_url, extra_context=extra_context,
         )
 
+
 admin.site.unregister(Group)
 admin.site.register(Group, CustomGroupAdmin)
 
@@ -112,7 +114,57 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('user_type', 'is_active', 'is_staff', 'created_at')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'phone')
     ordering = ('-created_at',)
-    
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        # إذا كان المستخدم مدير فندق، اعرض فقط الموظفين التابعين له
+        if request.user.user_type == 'hotel_manager':
+            return qs.filter(chield=request.user)
+        return qs.none()  # لا تعرض أي مستخدمين للمستخدمين العاديين
+
+    def has_add_permission(self, request):
+        # السماح لمدير الفندق بإضافة موظفين فقط
+        if request.user.is_superuser:
+            return True
+        return request.user.user_type == 'hotel_manager'
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        # السماح لمدير الفندق بتعديل موظفيه فقط
+        if obj and request.user.user_type == 'hotel_manager':
+            return obj.chield == request.user
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        # السماح لمدير الفندق بحذف موظفيه فقط
+        if obj and request.user.user_type == 'hotel_manager':
+            return obj.chield == request.user
+        return False
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            # تعيين المدير الحالي كمدير للموظف الجديد تلقائياً
+            form.base_fields['chield'].initial = request.user
+            form.base_fields['chield'].disabled = True
+            # تقييد نوع المستخدم للموظفين فقط
+            form.base_fields['user_type'].choices = [('customer', 'عميل')]
+            # إخفاء بعض الحقول غير الضرورية
+            if 'is_superuser' in form.base_fields:
+                del form.base_fields['is_superuser']
+            if 'is_staff' in form.base_fields:
+                del form.base_fields['is_staff']
+            if 'user_permissions' in form.base_fields:
+                del form.base_fields['user_permissions']
+            if 'groups' in form.base_fields:
+                del form.base_fields['groups']
+        return form
+
     fieldsets = (
         (_('معلومات الحساب'), {
             'fields': ('username', 'password', 'email', 'phone')
@@ -121,7 +173,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('first_name', 'last_name', 'image')
         }),
         (_('نوع المستخدم'), {
-            'fields': ('user_type',)
+            'fields': ('user_type', 'chield')
         }),
         (_('الصلاحيات'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
@@ -136,20 +188,11 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'phone', 'password1', 'password2', 'user_type', 'first_name', 'last_name'),
+            'fields': ('username', 'email', 'phone', 'password1', 'password2', 'user_type', 'first_name', 'last_name', 'chield'),
         }),
     )
 
     readonly_fields = ('created_at', 'updated_at', 'last_login', 'date_joined')
-
-    def has_add_permission(self, request):
-        return request.user.is_superuser
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def has_view_permission(self, request, obj=None):
-        return request.user.is_superuser
 
     def get_readonly_fields(self, request, obj=None):
         if obj: 

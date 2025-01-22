@@ -108,7 +108,7 @@
             </div>
             <div class="modal-body">
               <div class="contact-form-action">
-                <form method="post">
+                <form method="post" action={% url 'users:register'%}>
                   <div class="input-box">
                     <label class="label-text">اسم المستخدم</label>
                     <div class="form-group">
@@ -161,7 +161,7 @@
                     </div>
                   </div>
                   <!-- end input-box -->
-                  <div class="btn-box pt-3 pb-4">
+                  <div class="btn-box pt-3 pb-4 ">
                     <button type="button" class="theme-btn w-100">
                       تسجيل حساب
                     </button>

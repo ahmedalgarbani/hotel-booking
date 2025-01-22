@@ -56,6 +56,16 @@ class CustomUser(AbstractUser):
         verbose_name=_('تاريخ التحديث'),
         help_text=_('تاريخ آخر تحديث للحساب')
     )
+    
+    chield = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('الموظف المعين'),
+        related_name='employees',
+        help_text=_('الموظف المعين من قبل مدير الفندق')
+    )
 
     class Meta:
         verbose_name = _('مستخدم')
