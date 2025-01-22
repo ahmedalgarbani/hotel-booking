@@ -1,33 +1,81 @@
 from django import forms
-from .models import HotelRequest
+from .models import HotelRequest, City
+from django.utils.translation import gettext_lazy as _
 
 class HotelRequestForm(forms.ModelForm):
+    city_choice = forms.ChoiceField(
+        label=_("المدينة"),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'اختر المدينة'
+        })
+    )
+    
+    new_city_name = forms.CharField(
+        max_length=100,
+        required=False,
+        label=_("اسم المدينة الجديدة"),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'أدخل اسم المدينة الجديدة',
+            'style': 'display: none;'  # سيظهر عبر CSS عند اختيار "مدينة جديدة"
+        })
+    )
+
     class Meta:
         model = HotelRequest
-        fields = '__all__'
+        fields = [
+            'name', 'email', 'role',
+            'hotel_name', 'description', 'profile_picture',
+            'business_license_number', 'document_path',
+            'country', 'address',
+            'country_code', 'phone_number'
+        ]
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'باللغة الإنجليزية فقط ، بدون HTML ، بدون عنوان ويب أو بريد إلكتروني ، بدون أحرف كبيرة'}),
-            'additional_description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'لا يوجد HTML ولا ويب أو عنوان بريد إلكتروني ، ولا تستخدم الأحرف الكبيرة'}),
-            'name': forms.TextInput(attrs={'placeholder': 'اسمك'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'بريدك الالكتروني'}),
-            'role': forms.Select(attrs={'class': 'select-contain-select',}),
-            'official_name': forms.TextInput(attrs={'placeholder': 'الاسم التجاري الرسمي'}),
-            'country': forms.Select(attrs={'class': 'select-contain-select',}),
-            'city': forms.TextInput(attrs={'placeholder': 'مثال: نيويورك'}),
-            'street_address': forms.TextInput(attrs={'placeholder': 'رقم المبنى واسم الشارع مثال: 123 Main Street'}),
-            'additional_address_info': forms.TextInput(attrs={'placeholder': 'رقم الجناح ، تقاطع ، ساحة ، مربع'}),
-            'longitude': forms.TextInput(attrs={'placeholder': 'خريطة خط الطول'}),
-            'latitude': forms.TextInput(attrs={'placeholder': 'خريطة Latitude'}),
-            'phone': forms.TextInput(attrs={'placeholder': '+1(1)8547632521'}),
-            'fax': forms.TextInput(attrs={'placeholder': '+1(1)1147521433'}),
-            'website': forms.URLInput(attrs={'placeholder': 'https://www.techydevs.com'}),
-            'facebook': forms.URLInput(attrs={'placeholder': 'https://www.facebook.com'}),
-            'instagram': forms.URLInput(attrs={'placeholder': 'https://www.instagram.com'}),
-            'twitter': forms.URLInput(attrs={'placeholder': 'https://www.twitter.com'}),
-            'linkedin': forms.URLInput(attrs={'placeholder': 'https://www.linkedin.com'}),
-             'total_rooms': forms.TextInput(attrs={'placeholder': 'إجمالي عدد الغرف والأجنحة'}),
-             'price_range_min': forms.TextInput(attrs={'placeholder': 'دقيقة'}),
-             'price_range_max': forms.TextInput(attrs={'placeholder': 'ماكس'}),
-            'currency': forms.Select(attrs={'class': 'select-contain-select'}),
-             'image': forms.FileInput(attrs={'class': 'multi file-upload-input with-preview'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'أدخل اسمك الكامل'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'أدخل بريدك الإلكتروني'}),
+            'role': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'مثال: مالك الفندق، مدير...'}),
+            'hotel_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'اسم الفندق'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'وصف مختصر للفندق'}),
+            'business_license_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'أدخل رقم الرخصة التجارية'}),
+            'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'الدولة'}),
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'العنوان التفصيلي'}),
+            'country_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'مثال: +966'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'رقم الهاتف'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # تجهيز خيارات المدن
+        cities = City.objects.all().order_by('state')
+        city_choices = [('', '-- اختر المدينة --')]
+        city_choices.extend([(str(city.id), f"{city.state} - {city.country}") for city in cities])
+        city_choices.append(('new', '-- إضافة مدينة جديدة --'))
+        self.fields['city_choice'].choices = city_choices
+        
+        # جعل بعض الحقول إلزامية
+        self.fields['business_license_number'].required = True
+        self.fields['document_path'].required = True
+        self.fields['country'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        city_choice = cleaned_data.get('city_choice')
+        new_city_name = cleaned_data.get('new_city_name')
+        
+        if city_choice == 'new':
+            if not new_city_name:
+                self.add_error('new_city_name', _('الرجاء إدخال اسم المدينة الجديدة'))
+            else:
+                cleaned_data['state'] = new_city_name
+                if not cleaned_data.get('country'):
+                    cleaned_data['country'] = 'المملكة العربية السعودية'
+        else:
+            try:
+                city = City.objects.get(id=int(city_choice))
+                cleaned_data['state'] = city.state
+                cleaned_data['country'] = city.country
+            except (City.DoesNotExist, ValueError):
+                self.add_error('city_choice', _('الرجاء اختيار مدينة صحيحة'))
+        
+        return cleaned_data

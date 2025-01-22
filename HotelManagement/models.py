@@ -5,7 +5,16 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.contrib.auth.models import Group
+from django.utils.crypto import get_random_string
+from .notifications import Notification
+from users.models import CustomUser
+
+
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -21,7 +30,7 @@ class BaseModel(models.Model):
         verbose_name=_("تاريخ الحذف")
     )
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        get_user_model(),
         related_name="%(class)s_created",
         verbose_name=_("المنشى"),
         on_delete=models.CASCADE,
@@ -29,7 +38,7 @@ class BaseModel(models.Model):
         null=True,
     )
     updated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        get_user_model(),
         related_name="%(class)s_updated",
         verbose_name=_("المعدل"),
         on_delete=models.CASCADE,
@@ -65,6 +74,7 @@ class BaseModel(models.Model):
 
     def get_absolute_url(self):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
+
 # -------------------- Location ----------------------------
 class Location(BaseModel):
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
@@ -73,11 +83,14 @@ class Location(BaseModel):
         verbose_name=_("المدينه "),
         on_delete=models.CASCADE
     )
+
     class Meta:
         verbose_name = _("الموقع")
         verbose_name_plural = _("المواقع")
+
     def __str__(self):
         return f"{self.address}"
+
 # -------------------- Hotel ----------------------------
 class Hotel(BaseModel):
     location = models.ForeignKey(
@@ -95,13 +108,26 @@ class Hotel(BaseModel):
         max_length=255,
         verbose_name=_("Slug"),
         blank=True
-    
     )
     profile_picture = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
     description = models.TextField(
         max_length=3000,
         blank=True,
         verbose_name=_("وصف الفندق")
+    )
+    business_license_number = models.CharField(
+        max_length=50,
+        verbose_name=_('رقم الرخصة التجارية'),
+        null=True,
+        blank=True,
+        help_text=_('رقم الرخصة التجارية للفندق')
+    )
+    document_path = models.FileField(
+        upload_to='hotel_documents/%Y/%m/%d/',
+        verbose_name=_('مستندات الفندق'),
+        help_text=_('المستندات الرسمية للفندق (رخصة العمل، السجل التجاري، إلخ)'),
+        null=True,
+        blank=True
     )
     is_verified = models.BooleanField(
         default=False,
@@ -113,22 +139,23 @@ class Hotel(BaseModel):
         verbose_name=_("تاريخ التحقق")
     )
     manager = models.OneToOneField(
-       settings.AUTH_USER_MODEL,
+        get_user_model(),
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         limit_choices_to={'user_type': 'hotel_manager'},
         verbose_name=_("مدير الفندق")
     )
+
     class Meta:
         verbose_name = _("فندق")
         verbose_name_plural = _("فنادق")
+
     def __str__(self):
         return f"{self.name}"
-        return f"{self.name}" 
-    
+
     def save(self, *args, **kwargs):
-        if not self.slug and self.name:  
+        if not self.slug and self.name:
             base_slug = slugify(self.name)
             slug = base_slug
             num = 1
@@ -139,9 +166,9 @@ class Hotel(BaseModel):
 
             self.slug = slug
         super(Hotel, self).save(*args, **kwargs)
+
     def get_absolute_url(self):
         return reverse('home:hotel_detail', args=[self.slug])
-
 
 # -------------------- Phone ----------------------------
 class Phone(BaseModel):
@@ -159,26 +186,27 @@ class Phone(BaseModel):
         verbose_name=_("الفندق"),
         related_name='phones'
     )
+
     class Meta:
         verbose_name = _("رقم هاتف")
         verbose_name_plural = _("أرقام الهواتف")
+
     def __str__(self):
         return f"{self.phone_number}"
+
 # ---------------------- Image -------------------------------
 class Image(BaseModel):
-    image_path = models.ImageField(upload_to='images/', blank=True, null=True)
-
-class Image(BaseModel):    
-    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
-    image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
-    hotel_id = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE)
-    hotel = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE,related_name='image')
+    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True, verbose_name=_("مسار الصورة"))
+    image_url = models.CharField(_("مسار الصورة على الانترنت"), null=True, max_length=3000, blank=True)
+    hotel = models.ForeignKey(Hotel, verbose_name=_("الفندق"), on_delete=models.CASCADE, related_name='images')
 
     class Meta:
         verbose_name = _("صورة")
         verbose_name_plural = _("صور")
+
     def __str__(self):
-        return f"{self.image_path}"
+        return f"{self.image_path if self.image_path else self.image_url}"
+
 # -------------------- City ----------------------------
 class City(BaseModel):
     state = models.CharField(
@@ -189,56 +217,179 @@ class City(BaseModel):
         _("الدول"),
         max_length=255
     )
+
     class Meta:
         verbose_name = _("منطقه")
         verbose_name_plural = _("المناطق")
+
     def __str__(self):
         return f"{self.state}"
+
+# -------------------- HotelRequest ----------------------------
 class HotelRequest(models.Model):
     # معلومات المستخدم
-    name = models.CharField(max_length=255, verbose_name="اسمك")
-    email = models.EmailField(verbose_name="بريدك الإلكتروني")
-    role = models.CharField(max_length=50, verbose_name="دورك في العمل")
+    name = models.CharField(max_length=100, verbose_name=_("الاسم"))
+    email = models.EmailField(verbose_name=_("البريد الإلكتروني"))
+    role = models.CharField(max_length=100, verbose_name=_("دور العمل"))
+    
     # معلومات الفندق
-    official_name = models.CharField(max_length=255, verbose_name="الاسم التجاري الرسمي")
-    country = models.CharField(max_length=100, verbose_name="البلد")
-    city = models.CharField(max_length=100, verbose_name="المدينة")
-    street_address = models.CharField(max_length=255, verbose_name="عنوان الشارع")
-    additional_address_info = models.CharField(max_length=255, verbose_name="معلومات إضافية عن العنوان")
-    longitude = models.FloatField(verbose_name="خط الطول", blank=True, null=True)
-    latitude = models.FloatField(verbose_name="خط العرض", blank=True, null=True)
-    # بيانات الاتصال
-    phone = models.CharField(max_length=20, verbose_name="الهاتف",blank=True, null=True)
-    fax = models.CharField(max_length=20, verbose_name="الفاكس",blank=True, null=True)
-    website = models.URLField(verbose_name="عنوان موقع الويب", blank=True, null=True)
-    facebook = models.URLField(verbose_name="صفحة Facebook", blank=True, null=True)
-    instagram = models.URLField(verbose_name="صفحة Instagram", blank=True, null=True)
-    twitter = models.URLField(verbose_name="صفحة Twitter", blank=True, null=True)
-    linkedin = models.URLField(verbose_name="صفحة Linkedin", blank=True, null=True)
-    # معلومات الفندق
-    total_rooms = models.IntegerField(verbose_name="إجمالي عدد الغرف والأجنحة", blank=True, null=True)
-    price_range_min = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="أقل سعر", blank=True, null=True)
-    price_range_max = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="أعلى سعر", blank=True, null=True)
-    currency = models.CharField(max_length=10, verbose_name="العملة", blank=True, null=True)
-    description = models.TextField(verbose_name="وصف الفندق", blank=True, null=True)
-    additional_description = models.TextField(verbose_name="وصف إضافي", blank=True, null=True)
-    # وسائل الراحة
-    airport_transportation = models.BooleanField(default=False, verbose_name="مواصلات المطار")
-    bar_lounge = models.BooleanField(default=False, verbose_name="بار / ردهة")
-    beach = models.BooleanField(default=False, verbose_name="شاطئ بحر")
-    swimming_pool = models.BooleanField(default=False, verbose_name="حمام السباحة")
-    wifi = models.BooleanField(default=False, verbose_name="واي فاي")
-    air_conditioning = models.BooleanField(default=False, verbose_name="تكييف")
-    elevator = models.BooleanField(default=False, verbose_name="مصعد في المبنى")
-    wheelchair_access = models.BooleanField(default=False, verbose_name="مسموح الكرسي المتحركة")
-    fitness_facility = models.BooleanField(default=False, verbose_name="مرافق اللياقة البدنية")
-    breakfast = models.BooleanField(default=False, verbose_name="وجبة افطار")
-    pets_allowed = models.BooleanField(default=False, verbose_name="مسموح بدخول الحيوانات الأليفة")
-    restaurant = models.BooleanField(default=False, verbose_name="مطعم")
-    free_parking = models.BooleanField(default=False, verbose_name="موقف سيارات مجاني")
-    # الصور
-    image = models.ImageField(upload_to='hotel_requests/', verbose_name="صورة الفندق",blank=True, null=True)
+    hotel_name = models.CharField(max_length=100, verbose_name=_("اسم الفندق"))
+    description = models.TextField(verbose_name=_("وصف الفندق"))
+    profile_picture = models.ImageField(upload_to='hotel_requests/profile_pictures/', verbose_name=_("الصورة الرئيسية"))
+    business_license_number = models.CharField(
+        max_length=50,
+        verbose_name=_('رقم الرخصة التجارية'),
+        null=True,
+        blank=True,
+        help_text=_('رقم الرخصة التجارية للفندق')
+    )
+    document_path = models.FileField(
+        upload_to='hotel_requests/documents/%Y/%m/%d/',
+        verbose_name=_('مستندات الفندق'),
+        help_text=_('المستندات الرسمية للفندق (رخصة العمل، السجل التجاري، إلخ)'),
+        null=True,
+        blank=True
+    )
+    additional_images = models.JSONField(default=list, blank=True, verbose_name=_("صور إضافية"))
+    
+    # معلومات المدينه
+    country = models.CharField(max_length=100, verbose_name=_("الدولة"))
+    state = models.CharField(max_length=100, verbose_name=_("المحافظة"))
+
+    # معلومات الموقع
+    city_name = models.CharField(max_length=100, verbose_name=_("المدينة"))
+    address = models.CharField(max_length=255, verbose_name=_("العنوان"))
+    
+    # معلومات الاتصال
+    country_code = models.CharField(max_length=5, verbose_name=_("رمز الدولة"))
+    phone_number = models.CharField(max_length=20, verbose_name=_("رقم الهاتف"))
+    
     # حالة الطلب
-    is_approved = models.BooleanField(default=False, verbose_name="تم التفعيل")
+    is_approved = models.BooleanField(default=False, verbose_name=_("تمت الموافقة"))
+    approved_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='approved_hotel_requests',
+        verbose_name=_("تمت الموافقة بواسطة")
+    )
+    approved_at = models.DateTimeField(null=True, blank=True, verbose_name=_("تاريخ الموافقة"))
+    
+    # معلومات التتبع
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("تاريخ الإنشاء"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("تاريخ التحديث"))
+    created_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_hotel_requests',
+        verbose_name=_("تم الإنشاء بواسطة")
+    )
+    updated_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='updated_hotel_requests',
+        verbose_name=_("تم التحديث بواسطة")
+    )
+    
     def __str__(self):
-        return self.official_name
+        return f"{self.hotel_name} - {self.name}"
+    
+    @property
+    def status(self):
+        """حالة الطلب"""
+        if self.is_approved:
+            return "تمت الموافقة"
+        return "في انتظار الموافقة"
+    
+    class Meta:
+        verbose_name = _("طلب إضافة فندق")
+        verbose_name_plural = _("طلبات إضافة الفنادق")
+        ordering = ['-created_at']
+    
+    def approve(self, user=None):
+        """
+        الموافقة على طلب إضافة الفندق
+        """
+        
+        User = get_user_model()
+        
+        # إنشاء مستخدم جديد كمدير فندق
+        username = self.email  # استخدام البريد الإلكتروني كاسم مستخدم
+        # التحقق من عدم وجود مستخدم بنفس البريد الإلكتروني
+        if not CustomUser.objects.filter(email=self.email).exists():
+            # إنشاء مستخدم جديد
+            hotel_manager = CustomUser.objects.create_user(
+                username=username,
+                email=self.email,
+                first_name=self.name,
+            )
+            
+            # تعيين كلمة مرور عشوائية
+            password = get_random_string(length=12)
+            hotel_manager.set_password(password)
+            
+            # إضافة المستخدم إلى مجموعة مدراء الفنادق
+            hotel_manager_group, _ = Group.objects.get_or_create(name='hotel_manager')
+            hotel_manager.groups.add(hotel_manager_group)
+            hotel_manager.save()
+            
+            # إرسال بريد إلكتروني للمستخدم مع معلومات تسجيل الدخول
+            Notification.send_hotel_manager_credentials(hotel_manager, self.hotel_name, password)
+        else:
+            hotel_manager = User.objects.get(email=self.email)
+        
+        # إنشاء سجل المدينة إذا لم تكن موجودة
+        city, created = City.objects.get_or_create(
+            state=self.state,
+            country=self.country
+        )
+        
+        # إنشاء الموقع
+        location = Location.objects.create(
+            address=self.address,
+            city=city,
+            created_by=user
+        )
+        
+        # إنشاء الفندق
+        hotel = Hotel.objects.create(
+            name=self.hotel_name,
+            description=self.description,
+            location=location,
+            profile_picture=self.profile_picture,
+            business_license_number=self.business_license_number,
+            document_path=self.document_path,
+            manager=hotel_manager,
+            created_by=user
+        )
+        
+        # إضافة رقم الهاتف
+        Phone.objects.create(
+            hotel=hotel,
+            country_code=self.country_code,
+            phone_number=self.phone_number,
+            created_by=user
+        )
+        
+        # إضافة الصور الإضافية
+        if isinstance(self.additional_images, list):
+            for image_data in self.additional_images:
+                if isinstance(image_data, dict) and 'name' in image_data:
+                    Image.objects.create(
+                        hotel=hotel,
+                        image_path=image_data['name'],
+                        created_by=user
+                    )
+        
+        # تحديث حالة الطلب
+        self.is_approved = True
+        self.approved_by = user
+        self.approved_at = timezone.now()
+        self.save()
+        
+        return hotel
