@@ -17,26 +17,20 @@ from django.urls import reverse
 
 from .models import CustomUser, HotelAccountRequest, ActivityLog
 
-@receiver(post_save, sender=CustomUser)
-def assign_permissions(sender, instance, created, **kwargs):
-    if created:
-        if instance.user_type == 'admin':
-            instance.user_permissions.add(
-                Permission.objects.get(codename='can_approve_request'),
-                Permission.objects.get(codename='can_reject_request')
-            )
-        elif instance.user_type == 'hotel_manager':
-            instance.user_permissions.add(
-                Permission.objects.get(codename='can_approve_request')
-            )
 
 
 class CustomGroupAdmin(GroupAdmin):
-    list_display = ['name', 'permissions_count']
+    list_display = ['name', 'permissions_count', 'manage_permissions_button']
 
     def permissions_count(self, obj):
         return obj.permissions.count()
     permissions_count.short_description = 'عدد الصلاحيات'
+
+    def manage_permissions_button(self, obj):
+        url = reverse('admin:manage-group-permissions', args=[obj.id])
+        return format_html('<a class="button" href="{}">{}</a>', url, 'إدارة الصلاحيات')
+    manage_permissions_button.short_description = 'إدارة الصلاحيات'
+    manage_permissions_button.allow_tags = True
 
     def get_urls(self):
         urls = super().get_urls()

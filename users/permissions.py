@@ -122,3 +122,16 @@ def assign_user_to_group(sender, instance, created, **kwargs):
                 instance.groups.add(group)
     except Group.DoesNotExist:
         pass
+
+@receiver(post_save, sender=apps.get_model('users', 'CustomUser'))
+def assign_permissions(sender, instance, created, **kwargs):
+    if created:
+        if instance.user_type == 'admin':
+            instance.user_permissions.add(
+                Permission.objects.get(codename='can_approve_request'),
+                Permission.objects.get(codename='can_reject_request')
+            )
+        elif instance.user_type == 'hotel_manager':
+            instance.user_permissions.add(
+                Permission.objects.get(codename='can_approve_request')
+            )
