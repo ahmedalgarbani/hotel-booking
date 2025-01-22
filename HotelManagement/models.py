@@ -327,6 +327,10 @@ class HotelRequest(models.Model):
                 username=username,
                 email=self.email,
                 first_name=self.name,
+                user_type="hotel_manager",
+                is_staff=True,
+
+
             )
             
             # تعيين كلمة مرور عشوائية

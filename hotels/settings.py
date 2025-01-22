@@ -322,6 +322,6 @@ EMAIL_HOST_USER = 'ammarragha@gmail.com'
 EMAIL_HOST_PASSWORD = 'dwvd ihyq ipys diiv'
 DEFAULT_FROM_EMAIL = 'نظام إدارة الفنادق <ammarragha@gmail.com>'
 
-# تم تعطيل هذا الجزء لإرسال رسائل البريد الإلكتروني فعلياً حتى في بيئة التطوير
+# تم تعطيل هذا الجزء لإرسال رسائل البريد الإلكتروني فعلياً    
 # if DEBUG:
 #     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
