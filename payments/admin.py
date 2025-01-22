@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Currency, HotelPaymentMethod, PaymentStatus, PaymentOption, Payment
+from .models import Currency, HotelPaymentMethod, PaymentOption, Payment
 
 
 
@@ -17,11 +17,6 @@ class CurrencyAdmin(admin.ModelAdmin):
     list_filter = ('hotel',)
 
 
-@admin.register(PaymentStatus)
-class PaymentStatusAdmin(admin.ModelAdmin):
-    list_display = ('payment_status_name', 'status_code')
-    search_fields = ('payment_status_name',)
-    list_filter = ('status_code',)
 
 
 @admin.register(PaymentOption)
@@ -53,7 +48,7 @@ class PaymentAdmin(admin.ModelAdmin):
     )
     list_filter = ('payment_status', 'payment_method', 'payment_currency', 'payment_date', 'payment_type')
     readonly_fields = ('payment_date', 'payment_totalamount')  # جعل الحقول الحسابية للقراءة فقط
-    autocomplete_fields = ('payment_method', 'payment_status', 'booking')  # تحسين البحث في العلاقات الأجنبية
+    autocomplete_fields = ('payment_method', 'booking')  # تحسين البحث في العلاقات الأجنبية
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)

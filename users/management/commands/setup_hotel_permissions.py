@@ -6,7 +6,7 @@ from rooms.models import RoomType
 from bookings.models import Booking,BookingDetail,Guest,BookingStatus
 from reviews.models import Review
 from services.models import Offer,Service
-from payments.models import Currency,Payment,PaymentMethod,PaymentStatus
+from payments.models import Currency,Payment,PaymentOption
 
 class Command(BaseCommand):
     help = 'Sets up permissions for hotel managers'
@@ -28,8 +28,7 @@ class Command(BaseCommand):
             BookingStatus:['add', 'change', 'view', 'delete'],
             Currency:['add', 'change', 'view', 'delete'],
             Payment:['add', 'change', 'view', 'delete'],
-            PaymentStatus:['add', 'change', 'view', 'delete'],
-            PaymentMethod:['add', 'change', 'view', 'delete'],
+            PaymentOption:['add', 'change', 'view', 'delete'],
 
 
             

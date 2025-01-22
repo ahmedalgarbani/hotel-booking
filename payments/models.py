@@ -23,18 +23,6 @@ class Currency(BaseModel):
         return f"{self.currency_name} ({self.currency_symbol})"
 
 
-# ------------PaymentStatus-------------
-class PaymentStatus(BaseModel):
-    payment_status_name = models.CharField(max_length=50, verbose_name=_("اسم حالة الدفع"))
-    status_code = models.IntegerField(verbose_name=_("رمز الحالة"))
-
-    class Meta:
-        verbose_name = _("حالة الدفع")
-        verbose_name_plural = _("حالات الدفع")
-        ordering = ['status_code']
-
-    def __str__(self):
-        return f"{self.payment_status_name} ({self.status_code})"
 
 
 # ------------PaymentOption-------------
@@ -56,7 +44,6 @@ class PaymentOption(models.Model):
     class Meta:
         verbose_name = _("طريقة دفع")
         verbose_name_plural = _("طرق الدفع")
-
 
 # ------------HotelPaymentMethod-------------
 class HotelPaymentMethod(models.Model):
@@ -92,6 +79,12 @@ class Payment(models.Model):
         ('cash', _('نقدي')),
         ('e_pay', _('دفع إلكتروني')),
     ]
+    PaymentStatus_choices = [
+        (0, _('قيد الانتظار')),
+        (1, _('مكتمل')),
+        (2, _('فشل')),
+        (3, _('مسترد')),
+    ]
 
     payment_method = models.ForeignKey(
         HotelPaymentMethod,
@@ -99,11 +92,11 @@ class Payment(models.Model):
         verbose_name=_("طريقة الدفع"),
         related_name='payments'
     )
-    payment_status = models.ForeignKey(
-        PaymentStatus,
-        on_delete=models.CASCADE,
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PaymentStatus_choices,
         verbose_name=_("حالة الدفع"),
-        related_name='payments'
+        default='pending'
     )
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name=_("تاريخ الدفع"))
     payment_subtotal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("المبلغ الفرعي"))
@@ -131,3 +124,5 @@ class Payment(models.Model):
         if self.payment_subtotal and self.payment_discount:
             self.payment_totalamount = self.payment_subtotal - self.payment_discount
         super().save(*args, **kwargs)
+
+
