@@ -165,13 +165,10 @@ class Phone(BaseModel):
     def __str__(self):
         return f"{self.phone_number}"
 # ---------------------- Image -------------------------------
-class Image(BaseModel):
-    image_path = models.ImageField(upload_to='images/', blank=True, null=True)
 
 class Image(BaseModel):    
     image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
     image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
-    hotel_id = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE,related_name='image')
 
     class Meta:
