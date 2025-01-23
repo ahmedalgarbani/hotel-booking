@@ -8,7 +8,7 @@ import os
 from django.template.loader import render_to_string
 from io import BytesIO
 from users.models import CustomUser
-from .models import Hotel, Location, Phone, Image, City
+from .models import Hotel, Location, Phone, Image, City, HotelRequest
 from django.contrib.auth import get_user_model
 from django import forms
 from django.utils.html import format_html
@@ -92,12 +92,11 @@ class HotelAdmin(admin.ModelAdmin):
                 'verified_hotels': self.get_queryset(request).filter(is_verified=True).count(),
                 'unverified_hotels': self.get_queryset(request).filter(is_verified=False).count(),
                 'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
-                'hotels_by_city': self.get_queryset(request).values('location__city__state').annotate(count=Count('id')),
                 'recent_hotels': self.get_queryset(request).order_by('-created_at')[:5],
                 'user_type': 'admin'
             }
         # إحصائيات لمدير الفندق
-        elif request.user.user_type == 'hotel_manager':
+        elif request.user.is_hotel_manager and request.user.user_type == 'hotel_manager':
             hotel = self.get_queryset(request).first()
             if hotel:
                 stats = {
@@ -105,6 +104,10 @@ class HotelAdmin(admin.ModelAdmin):
                     'verification_status': hotel.is_verified,
                     'verification_date': hotel.verification_date,
                     'total_phones': hotel.phones.count(),
+                    'location_info': {
+                        'city': hotel.location.city.state if hotel.location and hotel.location.city else '',
+                        'address': hotel.location.address if hotel.location else '',
+                    },
                  
                     'total_images': Image.objects.filter(hotel_id=hotel).count(),
                     'user_type': 'hotel_manager'
@@ -381,3 +384,45 @@ class CityAdmin(admin.ModelAdmin):
             return queryset.filter(location__hotel__manager=request.user)
         return queryset.none()
 admin.site.register(City, CityAdmin)
+
+# #----------- HotelRequest --------------
+
+# @admin.register(HotelRequest)
+# class HotelRequestAdmin(admin.ModelAdmin):
+#     list_display = [
+#         'official_name', 'country', 'city', 'email', 'is_approved', 'created_at'
+#     ]
+#     search_fields = ['official_name', 'email', 'country', 'city']
+#     list_filter = ['country', 'city', 'is_approved', 'created_at']
+#     actions = ['export_requests_to_excel']
+    
+#     def export_requests_to_excel(self, request, queryset):
+#         response = HttpResponse(content_type='application/ms-excel')
+#         response['Content-Disposition'] = 'attachment; filename="hotel_requests_report.xls"'
+        
+#         wb = xlwt.Workbook(encoding='utf-8')
+#         ws = wb.add_sheet('Hotel Requests Report')
+        
+#         # العناوين
+#         row_num = 0
+#         columns = [
+#             'الاسم التجاري الرسمي', 'البلد', 'المدينة', 'البريد الإلكتروني',
+#             'رقم الهاتف', 'تم التفعيل', 'تاريخ الطلب'
+#         ]
+        
+#         for col_num in range(len(columns)):
+#             ws.write(row_num, col_num, columns[col_num])
+            
+#         # البيانات
+#         rows = queryset.values_list(
+#             'official_name', 'country', 'city', 'email',
+#             'phone', 'is_approved', 'created_at'
+#         )
+#         for row in rows:
+#             row_num += 1
+#             for col_num in range(len(row)):
+               
+#                 ws.write(row_num, col_num, str(row[col_num]))
+#         wb.save(response)
+#         return response
+#     export_requests_to_excel.short_description = "تصدير طلبات الفنادق المحددة إلى Excel"

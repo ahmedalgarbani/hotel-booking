@@ -130,7 +130,7 @@
       <input type="checkbox" id="select-all" class="select-all-checkbox" onchange="toggleAll(this)">
       <label for="select-all" class="select-all-label">تحديد/إلغاء تحديد الكل</label>
     </div>
-
+    {% if request.user.is_superuser or request.user.user_type == 'admin' %}
     {% for app_label, models in organized_permissions.items %}
     <div class="app-section">
       <div class="app-title">{{ app_label }}</div>
@@ -140,6 +140,8 @@
         <div class="model-title">{{ model_name }}</div>
         
         <div class="permission-list">
+        
+        
           {% for permission in data.permissions %}
           <div class="permission-item">
             <input type="checkbox" 
@@ -154,10 +156,16 @@
           </div>
           {% endfor %}
         </div>
+        
       </div>
       {% endfor %}
     </div>
     {% endfor %}
+    
+     
+     {% else %}
+     {% endif %}
+        
 
     <div class="submit-row">
       <input type="submit" value="حفظ الصلاحيات" class="submit-button" name="_save">
