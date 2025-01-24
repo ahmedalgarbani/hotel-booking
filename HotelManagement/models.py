@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.models import Group
 from django.utils.crypto import get_random_string
-from .notifications import Notification
+# from .notifications import Notification
 from users.models import CustomUser
 
 
@@ -195,10 +195,11 @@ class Phone(BaseModel):
         return f"{self.phone_number}"
 
 # ---------------------- Image -------------------------------
-class Image(BaseModel):
-    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True, verbose_name=_("مسار الصورة"))
-    image_url = models.CharField(_("مسار الصورة على الانترنت"), null=True, max_length=3000, blank=True)
-    hotel = models.ForeignKey(Hotel, verbose_name=_("الفندق"), on_delete=models.CASCADE, related_name='images')
+
+class Image(BaseModel):    
+    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
+    image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
+    hotel = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE,related_name='image')
 
     class Meta:
         verbose_name = _("صورة")
