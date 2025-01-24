@@ -142,23 +142,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": ("نظام إدارة الفنادق"),
-    "site_header": ("نظام إدارة الفنادق"),
-    "site_brand": ("نظام الفنادق"),
+    # العنوان والشعار
+    "site_title": "نظام إدارة الفنادق",
+    "site_header": "نظام إدارة الفنادق",
+    "site_brand": "نظام الفنادق",
+    "site_logo": "images/logo.png",
     "login_logo": None,
     "login_logo_dark": None,
-
-    # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
     "site_icon": None,
-    "welcome_sign": ("مرحباً بك في نظام إدارة الفنادق"),
-    "copyright": ("جميع الحقوق محفوظة © 2024"),
+
+    # الترحيب وحقوق النشر
+    "welcome_sign": "مرحباً بك في نظام إدارة الفنادق",
+    "copyright": "جميع الحقوق محفوظة 2024",
+    
+    # البحث والمستخدم
     "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
     "user_avatar": None,
 
     # القوائم
     "topmenu_links": [
-        {"name": ("الرئيسية"), "url": "admin:index", "permissions": ["users.view_customuser"]},
+        {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
+        {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
     ],
@@ -181,33 +186,53 @@ JAZZMIN_SETTINGS = {
         "users.CustomUser": "fas fa-user",
         "auth.Group": "fas fa-users",
         "HotelManagement.Hotel": "fas fa-hotel",
+        "HotelManagement.HotelImage": "fas fa-images",
+        "HotelManagement.HotelAmenity": "fas fa-concierge-bell",
+        "rooms.Room": "fas fa-door-open",
         "rooms.RoomType": "fas fa-bed",
+        "rooms.RoomImage": "fas fa-image",
+        "rooms.RoomAmenity": "fas fa-coffee",
         "bookings.Booking": "fas fa-calendar-check",
+        "bookings.Payment": "fas fa-credit-card",
+        "reviews.Review": "fas fa-star",
+        "services.Service": "fas fa-concierge-bell",
+        "blog.Post": "fas fa-blog",
+        "blog.Category": "fas fa-folder",
+        "blog.Comment": "fas fa-comments",
     },
 
     # تخصيص الواجهة
-    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
-    "custom_js": 'admin_assets/js/script.js',
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    "custom_css": "admin_assets/css/bootstrap.rtl.css",
+    "custom_js": "admin_assets/js/script.js",
     "use_google_fonts_cdn": True,
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
     "language_chooser": True,
-
-    #################
-    # Related Modal #
-    #################
-    # Use modals instead of popups
-    "related_modal_active": False,
-
-    #############
-    # Default Icons #
-    #############
+    
+    # الألوان والتنسيق
+    "dark_mode_theme": "darkly",
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
+    
+    # Modal Settings
+    "related_modal_active": True,
+    
+    # Custom Links
+    "custom_links": {
+        "users": [{
+            "name": "إحصائيات المستخدمين", 
+            "url": "admin:users_customuser_changelist", 
+            "icon": "fas fa-chart-line"
+        }],
+        "hotels": [{
+            "name": "إحصائيات الفنادق",
+            "url": "admin:HotelManagement_hotel_changelist",
+            "icon": "fas fa-chart-bar"
+        }]
+    },
 }
 
-
+# تخصيص ألوان واجهة المشرف
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
@@ -216,7 +241,7 @@ JAZZMIN_UI_TWEAKS = {
     "brand_colour": "navbar-dark",
     "accent": "accent-primary",
     "navbar": "navbar-dark",
-    "no_navbar_border": False,
+    "no_navbar_border": True,
     "navbar_fixed": True,
     "layout_boxed": False,
     "footer_fixed": False,
@@ -225,7 +250,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
+    "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "theme": "default",
@@ -241,7 +266,6 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -251,7 +275,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
-
 
 
 ####################################################################################
