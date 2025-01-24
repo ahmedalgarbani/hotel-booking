@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'services',
     'rest_framework',
     'menu_generator',
+    'blog',  # Add the blog app
 ]
 
 MIDDLEWARE = [
@@ -92,7 +93,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '54322',
+        'PORT': '54321',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
@@ -305,11 +306,11 @@ NAV_MENU_TOP = [
     },
     {
         "name": "اشترك معنا",
-        "url": "register_view_url",  
+        "url": "/users/register/",  
     },
     {
-        "name": "المقالات ",
-        "url": "register_view_url",  
+        "name": "المقالات",
+        "url": "/blog/",  
     },
 ]
 
