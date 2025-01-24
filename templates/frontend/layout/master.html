@@ -287,7 +287,8 @@
             </div>
             <div class="modal-body">
               <div class="contact-form-action">
-                <form method="post">
+                <form method="post" action="{% url 'users:login' %}">
+                  {% csrf_token %}
                   <div class="input-box">
                     <label class="label-text">اسم المستخدم</label>
                     <div class="form-group">
@@ -295,8 +296,9 @@
                       <input
                         class="form-control"
                         type="text"
-                        name="text"
+                        name="username"
                         placeholder="اكتب اسم المستخدم الخاص بك"
+                        required
                       />
                     </div>
                   </div>
@@ -307,9 +309,10 @@
                       <span class="la la-lock form-icon"></span>
                       <input
                         class="form-control"
-                        type="text"
-                        name="text"
+                        type="password"
+                        name="password"
                         placeholder="اكتب كلمة المرور الخاصة بك"
+                        required
                       />
                     </div>
                     <div
@@ -318,19 +321,20 @@
                       <div class="custom-checkbox mb-0">
                         <input
                           type="checkbox"
+                          name="remember"
                           class="form-check-input"
                           id="rememberchb"
                         />
                         <label for="rememberchb">تذكرنى</label>
                       </div>
                       <p class="forgot-password">
-                        <a href="recover.html">هل نسيت كلمة المرور؟</a>
+                        <a href="{% url 'users:password_reset' %}">هل نسيت كلمة المرور؟</a>
                       </p>
                     </div>
                   </div>
                   <!-- end input-box -->
                   <div class="btn-box pt-3 pb-4">
-                    <button type="button" class="theme-btn w-100">
+                    <button type="submit" class="theme-btn w-100">
                       تسجيل الدخول
                     </button>
                   </div>

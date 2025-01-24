@@ -106,9 +106,9 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = []
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'ar'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -118,7 +118,7 @@ USE_TZ = True
 
 LANGUAGES = [
     ('en', 'English'),
-    ('ar', 'العربية'),
+    ('ar', 'Arabic'),
 ]
 
 LOCALE_PATHS = [
@@ -142,27 +142,85 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": ("نظام إدارة الفنادق"),
-    "site_header": ("نظام إدارة الفنادق"),
-    "site_brand": ("نظام الفنادق"),
+    # العنوان والشعار
+    "site_title": "نظام إدارة الفنادق",
+    "site_header": "نظام إدارة الفنادق",
+    "site_brand": "نظام الفنادق",
+    "site_logo": "images/logo.png",
     "login_logo": None,
     "login_logo_dark": None,
-
-    # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
     "site_icon": None,
-    "welcome_sign": ("مرحباً بك في نظام إدارة الفنادق"),
-    "copyright": ("جميع الحقوق محفوظة © 2024"),
+
+    # الترحيب وحقوق النشر
+    "welcome_sign": "مرحباً بك في نظام إدارة الفنادق",
+    "copyright": "جميع الحقوق محفوظة 2024",
+    
+    # البحث والمستخدم
     "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
     "user_avatar": None,
 
     # القوائم
     "topmenu_links": [
-        {"name": ("الرئيسية"), "url": "admin:index", "permissions": ["users.view_customuser"]},
+        {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
+        {
+            "name": "تهيئة النظام",
+            "url": "/admin/system-setup/",
+            "icon": "fas fa-cogs",
+        },
+        {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
     ],
 
+    # تجميع النماذج
+    "models": {
+        "system_setup": {
+            "name": "تهيئة النظام",
+            "icon": "fas fa-cogs",
+            "models": [
+                "HotelManagement.City",
+                "HotelManagement.Location",
+                "HotelManagement.HotelCategory",
+                "rooms.Category",
+                "rooms.RoomType",
+                "bookings.PaymentMethod",
+                "services.ServiceCategory",
+            ]
+        },
+        "HotelManagement": {
+            "name": "إدارة الفنادق",
+            "icon": "fas fa-hotel",
+            "models": [
+                "HotelManagement.Hotel",
+                "HotelManagement.Image",
+                "HotelManagement.HotelAmenity",
+                "HotelManagement.HotelPolicy",
+                "HotelManagement.Phone",
+            ]
+        },
+        "rooms": {
+            "name": "إدارة الغرف",
+            "icon": "fas fa-bed",
+            "models": [
+                "rooms.Room",
+                "rooms.RoomImage",
+                "rooms.RoomAmenity",
+                "rooms.RoomPrice",
+                "rooms.Availability",
+            ]
+        },
+        "bookings": {
+            "name": "الحجوزات والمدفوعات",
+            "icon": "fas fa-calendar-check",
+            "models": [
+                "bookings.Booking",
+                "bookings.BookingDetail",
+                "bookings.Payment",
+                "bookings.Invoice",
+            ]
+        },
+    },
     # قائمة المستخدم
     "usermenu_links": [
         {"model": "users.CustomUser"}
@@ -173,41 +231,110 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
-    "order_with_respect_to": ["auth", "HotelManagement", "rooms", "bookings"],
     
     # الأيقونات
     "icons": {
         "auth": "fas fa-users-cog",
         "users.CustomUser": "fas fa-user",
+        "users.Guest": "fas fa-user-friends",
+        "users.GuestProfile": "fas fa-address-card",
+        "users.GuestPreference": "fas fa-heart",
         "auth.Group": "fas fa-users",
+        
+        "locations.Region": "fas fa-map-marked",
+        "HotelManagement.City": "fas fa-city",
+        "HotelManagement.Location": "fas fa-map-marker-alt",
+        "locations.Address": "fas fa-location-arrow",
         "HotelManagement.Hotel": "fas fa-hotel",
+        "HotelManagement.Image": "fas fa-image",
+        "HotelManagement.HotelAmenity": "fas fa-concierge-bell",
+        "HotelManagement.HotelPolicy": "fas fa-clipboard-list",
+        "HotelManagement.HotelFacility": "fas fa-spa",
+        "HotelManagement.HotelRequest": "fas fa-file-signature",
+        "HotelManagement.HotelRequestStatus": "fas fa-tasks",
+        "HotelManagement.HotelCategory": "fas fa-star",
+        "HotelManagement.HotelRating": "fas fa-star-half-alt",
+        "HotelManagement.Phone": "fas fa-phone",
+        "HotelManagement.ContactInfo": "fas fa-address-book",
+        "rooms.Room": "fas fa-door-open",
         "rooms.RoomType": "fas fa-bed",
+        "rooms.RoomImage": "fas fa-image",
+        "rooms.RoomAmenity": "fas fa-coffee",
+        "rooms.RoomFeature": "fas fa-list-ul",
+        "rooms.RoomStatus": "fas fa-info-circle",
+        "rooms.RoomPrice": "fas fa-tag",
+        "rooms.RoomPriceHistory": "fas fa-history",
+        "rooms.RoomDiscount": "fas fa-percent",
+        "rooms.Availability": "fas fa-calendar-alt",
+        "rooms.Category": "fas fa-layer-group",
+        "rooms.RoomView": "fas fa-mountain",
+        "rooms.RoomCapacity": "fas fa-users",
+        "rooms.RoomBed": "fas fa-bed",
         "bookings.Booking": "fas fa-calendar-check",
+        "bookings.BookingStatus": "fas fa-clock",
+        "bookings.BookingDetail": "fas fa-receipt",
+        "bookings.BookingGuest": "fas fa-users",
+        "bookings.BookingExtra": "fas fa-plus-circle",
+        "bookings.BookingNote": "fas fa-sticky-note",
+        "bookings.BookingCancellation": "fas fa-ban",
+        "bookings.Payment": "fas fa-credit-card",
+        "bookings.PaymentStatus": "fas fa-money-check-alt",
+        "bookings.PaymentMethod": "fas fa-money-bill-wave",
+        "bookings.Invoice": "fas fa-file-invoice-dollar",
+        "reviews.Review": "fas fa-star",
+        "reviews.Rating": "fas fa-star-half-alt",
+        "services.Service": "fas fa-concierge-bell",
+        "services.ServiceCategory": "fas fa-th-list",
+        "services.ServiceBooking": "fas fa-calendar-plus",
+        "media.Image": "fas fa-image",
+        "media.Gallery": "fas fa-images",
+        "media.Document": "fas fa-file-alt",
+        "media.Video": "fas fa-video",
+        "blog.Post": "fas fa-blog",
+        "blog.Category": "fas fa-folder",
+        "blog.Comment": "fas fa-comments",
+        "blog.Tag": "fas fa-tags",
+        "home.Slider": "fas fa-images",
+        "home.Testimonial": "fas fa-quote-right",
+        "home.Partner": "fas fa-handshake",
+        "home.Contact": "fas fa-envelope",
+        "home.About": "fas fa-info-circle",
+        "home.FAQ": "fas fa-question-circle",
+        "home.Newsletter": "fas fa-newspaper",
+        "home.SocialMedia": "fas fa-share-alt"
     },
-
     # تخصيص الواجهة
-    "custom_css": 'admin_assets/css/bootstrap.rtl.css',
-    "custom_js": 'admin_assets/js/script.js',
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    "custom_css": "admin_assets/css/bootstrap.rtl.css",
+    "custom_js": "admin_assets/js/script.js",
     "use_google_fonts_cdn": True,
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
     "language_chooser": True,
-
-    #################
-    # Related Modal #
-    #################
-    # Use modals instead of popups
-    "related_modal_active": False,
-
-    #############
-    # Default Icons #
-    #############
+    
+    # الألوان والتنسيق
+    "dark_mode_theme": "darkly",
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
+    
+    # Modal Settings
+    "related_modal_active": True,
+    
+    # Custom Links
+    "custom_links": {
+        "users": [{
+            "name": "إحصائيات المستخدمين", 
+            "url": "admin:users_customuser_changelist", 
+            "icon": "fas fa-chart-line"
+        }],
+        "hotels": [{
+            "name": "إحصائيات الفنادق",
+            "url": "admin:HotelManagement_hotel_changelist",
+            "icon": "fas fa-chart-bar"
+        }]
+    },
 }
 
-
+# تخصيص ألوان واجهة المشرف
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
@@ -216,7 +343,7 @@ JAZZMIN_UI_TWEAKS = {
     "brand_colour": "navbar-dark",
     "accent": "accent-primary",
     "navbar": "navbar-dark",
-    "no_navbar_border": False,
+    "no_navbar_border": True,
     "navbar_fixed": True,
     "layout_boxed": False,
     "footer_fixed": False,
@@ -225,7 +352,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
+    "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "theme": "default",
@@ -241,7 +368,6 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -251,7 +377,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
-
 
 
 ####################################################################################
