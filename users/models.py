@@ -66,7 +66,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         full_name = self.get_full_name()
-        return f"{full_name or self.username} ({self.get_user_type_display()})"
+        return f"{full_name or self.username}"
 
     
     @property

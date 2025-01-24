@@ -11,8 +11,9 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.models import Group
 from django.utils.crypto import get_random_string
-# from .notifications import Notification
+from .notifications import Notification
 from users.models import CustomUser
+import json
 
 
 class BaseModel(models.Model):
@@ -75,11 +76,29 @@ class BaseModel(models.Model):
     def get_absolute_url(self):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
 
+# -------------------- City ----------------------------
+class City(BaseModel):
+    state = models.CharField(
+        _("المحافظة"),
+        max_length=255
+    )
+    country = models.CharField(
+        _("الدول"),
+        max_length=255
+    )
+
+    class Meta:
+        verbose_name = _("منطقه")
+        verbose_name_plural = _("المناطق")
+
+    def __str__(self):
+        return f"{self.state}, {self.country}"
+
 # -------------------- Location ----------------------------
 class Location(BaseModel):
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
     city = models.ForeignKey(
-        "HotelManagement.City",
+        City,
         verbose_name=_("المدينه "),
         on_delete=models.CASCADE
     )
@@ -195,11 +214,10 @@ class Phone(BaseModel):
         return f"{self.phone_number}"
 
 # ---------------------- Image -------------------------------
-
-class Image(BaseModel):    
-    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
-    image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
-    hotel = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE,related_name='image')
+class Image(BaseModel):
+    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True, verbose_name=_("مسار الصورة"))
+    image_url = models.CharField(_("مسار الصورة على الانترنت"), null=True, max_length=3000, blank=True)
+    hotel = models.ForeignKey(Hotel, verbose_name=_("الفندق"), on_delete=models.CASCADE, related_name='images')
 
     class Meta:
         verbose_name = _("صورة")
@@ -207,24 +225,6 @@ class Image(BaseModel):
 
     def __str__(self):
         return f"{self.image_path if self.image_path else self.image_url}"
-
-# -------------------- City ----------------------------
-class City(BaseModel):
-    state = models.CharField(
-        _("المحافظة"),
-        max_length=255
-    )
-    country = models.CharField(
-        _("الدول"),
-        max_length=255
-    )
-
-    class Meta:
-        verbose_name = _("منطقه")
-        verbose_name_plural = _("المناطق")
-
-    def __str__(self):
-        return f"{self.state}"
 
 # -------------------- HotelRequest ----------------------------
 class HotelRequest(models.Model):
@@ -317,7 +317,8 @@ class HotelRequest(models.Model):
         الموافقة على طلب إضافة الفندق
         """
         
-       
+        User = get_user_model()
+        
         # إنشاء مستخدم جديد كمدير فندق
         username = self.email  # استخدام البريد الإلكتروني كاسم مستخدم
         # التحقق من عدم وجود مستخدم بنفس البريد الإلكتروني
@@ -329,21 +330,51 @@ class HotelRequest(models.Model):
                 first_name=self.name,
                 user_type="hotel_manager",
                 is_staff=True,
-
-
             )
             
             # تعيين كلمة مرور عشوائية
             password = get_random_string(length=12)
             hotel_manager.set_password(password)
             
-            # إضافة المستخدم إلى مجموعة مدراء الفنادق
-            hotel_manager_group, _ = Group.objects.get_or_create(name='hotel_manager')
+            # إضافة المستخدم إلى مجموعة مدراء الفنادق وإضافة الصلاحيات
+            hotel_manager_group, created = Group.objects.get_or_create(name='hotel_manager')
+            
+            if created:
+                # إضافة الصلاحيات الأساسية لمدير الفندق
+                from django.contrib.auth.models import Permission
+                from django.contrib.contenttypes.models import ContentType
+                
+                # إنشاء قائمة بالنماذج والصلاحيات المطلوبة
+                models_permissions = {
+                    Hotel: ['add', 'change', 'view', 'delete'],
+                    Phone: ['add', 'change', 'view', 'delete'],
+                    Image: ['add', 'change', 'view', 'delete'],
+                    Location: ['add', 'change', 'view', 'delete'],
+                    City: ['view'],
+                }
+                
+                # إضافة الصلاحيات لكل نموذج
+                for model, actions in models_permissions.items():
+                    content_type = ContentType.objects.get_for_model(model)
+                    for action in actions:
+                        codename = f"{action}_{model._meta.model_name}"
+                        try:
+                            permission = Permission.objects.get(
+                                content_type=content_type,
+                                codename=codename
+                            )
+                            hotel_manager_group.permissions.add(permission)
+                        except Permission.DoesNotExist:
+                            continue
+            
             hotel_manager.groups.add(hotel_manager_group)
             hotel_manager.save()
             
             # إرسال بريد إلكتروني للمستخدم مع معلومات تسجيل الدخول
-            Notification.send_hotel_manager_credentials(hotel_manager, self.hotel_name, password)
+            print(f"محاولة إرسال بريد إلكتروني إلى {hotel_manager.email}")
+            email_sent = Notification.send_hotel_manager_credentials(hotel_manager, self.hotel_name, password)
+            if not email_sent:
+                print(f"فشل في إرسال البريد الإلكتروني إلى {hotel_manager.email}")
         else:
             hotel_manager = User.objects.get(email=self.email)
         
@@ -369,7 +400,10 @@ class HotelRequest(models.Model):
             business_license_number=self.business_license_number,
             document_path=self.document_path,
             manager=hotel_manager,
-            created_by=user
+            created_by=user,
+            is_verified=True,
+            verification_date=timezone.now(),
+
         )
         
         # إضافة رقم الهاتف
@@ -381,14 +415,19 @@ class HotelRequest(models.Model):
         )
         
         # إضافة الصور الإضافية
-        if isinstance(self.additional_images, list):
-            for image_data in self.additional_images:
-                if isinstance(image_data, dict) and 'name' in image_data:
-                    Image.objects.create(
-                        hotel=hotel,
-                        image_path=image_data['name'],
-                        created_by=user
-                    )
+        if isinstance(self.additional_images, str):
+            try:
+                images_list = json.loads(self.additional_images)
+                if isinstance(images_list, list):
+                    for image_data in images_list:
+                        if isinstance(image_data, dict) and 'image_path' in image_data:
+                            Image.objects.create(
+                                hotel=hotel,
+                                image_path=image_data['image_path'],
+                                created_by=user
+                            )
+            except json.JSONDecodeError:
+                pass
         
         # تحديث حالة الطلب
         self.is_approved = True

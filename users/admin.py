@@ -108,6 +108,24 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('user_type', 'is_active', 'is_staff', 'created_at')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'phone')
     ordering = ('-created_at',)
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'phone', 'image', 'user_type', 'is_staff', 'is_superuser'),
+        }),
+    )
+
+    fieldsets = (
+        (_('معلومات الحساب'), {
+            'fields': ('username', 'password', 'email', 'phone')
+        }),
+        (_('المعلومات الشخصية'), {
+            'fields': ('first_name', 'last_name', 'image')
+        }),
+        (_('الصلاحيات'), {
+            'fields': ('user_type', 'is_active', 'is_staff', 'is_superuser', 'chield'),
+        }),
+    )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -200,30 +218,14 @@ class CustomUserAdmin(UserAdmin):
 
     def save_model(self, request, obj, form, change):
         if not change:  # عند إنشاء مستخدم جديد
-            if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            if request.user.is_superuser:
+                # لا تغير أي شيء، اترك الإعدادات كما هي
+                pass
+            elif request.user.user_type == 'hotel_manager':
                 obj.user_type = 'hotel_staff'
                 obj.chield = request.user
                 obj.is_staff = True
         super().save_model(request, obj, form, change)
-
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'phone', 'image'),
-        }),
-    )
-
-    fieldsets = (
-        (_('معلومات الحساب'), {
-            'fields': ('username', 'password', 'email', 'phone')
-        }),
-        (_('المعلومات الشخصية'), {
-            'fields': ('first_name', 'last_name', 'image')
-        }),
-        (_('الصلاحيات'), {
-            'fields': ('user_type', 'is_active', 'is_staff', 'chield'),
-        }),
-    )
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:

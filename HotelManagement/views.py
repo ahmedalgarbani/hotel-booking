@@ -1,34 +1,109 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.translation import gettext_lazy as _
+from django.http import JsonResponse
+from .models import HotelRequest, Hotel, City, Image
 from .forms import HotelRequestForm
-from django.urls import reverse
-from django.conf import settings
-import os
+import json
 
-def add_hotel(request):
+def is_admin(user):
+    return user.is_superuser
+
+
+def add_hotel_request(request):
+    """عرض نموذج طلب إضافة فندق جديد ومعالجة البيانات المرسلة"""
     if request.method == 'POST':
         form = HotelRequestForm(request.POST, request.FILES)
         if form.is_valid():
             hotel_request = form.save(commit=False)
-
-            # Handle multiple images
-            images = request.FILES.getlist('image')
-            if images:
-                hotel_name = hotel_request.official_name.replace(' ', '_')
-                folder_path = os.path.join(settings.MEDIA_ROOT, 'hotel_requests', hotel_name)
-                if not os.path.exists(folder_path):
-                    os.makedirs(folder_path)
-
-                image_paths = []
-                for image in images:
-                    file_path = os.path.join(folder_path, image.name)
-                    with open(file_path, 'wb+') as destination:
+            
+            # التحقق من الدولة والمحافظة
+            country = request.POST.get('country', '')
+            state = request.POST.get('state', '')
+            
+            # إذا تم اختيار "إضافة جديد"
+            if country == 'new':
+                country = request.POST.get('new_country', '')
+            if state == 'new':
+                state = request.POST.get('new_state', '')
+            
+            # التحقق من أن القيم غير فارغة
+            if not country or not state:
+                messages.error(request, _('يرجى اختيار أو إدخال الدولة والمحافظة'))
+                return render(request, 'frontend/hotel/add_hotel.html', {'form': form, 'cities': City.objects.values('country', 'state').distinct()})
+            
+            # حفظ المدينة الجديدة إذا لم تكن موجودة
+            city, created = City.objects.get_or_create(
+                country=country,
+                state=state
+            )
+            
+            hotel_request.country = country
+            hotel_request.state = state
+            hotel_request.user = request.user
+            
+            # معالجة الصور الإضافية
+            additional_images = []
+            if request.FILES.getlist('additional_images'):
+                for image in request.FILES.getlist('additional_images'):
+                    # حفظ الصورة مباشرة في مجلد الوسائط
+                    additional_images.append({
+                        'image_path': f'hotels/images/{image.name}'
+                    })
+                    # حفظ الصورة فعلياً
+                    with open(f'media/hotels/images/{image.name}', 'wb+') as destination:
                         for chunk in image.chunks():
                             destination.write(chunk)
-                    image_paths.append(f'hotel_requests/{hotel_name}/{image.name}')
-
-                hotel_request.image = image_paths[0] if image_paths else None  # Save path of the first image
+                            
+            hotel_request.additional_images = json.dumps(additional_images)
             hotel_request.save()
-            return redirect(reverse('HotelManagement:add_hotel'))
+            
+            messages.success(request, _('تم إرسال طلب إضافة الفندق بنجاح. سيتم مراجعته من قبل الإدارة.'))
+            return redirect('home:index')
     else:
         form = HotelRequestForm()
-    return render(request, 'frontend/home/pages/add-hotel.html', {'form': form})
+    
+    # جلب جميع المدن الفريدة
+    cities = City.objects.values('country', 'state').distinct()
+    
+    context = {
+        'form': form,
+        'cities': cities,
+        'title': _('طلب إضافة فندق جديد')
+    }
+    return render(request, 'frontend/hotel/add_hotel.html', context)
+
+@login_required
+@user_passes_test(is_admin)
+def hotel_requests_list(request):
+    """عرض قائمة طلبات إضافة الفنادق للمشرفين"""
+    requests = HotelRequest.objects.all().order_by('-created_at')
+    context = {
+        'requests': requests,
+        'title': _('طلبات إضافة الفنادق')
+    }
+    return render(request, 'admin/hotel/requests_list.html', context)
+
+@login_required
+@user_passes_test(is_admin)
+def approve_hotel_request(request, request_id):
+    """الموافقة على طلب إضافة فندق"""
+    hotel_request = get_object_or_404(HotelRequest, id=request_id)
+    
+    try:
+        hotel = hotel_request.approve(request.user)
+        messages.success(request, _(f'تمت الموافقة على طلب إضافة الفندق {hotel.name} بنجاح'))
+    except Exception as e:
+        messages.error(request, str(e))
+    
+    return redirect('hotel:requests_list')
+
+@login_required
+@user_passes_test(is_admin)
+def reject_hotel_request(request, request_id):
+    """رفض طلب إضافة فندق"""
+    hotel_request = get_object_or_404(HotelRequest, id=request_id)
+    hotel_request.delete()
+    messages.success(request, _('تم رفض طلب إضافة الفندق'))
+    return redirect('hotel:requests_list')
