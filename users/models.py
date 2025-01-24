@@ -1,5 +1,4 @@
 from django.db import models
-from HotelManagement.models import BaseModel
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
@@ -7,6 +6,9 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 class CustomUser(AbstractUser):
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('تاريخ الإنشاء'), help_text=_('تاريخ إنشاء الحساب'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('تاريخ التحديث'), help_text=_('تاريخ آخر تحديث للحساب'))
+
     USER_TYPE_CHOICES = [
         ('admin', _('مدير النظام')),
         ('hotel_manager', _('مدير فندق')),
@@ -47,18 +49,6 @@ class CustomUser(AbstractUser):
         help_text=_('يشير إلى ما إذا كان هذا المستخدم نشطًا أم لا')
     )
     
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_('تاريخ الإنشاء'),
-        help_text=_('تاريخ إنشاء الحساب')
-    )
-    
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_('تاريخ التحديث'),
-        help_text=_('تاريخ آخر تحديث للحساب')
-    )
-    
     chield = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -87,7 +77,10 @@ class CustomUser(AbstractUser):
     def is_customer(self):
         return self.user_type == 'customer'
 
-class ActivityLog(BaseModel):
+class ActivityLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('تاريخ الإنشاء'), help_text=_('تاريخ إنشاء السجل'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('تاريخ التحديث'), help_text=_('تاريخ آخر تحديث للسجل'))
+
     ACTION_CHOICES = [
         ('create', _('إنشاء')),
         ('update', _('تحديث')),

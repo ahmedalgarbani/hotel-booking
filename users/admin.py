@@ -15,7 +15,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
-from .models import CustomUser,  ActivityLog
+from .models import CustomUser, ActivityLog
 
 
 
@@ -414,8 +414,6 @@ class CustomUserAdmin(UserAdmin):
         return obj.is_active
     is_active_display.short_description = _('نشط')
     is_active_display.boolean = True
-
-@admin.register(HotelAccountRequest)
 
 @admin.register(ActivityLog)
 class ActivityLogAdmin(admin.ModelAdmin):
