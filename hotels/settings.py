@@ -301,13 +301,9 @@ NAV_MENU_TOP = [
 
 # إعدادات البريد الإلكتروني
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'  # استبدل هذا بخادم SMTP الخاص بك
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ammarragha@gmail.com'
-EMAIL_HOST_PASSWORD = 'dwvd ihyq ipys diiv'
+EMAIL_HOST_PASSWORD = 'dbhv ajjh lphb gcrh'
 DEFAULT_FROM_EMAIL = 'نظام إدارة الفنادق <ammarragha@gmail.com>'
-
-# تم تعطيل هذا الجزء لإرسال رسائل البريد الإلكتروني فعلياً    
-# if DEBUG:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
