@@ -117,3 +117,9 @@ celerybeat.pid
 */migrations/*.py
 !*/migrations/__init__.py
 
+media/hotels/images/
+media/hotel_requests/documents/
+media/hotel_requests/profile_pictures/
+media/images/
+media/hotel_documents/
+media/hotel/images/
