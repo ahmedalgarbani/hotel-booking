@@ -92,7 +92,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '54322',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
@@ -138,7 +138,7 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-AUTH_USER_MODEL='users.CustomUser',
+AUTH_USER_MODEL='users.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -166,19 +166,19 @@ JAZZMIN_SETTINGS = {
     "site_icon": None,
     "welcome_sign": ("مرحباً بك في نظام إدارة الفنادق"),
     "copyright": ("جميع الحقوق محفوظة © 2024"),
-    "search_model": ["auth.User", "HotelManagement.Hotel"],
+    "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
     "user_avatar": None,
 
     # القوائم
     "topmenu_links": [
-        {"name": ("الرئيسية"), "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"model": "auth.User"},
+        {"name": ("الرئيسية"), "url": "admin:index", "permissions": ["users.view_customuser"]},
+        {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
     ],
 
     # قائمة المستخدم
     "usermenu_links": [
-        {"model": "auth.user"}
+        {"model": "users.CustomUser"}
     ],
 
     # القائمة الجانبية
@@ -191,7 +191,7 @@ JAZZMIN_SETTINGS = {
     # الأيقونات
     "icons": {
         "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
+        "users.CustomUser": "fas fa-user",
         "auth.Group": "fas fa-users",
         "HotelManagement.Hotel": "fas fa-hotel",
         "rooms.RoomType": "fas fa-bed",
@@ -312,3 +312,16 @@ NAV_MENU_TOP = [
         "url": "register_view_url",  
     },
 ]
+
+# إعدادات البريد الإلكتروني
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ammarragha@gmail.com'
+EMAIL_HOST_PASSWORD = 'dwvd ihyq ipys diiv'
+DEFAULT_FROM_EMAIL = 'نظام إدارة الفنادق <ammarragha@gmail.com>'
+
+# تم تعطيل هذا الجزء لإرسال رسائل البريد الإلكتروني فعلياً    
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
