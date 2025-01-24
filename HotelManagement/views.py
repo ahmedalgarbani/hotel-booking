@@ -10,7 +10,7 @@ import json
 def is_admin(user):
     return user.is_superuser
 
-@login_required
+
 def add_hotel_request(request):
     """عرض نموذج طلب إضافة فندق جديد ومعالجة البيانات المرسلة"""
     if request.method == 'POST':
@@ -42,16 +42,21 @@ def add_hotel_request(request):
             hotel_request.country = country
             hotel_request.state = state
             hotel_request.user = request.user
-            hotel_request.save()
             
             # معالجة الصور الإضافية
             additional_images = []
             if request.FILES.getlist('additional_images'):
                 for image in request.FILES.getlist('additional_images'):
+                    # حفظ الصورة مباشرة في مجلد الوسائط
                     additional_images.append({
-                        'image_path': image.name
+                        'image_path': f'hotels/images/{image.name}'
                     })
-            hotel_request.additional_images = additional_images
+                    # حفظ الصورة فعلياً
+                    with open(f'media/hotels/images/{image.name}', 'wb+') as destination:
+                        for chunk in image.chunks():
+                            destination.write(chunk)
+                            
+            hotel_request.additional_images = json.dumps(additional_images)
             hotel_request.save()
             
             messages.success(request, _('تم إرسال طلب إضافة الفندق بنجاح. سيتم مراجعته من قبل الإدارة.'))
@@ -59,7 +64,7 @@ def add_hotel_request(request):
     else:
         form = HotelRequestForm()
     
-    # جلب جميع المدن الفريقة
+    # جلب جميع المدن الفريدة
     cities = City.objects.values('country', 'state').distinct()
     
     context = {

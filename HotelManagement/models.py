@@ -13,6 +13,7 @@ from django.contrib.auth.models import Group
 from django.utils.crypto import get_random_string
 from .notifications import Notification
 from users.models import CustomUser
+import json
 
 
 class BaseModel(models.Model):
@@ -75,11 +76,29 @@ class BaseModel(models.Model):
     def get_absolute_url(self):
         return reverse(f"{self.__class__.__name__.lower()}_detail", kwargs={"slug": self.slug})
 
+# -------------------- City ----------------------------
+class City(BaseModel):
+    state = models.CharField(
+        _("المحافظة"),
+        max_length=255
+    )
+    country = models.CharField(
+        _("الدول"),
+        max_length=255
+    )
+
+    class Meta:
+        verbose_name = _("منطقه")
+        verbose_name_plural = _("المناطق")
+
+    def __str__(self):
+        return f"{self.state}, {self.country}"
+
 # -------------------- Location ----------------------------
 class Location(BaseModel):
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
     city = models.ForeignKey(
-        "HotelManagement.City",
+        City,
         verbose_name=_("المدينه "),
         on_delete=models.CASCADE
     )
@@ -206,24 +225,6 @@ class Image(BaseModel):
 
     def __str__(self):
         return f"{self.image_path if self.image_path else self.image_url}"
-
-# -------------------- City ----------------------------
-class City(BaseModel):
-    state = models.CharField(
-        _("المحافظة"),
-        max_length=255
-    )
-    country = models.CharField(
-        _("الدول"),
-        max_length=255
-    )
-
-    class Meta:
-        verbose_name = _("منطقه")
-        verbose_name_plural = _("المناطق")
-
-    def __str__(self):
-        return f"{self.state}"
 
 # -------------------- HotelRequest ----------------------------
 class HotelRequest(models.Model):
@@ -411,14 +412,19 @@ class HotelRequest(models.Model):
         )
         
         # إضافة الصور الإضافية
-        if isinstance(self.additional_images, list):
-            for image_data in self.additional_images:
-                if isinstance(image_data, dict) and 'name' in image_data:
-                    Image.objects.create(
-                        hotel=hotel,
-                        image_path=image_data['name'],
-                        created_by=user
-                    )
+        if isinstance(self.additional_images, str):
+            try:
+                images_list = json.loads(self.additional_images)
+                if isinstance(images_list, list):
+                    for image_data in images_list:
+                        if isinstance(image_data, dict) and 'image_path' in image_data:
+                            Image.objects.create(
+                                hotel=hotel,
+                                image_path=image_data['image_path'],
+                                created_by=user
+                            )
+            except json.JSONDecodeError:
+                pass
         
         # تحديث حالة الطلب
         self.is_approved = True
