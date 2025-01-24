@@ -30,10 +30,62 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style-rtl.css' %}" />
 
+    <style>
+      /* Custom CSS for centered menu */
+      .main-menu-content {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+      
+      .main-menu-content nav {
+        flex: 1;
+      }
+      
+      .main-menu-content ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .main-menu-content ul li {
+        margin: 0 15px;
+        position: relative;
+      }
+      
+      .main-menu-content ul li a {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        text-decoration: none;
+        padding: 10px 5px;
+        display: block;
+        transition: all 0.3s ease;
+      }
+      
+      .main-menu-content ul li a:hover {
+        color: #007bff;
+      }
+      
+      /* Ensure dropdown menus are properly aligned */
+      .dropdown-menu-item {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        min-width: 200px;
+        display: none;
+      }
+      
+      .main-menu-content ul li:hover .dropdown-menu-item {
+        display: block;
+      }
+    </style>
 
-
-
-    
     {% block extra_css %}
     {% endblock extra_css %}
   </head>
@@ -108,7 +160,8 @@
             </div>
             <div class="modal-body">
               <div class="contact-form-action">
-                <form method="post" >
+                <form method="post" action="{% url 'users:register' %}">
+                  {% csrf_token %}
                   <div class="input-box">
                     <label class="label-text">اسم المستخدم</label>
                     <div class="form-group">
@@ -116,8 +169,9 @@
                       <input
                         class="form-control"
                         type="text"
-                        name="text"
+                        name="username"
                         placeholder="اكتب اسم المستخدم الخاص بك"
+                        required
                       />
                     </div>
                   </div>
@@ -128,9 +182,10 @@
                       <span class="la la-envelope form-icon"></span>
                       <input
                         class="form-control"
-                        type="text"
-                        name="text"
+                        type="email"
+                        name="email"
                         placeholder="اكتب بريدك الإلكتروني"
+                        required
                       />
                     </div>
                   </div>
@@ -141,9 +196,10 @@
                       <span class="la la-lock form-icon"></span>
                       <input
                         class="form-control"
-                        type="text"
-                        name="text"
+                        type="password"
+                        name="password1"
                         placeholder="أكتب كلمة المرور"
+                        required
                       />
                     </div>
                   </div>
@@ -154,15 +210,16 @@
                       <span class="la la-lock form-icon"></span>
                       <input
                         class="form-control"
-                        type="text"
-                        name="text"
+                        type="password"
+                        name="password2"
                         placeholder="اكتب كلمة المرور مرة أخرى"
+                        required
                       />
                     </div>
                   </div>
                   <!-- end input-box -->
                   <div class="btn-box pt-3 pb-4 ">
-                    <button type="button" class="theme-btn w-100">
+                    <button type="submit" class="theme-btn w-100">
                       تسجيل حساب
                     </button>
                   </div>

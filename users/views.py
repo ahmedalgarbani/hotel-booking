@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from .models import CustomUser
 
@@ -8,27 +8,48 @@ def register(request):
         # Get form data
         username = request.POST.get('username')
         email = request.POST.get('email')
-        password = request.POST.get('password')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
         
+        # Basic validation
+        if not all([username, email, password1, password2]):
+            messages.error(request, 'جميع الحقول مطلوبة')
+            return redirect('register')
+        
+        # Check if passwords match
+        if password1 != password2:
+            messages.error(request, 'كلمات المرور غير متطابقة')
+            return redirect('register')
+            
         # Check if user already exists
         if CustomUser.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists')
-            return redirect('users:register')
+            messages.error(request, 'اسم المستخدم موجود بالفعل')
+            return redirect('register')
             
         if CustomUser.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists')
-            return redirect('users:register')
+            messages.error(request, 'البريد الإلكتروني موجود بالفعل')
+            return redirect('register')
             
         # Create new user
-        user = CustomUser.objects.create_user(
-            username=username,
-            email=email,
-            password=password
-        )
-        
-        # Log the user in
-        login(request, user)
-        messages.success(request, 'Registration successful!')
-        return redirect('home')
+        try:
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                password=password1,
+                user_type='user'
+            )
+            
+            # Log the user in
+            login(request, user)
+            messages.success(request, 'تم التسجيل بنجاح!')
+            return redirect('home:index')
+        except Exception as e:
+            messages.error(request, 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.')
+            return redirect('register')
         
     return render(request, 'frontend/layout/master.html')
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'تم تسجيل الخروج بنجاح')
+    return redirect('home:index')

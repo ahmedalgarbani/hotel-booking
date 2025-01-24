@@ -2,6 +2,23 @@
 {% block content %}
 
     <!-- ================================
+    START MESSAGES AREA
+================================= -->
+    {% if messages %}
+    <div class="message-popup">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <!-- ================================
+    END MESSAGES AREA
+================================= -->
+
+    <!-- ================================
     START HERO-WRAPPER AREA
 ================================= -->
     {% include "frontend/home/components/hero-wrapper.html" %}
