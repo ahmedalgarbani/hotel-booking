@@ -107,6 +107,29 @@ def create_hotel_staff_groups(sender, **kwargs):
         print(f"Error creating hotel staff groups: {str(e)}")
         pass
 
+@receiver(post_migrate)
+def create_custom_permissions(sender, **kwargs):
+    """إنشاء الصلاحيات المخصصة"""
+    try:
+        content_type = ContentType.objects.get_for_model(apps.get_model('HotelManagement', 'HotelRequest'))
+        
+        # إنشاء الصلاحيات المخصصة
+        Permission.objects.get_or_create(
+            codename='can_approve_request',
+            name='Can approve hotel request',
+            content_type=content_type,
+        )
+        
+        Permission.objects.get_or_create(
+            codename='can_reject_request',
+            name='Can reject hotel request',
+            content_type=content_type,
+        )
+        
+        print("تم إنشاء الصلاحيات المخصصة بنجاح")
+    except Exception as e:
+        print(f"خطأ في إنشاء الصلاحيات المخصصة: {str(e)}")
+
 @receiver(post_save, sender=apps.get_model('users', 'CustomUser'))
 def assign_user_to_group(sender, instance, created, **kwargs):
     """
@@ -125,13 +148,27 @@ def assign_user_to_group(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=apps.get_model('users', 'CustomUser'))
 def assign_permissions(sender, instance, created, **kwargs):
-    if created:
-        if instance.user_type == 'admin':
-            instance.user_permissions.add(
-                Permission.objects.get(codename='can_approve_request'),
-                Permission.objects.get(codename='can_reject_request')
-            )
-        elif instance.user_type == 'hotel_manager':
-            instance.user_permissions.add(
-                Permission.objects.get(codename='can_approve_request')
-            )
+    """تعيين الصلاحيات للمستخدم"""
+    try:
+        if created:
+            content_type = ContentType.objects.get_for_model(apps.get_model('HotelManagement', 'HotelRequest'))
+            
+            if instance.user_type == 'admin':
+                approve_perm = Permission.objects.get(
+                    codename='can_approve_request',
+                    content_type=content_type
+                )
+                reject_perm = Permission.objects.get(
+                    codename='can_reject_request',
+                    content_type=content_type
+                )
+                instance.user_permissions.add(approve_perm, reject_perm)
+                
+            elif instance.user_type == 'hotel_manager':
+                approve_perm = Permission.objects.get(
+                    codename='can_approve_request',
+                    content_type=content_type
+                )
+                instance.user_permissions.add(approve_perm)
+    except Exception as e:
+        print(f"خطأ في تعيين الصلاحيات: {str(e)}")

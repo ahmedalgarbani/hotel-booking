@@ -33,6 +33,20 @@ class Notification:
 فريق إدارة الفنادق"""
 
         try:
+            # التحقق من إعدادات البريد الإلكتروني
+            if not settings.EMAIL_HOST or not settings.EMAIL_PORT:
+                print("خطأ في الإعدادات: لم يتم تكوين خادم البريد الإلكتروني")
+                return False
+
+            if not settings.DEFAULT_FROM_EMAIL:
+                print("خطأ في الإعدادات: لم يتم تحديد عنوان المرسل")
+                return False
+
+            if not user.email:
+                print(f"خطأ: لا يوجد بريد إلكتروني للمستخدم {user.username}")
+                return False
+
+            # محاولة إرسال البريد الإلكتروني
             send_mail(
                 subject=subject,
                 message=plain_message,
@@ -41,8 +55,18 @@ class Notification:
                 html_message=html_message,
                 fail_silently=False
             )
+            print(f"تم إرسال البريد الإلكتروني بنجاح إلى {user.email}")
             return True
         except Exception as e:
-            # يمكنك إضافة تسجيل الأخطاء هنا
-            print(f"Error sending email: {str(e)}")
+            print(f"""
+خطأ في إرسال البريد الإلكتروني:
+- نوع الخطأ: {type(e).__name__}
+- رسالة الخطأ: {str(e)}
+- المستخدم: {user.username}
+- البريد الإلكتروني: {user.email}
+- إعدادات البريد:
+  * EMAIL_HOST: {getattr(settings, 'EMAIL_HOST', 'غير محدد')}
+  * EMAIL_PORT: {getattr(settings, 'EMAIL_PORT', 'غير محدد')}
+  * DEFAULT_FROM_EMAIL: {getattr(settings, 'DEFAULT_FROM_EMAIL', 'غير محدد')}
+""")
             return False

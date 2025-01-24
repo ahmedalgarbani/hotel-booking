@@ -1,9 +1,7 @@
 {% extends "frontend/layout/master.html" %}
+{% load static %}
 
 {% block content %}
-    <!-- ================================
-    START BREADCRUMB AREA
-================================= -->
 <section class="breadcrumb-area bread-bg-9">
   <div class="breadcrumb-wrap">
     <div class="container">
@@ -11,1445 +9,145 @@
         <div class="col-lg-6">
           <div class="breadcrumb-content">
             <div class="section-heading">
-              <h2 class="sec__title text-white">تفاصيل المدونة</h2>
+              <h2 class="sec__title text-white">{{ post.title }}</h2>
             </div>
           </div>
-          <!-- end breadcrumb-content -->
         </div>
-        <!-- end col-lg-6 -->
         <div class="col-lg-6">
           <div class="breadcrumb-list text-end">
             <ul class="list-items">
-              <li><a href="index.html">الصفحة الرئيسية</a></li>
-              <li>مدونة</li>
-              <li>تفاصيل المدونة</li>
+              <li><a href="{% url 'home:index' %}">الرئيسية</a></li>
+              <li><a href="{% url 'blog:post_list' %}">المدونة</a></li>
+              <li>{{ post.title }}</li>
             </ul>
           </div>
-          <!-- end breadcrumb-list -->
         </div>
-        <!-- end col-lg-6 -->
       </div>
-      <!-- end row -->
     </div>
-    <!-- end container -->
   </div>
-  <!-- end breadcrumb-wrap -->
   <div class="bread-svg-box">
-    <svg
-      class="bread-svg"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 10"
-      preserveAspectRatio="none"
-    >
+    <svg class="bread-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 10" preserveAspectRatio="none">
       <polygon points="100 0 50 10 0 0 0 10 100 10"></polygon>
     </svg>
   </div>
-  <!-- end bread-svg -->
 </section>
-<!-- end breadcrumb-area -->
-<!-- ================================
-END BREADCRUMB AREA
-================================= -->
 
-<!-- ================================
-START CARD AREA
-================================= -->
 <section class="card-area section--padding">
   <div class="container">
     <div class="row">
       <div class="col-lg-8">
-        <div
-          class="card-item blog-card blog-card-layout-2 blog-single-card mb-5"
-        >
+        <div class="card-item blog-card blog-card-layout-2 blog-single-card mb-5">
           <div class="card-img before-none">
-            <img src="images/img20.jpg" alt="blog-img" />
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+            {% else %}
+            <img src="{% static 'images/blog-img.jpg' %}" alt="{{ post.title }}" />
+            {% endif %}
           </div>
           <div class="card-body px-0 pb-0">
             <div class="post-categories">
-              <a href="#" class="badge">السفر</a>
-              <a href="#" class="badge">نمط الحياة</a>
+              <a href="{% url 'blog:post_list' %}?category={{ post.category.id }}" class="badge">{{ post.category.name }}</a>
             </div>
-            <h3 class="card-title font-size-28">
-              عند السفر تجنب الفنادق باهظة الثمن & amp؛ منتجعات
-            </h3>
+            <h3 class="card-title font-size-28">{{ post.title }}</h3>
             <p class="card-meta pb-3">
-              <span class="post__author"
-                >بقلم <a href="#" class="text-gray"> John Doe </a></span
-              >
+              <span class="post__author">بواسطة <a href="#">{{ post.author.username }}</a></span>
               <span class="post-dot"></span>
-              <span class="post__date"> 1 يناير 2020</span>
+              <span class="post__date">{{ post.published_at|date }}</span>
               <span class="post-dot"></span>
-              <span class="post__time"
-                ><a href="#" class="text-gray">4 تعليقات</a></span
-              >
-              <span class="post-dot"></span>
-              <span class="post__time"
-                ><a href="#" class="text-gray">202 إعجابات</a></span
-              >
+              <span class="post__time">{{ post.views }} مشاهدة</span>
             </p>
             <div class="section-block"></div>
-            <p class="card-text py-3">
-              يمكن أن توفر الكاميرات الرقمية البسيطة التي تعمل بالتصويب
-              والتقاط جودة مدهشة عندما تحتوي على العدسات وأجهزة الاستشعار
-              المناسبة. نظرًا لأنها تلقائية تمامًا في التركيز والتعرض ، يجب
-              فقط الإشارة إلى موضوع ما والنقر عليه. لديهم قدرات محدودة
-              للتحكم في الصورة
-            </p>
-            <p class="card-text pb-3">
-              دبابات الدببة القطبية وملاءمة et. ومع ذلك ، أعضاء وصفات الموز
-              ، كتلة أخرى في التمويل. ماكياج Malesuada الحاضر ابتسامة ،
-              ماكرو أسعار دفتر الملاحظات
-            </p>
-            <div class="photo-block-gallery">
-              <h3 class="title pb-2">تسليط الضوء على السفر</h3>
-              <p class="card-text pb-4">
-                ولكن إذا كتب القدوس لكرة القدم ، أو حتى لسماع بشكل عام ما
-                هم. أو إذا كان زائرا ، فإن ذلك يسيء بينهم أن كل الأبيقوريين
-                ، بقوة مثل كتاب ، بيت الكاتب.
-              </p>
-              <div class="row">
-                <div class="col-lg-4 responsive-column">
-                  <div class="photo-block-item">
-                    <a
-                      href="images/destination-img2.jpg"
-                      data-fancybox="gallery"
-                      data-caption="Showing image - 01"
-                      data-speed="700"
-                    >
-                      <img src="images/destination-img2.jpg" alt="img" />
-                    </a>
-                  </div>
-                </div>
-                <!-- end col-lg-4 -->
-                <div class="col-lg-4 responsive-column">
-                  <div class="photo-block-item">
-                    <a
-                      href="images/destination-img3.jpg"
-                      data-fancybox="gallery"
-                      data-caption="Showing image - 02"
-                      data-speed="700"
-                    >
-                      <img src="images/destination-img3.jpg" alt="img" />
-                    </a>
-                  </div>
-                </div>
-                <!-- end col-lg-4 -->
-                <div class="col-lg-4 responsive-column">
-                  <div class="photo-block-item">
-                    <a
-                      href="images/destination-img4.jpg"
-                      data-fancybox="gallery"
-                      data-caption="Showing image - 03"
-                      data-speed="700"
-                    >
-                      <img src="images/destination-img4.jpg" alt="img" />
-                    </a>
-                  </div>
-                </div>
-                <!-- end col-lg-4 -->
-                <div class="col-lg-6 responsive-column">
-                  <div class="photo-block-item">
-                    <a
-                      href="images/destination-img5.jpg"
-                      data-fancybox="gallery"
-                      data-caption="Showing image - 04"
-                      data-speed="700"
-                    >
-                      <img src="images/destination-img5.jpg" alt="img" />
-                    </a>
-                  </div>
-                </div>
-                <!-- end col-lg-6 -->
-                <div class="col-lg-6 responsive-column">
-                  <div class="photo-block-item">
-                    <a
-                      href="images/destination-img6.jpg"
-                      data-fancybox="gallery"
-                      data-caption="Showing image - 05"
-                      data-speed="700"
-                    >
-                      <img src="images/destination-img6.jpg" alt="img" />
-                    </a>
-                  </div>
-                </div>
-                <!-- end col-lg-6 -->
-              </div>
-              <!-- end row -->
-            </div>
-            <p class="card-text padding-bottom-35px">
-              Duis mollis، est noncommo luctus، nisi erat porttitor ligula،
-              eget lacinia odio sem nec elit. غدا الكثير من الطماطم والجزر
-              الحار التخمير. Morbi leo risus، porta ac consectetur ac،
-              vestibulum justo elit. قدم راحة كبيرة في الجري أو الحرارية
-              مينيابوليس واللاعبين
-            </p>
-            <div class="blockquote-item margin-bottom-35px">
-              <blockquote class="mb-0">
-                <p class="blockquote__text">
-                  الإبداع هو مجرد ربط الأشياء. عندما تسأل المبدعين كيف فعلوا
-                  شيئًا ما ، وشعروا بالقليل من الذنب لأنهم لم يفعلوا ذلك
-                  حقًا ، لقد رأوا شيئًا ما. بدا واضحا لهم بعد حين. هذا لأنهم
-                  كانوا قادرين على ربط التجارب التي مروا بها وتوليف أشياء
-                  جديدة.
-                </p>
-                <h4 class="blockquote__meta">
-                  - ستيف جوبز <span> مؤسس شركة Apple Inc. </span>
-                </h4>
-              </blockquote>
-            </div>
-            <h3 class="title">اتخذ قرارات سفر أفضل</h3>
-            <p class="card-text pt-3 pb-4">
-              Duis mollis، est noncommo luctus، nisi erat porttitor ligula،
-              eget lacinia odio sem nec elit. غدا الكثير من الطماطم والجزر
-              الحار التخمير. Morbi leo risus، porta ac consectetur ac،
-              vestibulum justo elit. الدهليز معرف ligula porta felis euismod
-              semper. Donec id elit non mi porta gravida في eget metus Sed
-              congue. بوابة الهوية في ligula felis euismod sempre sit amet ،
-            </p>
-            <div class="section-block"></div>
-            <h3 class="title pt-4">ابدء</h3>
-            <p class="card-text py-3">
-              لكن يجب أن أشرح لك كيف ولدت كل هذه الفكرة الخاطئة ، وأشرح
-              التعاليم الفعلية للمستكشف العظيم عن اللذة والألم والحيوية ،
-              حتى يكون لعمل معسكرات كبيرة مؤيديه ومنتقديه. لا يفهم بعض
-              الأشخاص سبب وجوب إنفاق الأموال على المعسكر التدريبي عندما
-              يمكنك الحصول على مواد الدراسة MCSE بنفسك بجزء بسيط من سعر
-              المخيم.
-            </p>
-            <p class="card-text pb-4">
-              ومع ذلك ، من لديه قوة الإرادة للجلوس فعليًا من خلال تدريب MCSE
-              الذاتي. من لديه قوة الإرادة للجلوس فعليًا من خلال فرض نفسه
-            </p>
-            <div class="section-block"></div>
-            <div
-              class="post-tag-wrap d-flex align-items-center justify-content-between py-4"
-            >
-              <ul class="tag-list">
-                <li><a href="#">جولة</a></li>
-                <li><a href="#">طبيعة</a></li>
-                <li><a href="#">الشواطئ</a></li>
-              </ul>
-              <div class="post-share">
-                <ul>
-                  <li>
-                    <i class="la la-share icon-element"></i>
-                    <ul
-                      class="post-share-dropdown d-flex align-items-center"
-                    >
-                      <li>
-                        <a href="#"><i class="lab la-facebook-f"></i></a>
-                      </li>
-                      <li>
-                        <a href="#"><i class="lab la-twitter"></i></a>
-                      </li>
-                      <li>
-                        <a href="#"><i class="lab la-instagram"></i></a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="section-block"></div>
-            <div
-              class="post-navigation d-flex justify-content-between py-4"
-            >
-              <a href="#" class="btn theme-btn-hover-gray line-height-35"
-                ><i class="la la-arrow-left me-2"></i>أفضل الفنادق في
-                أوروبا: 2020</a
-              >
-              <a href="#" class="btn theme-btn-hover-gray line-height-35"
-                >أفضل 10 رحلات طيران في العالم<i
-                  class="la la-arrow-right ms-2"
-                ></i
-              ></a>
-            </div>
-            <div class="section-block"></div>
-            <div class="post-author-wrap">
-              <div class="author-content pt-5">
-                <div class="d-flex">
-                  <div class="author-img author-img-md me-4">
-                    <a href="#"
-                      ><img src="images/team8.jpg" alt="testimonial image"
-                    /></a>
-                  </div>
-                  <div class="author-bio">
-                    <h4 class="author__title"><a href="#">Trizen</a></h4>
-                    <span class="author__meta">نبذة عن الكاتب</span>
-                    <p class="author__text pt-1">
-                      حتى الآن بوابة مكياج المركبات القبيحة. تنورة التتابع
-                      لم تعط أي عقارات. تحتاج مخاوف الأسد من الحداد على
-                      الأطفال.
-                    </p>
-                    <ul class="social-profile pt-3">
-                      <li>
-                        <a href="#"><i class="lab la-facebook-f"></i></a>
-                      </li>
-                      <li>
-                        <a href="#"><i class="lab la-twitter"></i></a>
-                      </li>
-                      <li>
-                        <a href="#"><i class="lab la-instagram"></i></a>
-                      </li>
-                      <li>
-                        <a href="#"><i class="lab la-linkedin-in"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <div class="card-text py-3">
+              {{ post.content|linebreaks }}
             </div>
           </div>
         </div>
-        <!-- end card-item -->
-        <div class="section-block"></div>
-        <div class="related-posts pt-5 pb-4">
-          <h3 class="title">المنشورات ذات الصلة</h3>
-          <div class="row pt-4">
-            <div class="col-lg-6 responsive-column">
-              <div class="card-item blog-card">
-                <div class="card-img">
-                  <img src="images/blog-img.jpg" alt="blog-img" />
-                  <div class="post-format icon-element">
-                    <i class="la la-photo"></i>
-                  </div>
-                  <div class="card-body">
-                    <div class="post-categories">
-                      <a href="#" class="badge">السفر</a>
-                      <a href="#" class="badge">نمط الحياة</a>
-                    </div>
-                    <h3 class="card-title line-height-26">
-                      <a href="blog-single.html"
-                        >عند السفر تجنب الفنادق والمنتجعات باهظة الثمن</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 يناير 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">5 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="card-footer d-flex align-items-center justify-content-between"
-                >
-                  <div class="author-content d-flex align-items-center">
-                    <div class="author-img">
-                      <img
-                        src="images/small-team1.jpg"
-                        alt="testimonial image"
-                      />
-                    </div>
-                    <div class="author-bio">
-                      <a href="#" class="author__title">ليروي بيل</a>
-                    </div>
-                  </div>
-                  <div class="post-share">
-                    <ul>
-                      <li>
-                        <i class="la la-share icon-element"></i>
-                        <ul
-                          class="post-share-dropdown d-flex align-items-center"
-                        >
-                          <li>
-                            <a href="#"
-                              ><i class="lab la-facebook-f"></i
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#"><i class="lab la-twitter"></i></a>
-                          </li>
-                          <li>
-                            <a href="#"><i class="lab la-instagram"></i></a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <!-- end card-item -->
-            </div>
-            <!-- end col-lg-6 -->
-            <div class="col-lg-6 responsive-column">
-              <div class="card-item blog-card">
-                <div class="card-img">
-                  <img src="images/blog-img2.jpg" alt="blog-img" />
-                  <div class="post-format icon-element">
-                    <i class="la la-play"></i>
-                  </div>
-                  <div class="card-body">
-                    <div class="post-categories">
-                      <a href="#" class="badge">فيديو</a>
-                    </div>
-                    <h3 class="card-title line-height-26">
-                      <a href="blog-single.html"
-                        >أفضل نصائح السفر لدي: دليل السفر النهائي</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 يناير 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">4 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="card-footer d-flex align-items-center justify-content-between"
-                >
-                  <div class="author-content d-flex align-items-center">
-                    <div class="author-img">
-                      <img
-                        src="images/small-team2.jpg"
-                        alt="testimonial image"
-                      />
-                    </div>
-                    <div class="author-bio">
-                      <a href="#" class="author__title">فيليب هانت</a>
-                    </div>
-                  </div>
-                  <div class="post-share">
-                    <ul>
-                      <li>
-                        <i class="la la-share icon-element"></i>
-                        <ul
-                          class="post-share-dropdown d-flex align-items-center"
-                        >
-                          <li>
-                            <a href="#"
-                              ><i class="lab la-facebook-f"></i
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#"><i class="lab la-twitter"></i></a>
-                          </li>
-                          <li>
-                            <a href="#"><i class="lab la-instagram"></i></a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <!-- end card-item -->
-            </div>
-            <!-- end col-lg-6 -->
-          </div>
-          <!-- end row -->
-        </div>
-        <div class="section-block"></div>
+
+        {% if comments %}
         <div class="comments-list pt-5">
-          <h3 class="title font-size-20">عرض 3 تقييمات من النزلاء</h3>
-          <div class="comment pt-5">
-            <div class="comment-avatar">
-              <img class="avatar__img" alt="" src="images/team8.jpg" />
-            </div>
+          <h3 class="title font-size-20">{{ comments.count }} تعليق</h3>
+          {% for comment in comments %}
+          <div class="comment {% if not forloop.first %}comment-reply{% endif %}">
             <div class="comment-body">
               <div class="meta-data">
-                <h3 class="comment__author">جيني دو</h3>
-                <div class="meta-data-inner d-flex">
-                  <span class="ratings d-flex align-items-center me-1">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                  </span>
-                  <p class="comment__date">5 أبريل 2019</p>
-                </div>
+                <h3 class="comment__author">{{ comment.author.username }}</h3>
+                <span class="comment__date">{{ comment.created_at|date }}</span>
               </div>
               <p class="comment-content">
-                لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن المواطنين
-                يعيشون في تمويله ، فمن المهم تريتاني بحر. للقول أن هذا قد
-                يكون صحيحًا هو حساسية euripidis السهلة
+                {{ comment.content }}
               </p>
-              <div
-                class="comment-reply d-flex align-items-center justify-content-between"
-              >
-                <a
-                  class="theme-btn"
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#replayPopupForm"
-                >
-                  <span class="la la-mail-reply me-1"></span>الرد
-                </a>
-                <div class="reviews-reaction">
-                  <a href="#" class="comment-like"
-                    ><i class="la la-thumbs-up"></i> 13</a
-                  >
-                  <a href="#" class="comment-dislike"
-                    ><i class="la la-thumbs-down"></i> 2</a
-                  >
-                  <a href="#" class="comment-love"
-                    ><i class="la la-heart-o"></i> 5</a
-                  >
-                </div>
-              </div>
             </div>
           </div>
-          <!-- end comments -->
-          <div class="comment comment-reply-item">
-            <div class="comment-avatar">
-              <img class="avatar__img" alt="" src="images/team9.jpg" />
-            </div>
-            <div class="comment-body">
-              <div class="meta-data">
-                <h3 class="comment__author">جيني دو</h3>
-                <div class="meta-data-inner d-flex">
-                  <span class="ratings d-flex align-items-center me-1">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                  </span>
-                  <p class="comment__date">5 أبريل 2019</p>
-                </div>
-              </div>
-              <p class="comment-content">
-                لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن المواطنين
-                يعيشون في تمويله ، فمن المهم تريتاني بحر. للقول أن هذا قد
-                يكون صحيحًا هو حساسية euripidis السهلة
-              </p>
-              <div
-                class="comment-reply d-flex align-items-center justify-content-between"
-              >
-                <a
-                  class="theme-btn"
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#replayPopupForm"
-                >
-                  <span class="la la-mail-reply me-1"></span>الرد
-                </a>
-                <div class="reviews-reaction">
-                  <a href="#" class="comment-like"
-                    ><i class="la la-thumbs-up"></i> 13</a
-                  >
-                  <a href="#" class="comment-dislike"
-                    ><i class="la la-thumbs-down"></i> 2</a
-                  >
-                  <a href="#" class="comment-love"
-                    ><i class="la la-heart-o"></i> 5</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- end comments -->
-          <div class="comment">
-            <div class="comment-avatar">
-              <img class="avatar__img" alt="" src="images/team10.jpg" />
-            </div>
-            <div class="comment-body">
-              <div class="meta-data">
-                <h3 class="comment__author">جيني دو</h3>
-                <div class="meta-data-inner d-flex">
-                  <span class="ratings d-flex align-items-center me-1">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                  </span>
-                  <p class="comment__date">5 أبريل 2019</p>
-                </div>
-              </div>
-              <p class="comment-content">
-                لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن المواطنين
-                يعيشون في تمويله ، فمن المهم تريتاني بحر. للقول أن هذا قد
-                يكون صحيحًا هو حساسية euripidis السهلة
-              </p>
-              <div
-                class="comment-reply d-flex align-items-center justify-content-between"
-              >
-                <a
-                  class="theme-btn"
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#replayPopupForm"
-                >
-                  <span class="la la-mail-reply me-1"></span>الرد
-                </a>
-                <div class="reviews-reaction">
-                  <a href="#" class="comment-like"
-                    ><i class="la la-thumbs-up"></i> 13</a
-                  >
-                  <a href="#" class="comment-dislike"
-                    ><i class="la la-thumbs-down"></i> 2</a
-                  >
-                  <a href="#" class="comment-love"
-                    ><i class="la la-heart-o"></i> 5</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- end comments -->
-          <div class="btn-box load-more text-center">
-            <button
-              class="theme-btn theme-btn-small theme-btn-transparent"
-              type="button"
-            >
-              تحميل المزيد من المراجعة
-            </button>
-          </div>
+          {% endfor %}
         </div>
-        <!-- end comments-list -->
+        {% endif %}
+
+        {% if user.is_authenticated %}
         <div class="comment-forum pt-5">
           <div class="form-box">
             <div class="form-title-wrap">
-              <h3 class="title">أكتب مراجعة</h3>
+              <h3 class="title">اكتب تعليقاً</h3>
             </div>
-            <!-- form-title-wrap -->
             <div class="form-content">
-              <div class="rate-option p-2">
-                <div class="row">
-                  <div class="col-lg-4 responsive-column">
-                    <div class="rate-option-item">
-                      <label>الخدمات</label>
-                      <div class="rate-stars-option">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="lst1"
-                          value="1"
-                        />
-                        <label for="lst1"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="lst2"
-                          value="2"
-                        />
-                        <label for="lst2"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="lst3"
-                          value="3"
-                        />
-                        <label for="lst3"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="lst4"
-                          value="4"
-                        />
-                        <label for="lst4"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="lst5"
-                          value="5"
-                        />
-                        <label for="lst5"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div class="rate-option-item">
-                      <label>موقعك</label>
-                      <div class="rate-stars-option">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="l1"
-                          value="1"
-                        />
-                        <label for="l1"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="l2"
-                          value="2"
-                        />
-                        <label for="l2"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="l3"
-                          value="3"
-                        />
-                        <label for="l3"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="l4"
-                          value="4"
-                        />
-                        <label for="l4"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="l5"
-                          value="5"
-                        />
-                        <label for="l5"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div class="rate-option-item">
-                      <label>قيمة المال</label>
-                      <div class="rate-stars-option">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="vm1"
-                          value="1"
-                        />
-                        <label for="vm1"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="vm2"
-                          value="2"
-                        />
-                        <label for="vm2"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="vm3"
-                          value="3"
-                        />
-                        <label for="vm3"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="vm4"
-                          value="4"
-                        />
-                        <label for="vm4"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="vm5"
-                          value="5"
-                        />
-                        <label for="vm5"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div class="rate-option-item">
-                      <label>النظافة</label>
-                      <div class="rate-stars-option">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="cln1"
-                          value="1"
-                        />
-                        <label for="cln1"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="cln2"
-                          value="2"
-                        />
-                        <label for="cln2"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="cln3"
-                          value="3"
-                        />
-                        <label for="cln3"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="cln4"
-                          value="4"
-                        />
-                        <label for="cln4"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="cln5"
-                          value="5"
-                        />
-                        <label for="cln5"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div class="rate-option-item">
-                      <label>مرافق</label>
-                      <div class="rate-stars-option">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="f1"
-                          value="1"
-                        />
-                        <label for="f1"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="f2"
-                          value="2"
-                        />
-                        <label for="f2"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="f3"
-                          value="3"
-                        />
-                        <label for="f3"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="f4"
-                          value="4"
-                        />
-                        <label for="f4"></label>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="f5"
-                          value="5"
-                        />
-                        <label for="f5"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- col-lg-4 -->
-                </div>
-                <!-- end row -->
-              </div>
-              <!-- end rate-option -->
               <div class="contact-form-action">
                 <form method="post">
+                  {% csrf_token %}
                   <div class="row">
-                    <div class="col-lg-6 responsive-column">
+                    <div class="col-lg-12">
                       <div class="input-box">
-                        <label class="label-text">اسم</label>
-                        <div class="form-group">
-                          <span class="la la-user form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="text"
-                            name="text"
-                            placeholder="اسمك"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-lg-6 responsive-column">
-                      <div class="input-box">
-                        <label class="label-text">البريد الإلكتروني</label>
-                        <div class="form-group">
-                          <span class="la la-envelope-o form-icon"></span>
-                          <input
-                            class="form-control"
-                            type="email"
-                            name="email"
-                            placeholder="عنوان البريد الالكترونى"
-                          />
+                        <div class="form-group mb-0">
+                          <textarea class="message-control form-control" name="content" placeholder="اكتب تعليقك هنا"></textarea>
                         </div>
                       </div>
                     </div>
                     <div class="col-lg-12">
-                      <div class="input-box">
-                        <label class="label-text">رسالة</label>
-                        <div class="form-group">
-                          <span class="la la-pencil form-icon"></span>
-                          <textarea
-                            class="message-control form-control"
-                            name="message"
-                            placeholder="اكتب رسالة"
-                          ></textarea>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-lg-12">
-                      <div class="btn-box">
-                        <button type="button" class="theme-btn">
-                          ترك التعليق
-                        </button>
+                      <div class="btn-box pt-3">
+                        <button type="submit" class="theme-btn">إرسال التعليق</button>
                       </div>
                     </div>
                   </div>
                 </form>
               </div>
-              <!-- end contact-form-action -->
             </div>
-            <!-- end form-content -->
           </div>
-          <!-- end form-box -->
         </div>
-        <!-- end comment-forum -->
+        {% endif %}
       </div>
-      <!-- end col-lg-8 -->
+
       <div class="col-lg-4">
         <div class="sidebar mb-0">
           <div class="sidebar-widget">
-            <h3 class="title stroke-shape">بحث آخر</h3>
+            <h3 class="title stroke-shape">بحث</h3>
             <div class="contact-form-action">
-              <form action="#">
+              <form action="{% url 'blog:post_list' %}" method="get">
                 <div class="input-box">
                   <div class="form-group mb-0">
-                    <input
-                      class="form-control ps-3"
-                      type="text"
-                      placeholder="اكتب كلماتك الرئيسية ..."
-                    />
-                    <button class="search-btn" type="submit">
-                      <i class="la la-search"></i>
-                    </button>
+                    <input class="form-control pl-3" type="text" name="search" placeholder="ابحث هنا...">
+                    <button class="search-btn" type="submit"><i class="la la-search"></i></button>
                   </div>
                 </div>
               </form>
             </div>
           </div>
-          <!-- end sidebar-widget -->
+
           <div class="sidebar-widget">
             <h3 class="title stroke-shape">التصنيفات</h3>
             <div class="sidebar-category">
+              {% for category in categories %}
               <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="cat1" />
-                <label for="cat1"
-                  >الكل <span class="font-size-13 ms-1">(55)</span></label
-                >
+                <input type="checkbox" class="form-check-input" id="cat{{ category.id }}" 
+                       {% if request.GET.category|add:"0" == category.id %}checked{% endif %}
+                       onclick="window.location.href='{% url 'blog:post_list' %}{% if request.GET.category|add:"0" == category.id %}?{% else %}?category={{ category.id }}{% endif %}'">
+                <label for="cat{{ category.id }}">
+                  {{ category.name }} <span class="font-size-13 ms-1">({{ category.post_set.count }})</span>
+                </label>
               </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="cat2" />
-                <label for="cat2">
-                  جولات المغامرات النشطة<span class="font-size-13 ms-1"
-                    >(8)</span
-                  ></label
-                >
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="cat3" />
-                <label for="cat3"
-                  >السياحة البيئية
-                  <span class="font-size-13 ms-1">(5)</span></label
-                >
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="cat4" />
-                <label for="cat4"
-                  >جولات مرافقة<span class="font-size-13 ms-1"
-                    >(2)</span
-                  ></label
-                >
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="cat5" />
-                <label for="cat5"
-                  >جولات جماعية
-                  <span class="font-size-13 ms-1">(11)</span></label
-                >
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="cat6" />
-                <label for="cat6"
-                  >محجوز <span class="font-size-13 ms-1">(3)</span></label
-                >
-              </div>
-              <div class="collapse" id="categoryMenu">
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cat7"
-                  />
-                  <label for="cat7"
-                    >فاميلى تورز
-                    <span class="font-size-13 ms-1">(4)</span></label
-                  >
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cat8"
-                  />
-                  <label for="cat8"
-                    >رحلات المدينة
-                    <span class="font-size-13 ms-1">(5)</span></label
-                  >
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cat9"
-                  />
-                  <label for="cat9"
-                    >جولات المتنزهات الوطنية
-                    <span class="font-size-13 ms-1">(3)</span></label
-                  >
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cat10"
-                  />
-                  <label for="cat10"
-                    >الاجازات
-                    <span class="font-size-13 ms-1">(3)</span></label
-                  >
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cat11"
-                  />
-                  <label for="cat11"
-                    >الحجز المبكر
-                    <span class="font-size-13 ms-1">(7)</span></label
-                  >
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cat12"
-                  />
-                  <label for="cat12"
-                    >الدقيقة الأخيرة
-                    <span class="font-size-13 ms-1">(2)</span></label
-                  >
-                </div>
-              </div>
-              <!-- end collapse -->
-              <a
-                class="btn-text"
-                data-bs-toggle="collapse"
-                href="#categoryMenu"
-                role="button"
-                aria-expanded="false"
-                aria-controls="categoryMenu"
-              >
-                <span class="show-more"
-                  >أظهر المزيد <i class="la la-angle-down"></i
-                ></span>
-                <span class="show-less"
-                  >عرض أقل <i class="la la-angle-up"></i
-                ></span>
-              </a>
+              {% endfor %}
             </div>
           </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <div class="section-tab section-tab-2 pb-3">
-              <ul
-                class="nav nav-tabs justify-content-center"
-                id="myTab3"
-                role="tablist"
-              >
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="recent-tab"
-                    data-bs-toggle="tab"
-                    href="#recent"
-                    role="tab"
-                    aria-controls="recent"
-                    aria-selected="true"
-                  >
-                    الأخيرة
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    id="popular-tab"
-                    data-bs-toggle="tab"
-                    href="#popular"
-                    role="tab"
-                    aria-controls="popular"
-                    aria-selected="false"
-                  >
-                    جمع
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="new-tab"
-                    data-bs-toggle="tab"
-                    href="#new"
-                    role="tab"
-                    aria-controls="new"
-                    aria-selected="false"
-                  >
-                    جديد
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="tab-content" id="myTabContent">
-              <div
-                class="tab-pane"
-                id="recent"
-                role="tabpanel"
-                aria-labelledby="recent-tab"
-              >
-                <div class="card-item card-item-list recent-post-card">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img4.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html">حزم بحكمة قبل السفر</a>
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-                <div class="card-item card-item-list recent-post-card">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img5.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >غيّر مكانك واحصل على الهواء النقي</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-                <div class="card-item card-item-list recent-post-card mb-0">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img6.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >نقدم لكم هذه المدينة الرائعة</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end tab-pane -->
-              <div
-                class="tab-pane fade show active"
-                id="popular"
-                role="tabpanel"
-                aria-labelledby="popular-tab"
-              >
-                <div class="card-item card-item-list recent-post-card">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img7.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >القلعة على الجرف: ماجستيك ، سحر</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-                <div class="card-item card-item-list recent-post-card">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img8.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >غيّر مكانك واحصل على الهواء النقي</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-                <div class="card-item card-item-list recent-post-card mb-0">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img9.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >الكل على متن روكي ماونتينير</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end tab-pane -->
-              <div
-                class="tab-pane"
-                id="new"
-                role="tabpanel"
-                aria-labelledby="new-tab"
-              >
-                <div class="card-item card-item-list recent-post-card">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img7.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >القلعة على الجرف: ماجستيك ، سحر</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-                <div class="card-item card-item-list recent-post-card">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img8.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >غيّر مكانك واحصل على الهواء النقي</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-                <div class="card-item card-item-list recent-post-card mb-0">
-                  <div class="card-img">
-                    <a href="blog-single.html" class="d-block">
-                      <img src="images/small-img9.jpg" alt="blog-img" />
-                    </a>
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">
-                      <a href="blog-single.html"
-                        >الكل على متن روكي ماونتينير</a
-                      >
-                    </h3>
-                    <p class="card-meta">
-                      <span class="post__date"> 1 مارس 2020</span>
-                      <span class="post-dot"></span>
-                      <span class="post__time">3 دقائق للقراءة</span>
-                    </p>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end tab-pane -->
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">أرشيف</h3>
-            <div class="sidebar-list">
-              <ul class="list-items">
-                <li>
-                  <i class="la la-dot-circle me-2 text-color"></i
-                  ><a href="#">يونيو 2015</a>
-                </li>
-                <li>
-                  <i class="la la-dot-circle me-2 text-color"></i
-                  ><a href="#">مايو 2016</a>
-                </li>
-                <li>
-                  <i class="la la-dot-circle me-2 text-color"></i
-                  ><a href="#">أبريل 2017</a>
-                </li>
-                <li>
-                  <i class="la la-dot-circle me-2 text-color"></i
-                  ><a href="#">فبراير 2019</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">سحابة الوسم</h3>
-            <ul class="tag-list">
-              <li><a href="#">السفر</a></li>
-              <li><a href="#">مغامرة</a></li>
-              <li><a href="#">جولة</a></li>
-              <li><a href="#">طبيعة</a></li>
-              <li><a href="#">جزيرة</a></li>
-              <li><a href="#">الحدائق</a></li>
-              <li><a href="#">رحلة بحرية</a></li>
-              <li><a href="#">الجبال</a></li>
-              <li><a href="#">الزنبق</a></li>
-              <li><a href="#">المتاحف</a></li>
-              <li><a href="#">الشواطئ</a></li>
-              <li><a href="#">ثقافي</a></li>
-              <li><a href="#">الوطني</a></li>
-            </ul>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">معلومات عنا</h3>
-            <div class="sidebar-about">
-              <div class="sidebar-about-img">
-                <img src="images/destination-img3.jpg" alt="" />
-                <p class="font-size-28 font-weight-bold text-white">
-                  Trizen
-                </p>
-              </div>
-              <p class="pt-3">
-                لكن لا بد لي من أن أوضح لكم كيف ولدت كل هذه الفكرة الخاطئة ،
-                وأشرح التعاليم الفعلية للمستكشف العظيم للحيوية ، حتى تكون
-                لذة المجهود العظيم ، والحزن:
-              </p>
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">اتبع واتصل</h3>
-            <ul class="social-profile">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
-          </div>
-          <!-- end sidebar-widget -->
         </div>
-        <!-- end sidebar -->
       </div>
-      <!-- end col-lg-4 -->
     </div>
-    <!-- end row -->
   </div>
-  <!-- end container -->
 </section>
-<!-- end card-area -->
-<!-- ================================
-END CARD AREA
-================================= -->
-
-<!-- ================================
-START CTA AREA
-================================= -->
-<section
-  class="cta-area subscriber-area section-bg-2 padding-top-60px padding-bottom-60px"
->
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="cta-content">
-          <div class="section-heading">
-            <h2 class="sec__title font-size-30 text-white">
-              اشترك للحصول على عرض حصري عبر البريد الإلكتروني
-            </h2>
-          </div>
-          <!-- end section-heading -->
-        </div>
-      </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="subscriber-box">
-          <div class="contact-form-action">
-            <form action="#">
-              <div class="input-box">
-                <label class="label-text text-white"
-                  >أدخل عنوان البريد الالكتروني</label
-                >
-                <div class="form-group mb-0">
-                  <span class="la la-envelope form-icon"></span>
-                  <input
-                    class="form-control"
-                    type="email"
-                    name="email"
-                    placeholder="عنوان البريد الالكترونى"
-                  />
-                  <button
-                    class="theme-btn theme-btn-small submit-btn"
-                    type="submit"
-                  >
-                    الإشتراك
-                  </button>
-                  <span class="font-size-15 pt-1 text-white-50"
-                    ><i class="la la-lock me-1"></i>لا تقلق معلوماتك آمنة
-                    معنا.
-                  </span>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-5 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
-<!-- end cta-area -->
-<!-- ================================
-END CTA AREA
-================================= -->
-
-{% endblock content %}
+{% endblock %}

@@ -371,7 +371,10 @@ class HotelRequest(models.Model):
             hotel_manager.save()
             
             # إرسال بريد إلكتروني للمستخدم مع معلومات تسجيل الدخول
-            Notification.send_hotel_manager_credentials(hotel_manager, self.hotel_name, password)
+            print(f"محاولة إرسال بريد إلكتروني إلى {hotel_manager.email}")
+            email_sent = Notification.send_hotel_manager_credentials(hotel_manager, self.hotel_name, password)
+            if not email_sent:
+                print(f"فشل في إرسال البريد الإلكتروني إلى {hotel_manager.email}")
         else:
             hotel_manager = User.objects.get(email=self.email)
         

@@ -1,4 +1,5 @@
 {% extends "frontend/layout/master.html" %}
+{% load static %}
 
 {% block content %}
 ================================= -->
@@ -13,7 +14,7 @@
             <div class="col-lg-6">
               <div class="breadcrumb-content">
                 <div class="section-heading">
-                  <h2 class="sec__title text-white">Blog Sidebar</h2>
+                  <h2 class="sec__title text-white">المدونة</h2>
                 </div>
               </div>
               <!-- end breadcrumb-content -->
@@ -22,9 +23,8 @@
             <div class="col-lg-6">
               <div class="breadcrumb-list text-end">
                 <ul class="list-items">
-                  <li><a href="index.html">Home</a></li>
-                  <li>Blog</li>
-                  <li>Blog Sidebar</li>
+                  <li><a href="{% url 'home:index' %}">الرئيسية</a></li>
+                  <li>المدونة</li>
                 </ul>
               </div>
               <!-- end breadcrumb-list -->
@@ -61,1258 +61,115 @@
         <div class="row">
           <div class="col-lg-8">
             <div class="row">
+              {% for post in posts %}
               <div class="col-lg-6 responsive-column">
                 <div class="card-item blog-card">
                   <div class="card-img">
-                    <img src="images/blog-img.jpg" alt="blog-img" />
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+                    {% else %}
+                    <img src="{% static 'images/blog-img.jpg' %}" alt="{{ post.title }}" />
+                    {% endif %}
                     <div class="post-format icon-element">
                       <i class="la la-photo"></i>
                     </div>
                     <div class="card-body">
                       <div class="post-categories">
-                        <a href="#" class="badge">السفر</a>
-                        <a href="#" class="badge">نمط الحياة</a>
+                        <a href="?category={{ post.category.id }}" class="badge">{{ post.category.name }}</a>
                       </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >عند السفر تجنب الفنادق والمنتجعات باهظة الثمن</a
-                        >
+                      <h3 class="card-title">
+                        <a href="{% url 'blog:post_detail' post.slug %}">{{ post.title }}</a>
                       </h3>
                       <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
+                        <span class="post__date">{{ post.published_at|date }}</span>
                         <span class="post-dot"></span>
-                        <span class="post__time">5 دقائق للقراءة</span>
+                        <span class="post__time">بواسطة <a href="#">{{ post.author.username }}</a></span>
                       </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team1.jpg"
-                          alt="testimonial image"
-                        />
+                      <div class="card-rating">
+                        <span class="badge text-white">{{ post.views }} مشاهدة</span>
                       </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ليروي بيل</a>
+                      <div class="card-btn">
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="theme-btn">اقرأ المزيد</a>
                       </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
                     </div>
                   </div>
                 </div>
                 <!-- end card-item -->
               </div>
               <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img2.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-play"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">فيديو</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >أفضل نصائح السفر لدي: دليل السفر النهائي</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">4 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team2.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">فيليب هانت</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img3.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-music"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">سمعي</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >بكل الوسائل ، السفر إلى المواقع الشهيرة ولا تستبعد
-                          المواقع الأخرى</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 مارس 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">3 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team3.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">لوك جاكوبس</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-photo"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">السفر</a>
-                        <a href="#" class="badge">نمط الحياة</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >عند السفر تجنب الفنادق والمنتجعات باهظة الثمن</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">5 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team4.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">أليكس سميث</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img2.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-play"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">فيديو</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >أفضل نصائح السفر لدي: دليل السفر النهائي</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">4 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team5.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ابراهام دو</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img3.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-music"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">سمعي</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >بكل الوسائل ، السفر إلى المواقع الشهيرة ولا تستبعد
-                          المواقع الأخرى</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 مارس 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">3 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team6.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ديفيد مارتن</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img2.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-play"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">فيديو</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >أفضل نصائح السفر لدي: دليل السفر النهائي</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">4 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team5.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ابراهام دو</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img3.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-music"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">سمعي</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >بكل الوسائل ، السفر إلى المواقع الشهيرة ولا تستبعد
-                          المواقع الأخرى</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 مارس 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">3 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team6.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ديفيد مارتن</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img2.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-play"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">فيديو</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >أفضل نصائح السفر لدي: دليل السفر النهائي</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">4 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team5.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ابراهام دو</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img3.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-music"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">سمعي</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >بكل الوسائل ، السفر إلى المواقع الشهيرة ولا تستبعد
-                          المواقع الأخرى</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 مارس 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">3 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team6.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ديفيد مارتن</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img2.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-play"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">فيديو</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >أفضل نصائح السفر لدي: دليل السفر النهائي</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 يناير 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">4 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team5.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ابراهام دو</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
-              <div class="col-lg-6 responsive-column">
-                <div class="card-item blog-card">
-                  <div class="card-img">
-                    <img src="images/blog-img3.jpg" alt="blog-img" />
-                    <div class="post-format icon-element">
-                      <i class="la la-music"></i>
-                    </div>
-                    <div class="card-body">
-                      <div class="post-categories">
-                        <a href="#" class="badge">سمعي</a>
-                      </div>
-                      <h3 class="card-title line-height-26">
-                        <a href="blog-single.html"
-                          >بكل الوسائل ، السفر إلى المواقع الشهيرة ولا تستبعد
-                          المواقع الأخرى</a
-                        >
-                      </h3>
-                      <p class="card-meta">
-                        <span class="post__date"> 1 مارس 2020</span>
-                        <span class="post-dot"></span>
-                        <span class="post__time">3 دقائق للقراءة</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="card-footer d-flex align-items-center justify-content-between"
-                  >
-                    <div class="author-content d-flex align-items-center">
-                      <div class="author-img">
-                        <img
-                          src="images/small-team6.jpg"
-                          alt="testimonial image"
-                        />
-                      </div>
-                      <div class="author-bio">
-                        <a href="#" class="author__title">ديفيد مارتن</a>
-                      </div>
-                    </div>
-                    <div class="post-share">
-                      <ul>
-                        <li>
-                          <i class="la la-share icon-element"></i>
-                          <ul
-                            class="post-share-dropdown d-flex align-items-center"
-                          >
-                            <li>
-                              <a href="#"><i class="lab la-facebook-f"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-twitter"></i></a>
-                            </li>
-                            <li>
-                              <a href="#"><i class="lab la-instagram"></i></a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <!-- end card-item -->
-              </div>
-              <!-- end col-lg-6 -->
+              {% endfor %}
             </div>
             <!-- end row -->
+            
+            {% if posts.has_other_pages %}
             <div class="row">
               <div class="col-lg-12">
                 <div class="btn-box mt-3 text-center">
-                  <button type="button" class="theme-btn">
-                    <i class="la la-refresh me-1"></i>تحميل المزيد
-                  </button>
-                  <p class="font-size-13 pt-2">إظهار 1 - 12 من 44 مشاركة</p>
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                      {% if posts.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ posts.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Previous">
+                          <span aria-hidden="true"><i class="la la-angle-left"></i></span>
+                        </a>
+                      </li>
+                      {% endif %}
+                      
+                      {% for num in posts.paginator.page_range %}
+                        {% if posts.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a></li>
+                        {% endif %}
+                      {% endfor %}
+                      
+                      {% if posts.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ posts.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Next">
+                          <span aria-hidden="true"><i class="la la-angle-right"></i></span>
+                        </a>
+                      </li>
+                      {% endif %}
+                    </ul>
+                  </nav>
                 </div>
-                <!-- end btn-box -->
               </div>
-              <!-- end col-lg-12 -->
             </div>
-            <!-- end row -->
+            {% endif %}
           </div>
           <!-- end col-lg-8 -->
+          
           <div class="col-lg-4">
             <div class="sidebar mb-0">
               <div class="sidebar-widget">
-                <h3 class="title stroke-shape">بحث آخر</h3>
+                <h3 class="title stroke-shape">بحث</h3>
                 <div class="contact-form-action">
-                  <form action="#">
+                  <form action="{% url 'blog:post_list' %}" method="get">
                     <div class="input-box">
                       <div class="form-group mb-0">
-                        <input
-                          class="form-control ps-3"
-                          type="text"
-                          placeholder="اكتب كلماتك الرئيسية ..."
-                        />
-                        <button class="search-btn" type="submit">
-                          <i class="la la-search"></i>
-                        </button>
+                        <input class="form-control pl-3" type="text" name="search" placeholder="ابحث هنا...">
+                        <button type="submit" class="search-btn"><i class="la la-search"></i></button>
                       </div>
                     </div>
                   </form>
                 </div>
               </div>
               <!-- end sidebar-widget -->
+              
               <div class="sidebar-widget">
                 <h3 class="title stroke-shape">التصنيفات</h3>
                 <div class="sidebar-category">
+                  {% for category in categories %}
                   <div class="custom-checkbox">
-                    <input type="checkbox" class="form-check-input" id="cat1" />
-                    <label for="cat1"
-                      >الكل <span class="font-size-13 ms-1">(55)</span></label
-                    >
+                    <input type="checkbox" class="form-check-input" id="cat{{ category.id }}" 
+                           {% if request.GET.category|add:"0" == category.id %}checked{% endif %}
+                           onclick="window.location.href='{% if request.GET.category|add:"0" == category.id %}?{% else %}?category={{ category.id }}{% endif %}'">
+                    <label for="cat{{ category.id }}">
+                      {{ category.name }} <span class="font-size-13 ms-1">({{ category.post_set.count }})</span>
+                    </label>
                   </div>
-                  <div class="custom-checkbox">
-                    <input type="checkbox" class="form-check-input" id="cat2" />
-                    <label for="cat2">
-                      جولات المغامرات النشطة<span class="font-size-13 ms-1"
-                        >(8)</span
-                      ></label
-                    >
-                  </div>
-                  <div class="custom-checkbox">
-                    <input type="checkbox" class="form-check-input" id="cat3" />
-                    <label for="cat3"
-                      >السياحة البيئية
-                      <span class="font-size-13 ms-1">(5)</span></label
-                    >
-                  </div>
-                  <div class="custom-checkbox">
-                    <input type="checkbox" class="form-check-input" id="cat4" />
-                    <label for="cat4"
-                      >جولات مرافقة<span class="font-size-13 ms-1"
-                        >(2)</span
-                      ></label
-                    >
-                  </div>
-                  <div class="custom-checkbox">
-                    <input type="checkbox" class="form-check-input" id="cat5" />
-                    <label for="cat5"
-                      >جولات جماعية
-                      <span class="font-size-13 ms-1">(11)</span></label
-                    >
-                  </div>
-                  <div class="custom-checkbox">
-                    <input type="checkbox" class="form-check-input" id="cat6" />
-                    <label for="cat6"
-                      >محجوز <span class="font-size-13 ms-1">(3)</span></label
-                    >
-                  </div>
-                  <div class="collapse" id="categoryMenu">
-                    <div class="custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="cat7"
-                      />
-                      <label for="cat7"
-                        >فاميلى تورز
-                        <span class="font-size-13 ms-1">(4)</span></label
-                      >
-                    </div>
-                    <div class="custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="cat8"
-                      />
-                      <label for="cat8"
-                        >رحلات المدينة
-                        <span class="font-size-13 ms-1">(5)</span></label
-                      >
-                    </div>
-                    <div class="custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="cat9"
-                      />
-                      <label for="cat9"
-                        >جولات المتنزهات الوطنية
-                        <span class="font-size-13 ms-1">(3)</span></label
-                      >
-                    </div>
-                    <div class="custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="cat10"
-                      />
-                      <label for="cat10"
-                        >الاجازات
-                        <span class="font-size-13 ms-1">(3)</span></label
-                      >
-                    </div>
-                    <div class="custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="cat11"
-                      />
-                      <label for="cat11"
-                        >الحجز المبكر
-                        <span class="font-size-13 ms-1">(7)</span></label
-                      >
-                    </div>
-                    <div class="custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="cat12"
-                      />
-                      <label for="cat12"
-                        >الدقيقة الأخيرة
-                        <span class="font-size-13 ms-1">(2)</span></label
-                      >
-                    </div>
-                  </div>
-                  <!-- end collapse -->
-                  <a
-                    class="btn-text"
-                    data-bs-toggle="collapse"
-                    href="#categoryMenu"
-                    role="button"
-                    aria-expanded="false"
-                    aria-controls="categoryMenu"
-                  >
-                    <span class="show-more"
-                      >أظهر المزيد <i class="la la-angle-down"></i
-                    ></span>
-                    <span class="show-less"
-                      >عرض أقل <i class="la la-angle-up"></i
-                    ></span>
-                  </a>
+                  {% endfor %}
                 </div>
-              </div>
-              <!-- end sidebar-widget -->
-              <div class="sidebar-widget">
-                <div class="section-tab section-tab-2 pb-3">
-                  <ul
-                    class="nav nav-tabs justify-content-center"
-                    id="myTab3"
-                    role="tablist"
-                  >
-                    <li class="nav-item">
-                      <a
-                        class="nav-link"
-                        id="recent-tab"
-                        data-bs-toggle="tab"
-                        href="#recent"
-                        role="tab"
-                        aria-controls="recent"
-                        aria-selected="true"
-                      >
-                        الأخيرة
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a
-                        class="nav-link active"
-                        id="popular-tab"
-                        data-bs-toggle="tab"
-                        href="#popular"
-                        role="tab"
-                        aria-controls="popular"
-                        aria-selected="false"
-                      >
-                        جمع
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a
-                        class="nav-link"
-                        id="new-tab"
-                        data-bs-toggle="tab"
-                        href="#new"
-                        role="tab"
-                        aria-controls="new"
-                        aria-selected="false"
-                      >
-                        جديد
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="tab-content" id="myTabContent">
-                  <div
-                    class="tab-pane"
-                    id="recent"
-                    role="tabpanel"
-                    aria-labelledby="recent-tab"
-                  >
-                    <div class="card-item card-item-list recent-post-card">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img4.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html">حزم بحكمة قبل السفر</a>
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                    <div class="card-item card-item-list recent-post-card">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img5.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >غيّر مكانك واحصل على الهواء النقي</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                    <div class="card-item card-item-list recent-post-card mb-0">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img6.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >نقدم لكم هذه المدينة الرائعة</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                  </div>
-                  <!-- end tab-pane -->
-                  <div
-                    class="tab-pane fade show active"
-                    id="popular"
-                    role="tabpanel"
-                    aria-labelledby="popular-tab"
-                  >
-                    <div class="card-item card-item-list recent-post-card">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img7.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >القلعة على الجرف: ماجستيك ، سحر</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                    <div class="card-item card-item-list recent-post-card">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img8.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >غيّر مكانك واحصل على الهواء النقي</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                    <div class="card-item card-item-list recent-post-card mb-0">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img9.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >الكل على متن روكي ماونتينير</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                  </div>
-                  <!-- end tab-pane -->
-                  <div
-                    class="tab-pane"
-                    id="new"
-                    role="tabpanel"
-                    aria-labelledby="new-tab"
-                  >
-                    <div class="card-item card-item-list recent-post-card">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img7.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >القلعة على الجرف: ماجستيك ، سحر</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                    <div class="card-item card-item-list recent-post-card">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img8.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >غيّر مكانك واحصل على الهواء النقي</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                    <div class="card-item card-item-list recent-post-card mb-0">
-                      <div class="card-img">
-                        <a href="blog-single.html" class="d-block">
-                          <img src="images/small-img9.jpg" alt="blog-img" />
-                        </a>
-                      </div>
-                      <div class="card-body">
-                        <h3 class="card-title">
-                          <a href="blog-single.html"
-                            >الكل على متن روكي ماونتينير</a
-                          >
-                        </h3>
-                        <p class="card-meta">
-                          <span class="post__date"> 1 مارس 2020</span>
-                          <span class="post-dot"></span>
-                          <span class="post__time">3 دقائق للقراءة</span>
-                        </p>
-                      </div>
-                    </div>
-                    <!-- end card-item -->
-                  </div>
-                  <!-- end tab-pane -->
-                </div>
-              </div>
-              <!-- end sidebar-widget -->
-              <div class="sidebar-widget">
-                <h3 class="title stroke-shape">أرشيف</h3>
-                <div class="sidebar-list">
-                  <ul class="list-items">
-                    <li>
-                      <i class="la la-dot-circle me-2 text-color"></i
-                      ><a href="#">يونيو 2015</a>
-                    </li>
-                    <li>
-                      <i class="la la-dot-circle me-2 text-color"></i
-                      ><a href="#">مايو 2016</a>
-                    </li>
-                    <li>
-                      <i class="la la-dot-circle me-2 text-color"></i
-                      ><a href="#">أبريل 2017</a>
-                    </li>
-                    <li>
-                      <i class="la la-dot-circle me-2 text-color"></i
-                      ><a href="#">فبراير 2019</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <!-- end sidebar-widget -->
-              <div class="sidebar-widget">
-                <h3 class="title stroke-shape">سحابة الوسم</h3>
-                <ul class="tag-list">
-                  <li><a href="#">السفر</a></li>
-                  <li><a href="#">مغامرة</a></li>
-                  <li><a href="#">جولة</a></li>
-                  <li><a href="#">طبيعة</a></li>
-                  <li><a href="#">جزيرة</a></li>
-                  <li><a href="#">الحدائق</a></li>
-                  <li><a href="#">رحلة بحرية</a></li>
-                  <li><a href="#">الجبال</a></li>
-                  <li><a href="#">الزنبق</a></li>
-                  <li><a href="#">المتاحف</a></li>
-                  <li><a href="#">الشواطئ</a></li>
-                  <li><a href="#">ثقافي</a></li>
-                  <li><a href="#">الوطني</a></li>
-                </ul>
-              </div>
-              <!-- end sidebar-widget -->
-              <div class="sidebar-widget">
-                <h3 class="title stroke-shape">معلومات عنا</h3>
-                <div class="sidebar-about">
-                  <div class="sidebar-about-img">
-                    <img src="images/destination-img3.jpg" alt="" />
-                    <p class="font-size-28 font-weight-bold text-white">
-                      Trizen
-                    </p>
-                  </div>
-                  <p class="pt-3">
-                    لكن لا بد لي من أن أوضح لكم كيف ولدت كل هذه الفكرة الخاطئة ،
-                    وأشرح التعاليم الفعلية للمستكشف العظيم للحيوية ، حتى تكون
-                    لذة المجهود العظيم ، والحزن:
-                  </p>
-                </div>
-              </div>
-              <!-- end sidebar-widget -->
-              <div class="sidebar-widget">
-                <h3 class="title stroke-shape">اتبع واتصل</h3>
-                <ul class="social-profile">
-                  <li>
-                    <a href="#"><i class="lab la-facebook-f"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="lab la-twitter"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="lab la-instagram"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="lab la-linkedin-in"></i></a>
-                  </li>
-                </ul>
               </div>
               <!-- end sidebar-widget -->
             </div>

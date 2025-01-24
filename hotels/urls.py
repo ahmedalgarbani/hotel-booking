@@ -28,6 +28,7 @@ urlpatterns =[
     path('users/', include('users.urls', namespace='users')),
     path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagementz')),
     path('', include('home.urls', namespace='home'), name='home'),
+    path('blog/', include('blog.urls', namespace='blog')),
     path('rooms/', include('rooms.urls')),
     path('reviews/', include('reviews.urls',namespace='reviews'),name='reviews'),
     path('services/', include('services.urls')),
