@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.models import Group
 from django.utils.crypto import get_random_string
-# from .notifications import Notification
+from .notifications import Notification
 from users.models import CustomUser
 
 
