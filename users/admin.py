@@ -108,6 +108,24 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('user_type', 'is_active', 'is_staff', 'created_at')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'phone')
     ordering = ('-created_at',)
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'phone', 'image', 'user_type'),
+        }),
+    )
+
+    fieldsets = (
+        (_('معلومات الحساب'), {
+            'fields': ('username', 'password', 'email', 'phone')
+        }),
+        (_('المعلومات الشخصية'), {
+            'fields': ('first_name', 'last_name', 'image')
+        }),
+        (_('الصلاحيات'), {
+            'fields': ('user_type', 'is_active', 'is_staff', 'chield'),
+        }),
+    )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -205,25 +223,6 @@ class CustomUserAdmin(UserAdmin):
                 obj.chield = request.user
                 obj.is_staff = True
         super().save_model(request, obj, form, change)
-
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'phone', 'image'),
-        }),
-    )
-
-    fieldsets = (
-        (_('معلومات الحساب'), {
-            'fields': ('username', 'password', 'email', 'phone')
-        }),
-        (_('المعلومات الشخصية'), {
-            'fields': ('first_name', 'last_name', 'image')
-        }),
-        (_('الصلاحيات'), {
-            'fields': ('user_type', 'is_active', 'is_staff', 'chield'),
-        }),
-    )
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:

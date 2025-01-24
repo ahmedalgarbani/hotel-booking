@@ -385,44 +385,25 @@ class CityAdmin(admin.ModelAdmin):
         return queryset.none()
 admin.site.register(City, CityAdmin)
 
-# #----------- HotelRequest --------------
+# ----------- HotelRequest --------------
 
-# @admin.register(HotelRequest)
-# class HotelRequestAdmin(admin.ModelAdmin):
-#     list_display = [
-#         'official_name', 'country', 'city', 'email', 'is_approved', 'created_at'
-#     ]
-#     search_fields = ['official_name', 'email', 'country', 'city']
-#     list_filter = ['country', 'city', 'is_approved', 'created_at']
-#     actions = ['export_requests_to_excel']
-    
-#     def export_requests_to_excel(self, request, queryset):
-#         response = HttpResponse(content_type='application/ms-excel')
-#         response['Content-Disposition'] = 'attachment; filename="hotel_requests_report.xls"'
-        
-#         wb = xlwt.Workbook(encoding='utf-8')
-#         ws = wb.add_sheet('Hotel Requests Report')
-        
-#         # العناوين
-#         row_num = 0
-#         columns = [
-#             'الاسم التجاري الرسمي', 'البلد', 'المدينة', 'البريد الإلكتروني',
-#             'رقم الهاتف', 'تم التفعيل', 'تاريخ الطلب'
-#         ]
-        
-#         for col_num in range(len(columns)):
-#             ws.write(row_num, col_num, columns[col_num])
-            
-#         # البيانات
-#         rows = queryset.values_list(
-#             'official_name', 'country', 'city', 'email',
-#             'phone', 'is_approved', 'created_at'
-#         )
-#         for row in rows:
-#             row_num += 1
-#             for col_num in range(len(row)):
-               
-#                 ws.write(row_num, col_num, str(row[col_num]))
-#         wb.save(response)
-#         return response
-#     export_requests_to_excel.short_description = "تصدير طلبات الفنادق المحددة إلى Excel"
+@admin.register(HotelRequest)
+class HotelRequestAdmin(admin.ModelAdmin):
+    list_display = ['hotel_name', 'name', 'email', 'created_at', 'is_approved']
+    list_filter = ['is_approved', 'created_at']
+    search_fields = ['hotel_name', 'name', 'email']
+    readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
+    actions = ['approve_requests']
+
+    def approve_requests(self, request, queryset):
+        for hotel_request in queryset.filter(is_approved=False):
+            hotel_request.approve(request.user)
+        self.message_user(request, f'تمت الموافقة على {queryset.count()} طلب بنجاح')
+    approve_requests.short_description = 'الموافقة على الطلبات المحددة'
+
+    def save_model(self, request, obj, form, change):
+        if not change:  # إذا كان هذا إنشاء جديد
+            obj.created_by = request.user
+        else:  # إذا كان هذا تحديث
+            obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
