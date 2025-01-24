@@ -29,9 +29,9 @@ def create_hotel_staff_groups(sender, **kwargs):
 
         # قائمة بالتطبيقات والموديلات التي يحتاج الموظف للوصول إليها
         staff_apps_and_models = {
-            'bookings': ['booking', 'bookingservice'],  # للتعامل مع الحجوزات
-            'rooms': ['room'],  # لعرض الغرف فقط
-            'services': ['service'],  # لعرض وإضافة الخدمات
+            # 'bookings': ['booking', 'bookingservice'],  # للتعامل مع الحجوزات
+            # 'rooms': ['room'],  # لعرض الغرف فقط
+            # 'services': ['service'],  # لعرض وإضافة الخدمات
         }
         
         # إضافة صلاحيات مدير الفندق
