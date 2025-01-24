@@ -147,13 +147,14 @@
                   {% endfor %}
                 </ul>
               </nav>
+              {% if not request.user.is_authenticated %}
+              <div class="nav-btn">
+                <a href="{% url 'HotelManagement:add_request' %}" class="theme-btn theme-btn-small">أضف فندقك الآن</a>
+              </div>
+              {% endif %}
             </div>
             
-            {% if not request.user.is_authenticated %}
-            <div class="nav-btn">
-              <a href="{% url 'HotelManagement:add_request' %}" class="theme-btn theme-btn-small">أضف فندقك الآن</a>
-            </div>
-            {% endif %}
+
           </div>
         </div>
       </div>
