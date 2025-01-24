@@ -396,7 +396,10 @@ class HotelRequest(models.Model):
             business_license_number=self.business_license_number,
             document_path=self.document_path,
             manager=hotel_manager,
-            created_by=user
+            created_by=user,
+            is_verified=True,
+            verification_date=timezone.now(),
+
         )
         
         # إضافة رقم الهاتف

@@ -108,24 +108,37 @@
                                 <div class="form-group mb-4">
                                     <h5 class="title font-size-16 mb-3">موقع الفندق</h5>
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-6">
                                             <div class="input-box">
                                                 <label class="label-text">الدولة</label>
                                                 <div class="form-group">
-                                                    {{ form.country }}
+                                                    <select name="country" id="countrySelect" class="form-control" required>
+                                                        <option value="">-- اختر الدولة --</option>
+                                                        {% for city in cities %}
+                                                            <option value="{{ city.country }}">{{ city.country }}</option>
+                                                        {% endfor %}
+                                                        <option value="new">إضافة دولة جديدة</option>
+                                                    </select>
+                                                    <input type="text" name="new_country" id="newCountryInput" class="form-control mt-2" style="display: none;" placeholder="أدخل اسم الدولة الجديدة">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-8">
+                                        <div class="col-lg-6">
                                             <div class="input-box">
                                                 <label class="label-text">المحافظة</label>
                                                 <div class="form-group">
-                                                    {{ form.city_choice }}
-                                                    {{ form.new_city_name }}
+                                                    <select name="state" id="stateSelect" class="form-control" required>
+                                                        <option value="">-- اختر المحافظة --</option>
+                                                        {% for city in cities %}
+                                                            <option value="{{ city.state }}">{{ city.state }}</option>
+                                                        {% endfor %}
+                                                        <option value="new">إضافة محافظة جديدة</option>
+                                                    </select>
+                                                    <input type="text" name="new_state" id="newStateInput" class="form-control mt-2" style="display: none;" placeholder="أدخل اسم المحافظة الجديدة">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-12 mt-3">
                                             <div class="input-box">
                                                 <label class="label-text">العنوان التفصيلي</label>
                                                 <div class="form-group">
@@ -255,6 +268,34 @@
         
         // عند تحميل الصفحة
         toggleNewCityInput();
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // حقل الدولة
+        const countrySelect = document.getElementById('countrySelect');
+        const newCountryInput = document.getElementById('newCountryInput');
+
+        countrySelect.addEventListener('change', function() {
+            if (this.value === 'new') {
+                newCountryInput.style.display = 'block';
+            } else {
+                newCountryInput.style.display = 'none';
+            }
+        });
+
+        // حقل المحافظة
+        const stateSelect = document.getElementById('stateSelect');
+        const newStateInput = document.getElementById('newStateInput');
+
+        stateSelect.addEventListener('change', function() {
+            if (this.value === 'new') {
+                newStateInput.style.display = 'block';
+            } else {
+                newStateInput.style.display = 'none';
+            }
+        });
     });
 </script>
 {% endblock %}

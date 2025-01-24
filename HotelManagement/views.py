@@ -17,6 +17,30 @@ def add_hotel_request(request):
         form = HotelRequestForm(request.POST, request.FILES)
         if form.is_valid():
             hotel_request = form.save(commit=False)
+            
+            # التحقق من الدولة والمحافظة
+            country = request.POST.get('country', '')
+            state = request.POST.get('state', '')
+            
+            # إذا تم اختيار "إضافة جديد"
+            if country == 'new':
+                country = request.POST.get('new_country', '')
+            if state == 'new':
+                state = request.POST.get('new_state', '')
+            
+            # التحقق من أن القيم غير فارغة
+            if not country or not state:
+                messages.error(request, _('يرجى اختيار أو إدخال الدولة والمحافظة'))
+                return render(request, 'frontend/hotel/add_hotel.html', {'form': form, 'cities': City.objects.values('country', 'state').distinct()})
+            
+            # حفظ المدينة الجديدة إذا لم تكن موجودة
+            city, created = City.objects.get_or_create(
+                country=country,
+                state=state
+            )
+            
+            hotel_request.country = country
+            hotel_request.state = state
             hotel_request.user = request.user
             hotel_request.save()
             
@@ -35,8 +59,12 @@ def add_hotel_request(request):
     else:
         form = HotelRequestForm()
     
+    # جلب جميع المدن الفريقة
+    cities = City.objects.values('country', 'state').distinct()
+    
     context = {
         'form': form,
+        'cities': cities,
         'title': _('طلب إضافة فندق جديد')
     }
     return render(request, 'frontend/hotel/add_hotel.html', context)
