@@ -195,11 +195,10 @@ class Phone(BaseModel):
         return f"{self.phone_number}"
 
 # ---------------------- Image -------------------------------
-
-class Image(BaseModel):    
-    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True)
-    image_url = models.CharField(_("مسار الصوره على الانترنت"), null=True, max_length=3000)
-    hotel = models.ForeignKey(Hotel,verbose_name=_("فندق"),on_delete=models.CASCADE,related_name='image')
+class Image(BaseModel):
+    image_path = models.ImageField(upload_to='hotels/images/', blank=True, null=True, verbose_name=_("مسار الصورة"))
+    image_url = models.CharField(_("مسار الصورة على الانترنت"), null=True, max_length=3000, blank=True)
+    hotel = models.ForeignKey(Hotel, verbose_name=_("الفندق"), on_delete=models.CASCADE, related_name='images')
 
     class Meta:
         verbose_name = _("صورة")
@@ -317,7 +316,8 @@ class HotelRequest(models.Model):
         الموافقة على طلب إضافة الفندق
         """
         
-       
+        User = get_user_model()
+        
         # إنشاء مستخدم جديد كمدير فندق
         username = self.email  # استخدام البريد الإلكتروني كاسم مستخدم
         # التحقق من عدم وجود مستخدم بنفس البريد الإلكتروني
