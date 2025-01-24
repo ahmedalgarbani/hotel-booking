@@ -329,8 +329,6 @@ class HotelRequest(models.Model):
                 first_name=self.name,
                 user_type="hotel_manager",
                 is_staff=True,
-
-
             )
             
             # تعيين كلمة مرور عشوائية
@@ -339,6 +337,31 @@ class HotelRequest(models.Model):
             
             # إضافة المستخدم إلى مجموعة مدراء الفنادق
             hotel_manager_group, _ = Group.objects.get_or_create(name='hotel_manager')
+            
+            # إضافة الصلاحيات الأساسية لمدير الفندق
+            from django.contrib.auth.models import Permission
+            from django.contrib.contenttypes.models import ContentType
+            
+            # الحصول على نماذج المحتوى
+            hotel_content_type = ContentType.objects.get_for_model(Hotel)
+            phone_content_type = ContentType.objects.get_for_model(Phone)
+            image_content_type = ContentType.objects.get_for_model(Image)
+            
+            # إضافة الصلاحيات
+            permissions = Permission.objects.filter(
+                content_type__in=[
+                    hotel_content_type,
+                    phone_content_type,
+                    image_content_type
+                ],
+                codename__in=[
+                    'add_hotel', 'change_hotel', 'view_hotel',
+                    'add_phone', 'change_phone', 'view_phone',
+                    'add_image', 'change_image', 'view_image'
+                ]
+            )
+            
+            hotel_manager_group.permissions.add(*permissions)
             hotel_manager.groups.add(hotel_manager_group)
             hotel_manager.save()
             
