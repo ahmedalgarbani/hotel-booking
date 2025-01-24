@@ -335,33 +335,37 @@ class HotelRequest(models.Model):
             password = get_random_string(length=12)
             hotel_manager.set_password(password)
             
-            # إضافة المستخدم إلى مجموعة مدراء الفنادق
-            hotel_manager_group, _ = Group.objects.get_or_create(name='hotel_manager')
+            # إضافة المستخدم إلى مجموعة مدراء الفنادق وإضافة الصلاحيات
+            hotel_manager_group, created = Group.objects.get_or_create(name='hotel_manager')
             
-            # إضافة الصلاحيات الأساسية لمدير الفندق
-            from django.contrib.auth.models import Permission
-            from django.contrib.contenttypes.models import ContentType
+            if created:
+                # إضافة الصلاحيات الأساسية لمدير الفندق
+                from django.contrib.auth.models import Permission
+                from django.contrib.contenttypes.models import ContentType
+                
+                # إنشاء قائمة بالنماذج والصلاحيات المطلوبة
+                models_permissions = {
+                    Hotel: ['add', 'change', 'view', 'delete'],
+                    Phone: ['add', 'change', 'view', 'delete'],
+                    Image: ['add', 'change', 'view', 'delete'],
+                    Location: ['add', 'change', 'view', 'delete'],
+                    City: ['view'],
+                }
+                
+                # إضافة الصلاحيات لكل نموذج
+                for model, actions in models_permissions.items():
+                    content_type = ContentType.objects.get_for_model(model)
+                    for action in actions:
+                        codename = f"{action}_{model._meta.model_name}"
+                        try:
+                            permission = Permission.objects.get(
+                                content_type=content_type,
+                                codename=codename
+                            )
+                            hotel_manager_group.permissions.add(permission)
+                        except Permission.DoesNotExist:
+                            continue
             
-            # الحصول على نماذج المحتوى
-            hotel_content_type = ContentType.objects.get_for_model(Hotel)
-            phone_content_type = ContentType.objects.get_for_model(Phone)
-            image_content_type = ContentType.objects.get_for_model(Image)
-            
-            # إضافة الصلاحيات
-            permissions = Permission.objects.filter(
-                content_type__in=[
-                    hotel_content_type,
-                    phone_content_type,
-                    image_content_type
-                ],
-                codename__in=[
-                    'add_hotel', 'change_hotel', 'view_hotel',
-                    'add_phone', 'change_phone', 'view_phone',
-                    'add_image', 'change_image', 'view_image'
-                ]
-            )
-            
-            hotel_manager_group.permissions.add(*permissions)
             hotel_manager.groups.add(hotel_manager_group)
             hotel_manager.save()
             
