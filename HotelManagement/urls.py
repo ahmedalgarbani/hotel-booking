@@ -1,4 +1,4 @@
-from . import views
+from . import views, admin_views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -13,6 +13,8 @@ urlpatterns = [
     # path('requests/<int:request_id>/approve/', views.approve_hotel_request, name='approve_request'),
     # path('requests/<int:request_id>/reject/', views.reject_hotel_request, name='reject_request'),
     # path('test/email/', views_test.test_email, name='test_email'),
+    # مسار تهيئة النظام
+    path('admin/system-setup/', admin_views.system_setup, name='system_setup'),
 ]
 
 

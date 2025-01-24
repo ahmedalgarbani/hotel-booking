@@ -106,9 +106,9 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = []
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'ar'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -118,7 +118,7 @@ USE_TZ = True
 
 LANGUAGES = [
     ('en', 'English'),
-    ('ar', 'العربية'),
+    ('ar', 'Arabic'),
 ]
 
 LOCALE_PATHS = [
@@ -163,11 +163,64 @@ JAZZMIN_SETTINGS = {
     # القوائم
     "topmenu_links": [
         {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
+        {
+            "name": "تهيئة النظام",
+            "url": "/admin/system-setup/",
+            "icon": "fas fa-cogs",
+        },
         {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
     ],
 
+    # تجميع النماذج
+    "models": {
+        "system_setup": {
+            "name": "تهيئة النظام",
+            "icon": "fas fa-cogs",
+            "models": [
+                "HotelManagement.City",
+                "HotelManagement.Location",
+                "HotelManagement.HotelCategory",
+                "rooms.Category",
+                "rooms.RoomType",
+                "bookings.PaymentMethod",
+                "services.ServiceCategory",
+            ]
+        },
+        "HotelManagement": {
+            "name": "إدارة الفنادق",
+            "icon": "fas fa-hotel",
+            "models": [
+                "HotelManagement.Hotel",
+                "HotelManagement.Image",
+                "HotelManagement.HotelAmenity",
+                "HotelManagement.HotelPolicy",
+                "HotelManagement.Phone",
+            ]
+        },
+        "rooms": {
+            "name": "إدارة الغرف",
+            "icon": "fas fa-bed",
+            "models": [
+                "rooms.Room",
+                "rooms.RoomImage",
+                "rooms.RoomAmenity",
+                "rooms.RoomPrice",
+                "rooms.Availability",
+            ]
+        },
+        "bookings": {
+            "name": "الحجوزات والمدفوعات",
+            "icon": "fas fa-calendar-check",
+            "models": [
+                "bookings.Booking",
+                "bookings.BookingDetail",
+                "bookings.Payment",
+                "bookings.Invoice",
+            ]
+        },
+    },
     # قائمة المستخدم
     "usermenu_links": [
         {"model": "users.CustomUser"}
@@ -178,7 +231,6 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
-    "order_with_respect_to": ["auth", "HotelManagement", "rooms", "bookings"],
     
     # الأيقونات
     "icons": {
