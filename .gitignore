@@ -28,8 +28,6 @@ wheels/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-/media/
-**/media/
 **/static/
 doctors_appointment/static/
 /static/
@@ -118,3 +116,10 @@ celerybeat.pid
 # Django Migrations
 */migrations/*.py
 !*/migrations/__init__.py
+
+media/hotels/images/
+media/hotel_requests/documents/
+media/hotel_requests/profile_pictures/
+media/images/
+media/hotel_documents/
+media/hotel/images/
