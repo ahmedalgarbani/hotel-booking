@@ -72,31 +72,15 @@ def check_price_overlap(sender, instance, **kwargs):
         )
 
 @receiver(post_save, sender=RoomPrice)
-def apply_seasonal_price(sender, instance, created, **kwargs):
-    """تطبيق السعر الموسمي على سجلات التوفر"""
-    if created:
-        # نتحقق من وجود سجل توفر لهذا اليوم
-        availability = Availability.objects.filter(
-            hotel=instance.hotel,
+def handle_seasonal_price_save(sender, instance, created, **kwargs):
+    """
+    عند إضافة أو تحديث سعر موسمي، نقوم بحذف أي سجلات توفر متداخلة مع نفس الفترة
+    """
+    # حذف جميع سجلات التوفر التي تتداخل مع فترة السعر الموسمي
+    current_date = instance.date_from
+    while current_date <= instance.date_to:
+        Availability.objects.filter(
             room_type=instance.room_type,
-            date=instance.date_from
-        ).first()
-
-        if availability:
-            # تحديث السعر بالسعر الموسمي
-            availability.price = instance.price
-            availability.save()
-        else:
-            # إنشاء سجل توفر جديد بالسعر الموسمي
-            available_status = RoomStatus.objects.get(
-                hotel=instance.hotel,
-                code='AVAILABLE'
-            )
-            Availability.objects.create(
-                hotel=instance.hotel,
-                room_type=instance.room_type,
-                room_status=available_status,
-                date=instance.date_from,
-                available_rooms=instance.room_type.rooms_count,
-                price=instance.price  # السعر الموسمي من RoomPrice
-            )
+            date=current_date
+        ).delete()
+        current_date += timedelta(days=1)

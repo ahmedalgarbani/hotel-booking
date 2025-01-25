@@ -5,24 +5,21 @@ from django.db.models import Q, Min, Max, Sum
 
 def get_room_price(room_type, date):
     """الحصول على السعر النهائي للغرفة في تاريخ معين"""
-    # 1. نبحث عن سجل في Availability
-    availability = Availability.objects.filter(
-        room_type=room_type,
-        date=date
-    ).first()
-    
-    if availability:
-        return availability.price, availability.available_rooms
-    
-    # 2. نبحث عن سعر موسمي في RoomPrice
+    # 1. نبحث عن سعر موسمي في RoomPrice أولاً
     seasonal_price = RoomPrice.objects.filter(
         room_type=room_type,
         date_from__lte=date,
         date_to__gte=date
     ).first()
     
+    # 2. إذا وجد سعر موسمي، نحذف أي سجل توفر موجود لنفس التاريخ
     if seasonal_price:
-        # إنشاء سجل توفر جديد بالسعر الموسمي
+        Availability.objects.filter(
+            room_type=room_type,
+            date=date
+        ).delete()
+        
+        # نقوم بإنشاء سجل توفر جديد بالسعر الموسمي
         available_status = RoomStatus.objects.get(
             hotel=room_type.hotel,
             code='AVAILABLE'
@@ -37,7 +34,16 @@ def get_room_price(room_type, date):
         )
         return availability.price, availability.available_rooms
     
-    # 3. نستخدم السعر الأساسي من RoomType
+    # 3. إذا لم يوجد سعر موسمي، نبحث في جدول التوافر
+    availability = Availability.objects.filter(
+        room_type=room_type,
+        date=date
+    ).first()
+    
+    if availability:
+        return availability.price, availability.available_rooms
+    
+    # 4. إذا لم يوجد سعر موسمي ولا سجل توفر، نستخدم السعر الأساسي
     available_status = RoomStatus.objects.get(
         hotel=room_type.hotel,
         code='AVAILABLE'
