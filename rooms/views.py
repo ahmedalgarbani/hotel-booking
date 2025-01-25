@@ -1,7 +1,56 @@
-from django.shortcuts import render
-from .models import RoomType, Availability
+from django.shortcuts import render, get_object_or_404
+from .models import RoomType, Availability, RoomPrice, RoomStatus
 from datetime import datetime, timedelta
 from django.db.models import Q, Min, Max, Sum
+
+def get_room_price(room_type, date):
+    """الحصول على السعر النهائي للغرفة في تاريخ معين"""
+    # 1. نبحث عن سجل في Availability
+    availability = Availability.objects.filter(
+        room_type=room_type,
+        date=date
+    ).first()
+    
+    if availability:
+        return availability.price, availability.available_rooms
+    
+    # 2. نبحث عن سعر موسمي في RoomPrice
+    seasonal_price = RoomPrice.objects.filter(
+        room_type=room_type,
+        date_from__lte=date,
+        date_to__gte=date
+    ).first()
+    
+    if seasonal_price:
+        # إنشاء سجل توفر جديد بالسعر الموسمي
+        available_status = RoomStatus.objects.get(
+            hotel=room_type.hotel,
+            code='AVAILABLE'
+        )
+        availability = Availability.objects.create(
+            hotel=room_type.hotel,
+            room_type=room_type,
+            room_status=available_status,
+            date=date,
+            available_rooms=room_type.rooms_count,
+            price=seasonal_price.price
+        )
+        return availability.price, availability.available_rooms
+    
+    # 3. نستخدم السعر الأساسي من RoomType
+    available_status = RoomStatus.objects.get(
+        hotel=room_type.hotel,
+        code='AVAILABLE'
+    )
+    availability = Availability.objects.create(
+        hotel=room_type.hotel,
+        room_type=room_type,
+        room_status=available_status,
+        date=date,
+        available_rooms=room_type.rooms_count,
+        price=room_type.base_price
+    )
+    return availability.price, availability.available_rooms
 
 def room_search(request):
     hotel_name = request.GET.get('hotel_name', '').strip()
@@ -10,7 +59,6 @@ def room_search(request):
     adults_count = int(request.GET.get('adult_number', 0))
     children_count = int(request.GET.get('child_number', 0))
     
-    # تحويل التواريخ
     if check_in_date:
         try:
             check_in_start, check_out_start = check_in_date.split(' - ')
@@ -23,11 +71,8 @@ def room_search(request):
 
     # البحث عن الغرف المتوفرة
     query = RoomType.objects.filter(
-        is_active=True,  # فقط الغرف النشطة
-        default_capacity__gte=adults_count,  # تناسب عدد الضيوف
-        availabilities__date=check_in,  # لديها سجل توفر في التاريخ المطلوب
-        availabilities__available_rooms__gt=0,  # متوفر منها غرف
-        availabilities__room_status__is_available=True  # حالتها متاحة للحجز
+        is_active=True,
+        default_capacity__gte=adults_count
     )
 
     if hotel_name:
@@ -35,21 +80,16 @@ def room_search(request):
     if room_type_name:
         query = query.filter(name__icontains=room_type_name)
 
-    # نجلب الغرف مع معلومات التوفر
-    available_rooms = query.prefetch_related('availabilities').distinct()
-    
     rooms_data = []
-    for room in available_rooms:
-        # نجلب سجل التوفر لليوم المطلوب
-        availability = room.availabilities.filter(
-            date=check_in
-        ).first()
+    for room in query:
+        # الحصول على السعر وعدد الغرف المتوفرة
+        price, available_rooms = get_room_price(room, check_in)
         
-        if availability:
+        if available_rooms > 0:
             room_data = {
                 'room': room,
-                'price': availability.price,
-                'available_rooms': availability.available_rooms,
+                'price': price,
+                'available_rooms': available_rooms,
                 'total_guests': adults_count + children_count,
                 'check_in': check_in,
                 'check_out': check_out
@@ -66,3 +106,25 @@ def room_search(request):
         'hotel_name': hotel_name,
     }
     return render(request, 'frontend/home/pages/room-search-result.html', ctx)
+
+def room_detail(request, room_id):
+    """عرض تفاصيل غرفة واحدة"""
+    room = get_object_or_404(RoomType, id=room_id)
+    check_date = request.GET.get('date')
+    
+    try:
+        check_date = datetime.strptime(check_date, '%m/%d/%Y').date()
+    except (ValueError, TypeError):
+        check_date = datetime.now().date()
+    
+    # الحصول على السعر وعدد الغرف المتوفرة
+    price, available_rooms = get_room_price(room, check_date)
+    
+    room_data = {
+        'room': room,
+        'price': price,
+        'available_rooms': available_rooms,
+        'date': check_date
+    }
+    
+    return render(request, 'frontend/home/pages/room-details.html', {'room_data': room_data})
