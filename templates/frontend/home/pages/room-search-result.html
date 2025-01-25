@@ -63,22 +63,34 @@ START CARD AREA
               </div>
               <div class="filter-option me-5">
                 <h3 class="title font-size-16">
+                  <i class="la la-user me-1"></i>اسم الفندق:
+                  <span class="text-color ms-2">{{hotel_name}}</span>
+                </h3>
+              </div>
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">
                   <i class="la la-clock-o me-1"></i>تاريخ:
                   <span class="text-color ms-2"
-                    >04/28/2020 - 05/3/2020</span
+                    >{{check_out_start}} - {{check_in_start}}</span
                   >
                 </h3>
               </div>
               <div class="filter-option me-5">
                 <h3 class="title font-size-16">
                   <i class="la la-user me-1"></i>الكبار:
-                  <span class="text-color ms-2">1</span>
+                  <span class="text-color ms-2">{{adults_count}}</span>
                 </h3>
               </div>
               <div class="filter-option me-5">
                 <h3 class="title font-size-16">
                   <i class="la la-user me-1"></i>الأطفال:
-                  <span class="text-color ms-2">1</span>
+                  <span class="text-color ms-2">{{children_count}}</span>
+                </h3>
+              </div>
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">
+                  <i class="la la-user me-1"></i>القسم:
+                  <span class="text-color ms-2">{{room_type_name}}</span>
                 </h3>
               </div>
             </div>
@@ -103,68 +115,14 @@ START CARD AREA
     <!-- end row -->
     <div class="row">
       <div class="col-lg-8">
-        <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img5.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img29.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img30.jpg" alt="hotel-img" />
-              </a>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$88.00</span>
-              </p>
-            </div>
-            <h3 class="card-title font-size-26">
-              <a href="room-details.html">غرفة بريميوم مطلة على البحيرة</a>
-            </h3>
-            <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
-            </p>
-            <div class="card-attributes pt-3 pb-4">
-              <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
-                </li>
-              </ul>
-            </div>
-            <div class="card-btn">
-              <a
-                href="room-details.html"
-                class="theme-btn theme-btn-transparent"
-                >احجز الآن</a
-              >
-            </div>
-          </div>
-        </div>
+      {% for rooms in rooms %}
+      
         <!-- end card-item -->
         <div class="card-item room-card">
           <div class="card-img-carousel carousel-action carousel--action">
             <div class="card-img">
               <a href="room-details.html" class="d-block">
-                <img src="images/img31.jpg" alt="hotel-img" />
+                <img src="{{rooms.room_images.is_main.url}}" alt="hotel-img" />
               </a>
             </div>
             <div class="card-img">
@@ -181,19 +139,17 @@ START CARD AREA
           <div class="card-body">
             <div class="card-price pb-2">
               <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$45.00</span>
+                <span class="price__from"> السعر</span>
+                <span class="price__num">{{rooms.base_price}}</span>
               </p>
             </div>
             <h3 class="card-title font-size-26">
               <a href="room-details.html"
-                >صالة نوم مشتركة للذكور بسريرين قياسيين</a
+                >{{rooms.name}}</a
               >
             </h3>
             <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
+              {{rooms.description}}
             </p>
             <div class="card-attributes pt-3 pb-4">
               <ul class="d-flex align-items-center">
@@ -219,179 +175,8 @@ START CARD AREA
           </div>
         </div>
         <!-- end card-item -->
-        <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img33.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img32.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img31.jpg" alt="hotel-img" />
-              </a>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$145.00</span>
-              </p>
-            </div>
-            <h3 class="card-title font-size-26">
-              <a href="room-details.html">سرير ديلوكس كينج خاص</a>
-            </h3>
-            <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
-            </p>
-            <div class="card-attributes pt-3 pb-4">
-              <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
-                </li>
-              </ul>
-            </div>
-            <div class="card-btn">
-              <a
-                href="room-details.html"
-                class="theme-btn theme-btn-transparent"
-                >احجز الآن</a
-              >
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-        <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img32.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img33.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img31.jpg" alt="hotel-img" />
-              </a>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$145.00</span>
-              </p>
-            </div>
-            <h3 class="card-title font-size-26">
-              <a href="room-details.html">جناح بريميوم مطل على البحيرة</a>
-            </h3>
-            <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
-            </p>
-            <div class="card-attributes pt-3 pb-4">
-              <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
-                </li>
-              </ul>
-            </div>
-            <div class="card-btn">
-              <a
-                href="room-details.html"
-                class="theme-btn theme-btn-transparent"
-                >احجز الآن</a
-              >
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-        <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img31.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img32.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img33.jpg" alt="hotel-img" />
-              </a>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$45.00</span>
-              </p>
-            </div>
-            <h3 class="card-title font-size-26">
-              <a href="room-details.html"
-                >صالة نوم مشتركة للذكور بسريرين قياسيين</a
-              >
-            </h3>
-            <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
-            </p>
-            <div class="card-attributes pt-3 pb-4">
-              <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
-                </li>
-              </ul>
-            </div>
-            <div class="card-btn">
-              <a
-                href="room-details.html"
-                class="theme-btn theme-btn-transparent"
-                >احجز الآن</a
-              >
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
+        {% endfor %}
+      
       </div>
       <!-- end col-lg-8 -->
       <div class="col-lg-4">

@@ -200,8 +200,7 @@ class HotelAdmin(admin.ModelAdmin):
 # ----------- Location --------------
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ( 'address', 'city', 'slug', 'created_at')
-    readonly_fields = ('slug',)
+    list_display = ( 'address', 'city',  'created_at')
     list_filter = ('city',)
 
     def get_queryset(self, request):
@@ -370,8 +369,8 @@ class ImageAdmin(admin.ModelAdmin):
 # ----------- City --------------
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ( 'state', 'country', 'slug', 'created_at')
-    readonly_fields = ('slug',)
+    list_display = ( 'state', 'country',  'created_at')
+    # readonly_fields = ('country')
     search_fields = ( 'state', 'country')
     list_filter = ('state', 'country')
 
