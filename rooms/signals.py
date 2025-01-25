@@ -71,16 +71,16 @@ def check_price_overlap(sender, instance, **kwargs):
             _("يوجد تداخل مع فترة سعر أخرى لنفس نوع الغرفة")
         )
 
-@receiver(post_save, sender=RoomPrice)
-def handle_seasonal_price_save(sender, instance, created, **kwargs):
-    """
-    عند إضافة أو تحديث سعر موسمي، نقوم بحذف أي سجلات توفر متداخلة مع نفس الفترة
-    """
-    # حذف جميع سجلات التوفر التي تتداخل مع فترة السعر الموسمي
-    current_date = instance.date_from
-    while current_date <= instance.date_to:
-        Availability.objects.filter(
-            room_type=instance.room_type,
-            date=current_date
-        ).delete()
-        current_date += timedelta(days=1)
+# @receiver(post_save, sender=RoomPrice)
+# def handle_seasonal_price_save(sender, instance, created, **kwargs):
+#     """
+#     عند إضافة أو تحديث سعر موسمي، نقوم بحذف أي سجلات توفر متداخلة مع نفس الفترة
+#     """
+#     # حذف جميع سجلات التوفر التي تتداخل مع فترة السعر الموسمي
+#     current_date = instance.date_from
+#     while current_date <= instance.date_to:
+#         Availability.objects.filter(
+#             room_type=instance.room_type,
+#             date=current_date
+#         ).delete()
+#         current_date += timedelta(days=1)

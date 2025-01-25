@@ -130,7 +130,28 @@ START CARD AREA
             <div class="d-flex align-items-center justify-content-between">
               <h3 class="card-title">{{ room_data.room.name }}</h3>
               <div class="text-right">
-                <p class="card-price">{{ room_data.price }} ريال</p>
+                <div class="card-price d-flex align-items-center justify-content-between">
+                    <p>
+                        <span class="price__from">السعر</span>
+                        <span class="price__num">{{ room_data.price }} ريال</span>
+                        <span class="price__text">في الليلة</span>
+                    </p>
+                    <p class="price-type">
+                        {% if room_data.price_type == 'seasonal' %}
+                            <span class="badge bg-success">سعر موسمي</span>
+                            {% if room_data.price_object %}
+                                <small class="d-block">من {{ room_data.price_object.date_from|date:"d/m/Y" }} إلى {{ room_data.price_object.date_to|date:"d/m/Y" }}</small>
+                            {% endif %}
+                        {% elif room_data.price_type == 'availability' %}
+                            <span class="badge bg-info">سعر خاص</span>
+                            {% if room_data.price_object %}
+                                <small class="d-block">متوفر في {{ room_data.price_object.date|date:"d/m/Y" }}</small>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-secondary">السعر الأساسي</span>
+                        {% endif %}
+                    </p>
+                </div>
                 <p class="text-success">متوفر: {{ room_data.available_rooms }} غرفة</p>
               </div>
             </div>

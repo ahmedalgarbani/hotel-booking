@@ -12,51 +12,20 @@ def get_room_price(room_type, date):
         date_to__gte=date
     ).first()
     
-    # 2. إذا وجد سعر موسمي، نحذف أي سجل توفر موجود لنفس التاريخ
     if seasonal_price:
-        Availability.objects.filter(
-            room_type=room_type,
-            date=date
-        ).delete()
-        
-        # نقوم بإنشاء سجل توفر جديد بالسعر الموسمي
-        available_status = RoomStatus.objects.get(
-            hotel=room_type.hotel,
-            code='AVAILABLE'
-        )
-        availability = Availability.objects.create(
-            hotel=room_type.hotel,
-            room_type=room_type,
-            room_status=available_status,
-            date=date,
-            available_rooms=room_type.rooms_count,
-            price=seasonal_price.price
-        )
-        return availability.price, availability.available_rooms
+        return seasonal_price.price, room_type.rooms_count, 'seasonal', seasonal_price
     
-    # 3. إذا لم يوجد سعر موسمي، نبحث في جدول التوافر
+    # 2. نبحث في جدول التوافر
     availability = Availability.objects.filter(
         room_type=room_type,
         date=date
     ).first()
     
     if availability:
-        return availability.price, availability.available_rooms
+        return availability.price, availability.available_rooms, 'availability', availability
     
-    # 4. إذا لم يوجد سعر موسمي ولا سجل توفر، نستخدم السعر الأساسي
-    available_status = RoomStatus.objects.get(
-        hotel=room_type.hotel,
-        code='AVAILABLE'
-    )
-    availability = Availability.objects.create(
-        hotel=room_type.hotel,
-        room_type=room_type,
-        room_status=available_status,
-        date=date,
-        available_rooms=room_type.rooms_count,
-        price=room_type.base_price
-    )
-    return availability.price, availability.available_rooms
+    # 3. نستخدم السعر الأساسي
+    return room_type.base_price, room_type.rooms_count, 'base', None
 
 def room_search(request):
     hotel_name = request.GET.get('hotel_name', '').strip()
@@ -89,12 +58,14 @@ def room_search(request):
     rooms_data = []
     for room in query:
         # الحصول على السعر وعدد الغرف المتوفرة
-        price, available_rooms = get_room_price(room, check_in)
+        price, available_rooms, price_type, price_obj = get_room_price(room, check_in)
         
         if available_rooms > 0:
             room_data = {
                 'room': room,
                 'price': price,
+                'price_type': price_type,  # نوع السعر (موسمي، توفر، أساسي)
+                'price_object': price_obj,  # كائن السعر للحصول على معلومات إضافية
                 'available_rooms': available_rooms,
                 'total_guests': adults_count + children_count,
                 'check_in': check_in,
@@ -124,11 +95,13 @@ def room_detail(request, room_id):
         check_date = datetime.now().date()
     
     # الحصول على السعر وعدد الغرف المتوفرة
-    price, available_rooms = get_room_price(room, check_date)
+    price, available_rooms, price_type, price_obj = get_room_price(room, check_date)
     
     room_data = {
         'room': room,
         'price': price,
+        'price_type': price_type,  # نوع السعر (موسمي، توفر، أساسي)
+        'price_object': price_obj,  # كائن السعر للحصول على معلومات إضافية
         'available_rooms': available_rooms,
         'date': check_date
     }
