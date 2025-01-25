@@ -115,68 +115,48 @@ START CARD AREA
     <!-- end row -->
     <div class="row">
       <div class="col-lg-8">
-      {% for rooms in rooms %}
-      
-        <!-- end card-item -->
-        <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="{{rooms.room_images.is_main.url}}" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img32.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img33.jpg" alt="hotel-img" />
-              </a>
-            </div>
+      {% for room_data in rooms %}
+        <div class="card-item card-item-list room-card">
+          <div class="card-img">
+            <a href="#" class="d-block">
+              {% if room_data.room.images.exists %}
+                <img src="{{ room_data.room.images.first.image.url }}" alt="غرفة">
+              {% else %}
+                <img src="/static/images/default-room.jpg" alt="غرفة">
+              {% endif %}
+            </a>
           </div>
           <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from"> السعر</span>
-                <span class="price__num">{{rooms.base_price}}</span>
-              </p>
+            <div class="d-flex align-items-center justify-content-between">
+              <h3 class="card-title">{{ room_data.room.name }}</h3>
+              <div class="text-right">
+                <p class="card-price">{{ room_data.price }} ريال</p>
+                <p class="text-success">متوفر: {{ room_data.available_rooms }} غرفة</p>
+              </div>
             </div>
-            <h3 class="card-title font-size-26">
-              <a href="room-details.html"
-                >{{rooms.name}}</a
-              >
-            </h3>
-            <p class="card-text pt-2">
-              {{rooms.description}}
-            </p>
-            <div class="card-attributes pt-3 pb-4">
+            <p class="card-text py-3">{{ room_data.room.description }}</p>
+            <div class="card-attributes">
               <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
+                <li class="d-flex align-items-center" data-toggle="tooltip" data-placement="top" title="السعة">
+                  <i class="la la-users"></i>
+                  <span>{{ room_data.room.default_capacity }} شخص</span>
                 </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
+                <li class="d-flex align-items-center" data-toggle="tooltip" data-placement="top" title="عدد الأسرة">
+                  <i class="la la-bed"></i>
+                  <span>{{ room_data.room.beds_count }} سرير</span>
                 </li>
               </ul>
             </div>
             <div class="card-btn">
-              <a
-                href="room-details.html"
-                class="theme-btn theme-btn-transparent"
-                >احجز الآن</a
-              >
+              <a href="#" class="theme-btn theme-btn-small">احجز الآن</a>
             </div>
           </div>
         </div>
-        <!-- end card-item -->
-        {% endfor %}
-      
+      {% empty %}
+        <div class="alert alert-info">
+          لا توجد غرف متوفرة تطابق معايير البحث
+        </div>
+      {% endfor %}
       </div>
       <!-- end col-lg-8 -->
       <div class="col-lg-4">

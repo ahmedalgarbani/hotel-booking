@@ -1,9 +1,11 @@
 from django.db import models
+from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from pydantic import ValidationError
-from HotelManagement.models import BaseModel, Hotel
+from django.utils.text import slugify
 from django.utils import timezone
+
+from HotelManagement.models import BaseModel, Hotel
 
 class Category(BaseModel):
     hotel = models.ForeignKey(
@@ -298,12 +300,27 @@ class RoomImage(BaseModel):
         blank=True,
         null=True
     )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        verbose_name=_("الرابط المختصر"),
+        blank=True
+    )
 
     class Meta:
         verbose_name = _("صورة الغرفة")
         verbose_name_plural = _("صور الغرف")
         ordering = ['-is_main', 'room_type']
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # If there's a caption, use it for the slug, otherwise use room type name and timestamp
+            if self.caption:
+                base_slug = self.caption
+            else:
+                base_slug = f"{self.room_type.name}-{timezone.now().strftime('%Y%m%d-%H%M%S')}"
+            self.slug = slugify(base_slug)
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        main_text = _("رئيسية") if self.is_main else _("إضافية")
-        return f"{self.room_type.name} - {main_text}"
+        return f"{self.room_type.name} - {self.caption if self.caption else 'Image'}"
