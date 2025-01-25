@@ -163,11 +163,7 @@ JAZZMIN_SETTINGS = {
     # القوائم
     "topmenu_links": [
         {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
-        {
-            "name": "تهيئة النظام",
-            "url": "/admin/system-setup/",
-            "icon": "fas fa-cogs",
-        },
+        
         {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},

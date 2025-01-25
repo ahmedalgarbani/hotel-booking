@@ -14,7 +14,6 @@ urlpatterns = [
     # path('requests/<int:request_id>/reject/', views.reject_hotel_request, name='reject_request'),
     # path('test/email/', views_test.test_email, name='test_email'),
     # مسار تهيئة النظام
-    path('admin/system-setup/', admin_views.system_setup, name='system_setup'),
 ]
 
 

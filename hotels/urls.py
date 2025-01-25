@@ -22,7 +22,6 @@ from HotelManagement import admin_views
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
-    path('admin/system-setup/', admin_views.system_setup, name='system_setup'),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls', namespace='users')),
     path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagementz')),
