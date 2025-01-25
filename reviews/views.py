@@ -34,7 +34,7 @@ def hotel_review_create(request):
             review=request.POST.get('review'),
         )
         
-        return redirect('hotel_detail', slug=hotel.slug)
+        return redirect('home:hotel_detail', slug=hotel.slug)
     
     else:
         return redirect('home:index')

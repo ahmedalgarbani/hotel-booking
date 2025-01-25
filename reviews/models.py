@@ -27,6 +27,12 @@ class HotelReview(BaseModel):
         on_delete=models.CASCADE,
         related_name='hotel_reviews'
     )
+    slug = models.SlugField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("Slug"),
+        blank=True
+    )
     rating_service = models.PositiveSmallIntegerField(
         verbose_name=_("الخدمات"),
         choices=[(i, f"{i} نجوم" if i > 1 else "نجمة واحدة") for i in range(1, 6)],
@@ -78,6 +84,12 @@ class RoomReview(BaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("الفندق"),
         related_name='room_reviews'
+    )
+    slug = models.SlugField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("Slug"),
+        blank=True
     )
     room_type = models.ForeignKey(
         RoomType, 
@@ -140,6 +152,12 @@ class Offer(BaseModel):
     start_date = models.DateField(
         verbose_name=_("تاريخ بداية العرض"),
         help_text=_("متى يبدأ العرض؟")
+    )
+    slug = models.SlugField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("Slug"),
+        blank=True
     )
     end_date = models.DateField(
         verbose_name=_("تاريخ نهاية العرض"),
