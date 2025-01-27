@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+
+from HotelManagement.models import City, Hotel
 from .models import RoomType, RoomPrice, Availability
 from datetime import datetime
 from django.db.models import Q
@@ -9,6 +11,16 @@ def room_search(request):
     room_type_name = request.GET.get('room_type', '').strip()
     adults_count = request.GET.get('adult_number', 0)
     children_count = request.GET.get('child_number', 0)
+    print(hotel_name)
+    city = get_object_or_404(City,Q(state__icontains=hotel_name) )
+    print(city)
+    print(city)
+    print(city)
+    print(city.id)
+    print(city.id)
+    #for check hotel name
+    #Ahmad edite
+    hotel = Hotel.objects.filter(location__city=city)
     
     if check_in_date:
         try:
@@ -58,7 +70,7 @@ def room_search(request):
     ctx = {
         'children_count': children_count,
         'adults_count': adults_count,
-        'rooms': available_rooms,
+        'rooms': RoomType.objects.all(),
         'check_in_start': check_in_start,
         'check_out_start': check_out_start,
         'room_type_name': room_type_name,
