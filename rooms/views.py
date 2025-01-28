@@ -1,6 +1,7 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from HotelManagement.models import City, Hotel
+from .forms import ReviewForm
 from .models import RoomType, RoomPrice, Availability
 from datetime import datetime
 from django.db.models import Q
@@ -77,3 +78,32 @@ def room_search(request):
         'hotel_name': hotel_name,
     }
     return render(request, 'frontend/home/pages/room-search-result.html', ctx)
+
+
+
+#تحت التطوير  
+def room_detail(request, room_id):
+    room = get_object_or_404(RoomType, id=room_id)
+    reviews = room.reviews.all()
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.room_type = room
+            review.hotel = room.hotel  
+            review.user = request.user
+            review.save()
+            return redirect('rooms:room_detail', room_id=room.id)
+    else:
+        form = ReviewForm()
+
+    context = {
+        'room': room,
+        'reviews': reviews,
+        'form': form,
+        'stars': range(1, 6) #تجريبي
+    }
+    return render(request, 'frontend/home/pages/room-details.html', context)
+
+

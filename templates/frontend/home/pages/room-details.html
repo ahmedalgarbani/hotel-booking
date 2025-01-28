@@ -7,26 +7,11 @@
 ================================= -->
 <section class="room-detail-bread">
   <div class="full-width-slider carousel-action">
+    {% for image in room.images.all %}
     <div class="full-width-slide-item">
-      <img src="images/img30.jpg" alt="" />
+      <img src="{{ image.image.url }}" alt="{{ room.name }}" />
     </div>
-    <!-- end full-width-slide-item -->
-    <div class="full-width-slide-item">
-      <img src="images/img31.jpg" alt="" />
-    </div>
-    <!-- end full-width-slide-item -->
-    <div class="full-width-slide-item">
-      <img src="images/img32.jpg" alt="" />
-    </div>
-    <!-- end full-width-slide-item -->
-    <div class="full-width-slide-item">
-      <img src="images/img33.jpg" alt="" />
-    </div>
-    <!-- end full-width-slide-item -->
-    <div class="full-width-slide-item">
-      <img src="images/img34.jpg" alt="" />
-    </div>
-    <!-- end full-width-slide-item -->
+    {% endfor %}
   </div>
   <!-- end full-width-slider -->
 </section>
@@ -99,9 +84,7 @@ START TOUR DETAIL AREA
           <div class="single-content-wrap padding-top-60px">
             <div id="description" class="page-scroll">
               <div class="single-content-item pb-4">
-                <h3 class="title font-size-26">
-                  غرفة بريميوم مطلة على البحيرة
-                </h3>
+                <h3 class="title font-size-26">{{ room.name }}</h3>
                 <p class="pt-2">
                   <span
                     class="badge text-bg-warning text-white font-size-16"
@@ -117,19 +100,10 @@ START TOUR DETAIL AREA
               >
                 <h3 class="title font-size-20">وصف</h3>
                 <p class="py-3">
-                  أثناء تصوير الشباب ، مع مرات nibh المشتركة القوة لأخذ
-                  الرجال والبلاغة. يبدو أن بلاغي قد تُرك دون أن يتم ،
-                  وبلاغته ستذهب ، لأنها كذلك ، والتي يجب أن تكون ديمقراطية.
-                  هذا هو السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                  سيرتي الذاتية ، غير مسلح أو نحو ذلك. الأداء ليس بهذه
-                  السهولة ، لأنه Vulputate القرار.
+                  {{ room.description }}
                 </p>
                 <p class="pb-4">
-                  عندما وافقوا على ميناندر. واجبات قنصله ، نيابة عن ، وملح
-                  البحر الجديد شهريًا ، لكنها قد تكون غير لائقة لأي سبب.
-                  الذرات لتطوير كرة القدم ، وهذا ما تبحث عنه. أي من هؤلاء
-                  الرجال هو. لئلا يزول الألم في أي وقت بدلاً من طعام الخير
-                  العام.
+              
                 </p>
                 <h3 class="title font-size-15 font-weight-medium pb-3">
                   قواعد المنزل

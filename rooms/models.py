@@ -5,6 +5,9 @@ from pydantic import ValidationError
 from HotelManagement.models import BaseModel, Hotel
 from django.utils import timezone
 
+from users.models import CustomUser
+
+
 class Category(BaseModel):
     hotel = models.ForeignKey(
         Hotel,
@@ -307,3 +310,36 @@ class RoomImage(BaseModel):
     def __str__(self):
         main_text = _("رئيسية") if self.is_main else _("إضافية")
         return f"{self.room_type.name} - {main_text}"
+
+
+#تحت التطوير 
+class Review(BaseModel):
+    hotel = models.ForeignKey(
+        Hotel,
+        on_delete=models.CASCADE,
+        verbose_name=_("الفندق"),
+        related_name='reviews'
+    )
+    room_type = models.ForeignKey(
+        RoomType,
+        on_delete=models.CASCADE,
+        verbose_name=_("نوع الغرفة"),
+        related_name='reviews'
+    )
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name=_("التقييم")
+    )
+    content = models.TextField(
+        verbose_name=_("محتوى المراجعة")
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("مراجعة")
+        verbose_name_plural = _("مراجعات")
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Review by {self.user.username} for {self.room_type.name} in {self.hotel.name}'

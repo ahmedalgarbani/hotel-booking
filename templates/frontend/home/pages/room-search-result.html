@@ -108,7 +108,7 @@ START CARD AREA
           <div class="card-img-carousel carousel-action carousel--action">
             {% for image in room.images.all %}
             <div class="card-img">
-              <a href="room-details.html" class="d-block">
+              <a href="{% url 'rooms:room_detail' room.id %}" class="d-block">
                 <img src="{{ image.image.url }}" alt="hotel-img" />
               </a>
             </div>
@@ -118,11 +118,11 @@ START CARD AREA
             <div class="card-price pb-2">
               <p>
                 <span class="price__from"> السعر</span>
-                <span class="price__num">{{room.base_price}}</span>
+                <span class="price__num">{{room.base_price}} ريال</span>
               </p>
             </div>
             <h3 class="card-title font-size-26">
-              <a href="room-details.html">{{room.name}}</a>
+              <a href="{% url 'rooms:room_detail' room.id %}">{{room.name}}</a>
             </h3>
             <p class="card-text pt-2">
               {{room.description}}
@@ -141,7 +141,7 @@ START CARD AREA
               </ul>
             </div>
             <div class="card-btn">
-              <a href="room-details.html" class="theme-btn theme-btn-transparent">احجز الآن</a>
+              <a href="{% url 'rooms:room_detail' room.id %}" class="theme-btn theme-btn-transparent">احجز الآن</a>
             </div>
           </div>
         </div>
@@ -273,7 +273,7 @@ START CARD AREA
           <button type="button" class="theme-btn">
             <i class="la la-refresh me-1"></i>تحميل المزيد
           </button>
-          <p class="font-size-13 pt-2">عرض 1 - 5 من 124 غرفة</p>
+          <p class="font-size-13 pt-2">عرض 1 - 5 من {{ rooms.count }} غرفة</p>
         </div>
         <!-- end btn-box -->
       </div>
