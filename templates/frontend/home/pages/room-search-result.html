@@ -60,7 +60,9 @@ START CARD AREA
               <div class="filter-option me-5">
                 <h3 class="title font-size-16">
                   <i class="la la-user me-1"></i>اسم الفندق:
+                  {% if hotel_name %}
                   <span class="text-color ms-2">{{hotel_name}}</span>
+                  {% endif %}
                 </h3>
               </div>
               <div class="filter-option me-5">
@@ -78,7 +80,9 @@ START CARD AREA
               <div class="filter-option me-5">
                 <h3 class="title font-size-16">
                   <i class="la la-user me-1"></i>القسم:
+                  {% if room_type_name %}
                   <span class="text-color ms-2">{{room_type_name}}</span>
+                  {% endif %}
                 </h3>
               </div>
             </div>
@@ -146,28 +150,29 @@ START CARD AREA
       <div class="col-lg-4">
         <div class="sidebar single-content-sidebar mt-0 mb-0" id="sidebar">
           <div class="sidebar-widget single-content-widget">
-            <h3 class="title stroke-shape">التحقق من الصلاحية</h3>
+            <h3 class="title stroke-shape">التحقق من التوافر</h3>
             <div class="contact-form-action">
-              <form action="#">
+              <form action="{% url 'rooms:room_search' %}" method="POST">
+                {% csrf_token %}
                 <div class="input-box">
-                  <label class="label-text">تحقق في</label>
+                  <label class="label-text">تاريخ الوصول</label>
                   <div class="form-group">
                     <span class="la la-calendar form-icon"></span>
-                    <input class="date-picker-single form-control" type="text" name="date" readonly />
+                    <input class="date-picker-single form-control" type="text" name="check_in_start" readonly />
                   </div>
                 </div>
                 <div class="input-box">
-                  <label class="label-text">الدفع</label>
+                  <label class="label-text">تاريخ المغادرة</label>
                   <div class="form-group">
                     <span class="la la-calendar form-icon"></span>
-                    <input class="date-picker-single form-control" type="text" name="date" readonly />
+                    <input class="date-picker-single form-control" type="text" name="check_out_start" readonly />
                   </div>
                 </div>
                 <div class="input-box">
                   <label class="label-text">غرف</label>
                   <div class="form-group">
                     <div class="select-contain select2-container-wrapper w-auto">
-                      <select class="select-contain-select">
+                      <select name="room_number" class="select-contain-select">
                         <option value="0">حدد الغرف</option>
                         <option value="1" selected>1 غرفة</option>
                         <option value="2">2 غرف</option>
@@ -188,7 +193,7 @@ START CARD AREA
                   </div>
                 </div>
                 <div class="input-box">
-                  <label class="label-text">ضيوف</label>
+                  <label class="label-text">عدد الاشخاص</label>
                   <div class="form-group">
                     <div class="dropdown dropdown-contain">
                       <a class="dropdown-toggle dropdown-btn" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">
@@ -199,12 +204,12 @@ START CARD AREA
                       <div class="dropdown-menu dropdown-menu-wrap">
                         <div class="dropdown-item">
                           <div class="qty-box d-flex align-items-center justify-content-between">
-                            <label>الكبار</label>
+                            <label>عدد الاشخاص</label>
                             <div class="qtyBtn d-flex align-items-center">
                               <div class="qtyDec">
                                 <i class="la la-minus"></i>
                               </div>
-                              <input data-total-input type="text" name="room_search_result_qty_input" value="0" />
+                              <input data-total-input type="text" name="adult_number" value="0" />
                               <div class="qtyInc">
                                 <i class="la la-plus"></i>
                               </div>
@@ -212,44 +217,14 @@ START CARD AREA
                           </div>
                         </div>
                         <!-- end dropdown-item -->
-                        <div class="dropdown-item">
-                          <div class="qty-box d-flex align-items-center justify-content-between">
-                            <label>الأطفال <span>2-12 سنة</span></label>
-                            <div class="qtyBtn d-flex align-items-center">
-                              <div class="qtyDec">
-                                <i class="la la-minus"></i>
-                              </div>
-                              <input data-total-input type="text" name="room_search_result_qty_input" value="0" />
-                              <div class="qtyInc">
-                                <i class="la la-plus"></i>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end dropdown-item -->
-                        <div class="dropdown-item">
-                          <div class="qty-box d-flex align-items-center justify-content-between">
-                            <label>الرضع <span>0-2 سنة</span></label>
-                            <div class="qtyBtn d-flex align-items-center">
-                              <div class="qtyDec">
-                                <i class="la la-minus"></i>
-                              </div>
-                              <input data-total-input type="text" name="room_search_result_qty_input" value="0" />
-                              <div class="qtyInc">
-                                <i class="la la-plus"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- end qty-box -->
-                        </div>
-                        <!-- end dropdown-item -->
+                     
                       </div>
                     </div>
                     <!-- end dropdown -->
                   </div>
                 </div>
                 <div class="btn-box pt-2">
-                  <a href="{% url 'home:checkout' %}" class="theme-btn text-center w-100">التحقق من الصلاحية</a>
+                  <button type="submit"  class="theme-btn text-center w-100">التحقق من التوفر</button>
                 </div>
               </form>
             </div>
