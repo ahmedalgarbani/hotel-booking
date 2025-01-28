@@ -81,9 +81,9 @@ class RoomStatusAdmin(BaseModelAdmin):
 
 @admin.register(Availability)
 class AvailabilityAdmin(BaseModelAdmin):
-    list_display = ['room_type', 'hotel', 'date', 'available_rooms', 'price']
+    list_display = ['room_type', 'hotel', 'availability_date', 'available_rooms']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'date', 'room_type']
+    list_filter = ['hotel', 'availability_date', 'room_type']
 
 @admin.register(RoomPrice)
 class RoomPriceAdmin(BaseModelAdmin):

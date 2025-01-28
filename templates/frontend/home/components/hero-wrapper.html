@@ -42,7 +42,7 @@
                     <label class="label-text">تواريخ الدخول والخروج</label>
                     <div class="form-group d-flex">
                       <span class="la la-calendar form-icon"></span>
-                      <input class="date-picker-multiple form-control" type="text" name="check_in" placeholder="تاريخ الدخول" readonly />
+                      <input class="date-picker-multiple form-control" type="text" name="check_date" placeholder="تاريخ الدخول" readonly />
                     </div>
                   </div>
                 </div>
@@ -72,27 +72,13 @@
                     <div class="form-group">
                       <div class="dropdown dropdown-contain gty-container">
                         <a class="dropdown-toggle dropdown-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                          <span class="adult" data-text="الكبار" data-text-multi="الكبار">0 الكبار</span> -
-                          <span class="children" data-text="طفل" data-text-multi="أطفال">0 أطفال</span>
+                          <span class="default_capacity" data-text="عدد الاشخاص" data-text-multi="عدد الاشخاص">0 عدد الاشخاص</span> -
                         </a>
                         <div class="dropdown-menu dropdown-menu-wrap">
+                          
                           <div class="dropdown-item">
                             <div class="qty-box d-flex align-items-center justify-content-between">
-                              <label>غرف</label>
-                              <div class="qtyBtn d-flex align-items-center">
-                                <div class="qtyDec">
-                                  <i class="la la-minus"></i>
-                                </div>
-                                <input type="text" name="room_number" value="0" class="qty-input" />
-                                <div class="qtyInc">
-                                  <i class="la la-plus"></i>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="dropdown-item">
-                            <div class="qty-box d-flex align-items-center justify-content-between">
-                              <label>الكبار</label>
+                              <label>عدد الاشخاص</label>
                               <div class="qtyBtn d-flex align-items-center">
                                 <div class="qtyDec">
                                   <i class="la la-minus"></i>
@@ -106,12 +92,12 @@
                           </div>
                           <div class="dropdown-item">
                             <div class="qty-box d-flex align-items-center justify-content-between">
-                              <label>أطفال</label>
+                              <label>غرف</label>
                               <div class="qtyBtn d-flex align-items-center">
                                 <div class="qtyDec">
                                   <i class="la la-minus"></i>
                                 </div>
-                                <input type="text" name="child_number" value="0" />
+                                <input type="text" name="room_number" value="0" class="qty-input" />
                                 <div class="qtyInc">
                                   <i class="la la-plus"></i>
                                 </div>

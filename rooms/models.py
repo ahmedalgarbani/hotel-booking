@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from pydantic import ValidationError
+from django.core.exceptions import ValidationError
 from HotelManagement.models import BaseModel, Hotel
 from django.utils import timezone
 
@@ -95,9 +95,9 @@ class RoomType(BaseModel):
         ordering = ['category', 'name']
         constraints = [
             models.CheckConstraint(
-                check=models.Q(max_capacity__gte=models.F('default_capacity')),
-                name='max_capacity_gte_default'
-            )
+        check=models.Q(max_capacity__gte=models.F('default_capacity')),
+        name='max_capacity_gte_default'
+    )
         ]
 
     def __str__(self):
@@ -214,6 +214,7 @@ class RoomStatus(BaseModel):
         return f"{self.name} ({self.code})"
 
 
+
 class Availability(BaseModel):
     hotel = models.ForeignKey(
         Hotel,
@@ -233,17 +234,11 @@ class Availability(BaseModel):
         verbose_name=_("حالة الغرفة"),
         related_name='availabilities'
     )
-    date = models.DateField(
-        verbose_name=_("التاريخ")
+    availability_date = models.DateField(  
+        verbose_name=_("تاريخ التوفر")
     )
     available_rooms = models.PositiveIntegerField(
         verbose_name=_("عدد الغرف المتوفرة"),
-        validators=[MinValueValidator(0)]
-    )
-    price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name=_("السعر"),
         validators=[MinValueValidator(0)]
     )
     notes = models.TextField(
@@ -255,16 +250,13 @@ class Availability(BaseModel):
     class Meta:
         verbose_name = _("توفر الغرف")
         verbose_name_plural = _("توفر الغرف")
-        ordering = ['-date', 'room_type']
+        ordering = ['-availability_date', 'room_type']
         constraints = [
             models.UniqueConstraint(
-                fields=['hotel', 'room_type', 'date'],
+                fields=['hotel', 'room_type', 'availability_date'],
                 name='unique_room_availability'
             )
         ]
-
-    def __str__(self):
-        return f"{self.room_type.name} - {self.date} ({self.available_rooms} غرفة متوفرة)"
 
     def clean(self):
         super().clean()
@@ -272,6 +264,7 @@ class Availability(BaseModel):
             raise ValidationError({
                 'available_rooms': _("عدد الغرف المتوفرة لا يمكن أن يتجاوز العدد الكلي للغرف")
             })
+
 
 
 class RoomImage(BaseModel):
@@ -310,6 +303,13 @@ class RoomImage(BaseModel):
     def __str__(self):
         main_text = _("رئيسية") if self.is_main else _("إضافية")
         return f"{self.room_type.name} - {main_text}"
+
+    def clean(self):
+        super().clean()
+        if self.is_main and RoomImage.objects.filter(room_type=self.room_type, is_main=True).exists():
+            raise ValidationError(_("لا يمكن أن تكون هناك أكثر من صورة رئيسية واحدة لكل نوع غرفة"))
+
+
 
 
 #تحت التطوير 
