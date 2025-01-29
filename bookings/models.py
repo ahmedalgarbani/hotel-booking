@@ -3,6 +3,8 @@ from django.db import models
 from HotelManagement.models import BaseModel
 from django.utils.translation import gettext_lazy as _
 
+from services.models import RoomTypeService
+
 # ------------ Guest -------------
 class Guest(BaseModel):
     hotel = models.ForeignKey(
@@ -129,7 +131,7 @@ class Booking(BaseModel):
 # ------------ Booking Detail -------------
 class BookingDetail(BaseModel):
     service = models.ForeignKey(
-        'services.Service',
+        RoomTypeService,
         on_delete=models.CASCADE,
         verbose_name=_("الخدمة"),
         related_name='booking_details'
