@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <form method="post" id="bulk_create_form" novalidate>
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            {% for field in form %}
+                <div class="form-row{% if field.errors %} errors{% endif %}">
+                    <div>
+                        {{ field.errors }}
+                        {{ field.label_tag }}
+                        {% if field.name == 'start_date' or field.name == 'end_date' %}
+                            <input type="date" name="{{ field.name }}" id="id_{{ field.name }}" value="{{ field.value|date:'Y-m-d' }}">
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        {% if field.help_text %}
+                        <div class="help">{{ field.help_text|safe }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="form-row">
+                <div>
+                    <label for="room_type">{% trans "نوع الغرفة" %}</label>
+                    <select name="room_type" id="room_type" required>
+                        {% for room_type in room_types %}
+                            <option value="{{ room_type.id }}">{{ room_type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" class="default" value="{% trans 'إنشاء' %}">
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    django.jQuery(document).ready(function() {
+        if (typeof DateTimeShortcuts !== 'undefined') {
+            DateTimeShortcuts.init();
+        }
+    });
+</script>
+{% endblock %}

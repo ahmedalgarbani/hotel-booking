@@ -6,70 +6,70 @@ from .models import RoomType, Availability, RoomStatus, RoomPrice
 from django.utils import timezone
 from datetime import timedelta
 
-@receiver(pre_save, sender=RoomType)
-def store_old_price(sender, instance, **kwargs):
-    """حفظ السعر القديم قبل التحديث"""
-    if instance.id:
-        try:
-            instance._original_base_price = RoomType.objects.get(id=instance.id).base_price
-        except RoomType.DoesNotExist:
-            instance._original_base_price = instance.base_price
+# @receiver(pre_save, sender=RoomType)
+# def store_old_price(sender, instance, **kwargs):
+#     """حفظ السعر القديم قبل التحديث"""
+#     if instance.id:
+#         try:
+#             instance._original_base_price = RoomType.objects.get(id=instance.id).base_price
+#         except RoomType.DoesNotExist:
+#             instance._original_base_price = instance.base_price
 
-@receiver(post_save, sender=RoomType)
-def create_availability_for_room_type(sender, instance, created, **kwargs):
-    """إنشاء سجل توفر عند إنشاء نوع غرفة جديد"""
-    if created:
-        available_status = RoomStatus.objects.get(
-            hotel=instance.hotel,
-            code='AVAILABLE'
-        )
+# @receiver(post_save, sender=RoomType)
+# def create_availability_for_room_type(sender, instance, created, **kwargs):
+#     """إنشاء سجل توفر عند إنشاء نوع غرفة جديد"""
+#     if created:
+#         available_status = RoomStatus.objects.get(
+#             hotel=instance.hotel,
+#             code='AVAILABLE'
+#         )
         
-        # إنشاء سجل توفر أولي بالسعر الأساسي
-        Availability.objects.create(
-            hotel=instance.hotel,
-            room_type=instance,
-            room_status=available_status,
-            date=timezone.now().date(),
-            available_rooms=instance.rooms_count,
-            price=instance.base_price  # السعر الأساسي من RoomType
-        )
+#         # إنشاء سجل توفر أولي بالسعر الأساسي
+#         Availability.objects.create(
+#             hotel=instance.hotel,
+#             room_type=instance,
+#             room_status=available_status,
+#             date=timezone.now().date(),
+#             available_rooms=instance.rooms_count,
+#             price=instance.base_price  # السعر الأساسي من RoomType
+#         )
 
-@receiver(post_save, sender=RoomType)
-def update_future_availability_prices(sender, instance, **kwargs):
-    """تحديث أسعار التوافر المستقبلية عند تغيير السعر الأساسي"""
-    if not kwargs.get('created') and hasattr(instance, '_original_base_price'):
-        if instance.base_price != instance._original_base_price:
-            today = timezone.now().date()
-            # تحديث فقط السجلات التي تستخدم السعر الأساسي القديم
-            Availability.objects.filter(
-                room_type=instance,
-                date__gte=today,
-                price=instance._original_base_price
-            ).update(price=instance.base_price)
+# @receiver(post_save, sender=RoomType)
+# def update_future_availability_prices(sender, instance, **kwargs):
+#     """تحديث أسعار التوافر المستقبلية عند تغيير السعر الأساسي"""
+#     if not kwargs.get('created') and hasattr(instance, '_original_base_price'):
+#         if instance.base_price != instance._original_base_price:
+#             today = timezone.now().date()
+#             # تحديث فقط السجلات التي تستخدم السعر الأساسي القديم
+#             Availability.objects.filter(
+#                 room_type=instance,
+#                 date__gte=today,
+#                 price=instance._original_base_price
+#             ).update(price=instance.base_price)
 
-@receiver(post_save, sender=RoomType)
-def update_room_availability_count(sender, instance, **kwargs):
-    """تحديث عدد الغرف المتاحة عند تغيير العدد الكلي"""
-    if not kwargs.get('created'):
-        today = timezone.now().date()
-        Availability.objects.filter(
-            room_type=instance,
-            date__gte=today
-        ).update(
-            available_rooms=instance.rooms_count
-        )
+# @receiver(post_save, sender=RoomType)
+# def update_room_availability_count(sender, instance, **kwargs):
+#     """تحديث عدد الغرف المتاحة عند تغيير العدد الكلي"""
+#     if not kwargs.get('created'):
+#         today = timezone.now().date()
+#         Availability.objects.filter(
+#             room_type=instance,
+#             date__gte=today
+#         ).update(
+#             available_rooms=instance.rooms_count
+#         )
 
-@receiver(pre_save, sender=RoomPrice)
-def check_price_overlap(sender, instance, **kwargs):
-    """التحقق من عدم تداخل فترات الأسعار"""
-    if RoomPrice.objects.filter(
-        room_type=instance.room_type,
-        date_from__lte=instance.date_to,
-        date_to__gte=instance.date_from
-    ).exclude(id=instance.id).exists():
-        raise ValidationError(
-            _("يوجد تداخل مع فترة سعر أخرى لنفس نوع الغرفة")
-        )
+# @receiver(pre_save, sender=RoomPrice)
+# def check_price_overlap(sender, instance, **kwargs):
+#     """التحقق من عدم تداخل فترات الأسعار"""
+#     if RoomPrice.objects.filter(
+#         room_type=instance.room_type,
+#         date_from__lte=instance.date_to,
+#         date_to__gte=instance.date_from
+#     ).exclude(id=instance.id).exists():
+#         raise ValidationError(
+#             _("يوجد تداخل مع فترة سعر أخرى لنفس نوع الغرفة")
+#         )
 
 # @receiver(post_save, sender=RoomPrice)
 # def handle_seasonal_price_save(sender, instance, created, **kwargs):

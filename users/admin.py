@@ -133,7 +133,7 @@ class CustomUserAdmin(UserAdmin):
             return qs
         # إذا كان المستخدم مدير فندق، اعرض فقط الموظفين التابعين له
         if request.user.user_type == 'hotel_manager':
-            return qs.filter(chield=request.user)
+            return qs.filter(chield=request.user) 
         return qs.none()  # لا تعرض أي مستخدمين للمستخدمين العاديين
 
     def has_module_permission(self, request):
