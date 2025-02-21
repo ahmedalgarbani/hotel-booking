@@ -1,5 +1,113 @@
 {% load menu_generator %}
 {% load static %}
+<style>
+    /* الألوان حسب نوع الإشعار */
+    .notification-message.info {
+        background-color: #b0d3f5;
+        color: #000000;
+        border-left: 5px solid #3178c6;
+    }
+
+    .notification-message.warning {
+        background-color: #eeca99;
+        color: #000000;
+        border-left: 5px solid #d6822c; 
+    }
+
+    .notification-message.success {
+        background-color: #adf5ad;
+        color: #000000;
+        border-left: 5px solid #28a745;
+    }
+
+    .notification-message.error {
+        background-color: #efa9a1;
+        color: #000000;
+        border-left: 5px solid #dc3545;
+    }
+
+    /* تحسين عرض الإشعارات */
+    .notification-container .noti-content {
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .notification-container .notification-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .notification-container .notification-message {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 10px 15px;
+    }
+
+    .notification-time {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .notification-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .noti-details {
+        color: #555;
+        font-size: 14px;
+    }
+
+    .notify-block {
+        display: flex;
+        align-items: center;
+    }
+
+    .avatar {
+        margin-right: 10px;
+    }
+
+    .avatar-img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* تهيئة البادج للإشعارات */
+    .badge.bg-danger {
+        font-size: 12px;
+        padding: 4px 7px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        .notification-container {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-container .fa-bell {
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+}
+
+.notification-container .badge {
+    font-size: 12px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 4px 7px;
+    display: none; 
+}
+
+    }
+</style>
 <header class="header-area">
   <div class="header-top-bar padding-right-100px padding-left-100px">
     <div class="container-fluid">
@@ -78,6 +186,59 @@
                   </select>
                 </div>
               </div>
+                                  <!-- Notifications -->
+                                  <div class="notification-container">
+                                    <li class="nav-item dropdown noti-nav me-3 pe-0">
+                                        <a href="#" class="dropdown-toggle nav-link p-0" data-bs-toggle="dropdown" aria-expanded="false" id="notification-button">
+                                            <i class="fa-solid fa-bell"></i>
+                                            {% if unread_notifications_count > 0 %}
+                                            <span class="badge bg-danger" id="notification-count">{{ unread_notifications_count }}</span>
+                                            {% endif %}
+                                        </a>
+                                        <div class="dropdown-menu notifications dropdown-menu-end" id="notification-dropdown">
+                                            <div class="topnav-dropdown-header">
+                                                <span class="notification-title">الإشعارات</span>
+                                            </div>
+                                            <div class="noti-content">
+                                                <ul class="notification-list" id="notification-list">
+                                                    {% for notification in notifications %}
+                                                        {% if notification.status == '0' %}
+                                                        <li class="notification-message 
+                                                            {% if notification.notification_type == '0' %}info{% endif %}
+                                                            {% if notification.notification_type == '1' %}warning{% endif %}
+                                                            {% if notification.notification_type == '2' %}success{% endif %}
+                                                            {% if notification.notification_type == '3' %}error{% endif %}">
+                                                            <a href="#">
+                                                                <div class="notify-block d-flex">
+                                                                    {% if notification.image %}
+                                                                    <span class="avatar">
+                                                                        <img class="avatar-img" alt="Notification Image" src="{{ notification.image.url }}">
+                                                                    </span>
+                                                                    {% endif %}
+                                                                    <div class="media-body">
+                                                                        <p class="noti-details">
+                                                                            {{ notification.message }}
+                                                                        </p>
+                                                                        <h6>{{ notification.sender.name }} 
+                                                                            <span class="notification-time">
+                                                                                {{ notification.send_time|date:"H:i A" }}
+                                                                                <br>
+                                                                            <small>من: {{ notification.sender.username }}</small>
+                                                                            </span>
+                                                                        </h6>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </div>
+                                <!-- /Notifications -->
               {% if request.user.is_authenticated %}
                 <div class="header-right-action">
                   <div class="dropdown">
@@ -161,3 +322,40 @@
     </div>
   </div>
 </header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var notificationButton = document.getElementById("notification-button");
+      var notificationList = document.getElementById("notification-list");
+      var notificationBadge = document.getElementById("notification-count");
+  
+      notificationButton.addEventListener("click", function () {
+          // Toggle the display of the notification list
+          notificationList.style.display = (notificationList.style.display === "block") ? "none" : "block";
+      });
+  
+      // إضافة حدث للنقر على كل إشعار
+      notificationList.addEventListener("click", function (event) {
+          if (event.target.closest("li")) {
+              var notificationItem = event.target.closest("li");
+              // إرسال طلب Ajax لجعل الإشعار مقروء
+              fetch("{% url 'mark_notifications_read' %}", {
+                  method: "POST",
+                  headers: {
+                      "X-CSRFToken": "{{ csrf_token }}",
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ notification_id: notificationItem.dataset.id })  // إرسال ID الإشعار
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      notificationItem.style.display = "none"; // إخفاء الإشعار بعد قراءته
+                      // تحديث العداد
+                      var count = parseInt(notificationBadge.textContent) - 1;
+                      notificationBadge.textContent = count > 0 ? count : '';
+                  }
+              });
+          }
+      });
+  });
+  </script>

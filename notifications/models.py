@@ -1,0 +1,65 @@
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from users.models import CustomUser
+
+class Notifications(models.Model):
+    sender = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='sent_notifications',
+        verbose_name=_("المرسل")
+    )
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='received_notifications',
+        verbose_name=_("المستلم")
+    )
+    message = models.TextField(verbose_name=_("الرسالة"))
+    send_time = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("وقت الإرسال")
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            ('0', _("غير مقروء")),
+            ('1', _("مقروء")),
+        ],
+        default='0',
+        verbose_name=_("الحالة")
+    )
+    notification_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('0', _("معلومة")),
+            ('1', _("تحذير")),
+            ('2', _("نجاح")),
+            ('3', _("خطأ")),
+        ],
+        verbose_name=_("نوع الإشعار")
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("نشط")
+    )
+
+    class Meta:
+        verbose_name = _("إشعار")
+        verbose_name_plural = _("الإشعارات")
+        ordering = ['-send_time']
+
+    def __str__(self):
+        return f"إشعار من {self.sender} إلى {self.user} - {self.notification_type}"
+
+    def mark_as_read(self):
+        """تحديث الإشعار إلى مقروء"""
+        if self.status != '1':
+            self.status = '1'
+            self.save()
+
+    def mark_as_unread(self):
+        """تحديث الإشعار إلى غير مقروء"""
+        if self.status != '0':
+            self.status = '0'
+            self.save()
