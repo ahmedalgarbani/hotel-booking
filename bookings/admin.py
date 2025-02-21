@@ -294,6 +294,6 @@ class GuestAdmin(admin.ModelAdmin):
 
 @admin.register(BookingDetail)
 class BookingDetailAdmin(admin.ModelAdmin):
-    list_display = ['booking', 'service', 'quantity', 'price', 'total']
-    list_filter = ['booking__status', 'service']
-    search_fields = ['booking__guests__name', 'service__name']
+    list_display = ['booking', 'quantity', 'price', 'total']
+    list_filter = ['booking__status', ]
+    search_fields = ['booking__guests__name', 'RoomTypeService__name']
