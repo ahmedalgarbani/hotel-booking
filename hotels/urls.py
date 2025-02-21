@@ -33,6 +33,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('api/', include('api.urls')),
 
+    path('notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:
