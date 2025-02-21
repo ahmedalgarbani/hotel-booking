@@ -31,6 +31,7 @@ urlpatterns = [
     path('reviews/', include('reviews.urls')),
     path('services/', include('services.urls')),
     path('blog/', include('blog.urls')),
+    path('notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:
