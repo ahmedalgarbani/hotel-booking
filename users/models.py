@@ -16,7 +16,6 @@ class CustomUser(AbstractUser):
         ('hotel_staff',_('موظف')),
         
     ]
-    
     user_type = models.CharField(
         max_length=20,
         choices=USER_TYPE_CHOICES,
