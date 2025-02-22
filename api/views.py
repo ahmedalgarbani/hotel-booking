@@ -64,9 +64,12 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
+ 
+
     def post(self, request):
         try:
             refresh_token = request.data.get("refresh_token")
+
             if not refresh_token:
                 return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
             RefreshToken(refresh_token).blacklist()
