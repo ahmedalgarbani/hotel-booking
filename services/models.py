@@ -77,7 +77,7 @@ class RoomTypeService(models.Model):
     hotel = models.ForeignKey(
         Hotel,
         on_delete=models.CASCADE,
-        related_name="hotel_services",
+        related_name="room_services",
         verbose_name=_("الفندق")
     )
 
@@ -93,11 +93,11 @@ class RoomTypeService(models.Model):
 # -------------------- Offer ----------------------------
 
 class Offer(BaseModel):
-    hotel_id = models.ForeignKey(
+    hotel = models.ForeignKey(
         Hotel, 
         on_delete=models.CASCADE,
         verbose_name=_("الفندق"),
-        related_name='service_offers'  # Changed from review_offers to service_offers
+        related_name='service_offers' 
     )
     offer_name = models.CharField(
         max_length=100,
