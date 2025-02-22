@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 28, 2025 at 05:17 PM
+-- Generation Time: Feb 22, 2025 at 10:58 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -70,10 +70,6 @@ INSERT INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
 (9, 1, 80),
 (10, 1, 81),
 (11, 1, 82),
-(16, 1, 127),
-(13, 1, 128),
-(14, 1, 129),
-(15, 1, 130),
 (33, 3, 34),
 (17, 3, 35),
 (18, 3, 36),
@@ -251,7 +247,35 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (139, 'Can add مقال', 36, 'add_post'),
 (140, 'Can change مقال', 36, 'change_post'),
 (141, 'Can delete مقال', 36, 'delete_post'),
-(142, 'Can view مقال', 36, 'view_post');
+(142, 'Can view مقال', 36, 'view_post'),
+(143, 'Can add hotel', 37, 'add_hotel'),
+(144, 'Can change hotel', 37, 'change_hotel'),
+(145, 'Can delete hotel', 37, 'delete_hotel'),
+(146, 'Can view hotel', 37, 'view_hotel'),
+(147, 'Can add hotel service', 38, 'add_hotelservice'),
+(148, 'Can change hotel service', 38, 'change_hotelservice'),
+(149, 'Can delete hotel service', 38, 'delete_hotelservice'),
+(150, 'Can view hotel service', 38, 'view_hotelservice'),
+(151, 'Can add room type service', 39, 'add_roomtypeservice'),
+(152, 'Can change room type service', 39, 'change_roomtypeservice'),
+(153, 'Can delete room type service', 39, 'delete_roomtypeservice'),
+(154, 'Can view room type service', 39, 'view_roomtypeservice'),
+(155, 'Can add blacklisted token', 40, 'add_blacklistedtoken'),
+(156, 'Can change blacklisted token', 40, 'change_blacklistedtoken'),
+(157, 'Can delete blacklisted token', 40, 'delete_blacklistedtoken'),
+(158, 'Can view blacklisted token', 40, 'view_blacklistedtoken'),
+(159, 'Can add outstanding token', 41, 'add_outstandingtoken'),
+(160, 'Can change outstanding token', 41, 'change_outstandingtoken'),
+(161, 'Can delete outstanding token', 41, 'delete_outstandingtoken'),
+(162, 'Can view outstanding token', 41, 'view_outstandingtoken'),
+(163, 'Can add مراجعة', 42, 'add_review'),
+(164, 'Can change مراجعة', 42, 'change_review'),
+(165, 'Can delete مراجعة', 42, 'delete_review'),
+(166, 'Can view مراجعة', 42, 'view_review'),
+(167, 'Can add إشعار', 43, 'add_notifications'),
+(168, 'Can change إشعار', 43, 'change_notifications'),
+(169, 'Can delete إشعار', 43, 'delete_notifications'),
+(170, 'Can view إشعار', 43, 'view_notifications');
 
 -- --------------------------------------------------------
 
@@ -462,6 +486,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (15, 'HotelManagement', 'image'),
 (16, 'HotelManagement', 'location'),
 (17, 'HotelManagement', 'phone'),
+(43, 'notifications', 'notifications'),
 (26, 'payments', 'currency'),
 (27, 'payments', 'hotelpaymentmethod'),
 (29, 'payments', 'payment'),
@@ -471,13 +496,19 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (32, 'reviews', 'roomreview'),
 (18, 'rooms', 'availability'),
 (19, 'rooms', 'category'),
+(42, 'rooms', 'review'),
 (20, 'rooms', 'roomimage'),
 (21, 'rooms', 'roomprice'),
 (22, 'rooms', 'roomstatus'),
 (4, 'rooms', 'roomtype'),
+(37, 'services', 'hotel'),
+(38, 'services', 'hotelservice'),
 (33, 'services', 'offer'),
+(39, 'services', 'roomtypeservice'),
 (6, 'services', 'service'),
 (11, 'sessions', 'session'),
+(40, 'token_blacklist', 'blacklistedtoken'),
+(41, 'token_blacklist', 'outstandingtoken'),
 (12, 'users', 'activitylog'),
 (2, 'users', 'customuser');
 
@@ -534,7 +565,23 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (33, 'reviews', '0002_initial', '2025-01-24 17:10:58.986044'),
 (34, 'rooms', '0002_initial', '2025-01-24 17:11:00.985189'),
 (35, 'services', '0002_initial', '2025-01-24 17:11:01.559096'),
-(36, 'sessions', '0001_initial', '2025-01-24 17:11:01.589383');
+(36, 'sessions', '0001_initial', '2025-01-24 17:11:01.589383'),
+(37, 'services', '0003_hotel_hotelservice_roomtypeservice_and_more', '2025-01-28 18:34:40.157473'),
+(38, 'bookings', '0003_alter_bookingdetail_service', '2025-01-28 18:34:40.748934'),
+(39, 'services', '0004_delete_service_roomtypeservice_hotel_and_more', '2025-01-28 18:34:41.304463'),
+(40, 'token_blacklist', '0001_initial', '2025-02-21 19:36:46.298483'),
+(41, 'token_blacklist', '0002_outstandingtoken_jti_hex', '2025-02-21 19:36:46.393372'),
+(42, 'token_blacklist', '0003_auto_20171017_2007', '2025-02-21 19:36:46.542282'),
+(43, 'token_blacklist', '0004_auto_20171017_2013', '2025-02-21 19:36:46.701199'),
+(44, 'token_blacklist', '0005_remove_outstandingtoken_jti', '2025-02-21 19:36:46.799136'),
+(45, 'token_blacklist', '0006_auto_20171017_2113', '2025-02-21 19:36:46.885318'),
+(46, 'token_blacklist', '0007_auto_20171017_2214', '2025-02-21 19:36:59.989425'),
+(47, 'token_blacklist', '0008_migrate_to_bigautofield', '2025-02-21 19:37:00.889623'),
+(48, 'token_blacklist', '0010_fix_migrate_to_bigautofield', '2025-02-21 19:37:01.031202'),
+(49, 'token_blacklist', '0011_linearizes_history', '2025-02-21 19:37:01.044492'),
+(50, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-02-21 19:37:01.190775'),
+(51, 'notifications', '0001_initial', '2025-02-22 09:20:36.700485'),
+(52, 'notifications', '0002_initial', '2025-02-22 09:20:36.862113');
 
 -- --------------------------------------------------------
 
@@ -555,7 +602,8 @@ CREATE TABLE `django_session` (
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('3z4h2ef65kvvzlwlkmhh4e11zv2lli3c', '.eJxVjEEOwiAQRe_C2hAYKgwu3fcMBJipVA0kpV0Z765NutDtf-_9lwhxW0vYOi9hJnERIE6_W4r5wXUHdI_11mRudV3mJHdFHrTLsRE_r4f7d1BiL986KiI3kVXaJY_Js2ZzRpMNaQZQ7LTyCieEwSc03hIM4CwjD9bpzCDeH9lfNyQ:1tbNTQ:OT_HQy7U1bM-5l45GYgNIx-HsR0ivt55z-k-AvbArbM', '2025-02-07 17:28:04.179180'),
 ('81z10haz5g8nszmf844leq3uueo83kq8', '.eJxVjDsOwjAQBe_iGlnZ9S-hpOcM1tq7xgGUSHFSIe4OkVJA-2bmvVSkba1xa7LEkdVZgTr9bonyQ6Yd8J2m26zzPK3LmPSu6IM2fZ1ZnpfD_Tuo1Oq3RqABJKDPRVjYondogimcCcEGGHxnQBxYix2kBFSYXW_A9VAQyar3B9JsNyI:1tbhBf:ti8Z3VCd8HeeLezVpjTeyx882nRLVyGNxMw2kQjbX50', '2025-02-08 14:31:03.529965'),
-('p0qug31jcpoaswzk8ti6u4p49496k16s', '.eJxVjDsOwjAQBe_iGlnZ9S-hpOcM1tq7xgGUSHFSIe4OkVJA-2bmvVSkba1xa7LEkdVZgTr9bonyQ6Yd8J2m26zzPK3LmPSu6IM2fZ1ZnpfD_Tuo1Oq3RqABJKDPRVjYondogimcCcEGGHxnQBxYix2kBFSYXW_A9VAQyar3B9JsNyI:1tbOfW:UNm4LyNKTItjWXFn7cJF8fJ_5WCzIEYPMo6EAqhzCwQ', '2025-02-07 18:44:38.477574');
+('p0qug31jcpoaswzk8ti6u4p49496k16s', '.eJxVjDsOwjAQBe_iGlnZ9S-hpOcM1tq7xgGUSHFSIe4OkVJA-2bmvVSkba1xa7LEkdVZgTr9bonyQ6Yd8J2m26zzPK3LmPSu6IM2fZ1ZnpfD_Tuo1Oq3RqABJKDPRVjYondogimcCcEGGHxnQBxYix2kBFSYXW_A9VAQyar3B9JsNyI:1tbOfW:UNm4LyNKTItjWXFn7cJF8fJ_5WCzIEYPMo6EAqhzCwQ', '2025-02-07 18:44:38.477574'),
+('rwqa7qoigwhik8zjhbmbsm7xy7nsaa12', '.eJxVjEsOwiAUAO_C2hAo8ACX7nsG8vhJ1UBS2pXx7pakC93OTOZNHO5bcXtPq1siuRJBLr_MY3imOkR8YL03Glrd1sXTkdDTdjq3mF63s_0bFOxlbCFzY4WeUooGggUw2iKTQkQmZDYKPFqWUR2MH1Rprj1PaCYIEjiQzxe6tzaQ:1tlZ63:hlEf7Eeyded_zzU3TaTPFaqtQeye0lFhFd5AKX78_GU', '2025-03-07 19:54:03.656198');
 
 -- --------------------------------------------------------
 
@@ -729,6 +777,23 @@ CREATE TABLE `hotelmanagement_phone` (
 
 INSERT INTO `hotelmanagement_phone` (`id`, `created_at`, `updated_at`, `deleted_at`, `slug`, `phone_number`, `country_code`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
 (1, '2025-01-24 17:26:47.778641', '2025-01-24 17:26:47.778641', NULL, '45454545', '45454545', '+967', 1, 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications_notifications`
+--
+
+CREATE TABLE `notifications_notifications` (
+  `id` bigint(20) NOT NULL,
+  `message` longtext NOT NULL,
+  `send_time` datetime(6) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `notification_type` varchar(50) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `sender_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1058,45 +1123,121 @@ INSERT INTO `rooms_roomtype` (`id`, `created_at`, `updated_at`, `deleted_at`, `s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `services_service`
+-- Table structure for table `services_hotel`
 --
 
-CREATE TABLE `services_service` (
+CREATE TABLE `services_hotel` (
   `id` bigint(20) NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
-  `slug` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `description` longtext NOT NULL,
-  `is_active` tinyint(1) NOT NULL,
-  `additional_fee` double DEFAULT NULL,
-  `created_by_id` bigint(20) DEFAULT NULL,
-  `hotel_id` bigint(20) DEFAULT NULL,
-  `room_id` bigint(20) DEFAULT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
+  `location` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `service_offers`
+-- Table structure for table `services_hotelservice`
 --
 
-CREATE TABLE `service_offers` (
+CREATE TABLE `services_hotelservice` (
   `id` bigint(20) NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `icon` varchar(100) DEFAULT NULL,
+  `hotel_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `services_offer`
+--
+
+CREATE TABLE `services_offer` (
+  `id` bigint(20) NOT NULL,
   `slug` varchar(255) NOT NULL,
-  `offer_name` varchar(100) NOT NULL,
-  `offer_description` longtext NOT NULL,
+  `offer_name` varchar(255) NOT NULL,
+  `offer_description` longtext DEFAULT NULL,
   `offer_start_date` date NOT NULL,
   `offer_end_date` date NOT NULL,
-  `created_by_id` bigint(20) DEFAULT NULL,
-  `hotel_id_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
+  `hotel_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `services_roomtypeservice`
+--
+
+CREATE TABLE `services_roomtypeservice` (
+  `id` bigint(20) NOT NULL,
+  `room_type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `additional_fee` decimal(10,2) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `icon` varchar(100) DEFAULT NULL,
+  `hotel_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `token_blacklist_blacklistedtoken`
+--
+
+CREATE TABLE `token_blacklist_blacklistedtoken` (
+  `id` bigint(20) NOT NULL,
+  `blacklisted_at` datetime(6) NOT NULL,
+  `token_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `token_blacklist_blacklistedtoken`
+--
+
+INSERT INTO `token_blacklist_blacklistedtoken` (`id`, `blacklisted_at`, `token_id`) VALUES
+(1, '2025-02-21 20:14:07.932094', 5),
+(2, '2025-02-22 09:32:58.876528', 12),
+(3, '2025-02-22 09:55:53.516440', 16);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `token_blacklist_outstandingtoken`
+--
+
+CREATE TABLE `token_blacklist_outstandingtoken` (
+  `id` bigint(20) NOT NULL,
+  `token` longtext NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `expires_at` datetime(6) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `jti` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `token_blacklist_outstandingtoken`
+--
+
+INSERT INTO `token_blacklist_outstandingtoken` (`id`, `token`, `created_at`, `expires_at`, `user_id`, `jti`) VALUES
+(1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc3Mjc1MSwiaWF0IjoxNzQwMTY3OTUxLCJqdGkiOiI3NzhkNDU3NjRhMjY0NzMxYmEyODlmMmQ3MzZmNzA0OCIsInVzZXJfaWQiOjN9.XvaEFBykzvVeGiN-9aIyol_3DxGkzhOu8j0WedsPwS0', '2025-02-21 19:59:11.521123', '2025-02-28 19:59:11.000000', 3, '778d45764a264731ba289f2d736f7048'),
+(2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc3MjgyNCwiaWF0IjoxNzQwMTY4MDI0LCJqdGkiOiJjNGRhYjZlZDQ4NjA0M2U5OGQ3ODU0ZjA0MTllYjVlNCIsInVzZXJfaWQiOjN9.-mjLVpqSjj_ercVakugiH6udnVk1nx9wfeCI6Gq0eK4', '2025-02-21 20:00:24.192131', '2025-02-28 20:00:24.000000', 3, 'c4dab6ed486043e98d7854f0419eb5e4'),
+(3, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc3MzIwNCwiaWF0IjoxNzQwMTY4NDA0LCJqdGkiOiI5NDEyMjg4YTY4OTE0MzhiOTUwY2RiMjlhZTc4YmFiYSIsInVzZXJfaWQiOjN9.8Dkcor8W6KcRrfSUtjKfLaO7mv0R4UYyBb4kHYCHMIA', '2025-02-21 20:06:44.400112', '2025-02-28 20:06:44.000000', 3, '9412288a6891438b950cdb29ae78baba'),
+(4, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc3MzM5MSwiaWF0IjoxNzQwMTY4NTkxLCJqdGkiOiIxODM2MTBlMzlkYWQ0NTI4YjA0YjE2YTczYTY3MTk2OSIsInVzZXJfaWQiOjN9.8aGGyrO0hn2vtyt1fYmpoVAjydui37FKuUHi5X-98kg', '2025-02-21 20:09:51.631774', '2025-02-28 20:09:51.000000', 3, '183610e39dad4528b04b16a73a671969'),
+(5, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc3MzUyMiwiaWF0IjoxNzQwMTY4NzIyLCJqdGkiOiI4YmVmMTZkZTc5ODA0MDg4OGYwNGRlODdlM2UwMTA3OCIsInVzZXJfaWQiOjN9.oL7wQB9AgSy14zv_NdULXmmKtW9MRoGEuN75UP_O3Qg', '2025-02-21 20:12:02.630203', '2025-02-28 20:12:02.000000', 3, '8bef16de798040888f04de87e3e01078'),
+(6, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc4MDAxNywiaWF0IjoxNzQwMTc1MjE3LCJqdGkiOiIyZWQ2MDhhODEwMWE0ZDNiOGYwZTY0MjA2NGI0NjY5NyIsInVzZXJfaWQiOjN9.wL6T70_c4GeOtqK4jm0BFXD-QFOJREgDKw0kuhBSB40', '2025-02-21 22:00:17.565314', '2025-02-28 22:00:17.000000', 3, '2ed608a8101a4d3b8f0e642064b46697'),
+(7, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc4MDAxNywiaWF0IjoxNzQwMTc1MjE3LCJqdGkiOiI1MGE3NmFiODdkMjQ0NjA5YTZjN2ExMDQ5MTRjMjRkNiIsInVzZXJfaWQiOjN9.pieXU2-U7kZV5csG5wZMcVsKQa3q_5ZjnBtr0Zdzq1Y', '2025-02-21 22:00:17.608456', '2025-02-28 22:00:17.000000', 3, '50a76ab87d244609a6c7a104914c24d6'),
+(8, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc4MDg2NywiaWF0IjoxNzQwMTc2MDY3LCJqdGkiOiIzNDNkZjdkMWVmMmI0YmJlYTVjOTc3MzYxMGEzMDRmMyIsInVzZXJfaWQiOjR9.mE5m_sZn1ZFfFF5zI3bZL7m1SK0ZxQ4guDVqVJPO8Dk', '2025-02-21 22:14:27.611319', '2025-02-28 22:14:27.000000', 4, '343df7d1ef2b4bbea5c9773610a304f3'),
+(9, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDc4MDg2NywiaWF0IjoxNzQwMTc2MDY3LCJqdGkiOiJiZWE1ZjNhNzA1MzY0NTQwOGU5YzEyMDdkZjJmOTY3MyIsInVzZXJfaWQiOjR9.FxysKzeN-2zvm8cyguMOQjbX1StGg4gcrUNUSP9puRg', '2025-02-21 22:14:27.652462', '2025-02-28 22:14:27.000000', 4, 'bea5f3a7053645408e9c1207df2f9673'),
+(10, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMDg3MCwiaWF0IjoxNzQwMjE2MDcwLCJqdGkiOiIxZDZkM2M2ODc0OWE0MjBjYTRkMWQxNDgyZjA3ZjY4ZCIsInVzZXJfaWQiOjh9.srer_kYN3gU6xC4-Ku2BY2fWKLG9VjSrdaFeMT_4bIo', '2025-02-22 09:21:10.213577', '2025-03-01 09:21:10.000000', 8, '1d6d3c68749a420ca4d1d1482f07f68d'),
+(11, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMDg3MCwiaWF0IjoxNzQwMjE2MDcwLCJqdGkiOiJkM2QzODY1NDhjOTg0MTNiYjlkNmI4OGMzZDM3ZjM4OSIsInVzZXJfaWQiOjh9.OZIUSN_3RsrFHTuloVSR-NHiNCoV6bRtXUHA575Hlpw', '2025-02-22 09:21:10.230915', '2025-03-01 09:21:10.000000', 8, 'd3d386548c98413bb9d6b88c3d37f389'),
+(12, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMTM5NywiaWF0IjoxNzQwMjE2NTk3LCJqdGkiOiI4MTA1Mzg2OWI0ODI0MDdjYTEyNGMxNDhiNTczYzZkMCIsInVzZXJfaWQiOjh9.dnkqm-Ho7z0GF1Ob6Wz-9xPY2PyRP6IflXv-6eBrAUg', '2025-02-22 09:29:57.946776', '2025-03-01 09:29:57.000000', 8, '81053869b482407ca124c148b573c6d0'),
+(13, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMTM5NywiaWF0IjoxNzQwMjE2NTk3LCJqdGkiOiJjZDllYjg3ODdkZTc0ZmNmODY1MDU0M2RmYzUyZDAxOCIsInVzZXJfaWQiOjh9.XMG_jwIjK7qg6LgQnSyw5Cb2lDq4V0fi1YS3joGji8s', '2025-02-22 09:29:57.965104', '2025-03-01 09:29:57.000000', 8, 'cd9eb8787de74fcf8650543dfc52d018'),
+(14, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMTczMywiaWF0IjoxNzQwMjE2OTMzLCJqdGkiOiJjNDRlNjQ2ZjRlZTM0ZDMwOTQ1NzQ5YTRjYWYwMDE3YyIsInVzZXJfaWQiOjh9.PD8Lya8FxWrKmWahgp4tVG87LSRBh7toSvLIw1LEKbg', '2025-02-22 09:35:33.135208', '2025-03-01 09:35:33.000000', 8, 'c44e646f4ee34d30945749a4caf0017c'),
+(15, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMTczMywiaWF0IjoxNzQwMjE2OTMzLCJqdGkiOiI1MmU3OWY5MThkNmE0MzY0YWJhMDlkZTc1ODNjMmM1MiIsInVzZXJfaWQiOjh9.oOQss6CSXwYouqlpH9sJ2I7ceWtW-FP4M9UdJvEPeZ0', '2025-02-22 09:35:33.150319', '2025-03-01 09:35:33.000000', 8, '52e79f918d6a4364aba09de7583c2c52'),
+(16, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMjg3NywiaWF0IjoxNzQwMjE4MDc3LCJqdGkiOiJhNjExZmUyOWY5YzA0Y2E1YTI3M2IyNzkwYTExZTM4NCIsInVzZXJfaWQiOjh9.7QbSegLqnEDWehb_gVrX-6bAJchv9bcls1PtCfkqKqE', '2025-02-22 09:54:37.674965', '2025-03-01 09:54:37.000000', 8, 'a611fe29f9c04ca5a273b2790a11e384'),
+(17, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MDgyMjg3NywiaWF0IjoxNzQwMjE4MDc3LCJqdGkiOiI3OTdlYTY0MzY0YWU0Y2IzODEwMWE1NDM3MTQwZTc3NiIsInVzZXJfaWQiOjh9.5NolmFhBkMjVROjO6B8lCr7NFzRjmuppduV2YU83siU', '2025-02-22 09:54:37.678191', '2025-03-01 09:54:37.000000', 8, '797ea64364ae4cb38101a5437140e776');
 
 -- --------------------------------------------------------
 
@@ -1148,7 +1289,13 @@ CREATE TABLE `users_customuser` (
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `is_active`, `chield_id`) VALUES
 (1, 'pbkdf2_sha256$600000$tGyR4a5IoMmqJOG45kmImJ$g157YGdpR4Aqli5SmiTHjXwaDLMZnohE01YfcAFk65s=', '2025-01-25 14:31:03.529965', 1, 'a', '', '', 'a@a.com', 1, '2025-01-24 17:13:04.362082', '2025-01-24 17:13:04.862137', '2025-01-24 17:13:04.862137', '', '', '', 1, NULL),
-(2, 'pbkdf2_sha256$600000$9eaBlTjYdHPt8Ltmc0A88O$RKL4PtQCwtlHArIw1tL1RDFMlo0gZIOUL5GU/SWMgvA=', '2025-01-24 17:28:04.176368', 0, 'verefit983@citdaca.com', 'ahdklk', '', 'verefit983@citdaca.com', 1, '2025-01-24 17:26:42.702989', '2025-01-24 17:26:42.703967', '2025-01-24 17:26:43.296793', 'hotel_manager', '', '', 1, NULL);
+(2, 'pbkdf2_sha256$600000$9eaBlTjYdHPt8Ltmc0A88O$RKL4PtQCwtlHArIw1tL1RDFMlo0gZIOUL5GU/SWMgvA=', '2025-01-24 17:28:04.176368', 0, 'verefit983@citdaca.com', 'ahdklk', '', 'verefit983@citdaca.com', 1, '2025-01-24 17:26:42.702989', '2025-01-24 17:26:42.703967', '2025-01-24 17:26:43.296793', 'hotel_manager', '', '', 1, NULL),
+(3, 'pbkdf2_sha256$600000$OoIosLtrbeZioWst1p1RmZ$EqIUK2MMIWjybWlmr+MolBRP/VKDiggy2YEZe7jl14o=', '2025-02-21 19:54:03.652056', 1, 'b', '', '', 'b@b.com', 1, '2025-02-21 19:48:56.453295', '2025-02-21 19:48:57.181581', '2025-02-21 19:48:57.181581', '', '', '', 1, NULL),
+(4, 'pbkdf2_sha256$600000$iw9MEdjJJR0uUuZuJTqN80$5N6lgpHpiM63C5is7isnYFvaddRNGwMXgpNHTMQGz34=', NULL, 0, 'john_doe', 'John', 'Doe', 'john.doe@example.com', 0, '2025-02-21 22:13:11.655525', '2025-02-21 22:13:14.403365', '2025-02-21 22:13:14.403377', '', '', '', 1, NULL),
+(5, 'pbkdf2_sha256$600000$8SWXuGgI5Bw8mayGldmM4F$Bwjm3gsVeMTROxZCcTlG99Koj9/IuzsL5j/BN+EgAaA=', NULL, 0, 'ahmed2025', 'ahmed', 'Nasser', 'johnahmed2025.doe@example.com', 0, '2025-02-21 22:19:30.985452', '2025-02-21 22:19:33.464076', '2025-02-21 22:19:33.464076', '', '', '', 1, NULL),
+(6, 'pbkdf2_sha256$600000$XRcEqd0c4LXiqa0UAGTwA5$700sdaSdfHmIb92o4nadrYFDjzuI7Kj/2afwzqQzymQ=', NULL, 0, 'ahmed5552025', 'ahmed', 'Nasser', 'johnahme888d2025.doe@example.com', 0, '2025-02-21 22:21:09.969803', '2025-02-21 22:21:12.326093', '2025-02-21 22:21:12.326093', '', '781717609', '', 1, NULL),
+(7, 'pbkdf2_sha256$600000$Cv9jJqobBHOgUUykJod2P9$3y+XNKpNGUfweJStYj4a8CQsTQZX1QslxjGoVExRCjM=', NULL, 0, 'ah52025', 'ahmed', 'Nasser', 'johna88d2025.doe@example.com', 0, '2025-02-21 22:23:35.664645', '2025-02-21 22:23:37.720698', '2025-02-21 22:23:37.720779', '', '781717609', '', 1, NULL),
+(8, 'pbkdf2_sha256$600000$Mfcg8Cz4Wdyg2T0opTH4hi$822yuUHeaxdSSuG/soPmquQi7R2L9fwvCzoiQJs60m8=', NULL, 0, 'ah1152025', 'ahmed', 'Nasser', 'johna88d2025.d11oe@example.com', 0, '2025-02-21 22:29:20.630741', '2025-02-21 22:29:22.890536', '2025-02-21 22:29:22.890536', 'customer', '781717609', '', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1260,8 +1407,8 @@ ALTER TABLE `bookings_bookingdetail`
   ADD KEY `bookings_bookingdeta_booking_id_12740561_fk_bookings_` (`booking_id`),
   ADD KEY `bookings_bookingdeta_created_by_id_a437326b_fk_users_cus` (`created_by_id`),
   ADD KEY `bookings_bookingdeta_hotel_id_1dc4dae4_fk_HotelMana` (`hotel_id`),
-  ADD KEY `bookings_bookingdeta_service_id_8dc9681c_fk_services_` (`service_id`),
-  ADD KEY `bookings_bookingdeta_updated_by_id_263cc972_fk_users_cus` (`updated_by_id`);
+  ADD KEY `bookings_bookingdeta_updated_by_id_263cc972_fk_users_cus` (`updated_by_id`),
+  ADD KEY `bookings_bookingdeta_service_id_8dc9681c_fk_services_` (`service_id`);
 
 --
 -- Indexes for table `bookings_bookingstatus`
@@ -1370,6 +1517,14 @@ ALTER TABLE `hotelmanagement_phone`
   ADD KEY `HotelManagement_phon_created_by_id_34b06bb1_fk_users_cus` (`created_by_id`),
   ADD KEY `HotelManagement_phon_hotel_id_67f340f6_fk_HotelMana` (`hotel_id`),
   ADD KEY `HotelManagement_phon_updated_by_id_114868f0_fk_users_cus` (`updated_by_id`);
+
+--
+-- Indexes for table `notifications_notifications`
+--
+ALTER TABLE `notifications_notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `notifications_notifi_sender_id_c6ee4409_fk_users_cus` (`sender_id`),
+  ADD KEY `notifications_notifi_user_id_429b0a5e_fk_users_cus` (`user_id`);
 
 --
 -- Indexes for table `payments_currency`
@@ -1501,25 +1656,47 @@ ALTER TABLE `rooms_roomtype`
   ADD KEY `rooms_roomtype_updated_by_id_b5be2b42_fk_users_customuser_id` (`updated_by_id`);
 
 --
--- Indexes for table `services_service`
+-- Indexes for table `services_hotel`
 --
-ALTER TABLE `services_service`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `services_service_created_by_id_d0083628_fk_users_customuser_id` (`created_by_id`),
-  ADD KEY `services_service_hotel_id_1323fbb7_fk_HotelManagement_hotel_id` (`hotel_id`),
-  ADD KEY `services_service_room_id_ab62b7a1_fk_rooms_roomtype_id` (`room_id`),
-  ADD KEY `services_service_updated_by_id_69a365e0_fk_users_customuser_id` (`updated_by_id`);
+ALTER TABLE `services_hotel`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `service_offers`
+-- Indexes for table `services_hotelservice`
 --
-ALTER TABLE `service_offers`
+ALTER TABLE `services_hotelservice`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `services_hotelservice_hotel_id_c67387c9_fk_services_hotel_id` (`hotel_id`);
+
+--
+-- Indexes for table `services_offer`
+--
+ALTER TABLE `services_offer`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `service_offers_created_by_id_8ca73e25_fk_users_customuser_id` (`created_by_id`),
-  ADD KEY `service_offers_hotel_id_id_ad6df36c_fk_HotelManagement_hotel_id` (`hotel_id_id`),
-  ADD KEY `service_offers_updated_by_id_42cd54e5_fk_users_customuser_id` (`updated_by_id`);
+  ADD KEY `services_offer_hotel_id_da5add25_fk_services_hotel_id` (`hotel_id`);
+
+--
+-- Indexes for table `services_roomtypeservice`
+--
+ALTER TABLE `services_roomtypeservice`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `services_roomtypeservice_hotel_id_163e32a7_fk_services_hotel_id` (`hotel_id`);
+
+--
+-- Indexes for table `token_blacklist_blacklistedtoken`
+--
+ALTER TABLE `token_blacklist_blacklistedtoken`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token_id` (`token_id`);
+
+--
+-- Indexes for table `token_blacklist_outstandingtoken`
+--
+ALTER TABLE `token_blacklist_outstandingtoken`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_uniq` (`jti`),
+  ADD KEY `token_blacklist_outs_user_id_83bc629a_fk_users_cus` (`user_id`);
 
 --
 -- Indexes for table `users_activitylog`
@@ -1567,13 +1744,13 @@ ALTER TABLE `auth_group`
 -- AUTO_INCREMENT for table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -1627,13 +1804,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_city`
@@ -1670,6 +1847,12 @@ ALTER TABLE `hotelmanagement_location`
 --
 ALTER TABLE `hotelmanagement_phone`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `notifications_notifications`
+--
+ALTER TABLE `notifications_notifications`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments_currency`
@@ -1750,16 +1933,40 @@ ALTER TABLE `rooms_roomtype`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `services_service`
+-- AUTO_INCREMENT for table `services_hotel`
 --
-ALTER TABLE `services_service`
+ALTER TABLE `services_hotel`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `service_offers`
+-- AUTO_INCREMENT for table `services_hotelservice`
 --
-ALTER TABLE `service_offers`
+ALTER TABLE `services_hotelservice`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `services_offer`
+--
+ALTER TABLE `services_offer`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `services_roomtypeservice`
+--
+ALTER TABLE `services_roomtypeservice`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `token_blacklist_blacklistedtoken`
+--
+ALTER TABLE `token_blacklist_blacklistedtoken`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `token_blacklist_outstandingtoken`
+--
+ALTER TABLE `token_blacklist_outstandingtoken`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `users_activitylog`
@@ -1771,7 +1978,7 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
@@ -1834,7 +2041,7 @@ ALTER TABLE `bookings_bookingdetail`
   ADD CONSTRAINT `bookings_bookingdeta_booking_id_12740561_fk_bookings_` FOREIGN KEY (`booking_id`) REFERENCES `bookings_booking` (`id`),
   ADD CONSTRAINT `bookings_bookingdeta_created_by_id_a437326b_fk_users_cus` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `bookings_bookingdeta_hotel_id_1dc4dae4_fk_HotelMana` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
-  ADD CONSTRAINT `bookings_bookingdeta_service_id_8dc9681c_fk_services_` FOREIGN KEY (`service_id`) REFERENCES `services_service` (`id`),
+  ADD CONSTRAINT `bookings_bookingdeta_service_id_8dc9681c_fk_services_` FOREIGN KEY (`service_id`) REFERENCES `services_roomtypeservice` (`id`),
   ADD CONSTRAINT `bookings_bookingdeta_updated_by_id_263cc972_fk_users_cus` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
 
 --
@@ -1908,6 +2115,13 @@ ALTER TABLE `hotelmanagement_phone`
   ADD CONSTRAINT `HotelManagement_phon_created_by_id_34b06bb1_fk_users_cus` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `HotelManagement_phon_hotel_id_67f340f6_fk_HotelMana` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
   ADD CONSTRAINT `HotelManagement_phon_updated_by_id_114868f0_fk_users_cus` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `notifications_notifications`
+--
+ALTER TABLE `notifications_notifications`
+  ADD CONSTRAINT `notifications_notifi_sender_id_c6ee4409_fk_users_cus` FOREIGN KEY (`sender_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `notifications_notifi_user_id_429b0a5e_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `payments_currency`
@@ -2018,21 +2232,34 @@ ALTER TABLE `rooms_roomtype`
   ADD CONSTRAINT `rooms_roomtype_updated_by_id_b5be2b42_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
 
 --
--- Constraints for table `services_service`
+-- Constraints for table `services_hotelservice`
 --
-ALTER TABLE `services_service`
-  ADD CONSTRAINT `services_service_created_by_id_d0083628_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
-  ADD CONSTRAINT `services_service_hotel_id_1323fbb7_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
-  ADD CONSTRAINT `services_service_room_id_ab62b7a1_fk_rooms_roomtype_id` FOREIGN KEY (`room_id`) REFERENCES `rooms_roomtype` (`id`),
-  ADD CONSTRAINT `services_service_updated_by_id_69a365e0_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+ALTER TABLE `services_hotelservice`
+  ADD CONSTRAINT `services_hotelservice_hotel_id_c67387c9_fk_services_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `services_hotel` (`id`);
 
 --
--- Constraints for table `service_offers`
+-- Constraints for table `services_offer`
 --
-ALTER TABLE `service_offers`
-  ADD CONSTRAINT `service_offers_created_by_id_8ca73e25_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
-  ADD CONSTRAINT `service_offers_hotel_id_id_ad6df36c_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id_id`) REFERENCES `hotelmanagement_hotel` (`id`),
-  ADD CONSTRAINT `service_offers_updated_by_id_42cd54e5_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+ALTER TABLE `services_offer`
+  ADD CONSTRAINT `services_offer_hotel_id_da5add25_fk_services_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `services_hotel` (`id`);
+
+--
+-- Constraints for table `services_roomtypeservice`
+--
+ALTER TABLE `services_roomtypeservice`
+  ADD CONSTRAINT `services_roomtypeservice_hotel_id_163e32a7_fk_services_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `services_hotel` (`id`);
+
+--
+-- Constraints for table `token_blacklist_blacklistedtoken`
+--
+ALTER TABLE `token_blacklist_blacklistedtoken`
+  ADD CONSTRAINT `token_blacklist_blacklistedtoken_token_id_3cc7fe56_fk` FOREIGN KEY (`token_id`) REFERENCES `token_blacklist_outstandingtoken` (`id`);
+
+--
+-- Constraints for table `token_blacklist_outstandingtoken`
+--
+ALTER TABLE `token_blacklist_outstandingtoken`
+  ADD CONSTRAINT `token_blacklist_outs_user_id_83bc629a_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `users_activitylog`
