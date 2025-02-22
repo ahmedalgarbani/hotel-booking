@@ -9,7 +9,7 @@ class HotelServiceAdmin(admin.ModelAdmin):
     list_filter = ("is_active", "hotel")
     search_fields = ("name", "description")
     readonly_fields = ("icon_display",)
-
+ 
     def icon_display(self, obj):
         if obj.icon:
             return format_html('<img src="{}" style="width: 30px; height: 30px;" />', obj.icon.url)
