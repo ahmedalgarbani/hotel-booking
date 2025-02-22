@@ -48,14 +48,12 @@ INSTALLED_APPS = [
     'services',
     'rest_framework',
     'menu_generator',
-    'blog',  
     'rest_framework_simplejwt',
     'api',
     'rest_framework_simplejwt.token_blacklist',
     'blog', 
     'notifications', 
 ]
-
 
 
 REST_FRAMEWORK = {
@@ -75,9 +73,15 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10, 
+    'DEFAULT_PERMISSION_CLASSES': [
+                'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
+    ],
 
     
 
@@ -191,7 +195,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '54322',
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
@@ -462,15 +466,7 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-}
+
 
 
 ####################################################################################
