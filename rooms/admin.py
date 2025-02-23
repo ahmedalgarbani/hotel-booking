@@ -100,6 +100,9 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         )
     is_active.short_description = _("نشط")
 
+
+
+
 @admin.register(RoomStatus)
 class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'code', 'hotel', 'is_available', 'get_rooms_count']
@@ -110,7 +113,7 @@ class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         today = timezone.now().date()
         count = Availability.objects.filter(
             room_status=obj,
-            date=today
+            availability_date=today
         ).aggregate(total=Sum('available_rooms'))['total'] or 0
         
         return format_html(
