@@ -113,7 +113,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 start_date = form.cleaned_data['start_date']
                 end_date = form.cleaned_data['end_date']
                 available_rooms = form.cleaned_data['available_rooms']
-                price = form.cleaned_data['price']
+               
                 room_status = form.cleaned_data['room_status']
                 
                 room_type = RoomType.objects.get(
@@ -131,7 +131,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                             room_type=room_type,
                             date=current_date,
                             available_rooms=available_rooms,
-                            price=price,
+                            
                             room_status=room_status
                         )
                     )
@@ -164,7 +164,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 date=next_day,
                 defaults={
                     'available_rooms': availability.available_rooms,
-                    'price': availability.price,
+                   
                     'room_status': availability.room_status
                 }
             )
@@ -184,10 +184,7 @@ class BulkAvailabilityAdminForm(forms.Form):
         label=_("عدد الغرف المتوفرة"), 
         min_value=0
     )
-    price = forms.DecimalField(
-        label=_("السعر"), 
-        min_value=0
-    )
+   
     room_status = forms.ModelChoiceField(
         queryset=RoomStatus.objects.all(),
         label=_("حالة الغرفة")
