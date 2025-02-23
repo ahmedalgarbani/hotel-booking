@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from rooms.models import RoomType
 
 # Create your views here.
 
@@ -41,3 +42,27 @@ def admin_dashboard_orders_detail(request):
     return render(request,'admin/hotel_manager_dashboard/pages/admin-dashboard-orders-details.html')
 def admin_currency_list(request):
     return render(request,'admin/hotel_manager_dashboard/pages/admin-currency-list.html')
+
+
+#خطوة ثاني بعد مناقشة المشرف اضافة السلة 
+def cart(request,room_id):
+    room = get_object_or_404(RoomType, id=room_id)
+    return render(request,'frontend/home/pages/checkout.html',{'room_type':room})
+
+
+
+
+#ارسال الى صفحة الدفع بيانات الغرفة 
+def checkout(request, room_id):
+    room = get_object_or_404(RoomType, id=room_id)
+    
+    # حساب الضرائب والسعر الكلي
+    tax = 5  #قيمة الضريبة 
+    total_price = room.base_price + tax
+    
+    context = {
+        'room': room,
+        'tax': tax,
+        'total_price': total_price,
+    }
+    return render(request, 'frontend/home/pages/checkout.html', context)

@@ -165,62 +165,44 @@
       </div>
       <div class="col-lg-4">
         <!-- Booking Summary -->
-          <div class="form-box booking-detail-form">
-            <div class="form-title-wrap">
-              <h3 class="title">حجزك</h3>
-            </div>
-            <!-- end form-title-wrap -->
-            <div class="form-content">
-              <div class="card-item shadow-none radius-none mb-0">
-                <div class="card-img pb-4">
-                  <a href="room-details.html" class="d-block">
-                    <img src="images/img5.jpg" alt="room-img">
-                  </a>
-                </div>
-                <div class="card-body p-0">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      <h3 class="card-title">
-                        غرفة بريميوم مطلة على البحيرة
-                      </h3>
-                      <p class="card-meta">فندق ماريانا ، المكسيك</p>
-                    </div>
-                    <div>
-                      <a href="room-details.html" class="btn ms-1"><i class="la la-edit" data-bs-toggle="tooltip" data-placement="top" aria-label="تعديل" data-bs-original-title="تعديل"></i></a>
-                    </div>
-                  </div>
-                  <div class="section-block"></div>
-                  <ul class="list-items list-items-2 list--items-2 py-2">
-                    <li class="font-size-15">
-                      <span class="w-auto d-block mb-n1"><i class="la la-calendar me-1 font-size-17"></i>من
-                        عند</span>12 مايو 2020 7:40 صباحًا
-                    </li>
-                    <li class="font-size-15">
-                      <span class="w-auto d-block mb-n1"><i class="la la-calendar me-1 font-size-17"></i>إلى</span>16 مايو 2020 8:40 صباحًا
-                    </li>
-                  </ul>
-                  <h3 class="card-title pb-3">تفاصيل الطلب</h3>
-                  <div class="section-block"></div>
-                  <ul class="list-items list-items-2 py-3">
-                    <li><span>نوع الغرفة:</span>فخم. ترف</li>
-                    <li><span>ليل:</span>1</li>
-                    <li><span>غرفة:</span>1</li>
-                    <li><span>ضيوف:</span>2 الكبار</li>
-                    <li>
-                      <span>خدمات إضافية:</span>التنظيف ، الغسيل ، الإفطار
-                    </li>
-                  </ul>
-                  <div class="section-block"></div>
-                  <ul class="list-items list-items-2 pt-3">
-                    <li><span>المجموع الفرعي:</span>$240</li>
-                    <li><span>الضرائب والرسوم:</span>$5</li>
-                    <li><span>السعر الكلي:</span>$245</li>
-                  </ul>
-                </div>
+            <div class="form-box booking-detail-form">
+              <div class="form-title-wrap">
+                  <h3 class="title">حجزك</h3>
               </div>
-              <!-- end card-item -->
-            </div>
-            <!-- end form-content -->
+              <div class="form-content">
+                  <div class="card-item shadow-none radius-none mb-0">
+                      <div class="card-img pb-4">
+                          <a href="room-details.html" class="d-block">
+                              <img src="{{ room.images.first.image.url }}" alt="room-img">
+                          </a>
+                      </div>
+                      <div class="card-body p-0">
+                          <div class="d-flex justify-content-between">
+                              <div>
+                                  <h3 class="card-title">{{ room.name }}</h3>
+                                  <p class="card-meta">{{ room.hotel.name }}</p>
+                              </div>
+                              <div>
+                                  <a href="room-details.html" class="btn ms-1"><i class="la la-edit" data-bs-toggle="tooltip" data-placement="top" aria-label="تعديل" data-bs-original-title="تعديل"></i></a>
+                              </div>
+                          </div>
+                          <div class="section-block"></div>
+                          <ul class="list-items list-items-2 py-3">
+                              <li><span>نوع الغرفة:</span>{{ room.type }}</li>
+                              <li><span>ليل:</span>1</li>
+                              <li><span>غرفة:</span>1</li>
+                              <li><span>ضيوف:</span>2 الكبار</li>
+                              <li><span>خدمات إضافية:</span>التنظيف ، الغسيل ، الإفطار</li>
+                          </ul>
+                          <div class="section-block"></div>
+                          <ul class="list-items list-items-2 pt-3">
+                              <li><span>المجموع الفرعي:</span>${{ room.price }}</li>
+                              <li><span>الضرائب والرسوم:</span>${{ tax }}</li>
+                              <li><span>السعر الكلي:</span>${{ total_price }}</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
           </div>
           <!-- end form-box -->
         </div>

@@ -27,4 +27,14 @@ urlpatterns = [
     path('admin_dashboard_orders',views.admin_dashboard_orders,name='admin_dashboard_orders'),
     path('admin_dashboard_orders_detail',views.admin_dashboard_orders_detail,name='admin_dashboard_orders_detail'),
     path('admin_currency_list',views.admin_currency_list,name='admin_currency_list'),
+    
+    
+    # payment methods Rooms
+    #مرحلة اخرى بعد المناقشة الوهباني على اضافة السلة 
+    path('cart/<int:room_id>',views.cart,name='cart'),
+    
+    
+    path('checkout/<int:room_id>', views.checkout, name='checkout'),  
+   
+    
 ]
