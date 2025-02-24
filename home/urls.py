@@ -12,6 +12,5 @@ urlpatterns = [
     # Rooms
     path('room-search-result', views.room_search_result, name='room-search-result'),
     path('rooms', views.room_list, name='room_list'),
-    path('checkout', views.checkout, name='checkout'),
     
     ]

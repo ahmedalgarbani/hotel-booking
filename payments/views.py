@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from rooms.models import RoomType
+from HotelManagement.models import Hotel
 
 # Create your views here.
 
@@ -55,7 +56,11 @@ def cart(request,room_id):
 #ارسال الى صفحة الدفع بيانات الغرفة 
 def checkout(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
-    
+    hotel = get_object_or_404(Hotel,id=room.hotel_id)
+
+    paymentsMethods = hotel.payment_methods.all()
+
+   
     # حساب الضرائب والسعر الكلي
     tax = 5  #قيمة الضريبة 
     total_price = room.base_price + tax
@@ -64,5 +69,6 @@ def checkout(request, room_id):
         'room': room,
         'tax': tax,
         'total_price': total_price,
+        'paymentsMethods':paymentsMethods,
     }
     return render(request, 'frontend/home/pages/checkout.html', context)
