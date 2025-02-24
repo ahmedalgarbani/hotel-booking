@@ -1,6 +1,11 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
+from .models import Payment, HotelPaymentMethod
+from bookings.models import Booking, BookingStatus
+from django.contrib import messages
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -56,19 +61,75 @@ def cart(request,room_id):
 #ارسال الى صفحة الدفع بيانات الغرفة 
 def checkout(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
-    hotel = get_object_or_404(Hotel,id=room.hotel_id)
-
-    paymentsMethods = hotel.payment_methods.all()
-
-   
-    # حساب الضرائب والسعر الكلي
-    tax = 5  #قيمة الضريبة 
-    total_price = room.base_price + tax
+    payment_methods = HotelPaymentMethod.objects.filter(hotel=room.hotel)
+    
+    # استرجاع تواريخ تسجيل الدخول والخروج من الـ GET parameters
+    check_in = request.GET.get('check_in_date')
+    check_out = request.GET.get('check_out_date')
+    
+    # تحويل التواريخ إلى التنسيق المناسب
+    try:
+        check_in_date = datetime.strptime(check_in, '%Y-%m-%d %H:%M') if check_in else timezone.now()
+        check_out_date = datetime.strptime(check_out, '%Y-%m-%d %H:%M') if check_out else (timezone.now() + timedelta(days=1))
+    except (ValueError, TypeError):
+        check_in_date = timezone.now()
+        check_out_date = timezone.now() + timedelta(days=1)
     
     context = {
         'room': room,
-        'tax': tax,
-        'total_price': total_price,
-        'paymentsMethods':paymentsMethods,
+        'paymentsMethods': payment_methods,
+        'check_in': check_in_date.strftime('%Y-%m-%d %H:%M'),
+        'check_out': check_out_date.strftime('%Y-%m-%d %H:%M'),
+        'check_in_display': check_in_date.strftime('%d/%m/%Y %I:%M %p'),
+        'check_out_display': check_out_date.strftime('%d/%m/%Y %I:%M %p')
     }
     return render(request, 'frontend/home/pages/checkout.html', context)
+
+def confirm_payment(request, room_id):
+    if request.method == 'POST':
+        room = get_object_or_404(RoomType, id=room_id)
+        payment_method_id = request.POST.get('payment_method')
+        payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+        
+        # تحويل التواريخ إلى التنسيق المناسب
+        check_in_date = request.POST.get('check_in_date')
+        check_out_date = request.POST.get('check_out_date')
+        
+        # Get pending status
+        pending_status = BookingStatus.objects.get(status_code=0)
+        
+        try:
+            # Create booking first
+            booking = Booking.objects.create(
+                room=room,
+                hotel=room.hotel,
+                user=request.user,
+                check_in_date=check_in_date,
+                check_out_date=check_out_date,
+                amount=room.base_price,
+                status=pending_status
+            )
+            
+            # Create payment record
+            payment = Payment.objects.create(
+                payment_method=payment_method,
+                payment_status=0,  # قيد الانتظار
+                payment_date=timezone.now(),
+                payment_subtotal=room.base_price,
+                payment_totalamount=room.base_price + 5,  # Adding tax
+                payment_currency=payment_method.payment_option.currency.currency_symbol,
+                booking=booking,
+                payment_type='e_pay' if payment_method.payment_option.method_name != 'نقدي' else 'cash'
+            )
+            
+            messages.success(request, 'تم إنشاء الحجز وبانتظار تأكيد الدفع')
+            return render(request, 'frontend/home/pages/payment-complete.html', {
+                'payment': payment,
+                'booking': booking,
+                'room': room
+            })
+        except Exception as e:
+            messages.error(request, f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
+            return redirect('payments:checkout', room_id=room_id)
+    
+    return redirect('payments:checkout', room_id=room_id)

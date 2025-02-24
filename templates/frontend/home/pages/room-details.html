@@ -1196,51 +1196,67 @@ START TOUR DETAIL AREA
               <div class="sidebar-widget-item">
                 <div class="contact-form-action">
                   <form action="#">
+                    <input type="hidden" name="check_in_date" value="{{ check_in }}">
+                    <input type="hidden" name="check_out_date" value="{{ check_out }}">
+                    
                     <div class="input-box">
-                      <label class="label-text">تحقق في</label>
+                      <label class="label-text">تاريخ تسجيل الدخول</label>
                       <div class="form-group">
                         <span class="la la-calendar form-icon"></span>
                         <input
-                          class="date-picker-single form-control"
+                          class="form-control"
                           type="text"
-                          name="date"
+                          value="{{ check_in_display }}"
                           readonly
+                          style="background-color: #f9f9f9; direction: rtl;"
                         />
                       </div>
                     </div>
                     <div class="input-box">
-                      <label class="label-text">الدفع</label>
+                      <label class="label-text">تاريخ تسجيل الخروج</label>
                       <div class="form-group">
                         <span class="la la-calendar form-icon"></span>
                         <input
-                          class="date-picker-single form-control"
+                          class="form-control"
                           type="text"
-                          name="date"
+                          value="{{ check_out_display }}"
                           readonly
+                          style="background-color: #f9f9f9; direction: rtl;"
                         />
                       </div>
                     </div>
                     <div class="input-box">
-                      <label class="label-text">غرف</label>
+                      <label class="label-text">عدد الغرف</label>
                       <div class="form-group">
-                        <div
-                          class="select-contain select2-container-wrapper w-auto"
-                        >
-                          <select class="select-contain-select">
-                            <option value="0">اختر الغرفة</option>
-                            <option value="1" selected>1 غرفة</option>
-                            <option value="2">2 غرف</option>
-                            <option value="3">3 غرف</option>
-                            <option value="4">4 غرف</option>
-                            <option value="5">5 غرف</option>
-                            <option value="6">6 غرف</option>
-                            <option value="7">7 غرف</option>
-                            <option value="8">8 غرف</option>
-                            <option value="9">9 غرف</option>
-                            <option value="10">10 غرف</option>
-                          </select>
-                        </div>
+                        <span class="la la-bed form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="number"
+                          name="room_number"
+                          min="1"
+                          value="1"
+                          required
+                        />
                       </div>
+                    </div>
+                    <div class="input-box">
+                      <label class="label-text">عدد الأشخاص</label>
+                      <div class="form-group">
+                        <span class="la la-user form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="number"
+                          name="adult_number"
+                          min="1"
+                          value="1"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="btn-box pt-2">
+                      <a href="{% url 'payments:checkout' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" class="theme-btn text-center w-100 mb-2">
+                        <i class="la la-shopping-cart mr-2 font-size-18"></i>احجز الآن
+                      </a>
                     </div>
                   </form>
                 </div>
@@ -1385,7 +1401,7 @@ START TOUR DETAIL AREA
               </div>
               <!-- end sidebar-widget-item -->
               <div class="btn-box">
-                <a href="{% url 'payments:checkout' room.id %}" class="theme-btn theme-btn-transparent">احجز الآن</a>
+                <a href="{% url 'payments:checkout' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" class="theme-btn theme-btn-transparent">احجز الآن</a>
               </div>
             </div>
             <!-- end sidebar-widget -->

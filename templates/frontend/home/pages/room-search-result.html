@@ -139,7 +139,7 @@ START CARD AREA
               </ul>
             </div>
             <div class="card-btn">
-              <a href="{% url 'rooms:room_detail' room.id %}" class="theme-btn theme-btn-transparent">احجز الآن</a>
+              <a href="{% url 'rooms:room_detail' room.id %}?check_in={{ check_in_start|date:'Y-m-d H:i' }}&check_out={{ check_out_start|date:'Y-m-d H:i' }}" class="theme-btn theme-btn-transparent">احجز الآن</a>
             </div>
           </div>
         </div>
