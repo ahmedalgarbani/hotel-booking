@@ -10,6 +10,8 @@ from django.contrib.admin import widgets
 from django.contrib.admin.widgets import AdminDateWidget
 from django.db.models import Q, Sum
 from django.utils.safestring import mark_safe
+from django.template.response import TemplateResponse
+from django.shortcuts import redirect
 from HotelManagement.models import Hotel
 from .models import RoomType, Category, Availability, RoomPrice, RoomImage, RoomStatus
 
@@ -54,16 +56,52 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             date=today
         ).first()
         if availability:
-            return f"{availability.available_rooms}/{obj.rooms_count}"
-        return f"0/{obj.rooms_count}"
+            available = availability.available_rooms
+            total = obj.rooms_count
+            percentage = (available / total * 100) if total > 0 else 0
+            color = '#28a745' if percentage > 50 else '#ffc107' if percentage > 20 else '#dc3545'
+            return format_html(
+                '<div style="text-align: center;">'
+                '<div style="font-size: 1.2em; color: {};">{}/{}</div>'
+                '<div style="background: #eee; border-radius: 10px; height: 10px; width: 100px; margin: 5px auto;">'
+                '<div style="background: {}; width: {}%; height: 100%; border-radius: 10px;"></div>'
+                '</div>'
+                '</div>',
+                color, available, total, color, percentage
+            )
+        return format_html(
+            '<div style="text-align: center; color: #dc3545;">0/{}</div>',
+            obj.rooms_count
+        )
     get_available_rooms.short_description = _("الغرف المتوفرة اليوم")
 
     def preview_image(self, obj):
         main_image = obj.images.filter(is_main=True).first()
         if main_image:
-            return mark_safe(f'<img src="{main_image.image.url}" width="50" height="50" />')
-        return ""
+            return format_html(
+                '<div style="text-align: center;">'
+                '<img src="{}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />'
+                '</div>',
+                main_image.image.url
+            )
+        return format_html(
+            '<div style="text-align: center; color: #999;">'
+            '<span style="font-size: 24px;">🖼️</span>'
+            '</div>'
+        )
     preview_image.short_description = _("الصورة")
+
+    def is_active(self, obj):
+        icon = '✅' if obj.is_active else '❌'
+        color = '#28a745' if obj.is_active else '#dc3545'
+        return format_html(
+            '<span style="color: {}; font-size: 1.2em;">{}</span>',
+            color, icon
+        )
+    is_active.short_description = _("نشط")
+
+
+
 
 @admin.register(RoomStatus)
 class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
@@ -73,11 +111,33 @@ class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
     def get_rooms_count(self, obj):
         today = timezone.now().date()
-        return Availability.objects.filter(
+        count = Availability.objects.filter(
             room_status=obj,
-            date=today
+            availability_date=today
         ).aggregate(total=Sum('available_rooms'))['total'] or 0
+        
+        return format_html(
+            '<div style="text-align: center;">'
+            '<span style="font-size: 1.2em; font-weight: bold;">{}</span>'
+            '<div style="color: #666; font-size: 0.8em;">غرفة</div>'
+            '</div>',
+            count
+        )
     get_rooms_count.short_description = _("عدد الغرف اليوم")
+
+    def is_available(self, obj):
+        icon = '🟢' if obj.is_available else '🔴'
+        status = _("متاح") if obj.is_available else _("غير متاح")
+        color = '#28a745' if obj.is_available else '#dc3545'
+        return format_html(
+            '<div style="display: flex; align-items: center; gap: 5px;">'
+            '<span style="font-size: 1.2em;">{}</span>'
+            '<span style="color: {};">{}</span>'
+            '</div>',
+            icon, color, status
+        )
+    is_available.short_description = _("الحالة")
+    is_available.boolean = True
 
 @admin.register(Availability)
 class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
@@ -87,8 +147,9 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_filter = ['hotel', 'availability_date', 'room_type', 'room_status']
     list_editable = ['available_rooms']
     date_hierarchy = 'availability_date'
-    
-    def bulk_create_button(self, obj=None):
+
+    def bulk_create_button(self, obj):
+        """عرض زر الإنشاء الجماعي"""
         url = reverse('admin:rooms_availability_bulk_create')
         return format_html(
             '<a class="button" href="{}">{}</a>',
@@ -101,25 +162,24 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('bulk-create/', self.bulk_create_view, name='rooms_availability_bulk_create'),
+            path(
+                'bulk-create/',
+                self.admin_site.admin_view(self.bulk_create_view),
+                name='rooms_availability_bulk_create',
+            ),
         ]
         return custom_urls + urls
     
     def bulk_create_view(self, request):
-        from django.shortcuts import render, redirect
+        """عرض نموذج الإنشاء الجماعي"""
         if request.method == 'POST':
             form = BulkAvailabilityAdminForm(request.POST, user=request.user)
             if form.is_valid():
                 start_date = form.cleaned_data['start_date']
                 end_date = form.cleaned_data['end_date']
                 available_rooms = form.cleaned_data['available_rooms']
-               
                 room_status = form.cleaned_data['room_status']
-                
-                room_type = RoomType.objects.get(
-                    id=request.POST.get('room_type'),
-                    hotel__manager=request.user
-                )
+                room_type = form.cleaned_data['room_type']
                 
                 current_date = start_date
                 bulk_list = []
@@ -129,29 +189,35 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                         Availability(
                             hotel=room_type.hotel,
                             room_type=room_type,
-                            date=current_date,
+                            availability_date=current_date,
                             available_rooms=available_rooms,
-                            
                             room_status=room_status
                         )
                     )
                     current_date += timedelta(days=1)
                 
-                Availability.objects.bulk_create(bulk_list, ignore_conflicts=True)
-                self.message_user(request, _("تم إنشاء توفر الغرف بنجاح"), messages.SUCCESS)
+                try:
+                    Availability.objects.bulk_create(bulk_list, ignore_conflicts=True)
+                    self.message_user(request, _("تم إنشاء توفر الغرف بنجاح"), messages.SUCCESS)
+                except Exception as e:
+                    self.message_user(request, _("حدث خطأ أثناء إنشاء توفر الغرف: {}").format(str(e)), messages.ERROR)
+                
                 return redirect('admin:rooms_availability_changelist')
         else:
             form = BulkAvailabilityAdminForm(user=request.user)
-        
-        # فلترة أنواع الغرف حسب الفندق
-        room_types = RoomType.objects.filter(hotel__manager=request.user) if not request.user.is_superuser else RoomType.objects.all()
-        
+            
         context = {
             'form': form,
-            'title': _("إنشاء توفر الغرف بشكل جماعي"),
-            'room_types': room_types,
+            'title': _('إنشاء توفر الغرف'),
+            'site_title': self.admin_site.site_title,
+            'site_header': self.admin_site.site_header,
+            'has_permission': True,
+            'is_popup': False,
+            'is_nav_sidebar_enabled': True,
+            'available_apps': self.admin_site.get_app_list(request),
         }
-        return render(request, 'admin/rooms/availability/bulk_create.html', context)
+        
+        return TemplateResponse(request, 'admin/rooms/availability/bulk_create.html', context)
 
     actions = ['copy_to_next_day']
     
@@ -161,10 +227,9 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             Availability.objects.get_or_create(
                 hotel=availability.hotel,
                 room_type=availability.room_type,
-                date=next_day,
+                availability_date=next_day,
                 defaults={
                     'available_rooms': availability.available_rooms,
-                   
                     'room_status': availability.room_status
                 }
             )
@@ -184,7 +249,11 @@ class BulkAvailabilityAdminForm(forms.Form):
         label=_("عدد الغرف المتوفرة"), 
         min_value=0
     )
-   
+    room_type = forms.ModelChoiceField(
+        queryset=RoomType.objects.all(),
+        label=_("نوع الغرفة"),
+        empty_label=None
+    )
     room_status = forms.ModelChoiceField(
         queryset=RoomStatus.objects.all(),
         label=_("حالة الغرفة")
@@ -195,6 +264,7 @@ class BulkAvailabilityAdminForm(forms.Form):
         super().__init__(*args, **kwargs)
         if user and not user.is_superuser:
             self.fields['room_status'].queryset = RoomStatus.objects.filter(hotel__manager=user)
+            self.fields['room_type'].queryset = RoomType.objects.filter(hotel__manager=user)
 
 @admin.register(RoomPrice)
 class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
