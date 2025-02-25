@@ -27,14 +27,9 @@ urlpatterns = [
     path('admin_dashboard_orders_detail',views.admin_dashboard_orders_detail,name='admin_dashboard_orders_detail'),
     path('admin_currency_list',views.admin_currency_list,name='admin_currency_list'),
     
-    
-    # payment methods Rooms
-    #مرحلة اخرى بعد المناقشة الوهباني على اضافة السلة 
+    # payment methods for Hotels
     path('cart/<int:room_id>',views.cart,name='cart'),
-    
-    
-    path('checkout/<int:room_id>/', views.checkout, name='checkout'),  
-    path('confirm-payment/<int:room_id>/', views.confirm_payment, name='confirm_payment'),
+    path('checkout/<int:hotel_id>/', views.hotel_checkout, name='checkout'),
+    path('confirm-payment/<int:hotel_id>/', views.hotel_confirm_payment, name='confirm_payment'),
    
-    
 ]

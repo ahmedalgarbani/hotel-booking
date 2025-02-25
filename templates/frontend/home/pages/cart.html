@@ -1,0 +1,312 @@
+{% extends "frontend/layout/master.html" %}
+
+{% block content %}
+
+    <section class="breadcrumb-area bread-bg-10">
+      <div class="breadcrumb-wrap">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="breadcrumb-content text-center">
+                <div class="section-heading">
+                  <h2 class="sec__title text-white">عربة التسوق</h2>
+                </div>
+                <span class="arrow-blink">
+                  <i class="la la-arrow-down"></i>
+                </span>
+              </div>
+              <!-- end breadcrumb-content -->
+            </div>
+            <!-- end col-lg-12 -->
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- end container -->
+      </div>
+      <!-- end breadcrumb-wrap -->
+      <div class="bread-svg-box">
+        <svg
+          class="bread-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 10"
+          preserveAspectRatio="none"
+        >
+          <polygon points="100 0 50 10 0 0 0 10 100 10"></polygon>
+        </svg>
+      </div>
+      <!-- end bread-svg -->
+    </section>
+    <!-- end breadcrumb-area -->
+    <!-- ================================
+    END BREADCRUMB AREA
+================================= -->
+
+    <!-- ================================
+    START CART AREA
+================================= -->
+    <section class="cart-area section-padding">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="cart-wrap">
+              <div class="dashboard-content">
+                <div class="table-responsive">
+                  {% if grouped_items %}
+                    {% for hotel_group in grouped_items.values %}
+                      <div class="hotel-group mb-4">
+                        <h3 class="hotel-name mb-3">{{ hotel_group.hotel.name }}</h3>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>الغرفة</th>
+                              <th>تاريخ الوصول</th>
+                              <th>تاريخ المغادرة</th>
+                              <th>السعر اليومي</th>
+                              <th>الكمية</th>
+                              <th>المجموع</th>
+                              <th>الإجراءات</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for item in hotel_group.items %}
+                              <tr>
+                                <td>
+                                  <div class="table-list-content">
+                                    <a href="{% url 'rooms:room_detail' room_id=item.room_type.id %}" class="text-black">
+                                      {{ item.room_type.name }}
+                                    </a>
+                                  </div>
+                                </td>
+                                <td>{{ item.check_in_date|date:"Y-m-d" }}</td>
+                                <td>{{ item.check_out_date|date:"Y-m-d" }}</td>
+                                <td>{{ item.daily_price }}</td>
+                                <td>
+                                  <div class="quantity-controls">
+                                    <form method="POST" action="{% url 'ShoppingCart:update_quantity' item.id %}" class="d-flex align-items-center">
+                                      {% csrf_token %}
+                                      <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary" {% if item.quantity <= 1 %}disabled{% endif %}>-</button>
+                                      <span class="mx-2">{{ item.quantity }}</span>
+                                      <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
+                                    </form>
+                                  </div>
+                                </td>
+                                <td>{{ item.Total_price }}</td>
+                                <td>
+                                  <div class="table-list-action">
+                                    <a href="{% url 'ShoppingCart:remove_from_cart' item.id %}" 
+                                       class="btn btn-danger btn-sm" 
+                                       onclick="return confirm('هل أنت متأكد من حذف هذا العنصر؟')">
+                                      حذف
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                            <tr class="hotel-total">
+                              <td colspan="5" class="text-left"><strong>إجمالي الفندق:</strong></td>
+                              <td colspan="2"><strong>{{ hotel_group.hotel_total }}</strong></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        
+                        <div class="hotel-checkout text-left mt-3">
+                          <a href="{% url 'payments:checkout' hotel_group.hotel.id %}" class="btn btn-primary">
+                            متابعة الدفع لـ {{ hotel_group.hotel.name }}
+                          </a>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    
+                    <div class="total-price text-left mt-4">
+                      <h4>الإجمالي الكلي: {{ total_price }}</h4>
+                    </div>
+                  {% else %}
+                    <div class="empty-cart text-center">
+                      <h3>سلة التسوق فارغة</h3>
+                      <a href="{% url 'home:home' %}" class="btn btn-primary mt-3">تصفح الغرف</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end cart-area -->
+    <!-- ================================
+    END CART AREA
+================================= -->
+
+    <!-- ================================
+       START FOOTER AREA
+================================= -->
+    <section
+      class="footer-area section-bg padding-top-100px padding-bottom-30px"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 responsive-column">
+            <div class="footer-item">
+              <div class="footer-logo padding-bottom-30px">
+                <a href="index.html" class="foot__logo"
+                  ><img src="images/logo.png" alt="logo"
+                /></a>
+              </div>
+              <!-- end logo -->
+              <p class="footer__desc">
+                كرة القدم شرب الوادي لسحب وعاء. تصوير Maecenas
+              </p>
+              <ul class="list-items pt-3">
+                <li>
+                  3015 Grand Ave، Coconut Grove، <br />
+                  Carrick Way، FL 12345
+                </li>
+                <li>+123-456-789</li>
+                <li><a href="#">trizen@yourwebsite.com</a></li>
+              </ul>
+            </div>
+            <!-- end footer-item -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 responsive-column">
+            <div class="footer-item">
+              <h4
+                class="title curve-shape pb-3 margin-bottom-20px"
+                data-text="curvs"
+              >
+                شركة
+              </h4>
+              <ul class="list-items list--items">
+                <li><a href="about.html">معلومات عنا</a></li>
+                <li><a href="services.html">خدمات</a></li>
+                <li><a href="#">وظائف</a></li>
+                <li><a href="blog-grid.html">أخبار</a></li>
+                <li><a href="contact.html">الدعم</a></li>
+                <li><a href="#">إعلان</a></li>
+              </ul>
+            </div>
+            <!-- end footer-item -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 responsive-column">
+            <div class="footer-item">
+              <h4
+                class="title curve-shape pb-3 margin-bottom-20px"
+                data-text="curvs"
+              >
+                خدمات أخرى
+              </h4>
+              <ul class="list-items list--items">
+                <li><a href="#">علاقات المستثمرين</a></li>
+                <li><a href="#">مكافآت Trizen.com</a></li>
+                <li><a href="#">شركاء</a></li>
+                <li><a href="#">قائمة فندقي</a></li>
+                <li><a href="#">جميع الفنادق</a></li>
+                <li><a href="#">الإعلانات التلفزيونية</a></li>
+              </ul>
+            </div>
+            <!-- end footer-item -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 responsive-column">
+            <div class="footer-item">
+              <h4
+                class="title curve-shape pb-3 margin-bottom-20px"
+                data-text="curvs"
+              >
+                روابط أخرى
+              </h4>
+              <ul class="list-items list--items">
+                <li><a href="#">حزم عطلة الولايات المتحدة الأمريكية</a></li>
+                <li><a href="#">رحلات طيران الولايات المتحدة الأمريكية</a></li>
+                <li><a href="#">فنادق الولايات المتحدة الأمريكية</a></li>
+                <li>
+                  <a href="#">الولايات المتحدة الأمريكية تأجير السيارات</a>
+                </li>
+                <li><a href="#">انشئ حساب</a></li>
+              </ul>
+            </div>
+            <!-- end footer-item -->
+          </div>
+          <!-- end col-lg-3 -->
+        </div>
+        <!-- end row -->
+        <div class="row align-items-center">
+          <div class="col-lg-8">
+            <div class="term-box footer-item">
+              <ul class="list-items list--items d-flex align-items-center">
+                <li><a href="#">البنود و الظروف</a></li>
+                <li><a href="#">سياسة خاصة</a></li>
+                <li><a href="#">مركز المساعدة</a></li>
+              </ul>
+            </div>
+          </div>
+          <!-- end col-lg-8 -->
+          <div class="col-lg-4">
+            <div class="footer-social-box text-end">
+              <ul class="social-profile">
+                <li>
+                  <a href="#"><i class="lab la-facebook-f"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="lab la-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="lab la-instagram"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="lab la-linkedin-in"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- end col-lg-4 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+      <div class="section-block mt-4"></div>
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-7">
+            <div class="copy-right padding-top-30px">
+              <p class="copy__desc">
+                &copy; Copyright Trizen <span id="get-year"></span> . Made with
+                <span class="la la-heart"></span> by
+                <a href="https://themeforest.net/user/techydevs/portfolio"
+                  >TechyDevs</a
+                >
+              </p>
+            </div>
+            <!-- end copy-right -->
+          </div>
+          <!-- end col-lg-7 -->
+          <div class="col-lg-5">
+            <div
+              class="copy-right-content d-flex align-items-center justify-content-end padding-top-30px"
+            >
+              <h3 class="title font-size-15 pe-2">نحن نقبل</h3>
+              <img src="images/payment-img.png" alt="" />
+            </div>
+            <!-- end copy-right-content -->
+          </div>
+          <!-- end col-lg-5 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end footer-area -->
+    <!-- ================================
+       START FOOTER AREA
+================================= -->
+
+    <!-- start back-to-top -->
+    <div id="back-to-top">
+      <i class="la la-angle-up" title="Go top"></i>
+    </div>
+    <!-- end back-to-top -->
+
+
+{% endblock %}
