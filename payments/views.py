@@ -6,6 +6,7 @@ from bookings.models import Booking, BookingStatus
 from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime, timedelta
+from ShoppingCart.models import ShoppingCart, ShoppingCartItem
 
 # Create your views here.
 
@@ -133,3 +134,89 @@ def confirm_payment(request, room_id):
             return redirect('payments:checkout', room_id=room_id)
     
     return redirect('payments:checkout', room_id=room_id)
+
+def hotel_checkout(request, hotel_id):
+    # Get the user's cart
+    cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
+    
+    # Get cart items for this specific hotel
+    cart_items = cart.items.filter(
+        deleted_at__isnull=True,
+        room_type__hotel_id=hotel_id
+    )
+    
+    if not cart_items.exists():
+        messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
+        return redirect('ShoppingCart:cart')
+    
+    # Get hotel payment methods
+    hotel = cart_items.first().room_type.hotel
+    payment_methods = HotelPaymentMethod.objects.filter(
+        hotel=hotel,
+        is_active=True
+    )
+    
+    # Calculate total price for this hotel's items
+    total_price = sum(item.Total_price for item in cart_items)
+    
+    context = {
+        'hotel': hotel,
+        'cart_items': cart_items,
+        'payment_methods': payment_methods,
+        'total_price': total_price
+    }
+    
+    return render(request, 'frontend/home/pages/checkout.html', context)
+
+
+def hotel_confirm_payment(request, hotel_id):
+    if request.method == 'POST':
+        # Get the user's cart items for this hotel
+        cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
+        cart_items = cart.items.filter(
+            deleted_at__isnull=True,
+            room_type__hotel_id=hotel_id
+        )
+        
+        if not cart_items.exists():
+            messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
+            return redirect('ShoppingCart:cart')
+        
+        payment_method_id = request.POST.get('payment_method')
+        payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+        
+        try:
+            # Get pending status
+            pending_status = BookingStatus.objects.get(status_code=0)
+            
+            # Create bookings for each room
+            for item in cart_items:
+                booking = Booking.objects.create(
+                    room=item.room_type,
+                    hotel=item.room_type.hotel,
+                    user=request.user,
+                    check_in_date=item.check_in_date,
+                    check_out_date=item.check_out_date,
+                    amount=item.Total_price,
+                    status=pending_status
+                )
+                
+                # Create payment record
+                Payment.objects.create(
+                    booking=booking,
+                    payment_method=payment_method,
+                    payment_status=0,  # Pending
+                    payment_totalamount=item.Total_price
+                )
+                
+                # Remove item from cart
+                item.soft_delete()
+            
+            messages.success(request, 'تم إنشاء الحجز بنجاح وفي انتظار تأكيد الدفع')
+            return redirect('payments:user_dashboard_bookings')
+            
+        except Exception as e:
+            messages.error(request, f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
+            return redirect('ShoppingCart:cart')
+    
+    return redirect('ShoppingCart:cart')

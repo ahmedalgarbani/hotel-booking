@@ -7,6 +7,8 @@ from .models import ShoppingCart, ShoppingCartItem
 from rooms.models import RoomType, RoomPrice
 from services.models import HotelService
 from decimal import Decimal
+from itertools import groupby
+from operator import attrgetter
 
 # Create your views here.
 
@@ -21,32 +23,45 @@ def cart(request):
     # Get all active items in the cart
     cart_items = cart.items.filter(deleted_at__isnull=True)
     
-    # تحضير قائمة الأسعار لكل غرفة
-    cart_items_with_prices = []
+    # Group items by hotel and calculate prices
+    cart_items = sorted(cart_items, key=lambda x: x.room_type.hotel.id)
+    grouped_items = {}
     total_price = 0
     
-    for item in cart_items:
-        # البحث عن سعر خاص في جدول الأسعار
-        special_price = RoomPrice.objects.filter(
-            room_type=item.room_type,
-            date_from__lte=item.check_in_date.date(),
-            date_to__gte=item.check_out_date.date(),
-            deleted_at__isnull=True
-        ).first()
+    for hotel_id, items in groupby(cart_items, key=lambda x: x.room_type.hotel):
+        items_list = []
+        hotel_total = 0
         
-        # تحديد السعر اليومي
-        if special_price:
-            daily_price = special_price.price
-        else:
-            daily_price = item.room_type.base_price
+        for item in items:
+            # البحث عن سعر خاص في جدول الأسعار
+            special_price = RoomPrice.objects.filter(
+                room_type=item.room_type,
+                date_from__lte=item.check_in_date.date(),
+                date_to__gte=item.check_out_date.date(),
+                deleted_at__isnull=True
+            ).first()
             
-        item.daily_price = daily_price
-        cart_items_with_prices.append(item)
-        total_price += item.Total_price
+            # تحديد السعر اليومي
+            if special_price:
+                daily_price = special_price.price
+            else:
+                daily_price = item.room_type.base_price
+                
+            item.daily_price = daily_price
+            items_list.append(item)
+            item_total = item.Total_price
+            hotel_total += item_total
+            total_price += item_total
+            
+        grouped_items[hotel_id] = {
+            'hotel': items_list[0].room_type.hotel,
+            'items': items_list,
+            'hotel_total': hotel_total
+        }
     
     context = {
         'cart': cart,
-        'cart_items': cart_items_with_prices,
+        'grouped_items': grouped_items,
         'total_price': total_price
     }
     

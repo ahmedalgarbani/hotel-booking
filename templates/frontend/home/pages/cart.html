@@ -49,73 +49,74 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="cart-wrap">
-              <div class="table-form table-responsive mb-3">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">تفاصيل الغرفة</th>
-                      <th scope="col">السعر</th>
-                      <th scope="col">تاريخ الوصول</th>
-                      <th scope="col">تاريخ المغادرة</th>
-                      <th scope="col">المدة</th>
-                      <th scope="col">الإجمالي</th>
-                      <th scope="col">الإجراءات</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for item in cart_items %}
-                    <tr>
-                      <td>
-                        <div class="table-content d-flex align-items-center">
-                          {% if item.room_type.images.first %}
-                          <img src="{{ item.room_type.images.first.image.url }}" alt="room image" class="flex-shrink-0" style="width: 100px; height: 70px; object-fit: cover;">
-                          {% endif %}
-                          <div class="table-content-body">
-                            <h3 class="title">{{ item.room_type.name }}</h3>
-                            <p class="price">{{ item.daily_price }} ريال / ليلة</p>
-                          </div>
+              <div class="dashboard-content">
+                <div class="table-responsive">
+                  {% if grouped_items %}
+                    {% for hotel_group in grouped_items.values %}
+                      <div class="hotel-group mb-4">
+                        <h3 class="hotel-name mb-3">{{ hotel_group.hotel.name }}</h3>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>الغرفة</th>
+                              <th>تاريخ الوصول</th>
+                              <th>تاريخ المغادرة</th>
+                              <th>السعر اليومي</th>
+                              <th>المجموع</th>
+                              <th>الإجراءات</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for item in hotel_group.items %}
+                              <tr>
+                                <td>
+                                  <div class="table-list-content">
+                                    <a href="{% url 'rooms:room_detail' room_id=item.room_type.id %}" class="text-black">
+                                      {{ item.room_type.room_type }}
+                                    </a>
+                                  </div>
+                                </td>
+                                <td>{{ item.check_in_date|date:"Y-m-d" }}</td>
+                                <td>{{ item.check_out_date|date:"Y-m-d" }}</td>
+                                <td>{{ item.daily_price }}</td>
+                                <td>{{ item.Total_price }}</td>
+                                <td>
+                                  <div class="table-list-action">
+                                    <a href="{% url 'ShoppingCart:remove_from_cart' item.id %}" 
+                                       class="btn btn-danger btn-sm" 
+                                       onclick="return confirm('هل أنت متأكد من حذف هذا العنصر؟')">
+                                      حذف
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                            <tr class="hotel-total">
+                              <td colspan="4" class="text-left"><strong>إجمالي الفندق:</strong></td>
+                              <td colspan="2"><strong>{{ hotel_group.hotel_total }}</strong></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        
+                        <div class="hotel-checkout text-left mt-3">
+                          <a href="{% url 'payments:checkout' hotel_group.hotel.id %}" class="btn btn-primary">
+                            متابعة الدفع لـ {{ hotel_group.hotel.name }}
+                          </a>
                         </div>
-                      </td>
-                      <td>{{ item.daily_price }} ريال</td>
-                      <td>{{ item.check_in_date|date:"Y-m-d" }}</td>
-                      <td>{{ item.check_out_date|date:"Y-m-d" }}</td>
-                      <td>{{ item.check_out_date|timeuntil:item.check_in_date }}</td>
-                      <td>{{ item.Total_price }} ريال</td>
-                      <td>
-                        <a href="{% url 'ShoppingCart:remove_from_cart' item.id %}" class="theme-btn theme-btn-small theme-btn-transparent" onclick="return confirm('هل أنت متأكد من حذف هذا العنصر؟')">
-                          <i class="la la-trash mr-1"></i>حذف
-                        </a>
-                      </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                      <td colspan="7" class="text-center">
-                        <p>لا توجد غرف في عربة التسوق</p>
-                        <a href="{% url 'home:index' %}" class="theme-btn">تصفح الغرف</a>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-              {% if cart_items %}
-              <div class="cart-summary">
-                <div class="row">
-                  <div class="col-lg-6 ml-auto">
-                    <div class="cart-total">
-                      <h3>ملخص الطلب</h3>
-                      <ul class="cart-list">
-                        <li>إجمالي المبلغ <span>{{ total_price }} ريال</span></li>
-                      </ul>
-                      <div class="btn-box text-right">
-                      <a href="" class="theme-btn">متابعة الدفع</a>
-                        {% comment %} <a href="{% url 'payments:checkout' %}" class="theme-btn">متابعة الدفع</a> {% endcomment %}
                       </div>
+                    {% endfor %}
+                    
+                    <div class="total-price text-left mt-4">
+                      <h4>الإجمالي الكلي: {{ total_price }}</h4>
                     </div>
-                  </div>
+                  {% else %}
+                    <div class="empty-cart text-center">
+                      <h3>سلة التسوق فارغة</h3>
+                      <a href="{% url 'home:home' %}" class="btn btn-primary mt-3">تصفح الغرف</a>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
-              {% endif %}
             </div>
           </div>
         </div>
