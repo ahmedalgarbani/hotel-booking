@@ -18,12 +18,25 @@ class Category(models.Model):
         verbose_name_plural = "التصنيفات"
         ordering = ['-created_at']
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name="اسم الوسم")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "وسم"
+        verbose_name_plural = "الوسوم"
+        ordering = ['name']
+
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name="عنوان المقال")
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True, allow_unicode=True, verbose_name="الرابط")
     content = models.TextField(verbose_name="محتوى المقال")
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="الكاتب")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name="التصنيف")
+    tags = models.ManyToManyField(Tag, blank=True, related_name='posts', verbose_name="الوسوم")
     image = models.ImageField(upload_to='blog/images/', blank=True, null=True, verbose_name="صورة المقال")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="تاريخ التحديث")
