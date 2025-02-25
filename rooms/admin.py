@@ -53,7 +53,7 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         today = timezone.now().date()
         availability = Availability.objects.filter(
             room_type=obj,
-            date=today
+            availability_date=today
         ).first()
         if availability:
             available = availability.available_rooms
@@ -223,7 +223,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     
     def copy_to_next_day(self, request, queryset):
         for availability in queryset:
-            next_day = availability.date + timedelta(days=1)
+            next_day = availability.availability_date + timedelta(days=1)
             Availability.objects.get_or_create(
                 hotel=availability.hotel,
                 room_type=availability.room_type,
