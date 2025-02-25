@@ -25,7 +25,7 @@
           <!-- end hero-content -->
           <div class="search-fields-container">
             <div class="contact-form-action">
-              <form action="{% url 'rooms:room_search' %}" method="get" class="row">
+              <form action="{% url 'HotelManagement:hotel_search' %}" method="get" class="row">
                 <div class="col-lg-3 pe-0">
                   <div class="input-box">
                     <label class="label-text">الوجهة / اسم الفندق</label>
@@ -49,7 +49,7 @@
                 
                 <!-- end col-lg-3 -->
 
-                {% if roomTypes.count > 0 %}
+                {% comment %} {% if roomTypes.count > 0 %}
                 <div class="col-lg-3 pe-0">
                   <div class="input-box">
                     <label class="label-text">نوع الغرفة</label>
@@ -63,7 +63,7 @@
                     </div>
                   </div>
                 </div>
-                {% endif %}
+                {% endif %} {% endcomment %}
                 <!-- end col-lg-3 -->
 
                 <div class="col-lg-3">

@@ -101,135 +101,366 @@ START CARD AREA
     <!-- end row -->
     <div class="row">
       <div class="col-lg-8">
-      {% for room in rooms %}
-        <div class="card-item room-card">
-          <div class="card-img">
-            <a href="{% url 'rooms:room_detail' room.id %}" class="d-block">
-              {% with room.images.all|first as first_image %}
-                {% if first_image %}
-                  <img src="{{ first_image.image.url }}" alt="hotel-img" />
-                {% endif %}
-              {% endwith %}
-            </a>
-          </div>
-          <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from"> السعر</span>
-                <span class="price__num">{{room.base_price}} ريال</span>
-              </p>
+        <div class="row">
+          {% for hotel in hotels %}         
+             <!-- end col-lg-6 -->
+             <div class="col-lg-6 responsive-column">
+              <div class="card-item">
+                <div class="card-img">
+                 {% if hotel.profile_picture %}
+                 <a href="{{hotel.get_absolute_url}}" class="d-block">
+                  <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
+                </a>
+                 {% endif %}
+                  <div
+                    class="add-to-wishlist icon-element"
+                    data-bs-toggle="tooltip"
+                    data-placement="top"
+                    title="المرجعية"
+                  >
+                    <i class="la la-heart-o"></i>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h3 class="card-title">
+                    <a href="{{hotel.get_absolute_url}}">{{hotel.name}}</a>
+                  </h3>
+                  <p class="card-meta">{{hotel.location}},{{hotel.location.city.state}}</p>
+                  <div class="card-rating">
+                    <span class="badge text-white">4.4/5</span>
+                    <span class="review__text">معدل</span>
+                    <span class="rating__text">(30 التعليقات)</span>
+                  </div>
+                  <div
+                    class="card-price d-flex align-items-center justify-content-between"
+                  >
+                    <p>
+                      <span class="price__from">من عند</span>
+                      <span class="price__num">$58.00</span>
+                      <span class="price__text">لليلة الواحدة</span>
+                    </p>
+                    <a href="{{hotel.get_absolute_url}}" class="btn-text"
+                      >انظر التفاصيل<i class="la la-angle-right"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+              <!-- end card-item -->
             </div>
-            <h3 class="card-title font-size-26">
-              <a href="{% url 'rooms:room_detail' room.id %}">{{room.name}}</a>
-            </h3>
-            <p class="card-text pt-2">
-              {{room.description}}
-            </p>
-            <div class="card-attributes pt-3 pb-4">
-              <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>{{ room.beds_count }} سرير</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i><span>{{ room.rooms_count }} رقم الغرفة<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
-                </li>
-              </ul>
-            </div>
-            <div class="card-btn">
-              <a href="{% url 'rooms:room_detail' room.id %}?check_in={{ check_in_start|date:'Y-m-d H:i' }}&check_out={{ check_out_start|date:'Y-m-d H:i' }}" class="theme-btn theme-btn-transparent">احجز الآن</a>
-            </div>
-          </div>
+            <!-- end col-lg-6 -->
+          {% endfor %}
+       
         </div>
-        <!-- end card-item -->
-      {% endfor %}
+        <!-- end row -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="btn-box mt-3 text-center">
+              <button type="button" class="theme-btn">
+                <i class="la la-refresh me-1"></i>تحميل المزيد
+              </button>
+              <p class="font-size-13 pt-2">عرض 1 - 8 من {{hotels.count}} فنادق</p>
+            </div>
+            <!-- end btn-box -->
+          </div>
+          <!-- end col-lg-12 -->
+        </div>
+        <!-- end row -->
       </div>
       <!-- end col-lg-8 -->
       <div class="col-lg-4">
-        <div class="sidebar single-content-sidebar mt-0 mb-0" id="sidebar">
-          <div class="sidebar-widget single-content-widget">
-            <h3 class="title stroke-shape">التحقق من التوافر</h3>
-            <div class="contact-form-action">
-              <form action="{% url 'rooms:room_search' %}" method="POST">
-                {% csrf_token %}
-                <div class="input-box">
-                  <label class="label-text">تاريخ الوصول</label>
-                  <div class="form-group">
-                    <span class="la la-calendar form-icon"></span>
-                    <input class="date-picker-single form-control" type="text" name="check_in_start" readonly />
-                  </div>
-                </div>
-                <div class="input-box">
-                  <label class="label-text">تاريخ المغادرة</label>
-                  <div class="form-group">
-                    <span class="la la-calendar form-icon"></span>
-                    <input class="date-picker-single form-control" type="text" name="check_out_start" readonly />
-                  </div>
-                </div>
-                <div class="input-box">
-                  <label class="label-text">غرف</label>
-                  <div class="form-group">
-                    <div class="select-contain select2-container-wrapper w-auto">
-                      <select name="room_number" class="select-contain-select">
-                        <option value="0">حدد الغرف</option>
-                        <option value="1" selected>1 غرفة</option>
-                        <option value="2">2 غرف</option>
-                        <option value="3">3 غرف</option>
-                        <option value="4">4 غرف</option>
-                        <option value="5">5 غرف</option>
-                        <option value="6">6 غرف</option>
-                        <option value="7">7 غرف</option>
-                        <option value="8">8 غرف</option>
-                        <option value="9">9 غرف</option>
-                        <option value="10">10 غرف</option>
-                        <option value="11">11 غرف</option>
-                        <option value="12">12 غرف</option>
-                        <option value="13">13 غرف</option>
-                        <option value="14">14 غرف</option>
-                      </select>
+        <div class="sidebar mb-0">
+          <div class="sidebar-widget">
+            <h3 class="title stroke-shape">البحث عن الفنادق</h3>
+            <div class="sidebar-widget-item">
+              <div class="contact-form-action">
+                <form action="#">
+                  <div class="input-box">
+                    <label class="label-text">الوجهة / اسم الفندق</label>
+                    <div class="form-group">
+                      <span class="la la-map-marker form-icon"></span>
+                      <input
+                        class="form-control"
+                        type="text"
+                        name="text"
+                        placeholder="الوجهة ، اسم الفندق"
+                      />
                     </div>
                   </div>
-                </div>
-                <div class="input-box">
-                  <label class="label-text">عدد الاشخاص</label>
-                  <div class="form-group">
-                    <div class="dropdown dropdown-contain">
-                      <a class="dropdown-toggle dropdown-btn" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <span>
-                          إجمالي الضيوف<span class="qtyTotal guestTotal" data-total-output>0</span>
-                        </span>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-wrap">
-                        <div class="dropdown-item">
-                          <div class="qty-box d-flex align-items-center justify-content-between">
-                            <label>عدد الاشخاص</label>
-                            <div class="qtyBtn d-flex align-items-center">
-                              <div class="qtyDec">
-                                <i class="la la-minus"></i>
-                              </div>
-                              <input data-total-input type="text" name="adult_number" value="0" />
-                              <div class="qtyInc">
-                                <i class="la la-plus"></i>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end dropdown-item -->
-                     
-                      </div>
+                  <div class="input-box">
+                    <label class="label-text">تسجيل دخول تسجيل خروج</label>
+                    <div class="form-group">
+                      <span class="la la-calendar form-icon"></span>
+                      <input
+                        class="date-picker-multiple form-control"
+                        type="text"
+                        name="date"
+                        readonly
+                      />
                     </div>
-                    <!-- end dropdown -->
                   </div>
+                </form>
+              </div>
+            </div>
+            <!-- end sidebar-widget-item -->
+            <div class="sidebar-widget-item">
+              <div
+                class="qty-box mb-2 d-flex align-items-center justify-content-between"
+              >
+                <label class="font-size-16">غرف</label>
+                <div class="roomBtn d-flex align-items-center">
+                  <div class="qtyDec"><i class="la la-minus"></i></div>
+                  <input type="text" name="qtyInput" value="0" />
+                  <div class="qtyInc"><i class="la la-plus"></i></div>
                 </div>
-                <div class="btn-box pt-2">
-                  <button type="submit"  class="theme-btn text-center w-100">التحقق من التوفر</button>
+              </div>
+              <!-- end qty-box -->
+              <div
+                class="qty-box mb-2 d-flex align-items-center justify-content-between"
+              >
+                <label class="font-size-16">الكبار <span>18+</span></label>
+                <div class="qtyBtn d-flex align-items-center">
+                  <div class="qtyDec"><i class="la la-minus"></i></div>
+                  <input type="text" name="qtyInput" value="0" />
+                  <div class="qtyInc"><i class="la la-plus"></i></div>
                 </div>
-              </form>
+              </div>
+              <!-- end qty-box -->
+              <div
+                class="qty-box mb-2 d-flex align-items-center justify-content-between"
+              >
+                <label class="font-size-16"
+                  >الأطفال <span>2-12 سنة</span></label
+                >
+                <div class="qtyBtn d-flex align-items-center">
+                  <div class="qtyDec"><i class="la la-minus"></i></div>
+                  <input type="text" name="qtyInput" value="0" />
+                  <div class="qtyInc"><i class="la la-plus"></i></div>
+                </div>
+              </div>
+              <!-- end qty-box -->
+            </div>
+            <!-- end sidebar-widget-item -->
+            <div class="btn-box pt-2">
+              <a href="hotel-search-result.html" class="theme-btn"
+                >ابحث الآن</a
+              >
             </div>
           </div>
           <!-- end sidebar-widget -->
+          <div class="sidebar-widget">
+            <h3 class="title stroke-shape">تصفية حسب السعر</h3>
+            <div class="sidebar-price-range">
+              <div class="main-search-input-item">
+                <div class="price-slider-amount padding-bottom-20px">
+                  <label for="amount2" class="filter__label">السعر:</label>
+                  <input type="text" id="amount2" class="amounts" />
+                </div>
+                <!-- end price-slider-amount -->
+                <div id="slider-range2"></div>
+                <!-- end slider-range -->
+              </div>
+              <!-- end main-search-input-item -->
+              <div class="btn-box pt-4">
+                <button
+                  class="theme-btn theme-btn-small theme-btn-transparent"
+                  type="button"
+                >
+                  تطبيق
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- end sidebar-widget -->
+          <div class="sidebar-widget">
+            <h3 class="title stroke-shape">مراجعة النتيجة</h3>
+            <div class="sidebar-category">
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="r6" />
+                <label for="r6">ممتاز</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="r7" />
+                <label for="r7">جيد جدا</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="r8" />
+                <label for="r8">معدل</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="r9" />
+                <label for="r9">فقير</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="r10" />
+                <label for="r10">رهيب</label>
+              </div>
+            </div>
+          </div>
+          <!-- end sidebar-widget -->
+          <div class="sidebar-widget">
+            <h3 class="title stroke-shape">تصفية حسب التصنيف</h3>
+            <div class="sidebar-review">
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="s1" />
+                <label for="s1">
+                  <span class="ratings d-flex align-items-center">
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <span class="color-text-3 font-size-13 ms-1"
+                      >(55.590)</span
+                    >
+                  </span>
+                </label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="s2" />
+                <label for="s2">
+                  <span class="ratings d-flex align-items-center">
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star-o"></i>
+                    <span class="color-text-3 font-size-13 ms-1"
+                      >(40.590)</span
+                    >
+                  </span>
+                </label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="s3" />
+                <label for="s3">
+                  <span class="ratings d-flex align-items-center">
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star-o"></i>
+                    <i class="la la-star-o"></i>
+                    <span class="color-text-3 font-size-13 ms-1"
+                      >(23.590)</span
+                    >
+                  </span>
+                </label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="s4" />
+                <label for="s4">
+                  <span class="ratings d-flex align-items-center">
+                    <i class="la la-star"></i>
+                    <i class="la la-star"></i>
+                    <i class="la la-star-o"></i>
+                    <i class="la la-star-o"></i>
+                    <i class="la la-star-o"></i>
+                    <span class="color-text-3 font-size-13 ms-1"
+                      >(12.590)</span
+                    >
+                  </span>
+                </label>
+              </div>
+              <div class="custom-checkbox mb-0">
+                <input type="checkbox" class="form-check-input" id="s5" />
+                <label for="s5">
+                  <span class="ratings d-flex align-items-center">
+                    <i class="la la-star"></i>
+                    <i class="la la-star-o"></i>
+                    <i class="la la-star-o"></i>
+                    <i class="la la-star-o"></i>
+                    <i class="la la-star-o"></i>
+                    <span class="color-text-3 font-size-13 ms-1"
+                      >(590)</span
+                    >
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <!-- end sidebar-widget -->
+          <div class="sidebar-widget">
+            <h3 class="title stroke-shape">مرافق</h3>
+            <div class="sidebar-category">
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="f1" />
+                <label for="f1">تكييف</label>
+              </div>
+              <div class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="chb12"
+                />
+                <label for="chb12">نقل المطار</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="f2" />
+                <label for="f2">مركز اللياقة البدنية</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="f3" />
+                <label for="f3">تلفزيون مسطح</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="f4" />
+                <label for="f4">سخان</label>
+              </div>
+              <div class="custom-checkbox">
+                <input type="checkbox" class="form-check-input" id="f5" />
+                <label for="f5">إنترنت WIFI</label>
+              </div>
+              <div class="collapse" id="facilitiesMenu">
+                <div class="custom-checkbox">
+                  <input type="checkbox" class="form-check-input" id="f6" />
+                  <label for="f6">موقف سيارات</label>
+                </div>
+                <div class="custom-checkbox">
+                  <input type="checkbox" class="form-check-input" id="f7" />
+                  <label for="f7">حوض السباحة</label>
+                </div>
+                <div class="custom-checkbox">
+                  <input type="checkbox" class="form-check-input" id="f8" />
+                  <label for="f8">مطعم</label>
+                </div>
+                <div class="custom-checkbox">
+                  <input type="checkbox" class="form-check-input" id="f9" />
+                  <label for="f9">غرفة التدخين</label>
+                </div>
+                <div class="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="f10"
+                  />
+                  <label for="f10">سبا و ساونا</label>
+                </div>
+                <div class="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="f11"
+                  />
+                  <label for="f11">غسالة & أمبير ؛ مجفف</label>
+                </div>
+              </div>
+              <a
+                class="btn-text"
+                data-bs-toggle="collapse"
+                href="#facilitiesMenu"
+                role="button"
+                aria-expanded="false"
+                aria-controls="facilitiesMenu"
+              >
+                <span class="show-more"
+                  >أظهر المزيد <i class="la la-angle-down"></i
+                ></span>
+                <span class="show-less"
+                  >عرض أقل <i class="la la-angle-up"></i
+                ></span>
+              </a>
+            </div>
+          </div>
+         
         </div>
         <!-- end sidebar -->
       </div>

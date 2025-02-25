@@ -1,8 +1,11 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
+
+from HotelManagement.services import get_hotels_query, get_query_params
 from .models import HotelRequest, Hotel, City, Image
 from .forms import HotelRequestForm
 import json
@@ -125,3 +128,20 @@ def notifications_context(request):
         'notifications': notifications,
         'unread_notifications_count': unread_notifications_count,
     }
+
+
+
+
+def hotel_search(request):
+    hotel_name, check_in,check_out, adult_number = get_query_params(request)
+    today = datetime.now().date()
+    hotels_query = get_hotels_query(hotel_name)
+    
+    ctx = {
+        'adult_number': adult_number,
+        'check_in_start': check_in.strftime('%m/%d/%Y') if check_in else '',
+        'check_out_start': check_out.strftime('%m/%d/%Y') if check_out else '',
+        'hotels': hotels_query,
+    }
+
+    return render(request, 'frontend/home/pages/room-search-result.html', ctx)

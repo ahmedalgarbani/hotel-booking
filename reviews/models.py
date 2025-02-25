@@ -83,7 +83,7 @@ class RoomReview(BaseModel):
         Hotel,
         on_delete=models.CASCADE,
         verbose_name=_("الفندق"),
-        related_name='room_reviews'
+        related_name='rooms_reviews'
     )
     slug = models.SlugField(
         unique=True,
