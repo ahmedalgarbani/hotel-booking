@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -57,6 +58,11 @@ class RoomType(BaseModel):
         max_length=100,
         verbose_name=_("اسم نوع الغرفة")
     )
+    slug = models.SlugField(
+        max_length=200,
+        unique = True
+
+    )
     description = models.TextField(
         verbose_name=_("وصف"),
         blank=True,
@@ -109,6 +115,9 @@ class RoomType(BaseModel):
             raise ValidationError({
                 'max_capacity': _("السعة القصوى يجب أن تكون أكبر من أو تساوي السعة الافتراضية")
             })
+    def get_absolute_url(self):
+        return reverse('rooms:room_detail', args=[self.slug])
+    
 
     @property
     def available_rooms_count(self):

@@ -32,7 +32,8 @@ def room_search(request):
 #تحت التطوير  
 def room_detail(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
-    reviews = room.reviews.all()
+    reviews = room.room_reviews.all()
+    services = room.room_services.all()
     
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -45,12 +46,17 @@ def room_detail(request, room_id):
             return redirect('rooms:room_detail', room_id=room.id)
     else:
         form = ReviewForm()
-
+    print(services)
+    print(services)
+    print(services)
+    print(services)
+    print(services)
     context = {
         'room': room,
         'reviews': reviews,
+        'services': services,
         'form': form,
-        'stars': range(1, 6) #تجريبي
+        'stars': range(1, 6) 
     }
     return render(request, 'frontend/home/pages/room-details.html', context)
 
