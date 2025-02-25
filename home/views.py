@@ -7,8 +7,10 @@ from django.db import models
 from reviews.models import HotelReview
 from rooms.models import Availability, RoomImage, RoomPrice, RoomType
 from datetime import datetime
-from django.db.models import Q, Count, Avg
+from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
+
+from services.models import HotelService
 
 # Create your views here.
 def index(request):
@@ -30,7 +32,6 @@ def hotels(request):
 
 
 
-
 def hotel_detail(request, slug):
     hotel = get_object_or_404(
         Hotel.objects.annotate(
@@ -44,49 +45,35 @@ def hotel_detail(request, slug):
     )
 
     today = datetime.now().date()
-    availability = Availability.objects.filter(hotel=hotel, available_rooms__gt=0)
-    hotels = Hotel.objects.filter(is_verified=True).exclude(id=hotel.id)
-    reviews = HotelReview.objects.filter(status=True, hotel=hotel)
-    room_images = RoomImage.objects.filter(hotel=hotel).order_by('-is_main', 'room_type')
 
-    for available_room in availability:
-        try:
-            availability_price = Availability.objects.filter(
-                room_type_id=available_room.room_type.id,
-                hotel_id=hotel.id,
-                date=today
-            ).first()
-            if availability_price:
-                available_room.price = availability_price.price
-            else:
-                room_prices = RoomPrice.objects.filter(
-                    room_type_id=available_room.room_type.id,
-                    hotel_id=hotel.id,
-                    date_from__lte=today,
-                    date_to__gte=today
-                ).order_by('-date_from')
+    available_room_types = Availability.objects.filter(
+        hotel=hotel,
+        available_rooms__gt=0,
+        availability_date=today
+    ).select_related('room_type').distinct()
 
-                if room_prices.exists():
-                    available_room.price = room_prices.first().price
-                else:
-                    available_room.price = available_room.room_type.base_price
-        except Exception as e:
-            available_room.price = available_room.room_type.base_price
-    print(available_room.price)
+    for available_room in available_room_types:
+        room_price = RoomPrice.objects.filter(
+            room_type=available_room.room_type,
+            hotel=hotel,
+            date_from__lte=today,
+            date_to__gte=today
+        ).order_by('-date_from').first()
+        available_room.services = available_room.room_type.room_services.filter(is_active=True).order_by('id')[:4]
+
+        if room_price:
+            available_room.price = room_price.price 
+        else:
+            available_room.price = available_room.room_type.base_price  
+
+    hotel_services = HotelService.objects.filter(hotel=hotel, is_active=True)
     ctx = {
         'hotel': hotel,
-        'hotels': hotels,
-        'reviews': reviews,
-        'review_count': hotel.review_count,
-        'avg_rating_service': hotel.avg_rating_service,
-        'avg_rating_location': hotel.avg_rating_location,
-        'avg_rating_value_for_money': hotel.avg_rating_value_for_money,
-        'avg_rating_cleanliness': hotel.avg_rating_cleanliness,
-        'availability': availability,
-        'room_images': room_images,
+        'available_room_types': available_room_types,
+        'hotel_services': hotel_services,  
     }
-    return render(request, 'frontend/home/pages/hotel-single.html', ctx)
 
+    return render(request, 'frontend/home/pages/hotel-single.html', ctx)
 
 
 def room_search_result(request):

@@ -129,7 +129,8 @@ START TOUR DETAIL AREA
               >
                 <h3 class="title font-size-20">خدمات ووسائل الراحة </h3>
                 <div class="row pt-4">
-                  {% for services in services %}
+                  {% for service in services %}
+                  {% if service.is_negative_fee %}
                   <!-- end col-lg-4 -->
                   <div class="col-lg-4 responsive-column">
                     <div
@@ -138,17 +139,17 @@ START TOUR DETAIL AREA
                       <div
                         class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
                       >
-                        <i class="la la-check-circle"></i>
+                        <i class="la {{service.icon}}"></i>
                       </div>
                       <div class="single-feature-titles">
                         <h3 class="title font-size-15 font-weight-medium">
-                          قاعات المؤتمرات
+                        {{service.name}}
                         </h3>
                       </div>
                     </div>
                     <!-- end single-tour-feature -->
                   </div>
-                 
+                  {% endif %}
                   <!-- end col-lg-4 -->
                   {% endfor %}
                 </div>
@@ -854,12 +855,7 @@ START TOUR DETAIL AREA
                         />
                       </div>
                     </div>
-                    <div class="btn-box pt-2">
-                      
-                      <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" class="theme-btn text-center w-100 mb-2">
-                        <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
-                      </a>
-                    </div>
+                    
                   </form>
                 </div>
               </div>
@@ -906,6 +902,7 @@ START TOUR DETAIL AREA
                 <!-- end qty-box -->
               </div>
               <!-- end sidebar-widget-item -->
+              
               <div class="sidebar-widget-item py-4">
                 <h3 class="title stroke-shape">خدمات إضافية</h3>
                 <div class="extra-service-wrap">
@@ -916,6 +913,8 @@ START TOUR DETAIL AREA
                     id="extraServiceForm"
                   >
                     <div id="checkboxContainPrice">
+                      {% for service in services %}
+                      {% if service.additional_fee %}
                       <div class="custom-checkbox">
                         <input
                           type="checkbox"
@@ -927,63 +926,14 @@ START TOUR DETAIL AREA
                         <label
                           for="cleaningChb"
                           class="d-flex justify-content-between align-items-center"
-                          >رسوم التنظيف
+                          >{{service.name}} 
                           <span class="text-black font-weight-regular"
-                            >$15</span
+                            >${{service.additional_fee}}</span
                           ></label
                         >
                       </div>
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="airport-pickup"
-                          id="airportPickupChb"
-                          value="20.00"
-                        />
-                        <label
-                          for="airportPickupChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >الاستقبال من المطار
-                          <span class="text-black font-weight-regular"
-                            >$20</span
-                          ></label
-                        >
-                      </div>
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="breakfast"
-                          id="breakfastChb"
-                          value="10.00"
-                        />
-                        <label
-                          for="breakfastChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >وجبة افطار
-                          <span class="text-black font-weight-regular"
-                            >$10/ للشخص الواحد</span
-                          ></label
-                        >
-                      </div>
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="parking"
-                          id="parkingChb"
-                          value="5.00"
-                        />
-                        <label
-                          for="parkingChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >موقف سيارات
-                          <span class="text-black font-weight-regular"
-                            >$5/ لليلة الواحدة</span
-                          ></label
-                        >
-                      </div>
+                      {% endif %}
+                      {% endfor %}
                     </div>
                     <div class="total-price pt-3">
                       <p class="text-black">السعر الخاص</p>
@@ -993,13 +943,19 @@ START TOUR DETAIL AREA
                           type="text"
                           name="total"
                           class="num"
-                          value="80.00"
+                          value="{{ price }}"
                           readonly="readonly"
-                        /><span>/ لكل غرفة</span>
+                        /><span>/ لكل ليله</span>
                       </p>
                     </div>
                   </form>
                 </div>
+              </div>
+              <div class="btn-box pt-2">
+                      
+                <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" class="theme-btn text-center w-100 mb-2">
+                  <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
+                </a>
               </div>
               <!-- end sidebar-widget-item -->
               <div class="btn-box">

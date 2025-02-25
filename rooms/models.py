@@ -58,11 +58,7 @@ class RoomType(BaseModel):
         max_length=100,
         verbose_name=_("اسم نوع الغرفة")
     )
-    slug = models.SlugField(
-        max_length=200,
-        unique = True
-
-    )
+    
     description = models.TextField(
         verbose_name=_("وصف"),
         blank=True,
