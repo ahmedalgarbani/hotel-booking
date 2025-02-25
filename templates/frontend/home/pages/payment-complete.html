@@ -1,8 +1,7 @@
 {% extends "frontend/layout/master.html" %}
 
 {% block content %}
-
-    <!-- ================================
+<!-- ================================
     START PAYMENT AREA
 ================================= -->
 <section class="payment-area section-bg section-padding">
@@ -12,9 +11,7 @@
         <div class="form-box payment-received-wrap mb-0">
           <div class="form-title-wrap">
             <div class="step-bar-wrap text-center">
-              <ul
-                class="step-bar-list d-flex align-items-center justify-content-around"
-              >
+              <ul class="step-bar-list d-flex align-items-center justify-content-around">
                 <li class="step-bar flex-grow-1 step-bar-active">
                   <span class="icon-element">1</span>
                   <p class="pt-2 color-text-2">اختر غرفتك</p>
@@ -33,100 +30,86 @@
           <div class="form-content">
             <div class="payment-received-list">
               <div class="d-flex align-items-center">
-                <i
-                  class="la la-check icon-element flex-shrink-0 me-3 ms-0"
-                ></i>
+                <i class="la la-check icon-element flex-shrink-0 me-3 ms-0"></i>
                 <div>
-                  <h3 class="title pb-1">شكرا أليكس!</h3>
-                  <h3 class="title">
-                    تم تأكيد حجزك في EnVision Hotel Boston.
-                  </h3>
+                  <h3 class="title pb-1">شكراً {{ request.user.full_name }}!</h3>
+                  <h3 class="title">تم تأكيد حجزك في {{ room.hotel.name }}.</h3>
                 </div>
               </div>
               <ul class="list-items py-4">
                 <li>
-                  <i class="la la-check text-success me-2"></i
-                  ><strong class="text-black">فندق إنفيجن بوسطن</strong>
-                  يتوقع منك في
-                  <strong class="text-black"> 01 يونيو </strong>
+                  <i class="la la-check text-success me-2"></i>
+                  <strong class="text-black">{{ room.hotel.name }}</strong>
+                  يتوقع وصولك في
+                  <strong class="text-black">{{ booking.check_in_date|date:"d F Y" }}</strong>
                 </li>
                 <li>
-                  <i class="la la-check text-success me-2"></i>سيتم التعامل
-                  مع <strong class="text-black"> دفعتك </strong> بواسطة
-                  EnVision Hotel Boston ، ويحتوي قسم
-                  <strong class="color-text-2"> "الدفع" </strong> أدناه على
-                  مزيد من التفاصيل
+                  <i class="la la-check text-success me-2"></i>
+                  سيتم التعامل مع <strong class="text-black">دفعتك</strong> بواسطة
+                  {{ room.hotel.name }}
                 </li>
                 <li>
-                  <i class="la la-check text-success me-2"></i>قم بإجراء
-                  تغييرات على حجزك أو اطرح سؤالاً صحيحًا ببضع نقرات
+                  <i class="la la-check text-success me-2"></i>
+                  رقم الحجز الخاص بك: <strong class="text-black">#{{ booking.id }}</strong>
                 </li>
               </ul>
               <div class="btn-box pb-4">
-                <a href="#" class="theme-btn mb-2 me-2"
-                  >قم بإجراء تغييرات على الحجز الخاص بك</a
-                >
-                <a href="#" class="theme-btn mb-2 theme-btn-transparent"
-                  >قم بالحجز في التطبيق</a
-                >
+                <a href="{% url 'payments:user_dashboard_bookings' %}" class="theme-btn mb-2 me-2">عرض حجوزاتي</a>
+                <a href="{% url 'home:index' %}" class="theme-btn mb-2 theme-btn-transparent">العودة للرئيسية</a>
               </div>
               <h3 class="title">
-                <a href="#" class="text-black">فندق إنفيجن بوسطن</a>
+                <a href="#" class="text-black">{{ room.hotel.name }}</a>
               </h3>
-              <p>مدينة نيويورك ، نيويورك ، الولايات المتحدة الأمريكية</p>
-              <p class="py-1">
-                <a href="#" class="text-color"
-                  >انقر للحصول على الاتجاهات على خرائط جوجل
-                  <i class="la la-arrow-left"></i
-                ></a>
-              </p>
+              <p>{{ room.hotel.address }}</p>
+              {% if room.hotel.phone %}
               <p>
-                <strong class="text-black me-1">هاتف:</strong>+ 00 222 44
-                5678
+                <strong class="text-black me-1">هاتف:</strong>{{ room.hotel.phone }}
               </p>
+              {% endif %}
               <ul class="list-items list-items-3 list-items-4 py-4">
                 <li>
-                  <span class="text-black font-weight-bold">حجزك</span
-                  >ليلتان ، غرفة واحدة
+                  <span class="text-black font-weight-bold">حجزك</span>
+                  {{ room.room_type }} - {{ room.name }}
                 </li>
                 <li>
-                  <span class="text-black font-weight-bold">تحقق في</span
-                  >خميس 30 مارس 2020
+                  <span class="text-black font-weight-bold">تسجيل الدخول</span>
+                  {{ booking.check_in_date|date:"l d F Y" }}
                 </li>
                 <li>
-                  <span class="text-black font-weight-bold">الدفع</span
-                  >السبت 01 يونيو 2020
+                  <span class="text-black font-weight-bold">تسجيل الخروج</span>
+                  {{ booking.check_out_date|date:"l d F Y" }}
                 </li>
                 <li>
-                  <span class="text-black font-weight-bold"
-                    >الدفع المسبق</span
-                  >سيتم تحميلك دفعة مسبقة بالسعر الإجمالي في أي وقت.
+                  <span class="text-black font-weight-bold">حالة الدفع</span>
+                  {% if payment.payment_status == 0 %}
+                    قيد الانتظار
+                  {% elif payment.payment_status == 1 %}
+                    مكتمل
+                  {% elif payment.payment_status == 2 %}
+                    فشل
+                  {% elif payment.payment_status == 3 %}
+                    مسترد
+                  {% endif %}
                 </li>
                 <li>
-                  <span class="text-black font-weight-bold"
-                    >تكلفة الإلغاء</span
-                  >من الآن فصاعدًا: 34 دولارًا أمريكيًا
+                  <span class="text-black font-weight-bold">المبلغ الإجمالي</span>
+                  {{ payment.payment_totalamount }} {{ payment.payment_currency }}
                 </li>
               </ul>
-              <div class="btn-box">
-                <a href="#" class="theme-btn border-0 text-white bg-7"
-                  >إلغاء الحجز الخاص بك</a
-                >
+              {% if payment.payment_status == 0 %}
+              <div class="alert alert-info" role="alert">
+                <i class="la la-info-circle"></i>
+                سيتم مراجعة الدفع من قبل إدارة الفندق وتأكيده قريباً.
               </div>
+              {% endif %}
             </div>
-            <!-- end card-item -->
           </div>
         </div>
-        <!-- end payment-card -->
       </div>
-      <!-- end col-lg-12 -->
     </div>
-    <!-- end row -->
   </div>
-  <!-- end container -->
 </section>
 <!-- ================================
-END PAYMENT AREA
+    END PAYMENT AREA
 ================================= -->
-
 {% endblock content %}

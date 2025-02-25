@@ -72,7 +72,7 @@ def parse_check_in_date(check_in_date):
 def get_hotels_query(hotel_name):
     hotels_query = Hotel.objects.all()
     if hotel_name:
-        cities = City.objects.filter(Q(state__icontains=hotel_name) | Q(name__icontains=hotel_name))
+        cities = City.objects.filter(Q(state__icontains=hotel_name) )
         hotels_by_city = Hotel.objects.filter(location__city__in=cities)
         hotels_by_name = Hotel.objects.filter(name__icontains=hotel_name)
         hotels_query = (hotels_by_city | hotels_by_name).distinct()

@@ -103,14 +103,14 @@ START CARD AREA
       <div class="col-lg-8">
       {% for room in rooms %}
         <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            {% for image in room.images.all %}
-            <div class="card-img">
-              <a href="{% url 'rooms:room_detail' room.id %}" class="d-block">
-                <img src="{{ image.image.url }}" alt="hotel-img" />
-              </a>
-            </div>
-            {% endfor %}
+          <div class="card-img">
+            <a href="{% url 'rooms:room_detail' room.id %}" class="d-block">
+              {% with room.images.all|first as first_image %}
+                {% if first_image %}
+                  <img src="{{ first_image.image.url }}" alt="hotel-img" />
+                {% endif %}
+              {% endwith %}
+            </a>
           </div>
           <div class="card-body">
             <div class="card-price pb-2">
@@ -139,7 +139,7 @@ START CARD AREA
               </ul>
             </div>
             <div class="card-btn">
-              <a href="{% url 'rooms:room_detail' room.id %}" class="theme-btn theme-btn-transparent">احجز الآن</a>
+              <a href="{% url 'rooms:room_detail' room.id %}?check_in={{ check_in_start|date:'Y-m-d H:i' }}&check_out={{ check_out_start|date:'Y-m-d H:i' }}" class="theme-btn theme-btn-transparent">احجز الآن</a>
             </div>
           </div>
         </div>

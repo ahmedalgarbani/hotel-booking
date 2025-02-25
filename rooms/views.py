@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ReviewForm
 from .models import RoomType
 from datetime import datetime
+from django.utils import timezone
+from datetime import timedelta
 from .services import *
 
 
@@ -32,8 +34,19 @@ def room_search(request):
 #تحت التطوير  
 def room_detail(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
-    reviews = room.room_reviews.all()
-    services = room.room_services.all()
+    reviews = room.reviews.all()
+    
+    # استرجاع تواريخ تسجيل الدخول والخروج من الـ GET parameters
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
+    
+    # تحويل التواريخ إلى التنسيق المناسب
+    try:
+        check_in_date = datetime.strptime(check_in, '%Y-%m-%d %H:%M') if check_in else timezone.now()
+        check_out_date = datetime.strptime(check_out, '%Y-%m-%d %H:%M') if check_out else (timezone.now() + timedelta(days=1))
+    except (ValueError, TypeError):
+        check_in_date = timezone.now()
+        check_out_date = timezone.now() + timedelta(days=1)
     
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -56,8 +69,10 @@ def room_detail(request, room_id):
         'reviews': reviews,
         'services': services,
         'form': form,
-        'stars': range(1, 6) 
+        'stars': range(1, 6),
+        'check_in': check_in_date.strftime('%Y-%m-%d %H:%M'),
+        'check_out': check_out_date.strftime('%Y-%m-%d %H:%M'),
+        'check_in_display': check_in_date.strftime('%d/%m/%Y %I:%M %p'),
+        'check_out_display': check_out_date.strftime('%d/%m/%Y %I:%M %p')
     }
     return render(request, 'frontend/home/pages/room-details.html', context)
-
-
