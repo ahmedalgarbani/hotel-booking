@@ -12,8 +12,6 @@ django.setup()
 # Now we can import Django models
 from django.utils import timezone
 from django.utils.text import slugify
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
 from users.models import CustomUser
@@ -28,57 +26,75 @@ from payments.models import (
 
 User = get_user_model()
 
-def setup_permissions():
-    """Set up permissions for different user types"""
-    try:
-        # Get content types
-        hotel_ct = ContentType.objects.get_for_model(Hotel)
-        room_type_ct = ContentType.objects.get_for_model(RoomType)
-        
-        # Create permissions if they don't exist
-        permissions = {
-            'hotel_manager': [
-                Permission.objects.get_or_create(
-                    codename=codename,
-                    content_type=ct,
-                    defaults={'name': name}
-                )[0]
-                for codename, name, ct in [
-                    ('view_hotel', 'Can view hotel', hotel_ct),
-                    ('add_hotel', 'Can add hotel', hotel_ct),
-                    ('change_hotel', 'Can change hotel', hotel_ct),
-                    ('view_roomtype', 'Can view room type', room_type_ct),
-                    ('add_roomtype', 'Can add room type', room_type_ct),
-                    ('change_roomtype', 'Can change room type', room_type_ct),
-                ]
-            ],
-            'hotel_staff': [
-                Permission.objects.get_or_create(
-                    codename=codename,
-                    content_type=ct,
-                    defaults={'name': name}
-                )[0]
-                for codename, name, ct in [
-                    ('view_hotel', 'Can view hotel', hotel_ct),
-                    ('view_roomtype', 'Can view room type', room_type_ct),
-                ]
-            ],
-            'customer': [
-                Permission.objects.get_or_create(
-                    codename=codename,
-                    content_type=ct,
-                    defaults={'name': name}
-                )[0]
-                for codename, name, ct in [
-                    ('view_hotel', 'Can view hotel', hotel_ct),
-                    ('view_roomtype', 'Can view room type', room_type_ct),
-                ]
-            ]
+def create_users():
+    """Create users with different roles"""
+    print("\nCreating users...")
+    users_data = [
+        {
+            'username': 'admin',
+            'email': 'admin@example.com',
+            'password': 'admin123',
+            'first_name': 'Admin',
+            'last_name': 'User',
+            'user_type': 'admin',
+            'phone': '0500000000'
+        },
+        {
+            'username': 'manager1',
+            'email': 'manager1@example.com',
+            'password': 'manager123',
+            'first_name': 'Hotel',
+            'last_name': 'Manager 1',
+            'user_type': 'hotel_manager',
+            'phone': '0511111111'
+        },
+        {
+            'username': 'manager2',
+            'email': 'manager2@example.com',
+            'password': 'manager123',
+            'first_name': 'Hotel',
+            'last_name': 'Manager 2',
+            'user_type': 'hotel_manager',
+            'phone': '0522222222'
+        },
+        {
+            'username': 'customer1',
+            'email': 'customer1@example.com',
+            'password': 'customer123',
+            'first_name': 'Customer',
+            'last_name': 'One',
+            'user_type': 'customer',
+            'phone': '0533333333'
+        },
+        {
+            'username': 'staff1',
+            'email': 'staff1@example.com',
+            'password': 'staff123',
+            'first_name': 'Staff',
+            'last_name': 'One',
+            'user_type': 'staff',
+            'phone': '0544444444'
         }
-        return permissions
-    except Exception as e:
-        print(f"Error setting up permissions: {str(e)}")
-        return {}
+    ]
+    
+    for user_data in users_data:
+        try:
+            user, created = User.objects.get_or_create(
+                username=user_data['username'],
+                defaults={
+                    'email': user_data['email'],
+                    'first_name': user_data['first_name'],
+                    'last_name': user_data['last_name'],
+                    'user_type': user_data['user_type'],
+                    'phone': user_data['phone']
+                }
+            )
+            if created:
+                user.set_password(user_data['password'])
+                user.save()
+                print(f"Created user: {user.username} ({user.user_type})")
+        except Exception as e:
+            print(f"Error creating user {user_data['username']}: {str(e)}")
 
 def create_cities():
     """Create cities and locations"""
@@ -134,53 +150,6 @@ def create_cities():
             
         except Exception as e:
             print(f"Error creating city {city_data['state']}: {str(e)}")
-
-def create_users():
-    """Create users with appropriate permissions"""
-    print("\nCreating users...")
-    try:
-        # Set up permissions first
-        permissions = setup_permissions()
-        
-        # Create superuser
-        if not User.objects.filter(username='admin').exists():
-            admin = User.objects.create_superuser(
-                username='admin',
-                email='admin@example.com',
-                password='admin123',
-                user_type='admin',
-                phone='+966500000000'
-            )
-
-        # Create regular users with different user types
-        user_data = [
-            {'username': 'hotelmanager1', 'type': 'hotel_manager', 'first': 'Hotel', 'last': 'Manager'},
-            {'username': 'customer1', 'type': 'customer', 'first': 'Customer', 'last': 'One'},
-            {'username': 'staff1', 'type': 'hotel_staff', 'first': 'Staff', 'last': 'Member'},
-            {'username': 'customer2', 'type': 'customer', 'first': 'Customer', 'last': 'Two'},
-            {'username': 'hotelmanager2', 'type': 'hotel_manager', 'first': 'Hotel', 'last': 'Director'}
-        ]
-        
-        for data in user_data:
-            try:
-                if not User.objects.filter(username=data['username']).exists():
-                    user = User.objects.create_user(
-                        username=data['username'],
-                        email=f'{data["username"]}@example.com',
-                        password='password123',
-                        first_name=data['first'],
-                        last_name=data['last'],
-                        user_type=data['type'],
-                        phone=f'+966{random.randint(500000000, 599999999)}'
-                    )
-                    
-                    # Assign permissions based on user type
-                    if data['type'] in permissions:
-                        user.user_permissions.set(permissions[data['type']])
-            except Exception as e:
-                print(f"Error creating user {data['username']}: {str(e)}")
-    except Exception as e:
-        print(f"Error in create_users: {str(e)}")
 
 def reset_hotel_managers():
     """Reset all hotel manager assignments to ensure clean state"""
@@ -583,40 +552,21 @@ def create_hotel_payment_methods():
                 print(f"Error creating hotel payment method for {hotel.name}: {str(e)}")
 
 def populate_database():
-    print("Creating cities...")
+    """Populate database with sample data"""
+    print("\nStarting database population...")
+    
     create_cities()
-    
-    print("Creating users...")
     create_users()
-    
-    print("Resetting hotel managers...")
-    reset_hotel_managers()
-    
-    print("Creating hotels...")
     create_hotels()
-    
-    print("Creating room types...")
     create_room_types()
-    
-    print("Creating room statuses...")
     create_room_statuses()
-    
-    print("Creating availabilities...")
     create_availabilities()
-    
-    print("Creating reviews...")
     create_reviews()
-    
-    print("Creating currencies...")
     create_currencies()
-    
-    print("Creating payment options...")
     create_payment_options()
-    
-    print("Creating hotel payment methods...")
     create_hotel_payment_methods()
     
-    print("Database population completed!")
+    print("\nDatabase population completed successfully!")
 
 if __name__ == '__main__':
     populate_database()
