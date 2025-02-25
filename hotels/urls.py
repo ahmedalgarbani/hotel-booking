@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
 
     path('notifications/', include('notifications.urls')),
+    path('ShoppingCart/', include('ShoppingCart.urls')),
 ]
 
 if settings.DEBUG:
