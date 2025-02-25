@@ -139,3 +139,41 @@ def remove_from_cart(request, item_id):
     
     messages.success(request, 'تم إزالة العنصر من عربة التسوق')
     return redirect('ShoppingCart:cart')
+
+@login_required
+def update_quantity(request, item_id):
+    if request.method == 'POST':
+        cart_item = get_object_or_404(ShoppingCartItem, id=item_id, cart__user=request.user)
+        action = request.POST.get('action')
+        
+        if action == 'increase':
+            cart_item.quantity += 1
+        elif action == 'decrease' and cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            
+        # إعادة حساب السعر الإجمالي
+        days = (cart_item.check_out_date - cart_item.check_in_date).days
+        if days < 1:
+            days = 1
+            
+        # البحث عن سعر خاص
+        special_price = RoomPrice.objects.filter(
+            room_type=cart_item.room_type,
+            date_from__lte=cart_item.check_in_date.date(),
+            date_to__gte=cart_item.check_out_date.date(),
+            deleted_at__isnull=True
+        ).first()
+        
+        # تحديد السعر اليومي
+        if special_price:
+            daily_price = special_price.price
+        else:
+            daily_price = cart_item.room_type.base_price
+            
+        # حساب السعر الإجمالي
+        cart_item.Total_price = Decimal(str(daily_price)) * Decimal(str(days)) * Decimal(str(cart_item.quantity))
+        cart_item.save()
+        
+        messages.success(request, 'تم تحديث الكمية بنجاح')
+    
+    return redirect('ShoppingCart:cart')

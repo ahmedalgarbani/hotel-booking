@@ -62,6 +62,7 @@
                               <th>تاريخ الوصول</th>
                               <th>تاريخ المغادرة</th>
                               <th>السعر اليومي</th>
+                              <th>الكمية</th>
                               <th>المجموع</th>
                               <th>الإجراءات</th>
                             </tr>
@@ -79,6 +80,16 @@
                                 <td>{{ item.check_in_date|date:"Y-m-d" }}</td>
                                 <td>{{ item.check_out_date|date:"Y-m-d" }}</td>
                                 <td>{{ item.daily_price }}</td>
+                                <td>
+                                  <div class="quantity-controls">
+                                    <form method="POST" action="{% url 'ShoppingCart:update_quantity' item.id %}" class="d-flex align-items-center">
+                                      {% csrf_token %}
+                                      <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary" {% if item.quantity <= 1 %}disabled{% endif %}>-</button>
+                                      <span class="mx-2">{{ item.quantity }}</span>
+                                      <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
+                                    </form>
+                                  </div>
+                                </td>
                                 <td>{{ item.Total_price }}</td>
                                 <td>
                                   <div class="table-list-action">
@@ -92,7 +103,7 @@
                               </tr>
                             {% endfor %}
                             <tr class="hotel-total">
-                              <td colspan="4" class="text-left"><strong>إجمالي الفندق:</strong></td>
+                              <td colspan="5" class="text-left"><strong>إجمالي الفندق:</strong></td>
                               <td colspan="2"><strong>{{ hotel_group.hotel_total }}</strong></td>
                             </tr>
                           </tbody>
