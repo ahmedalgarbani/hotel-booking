@@ -455,11 +455,11 @@ START TOUR DETAIL AREA
                             class="form-check-input service-checkbox"
                             name="extra_services"
                             value="{{ service.id }}"
-                            data-price="{{ service.additional_fee }}"
+                            data-price="{{ service.additional_price }}"
                           />
                           <label class="d-flex justify-content-between align-items-center">
                             {{ service.name }}
-                            <span class="text-black font-weight-regular">${{ service.additional_fee }}</span>
+                            <span class="text-black font-weight-regular">${{ service.additional_price }}</span>
                           </label>
                         </div>
                         {% endif %}
@@ -488,6 +488,22 @@ START TOUR DETAIL AREA
                         <i class="la la-check-circle mr-2 font-size-18"></i>متابعة الى الدفع
                       </button>
                     </div>
+                    <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" 
+
+
+
+                    id="addToCartBtn"
+                 
+                 
+                    class="theme-btn text-center w-100 mb-2">
+                 
+                 
+                   <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
+                 
+                 
+                 </a>
+                 
+                 
                   </form>
               </div>
               <!-- end sidebar-widget-item -->
@@ -618,6 +634,121 @@ END CTA AREA
 <!-- ... existing code ... -->
 
 {% block extra_js %}
+
+
+
+<script>
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+
+
+    let basePrice = parseFloat("{{ price }}");
+
+
+    let totalPriceInput = document.getElementById("totalPrice");
+
+
+    let addToCartBtn = document.getElementById("addToCartBtn");
+
+
+
+
+
+    function updateCartUrl() {
+
+
+      let selectedServices = [];
+
+
+      document.querySelectorAll(".service-checkbox:checked").forEach((checkbox) => {
+
+
+        selectedServices.push(checkbox.value); 
+
+
+      });
+
+
+
+
+
+      let baseUrl = "{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}";
+
+
+      if (selectedServices.length > 0) {
+
+
+        baseUrl += "&extra_services=" + selectedServices.join(",");
+
+
+      }
+
+
+
+
+
+      addToCartBtn.setAttribute("href", baseUrl);
+
+
+    }
+
+
+
+
+
+    document.querySelectorAll(".service-checkbox").forEach((checkbox) => {
+
+
+      checkbox.addEventListener("change", function () {
+
+
+        let additionalFee = parseFloat(this.getAttribute("data-price")) || 0;
+
+
+
+
+
+        if (this.checked) {
+
+
+          basePrice += additionalFee;
+
+
+        } else {
+
+
+          basePrice -= additionalFee;
+
+
+        }
+
+
+
+
+
+        totalPriceInput.value = basePrice.toFixed(2);
+
+
+        updateCartUrl(); 
+
+
+      });
+
+
+    });
+
+
+
+
+
+    updateCartUrl();
+
+
+  });
+
+
+</script>
 <script>
 $(document).ready(function() {
     // Initialize datepicker for check-in date

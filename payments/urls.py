@@ -31,6 +31,6 @@ urlpatterns = [
     path('cart/<int:room_id>',views.cart,name='cart'),
     path('checkout/<int:hotel_id>/', views.hotel_checkout, name='checkout'),
     path('confirm-payment/<int:room_id>/', views.confirm_payment, name='confirm_payment'),
-   path('process-hotel-payment/', views.process_hotel_payment, name='process_hotel_payment'),
-   path('payment_complete/<int:hotel_id>/', views.payment_complete, name='payment_complete'),
+#    path('process-hotel-payment/', views.process_hotel_payment, name='process_hotel_payment'),
+#    path('payment_complete/<int:hotel_id>/', views.payment_complete, name='payment_complete'),
 ]

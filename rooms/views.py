@@ -239,7 +239,9 @@ def room_detail(request, room_id):
             'description': service.description,
             'icon': service.icon.url if service.icon else None,
             'additional_fee': service.additional_fee > 0,
-            'is_negative_fee': service.additional_fee < 0
+            'is_negative_fee': service.additional_fee < 0,
+            'additional_price':service.additional_fee
+            
         }
         for service in services
     ]
