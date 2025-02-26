@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2025 at 09:05 PM
+-- Generation Time: Feb 26, 2025 at 01:17 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,33 @@ SET time_zone = "+00:00";
 --
 -- Database: `hotels-booking`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `additional_services`
+--
+
+CREATE TABLE `additional_services` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `services_id` bigint(20) DEFAULT NULL,
+  `shoppingcartitem_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `additional_services`
+--
+
+INSERT INTO `additional_services` (`id`, `services_id`, `shoppingcartitem_id`) VALUES
+(1, 1, 22),
+(2, 1, 23),
+(3, 1, 24),
+(4, 1, 25),
+(5, 1, 29),
+(6, 1, 30),
+(7, 1, 32),
+(8, 1, 34),
+(9, 1, 35);
 
 -- --------------------------------------------------------
 
@@ -563,7 +590,8 @@ CREATE TABLE `django_session` (
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('9uxdkno7cshpaf9cpjonz1tu6wmnn5ue', '.eJxVjEEOwiAQRe_C2hBmBAGX7j0DGZipVA1NSrsy3l2bdKHb_977L5VoXWpau8xpZHVWJ3X43TKVh7QN8J3abdJlass8Zr0peqddXyeW52V3_w4q9fqtA0WPJhoPBZ1hw4NAAUJvnEQbrENhZDuUkG2EzEfkzJ4gkAk5OlDvD8_RN5g:1tmj9J:b_OJab0bY4Sl-_DtPyiETKo91BWeudXJAEUoZej9M7Y', '2025-03-11 00:50:13.587074'),
-('ghbwg3mlkd4hdw8ht67vnm1gt0jd8h31', '.eJxVjMsOwiAQRf-FtSGlPKZ06d5vIANMLWrAQJtojP-uTbrQ7T3nnhdzuC6zWxtVlyIbmWGH381juFLeQLxgPhceSl5q8nxT-E4bP5VIt-Pu_gVmbPP3TVb1xiNE3StvpLG9QPAA5IOWhAARpAiDVRPqTlsJIUxCCSvFgEp5u0UbtZZKdvS4p_pkY_f-AHY0PpM:1tn0bC:Jpm0x7IveznkAqV7e4ndYyHM94FEy3uIfryMBoKHtO0', '2025-03-11 19:28:10.206029');
+('ghbwg3mlkd4hdw8ht67vnm1gt0jd8h31', '.eJxVjMsOwiAQRf-FtSGlPKZ06d5vIANMLWrAQJtojP-uTbrQ7T3nnhdzuC6zWxtVlyIbmWGH381juFLeQLxgPhceSl5q8nxT-E4bP5VIt-Pu_gVmbPP3TVb1xiNE3StvpLG9QPAA5IOWhAARpAiDVRPqTlsJIUxCCSvFgEp5u0UbtZZKdvS4p_pkY_f-AHY0PpM:1tn0bC:Jpm0x7IveznkAqV7e4ndYyHM94FEy3uIfryMBoKHtO0', '2025-03-11 19:28:10.206029'),
+('rlcvc1ff89rc6ni30dhafiguga645jm0', '.eJxVjEEOwiAQAP_C2RBKKbQ9evcNZJfdWtRAU9pEY_y7IelBrzOTeQsP-zb7vfDqI4lROHH6ZQjhzqkKukG6Zhly2taIsibysEVeMvHjfLR_gxnKXLd9aGliojAAKtQGetDUYKucbsAaVLrrwHWutWwRJudCMJNBC3oAMlCnhUuJOXl-LnF9iVF9vr8AP-0:1tnEOD:bCEpfhCtin3pBo4VS9m7uW4GB20RKT2EqsE0A5IMXkU', '2025-03-12 10:11:41.775343');
 
 -- --------------------------------------------------------
 
@@ -1116,6 +1144,13 @@ CREATE TABLE `reviews_hotelreview` (
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reviews_hotelreview`
+--
+
+INSERT INTO `reviews_hotelreview` (`id`, `created_at`, `updated_at`, `deleted_at`, `slug`, `rating_service`, `rating_location`, `rating_value_for_money`, `rating_cleanliness`, `review`, `status`, `created_by_id`, `hotel_id`, `updated_by_id`, `user_id`) VALUES
+(1, '2025-02-26 12:06:53.947005', '2025-02-26 12:06:53.947005', NULL, '', 4, 4, 3, 4, 'kljlkj\r\n', 1, NULL, 1, NULL, 7);
 
 -- --------------------------------------------------------
 
@@ -2432,7 +2467,8 @@ CREATE TABLE `shopping_cart` (
 --
 
 INSERT INTO `shopping_cart` (`id`, `created_at`, `updated_at`, `deleted_at`, `user_id`) VALUES
-(1, '2025-02-25 12:50:45.439248', '2025-02-25 12:50:45.439248', NULL, 6);
+(1, '2025-02-25 12:50:45.439248', '2025-02-25 12:50:45.439248', NULL, 6),
+(2, '2025-02-26 10:11:58.375450', '2025-02-26 10:11:58.375450', NULL, 7);
 
 -- --------------------------------------------------------
 
@@ -2475,7 +2511,27 @@ INSERT INTO `shopping_cart_item` (`id`, `item_type`, `quantity`, `Total_price`, 
 (12, 'room', 1, 30.00, '2025-02-25 19:42:00.000000', '2025-02-26 19:42:00.000000', NULL, '2025-02-25 19:42:04.346945', '2025-02-25 19:42:04.346945', NULL, 1, NULL, 3),
 (13, 'room', 1, 30.00, '2025-02-25 19:42:00.000000', '2025-02-26 19:42:00.000000', NULL, '2025-02-25 19:42:12.538849', '2025-02-25 19:42:12.538849', NULL, 1, NULL, 3),
 (14, 'room', 1, 30.00, '2025-02-25 19:51:00.000000', '2025-02-26 19:51:00.000000', NULL, '2025-02-25 19:51:40.247249', '2025-02-25 19:51:40.247249', NULL, 1, NULL, 3),
-(15, 'room', 1, 40.00, '2025-02-25 19:53:00.000000', '2025-02-26 19:53:00.000000', NULL, '2025-02-25 19:53:33.812783', '2025-02-25 19:53:33.812783', NULL, 1, NULL, 3);
+(15, 'room', 1, 40.00, '2025-02-25 19:53:00.000000', '2025-02-26 19:53:00.000000', NULL, '2025-02-25 19:53:33.812783', '2025-02-25 19:53:33.812783', NULL, 1, NULL, 3),
+(16, 'room', 1, 40.00, '2025-02-26 10:11:00.000000', '2025-02-27 10:11:00.000000', NULL, '2025-02-26 10:11:58.408220', '2025-02-26 10:12:04.005006', '2025-02-26 10:12:04.005006', 2, NULL, 3),
+(17, 'room', 1, 40.00, '2025-02-26 10:48:00.000000', '2025-02-27 10:48:00.000000', NULL, '2025-02-26 10:48:34.062242', '2025-02-26 10:51:03.668980', '2025-02-26 10:51:03.668980', 2, NULL, 3),
+(18, 'room', 1, 40.00, '2025-02-26 10:49:00.000000', '2025-02-27 10:49:00.000000', NULL, '2025-02-26 10:49:06.032438', '2025-02-26 10:51:05.690471', '2025-02-26 10:51:05.690471', 2, NULL, 3),
+(19, 'room', 1, 40.00, '2025-02-26 10:50:00.000000', '2025-02-27 10:50:00.000000', NULL, '2025-02-26 10:50:19.743650', '2025-02-26 10:51:07.592005', '2025-02-26 10:51:07.592005', 2, NULL, 3),
+(20, 'room', 1, 40.00, '2025-02-26 10:56:00.000000', '2025-02-27 10:56:00.000000', NULL, '2025-02-26 10:57:21.597857', '2025-02-26 11:20:43.285043', '2025-02-26 11:20:43.284043', 2, NULL, 3),
+(21, 'room', 1, 40.00, '2025-02-26 11:13:00.000000', '2025-02-27 11:13:00.000000', NULL, '2025-02-26 11:13:08.149352', '2025-02-26 11:20:45.694806', '2025-02-26 11:20:45.694806', 2, NULL, 3),
+(22, 'room', 1, 40.00, '2025-02-26 11:13:00.000000', '2025-02-27 11:13:00.000000', NULL, '2025-02-26 11:14:26.823246', '2025-02-26 11:20:47.634087', '2025-02-26 11:20:47.634087', 2, NULL, 3),
+(23, 'room', 2, 80.00, '2025-02-26 11:13:00.000000', '2025-02-27 11:13:00.000000', NULL, '2025-02-26 11:17:51.465698', '2025-02-26 11:20:50.380195', '2025-02-26 11:20:50.380195', 2, NULL, 3),
+(24, 'room', 1, 45.00, '2025-02-26 11:20:00.000000', '2025-02-27 11:20:00.000000', NULL, '2025-02-26 11:20:06.761402', '2025-02-26 11:20:52.600503', '2025-02-26 11:20:52.600503', 2, NULL, 3),
+(25, 'room', 1, 45.00, '2025-02-26 11:21:00.000000', '2025-02-27 11:21:00.000000', NULL, '2025-02-26 11:21:06.578886', '2025-02-26 11:37:29.748689', '2025-02-26 11:37:29.748689', 2, NULL, 3),
+(26, 'room', 2, 80.00, '2025-02-26 11:21:00.000000', '2025-02-27 11:21:00.000000', NULL, '2025-02-26 11:21:51.911396', '2025-02-26 11:34:28.634189', '2025-02-26 11:34:28.634189', 2, NULL, 3),
+(27, 'room', 1, 40.00, '2025-02-26 11:21:00.000000', '2025-02-27 11:21:00.000000', NULL, '2025-02-26 11:21:58.612957', '2025-02-26 11:34:32.815915', '2025-02-26 11:34:32.815915', 2, NULL, 3),
+(28, 'room', 1, 40.00, '2025-02-26 11:32:00.000000', '2025-02-27 11:32:00.000000', NULL, '2025-02-26 11:33:03.085109', '2025-02-26 11:34:38.240834', '2025-02-26 11:34:38.240834', 2, NULL, 3),
+(29, 'room', 1, 40.00, '2025-02-26 11:32:00.000000', '2025-02-27 11:32:00.000000', NULL, '2025-02-26 11:33:11.504943', '2025-02-26 11:37:32.824390', '2025-02-26 11:37:32.824390', 2, NULL, 3),
+(30, 'room', 1, 40.00, '2025-02-26 11:33:00.000000', '2025-02-27 11:33:00.000000', NULL, '2025-02-26 11:33:28.538404', '2025-02-26 11:37:34.857810', '2025-02-26 11:37:34.857810', 2, NULL, 3),
+(31, 'room', 1, 40.00, '2025-02-26 11:37:00.000000', '2025-02-27 11:37:00.000000', NULL, '2025-02-26 11:37:52.341822', '2025-02-26 11:41:45.473613', '2025-02-26 11:41:45.473613', 2, NULL, 3),
+(32, 'room', 3, 135.00, '2025-02-26 11:37:00.000000', '2025-02-27 11:37:00.000000', NULL, '2025-02-26 11:38:04.061289', '2025-02-26 11:41:47.462627', '2025-02-26 11:41:47.462627', 2, NULL, 3),
+(33, 'room', 2, 80.00, '2025-02-26 11:41:00.000000', '2025-02-27 11:41:00.000000', NULL, '2025-02-26 11:41:58.252990', '2025-02-26 11:42:00.927154', NULL, 2, NULL, 3),
+(34, 'room', 1, 45.00, '2025-02-26 11:41:00.000000', '2025-02-27 11:41:00.000000', NULL, '2025-02-26 11:42:07.327475', '2025-02-26 11:42:07.333477', NULL, 2, NULL, 3),
+(35, 'room', 2, 90.00, '2025-02-26 11:47:00.000000', '2025-02-27 11:47:00.000000', NULL, '2025-02-26 11:47:10.120102', '2025-02-26 11:47:20.740722', NULL, 2, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -2558,7 +2614,8 @@ INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, 
 (3, 'pbkdf2_sha256$870000$uv5XLg1Qn2wVqQWJezszF5$hGcngchQZO358Z6k8ghZzYlX4YW3MX1S8KF/JhMRC0I=', NULL, 0, 'manager2', 'Hotel', 'Manager 2', 'manager2@example.com', 0, '2025-02-25 00:47:46.488205', '2025-02-25 00:47:46.488205', '2025-02-25 00:47:47.502979', 'hotel_manager', '0522222222', '', 1, NULL),
 (4, 'pbkdf2_sha256$870000$9zLiWKu9gRiWRBbUeWDrev$sghK1iE3q399dORnG39xVvlC/7DnXi9zeGM/lhxP3pM=', NULL, 0, 'customer1', 'Customer', 'One', 'customer1@example.com', 0, '2025-02-25 00:47:47.512856', '2025-02-25 00:47:47.512856', '2025-02-25 00:47:48.530187', 'customer', '0533333333', '', 1, NULL),
 (5, 'pbkdf2_sha256$870000$HUjSgQsKOhn25IzKmXBUBD$91vM4KhhcAsTRCqeA8VCvLrKsek+dvmIhcs5GFOBkvM=', NULL, 0, 'staff1', 'Staff', 'One', 'staff1@example.com', 0, '2025-02-25 00:47:48.541227', '2025-02-25 00:47:48.541227', '2025-02-25 00:47:49.577067', 'staff', '0544444444', '', 1, NULL),
-(6, 'pbkdf2_sha256$600000$F2vEmUnNVf4f9fOtOOVItC$hBpnAmdWWvY+ltUvxSC22vKN4E5x+VhY+X5ESW82Lmg=', '2025-02-25 19:28:10.203894', 1, 'ali', '', '', '', 1, '2025-02-25 00:50:01.299612', '2025-02-25 00:50:02.348686', '2025-02-25 00:50:02.348686', '', '', '', 1, NULL);
+(6, 'pbkdf2_sha256$600000$F2vEmUnNVf4f9fOtOOVItC$hBpnAmdWWvY+ltUvxSC22vKN4E5x+VhY+X5ESW82Lmg=', '2025-02-25 19:28:10.203894', 1, 'ali', '', '', '', 1, '2025-02-25 00:50:01.299612', '2025-02-25 00:50:02.348686', '2025-02-25 00:50:02.348686', '', '', '', 1, NULL),
+(7, 'pbkdf2_sha256$600000$p6JuQ9P7wv2sQhUDaTrogS$lNhIPSDy+us6FyuDwCtaQR57wwXlUTrvXz8I19qijgI=', '2025-02-26 10:11:41.771831', 1, 'ah', '', '', 'ah@ah.com', 1, '2025-02-26 10:11:30.338998', '2025-02-26 10:11:30.821540', '2025-02-26 10:11:30.821540', '', '', '', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -2605,6 +2662,12 @@ INSERT INTO `users_customuser_user_permissions` (`id`, `customuser_id`, `permiss
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `additional_services`
+--
+ALTER TABLE `additional_services`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `auth_group`
@@ -3012,6 +3075,12 @@ ALTER TABLE `users_customuser_user_permissions`
 --
 
 --
+-- AUTO_INCREMENT for table `additional_services`
+--
+ALTER TABLE `additional_services`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `auth_group`
 --
 ALTER TABLE `auth_group`
@@ -3159,7 +3228,7 @@ ALTER TABLE `payments_paymentoption`
 -- AUTO_INCREMENT for table `reviews_hotelreview`
 --
 ALTER TABLE `reviews_hotelreview`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `reviews_offer`
@@ -3237,13 +3306,13 @@ ALTER TABLE `service_offers`
 -- AUTO_INCREMENT for table `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `shopping_cart_item`
 --
 ALTER TABLE `shopping_cart_item`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `token_blacklist_blacklistedtoken`
@@ -3267,7 +3336,7 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
