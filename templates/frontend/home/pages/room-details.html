@@ -902,35 +902,25 @@ START TOUR DETAIL AREA
                 <!-- end qty-box -->
               </div>
               <!-- end sidebar-widget-item -->
-              
               <div class="sidebar-widget-item py-4">
                 <h3 class="title stroke-shape">خدمات إضافية</h3>
                 <div class="extra-service-wrap">
-                  <form
-                    action="#"
-                    method="post"
-                    class="extraServiceForm"
-                    id="extraServiceForm"
-                  >
+                  <form action="#" method="post" class="extraServiceForm" id="extraServiceForm">
                     <div id="checkboxContainPrice">
                       {% for service in services %}
                       {% if service.additional_fee %}
                       <div class="custom-checkbox">
                         <input
                           type="checkbox"
-                          class="form-check-input"
-                          name="cleaning"
-                          id="cleaningChb"
-                          value="15.00"
+                          class="form-check-input service-checkbox"
+                          name="extra_service"
+                          value="{{ service.id }}" 
+                          data-price="{{ service.additional_fee }}"
                         />
-                        <label
-                          for="cleaningChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >{{service.name}} 
-                          <span class="text-black font-weight-regular"
-                            >${{service.additional_fee}}</span
-                          ></label
-                        >
+                        <label class="d-flex justify-content-between align-items-center">
+                          {{ service.name }} 
+                          <span class="text-black font-weight-regular">${{ service.additional_fee }}</span>
+                        </label>
                       </div>
                       {% endif %}
                       {% endfor %}
@@ -941,11 +931,13 @@ START TOUR DETAIL AREA
                         <span class="font-size-17 text-black">$</span>
                         <input
                           type="text"
+                          id="totalPrice"
                           name="total"
                           class="num"
                           value="{{ price }}"
                           readonly="readonly"
-                        /><span>/ لكل ليله</span>
+                        />
+                        <span>/ لكل ليله</span>
                       </p>
                     </div>
                   </form>
@@ -953,9 +945,12 @@ START TOUR DETAIL AREA
               </div>
               <div class="btn-box pt-2">
                       
-                <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" class="theme-btn text-center w-100 mb-2">
-                  <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
-                </a>
+                <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" 
+   id="addToCartBtn"
+   class="theme-btn text-center w-100 mb-2">
+  <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
+</a>
+
               </div>
               <!-- end sidebar-widget-item -->
               <div class="btn-box">
@@ -1238,5 +1233,44 @@ START CTA AREA
 <!-- ================================
 END CTA AREA
 ================================= -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let basePrice = parseFloat("{{ price }}");
+    let totalPriceInput = document.getElementById("totalPrice");
+    let addToCartBtn = document.getElementById("addToCartBtn");
+
+    function updateCartUrl() {
+      let selectedServices = [];
+      document.querySelectorAll(".service-checkbox:checked").forEach((checkbox) => {
+        selectedServices.push(checkbox.value); 
+      });
+
+      let baseUrl = "{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}";
+      if (selectedServices.length > 0) {
+        baseUrl += "&extra_services=" + selectedServices.join(",");
+      }
+
+      addToCartBtn.setAttribute("href", baseUrl);
+    }
+
+    document.querySelectorAll(".service-checkbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        let additionalFee = parseFloat(this.getAttribute("data-price")) || 0;
+
+        if (this.checked) {
+          basePrice += additionalFee;
+        } else {
+          basePrice -= additionalFee;
+        }
+
+        totalPriceInput.value = basePrice.toFixed(2);
+        updateCartUrl(); 
+      });
+    });
+
+    updateCartUrl();
+  });
+</script>
+
 
 {% endblock content %}

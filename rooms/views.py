@@ -42,6 +42,7 @@ def room_detail(request, room_id):
 
     services_list = [
         {
+            'id': service.id,
             'name': service.name,
             'description': service.description,
             'icon': service.icon.url if service.icon else None,
