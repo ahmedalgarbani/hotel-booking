@@ -18,13 +18,16 @@ from .models import RoomType, RoomPrice,RoomImage# Make sure to import RoomRevie
 from .forms import ReviewForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger # Import Paginator and exceptions
 import uuid  
-
+from decimal import Decimal
+from services.models import RoomTypeService
+    
 
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Sum
 from django.utils.dateparse import parse_date
-
+from decimal import Decimal
+from services.models import RoomTypeService
 def check_room_availability(room_type, check_in_date, check_out_date, room_number):
     """
     Check room type availability for specific dates and number of rooms.
@@ -76,6 +79,56 @@ def check_room_availability(room_type, check_in_date, check_out_date, room_numbe
 
 #تحت التطوير  
 
+def calculate_total_price(room, check_in_date, check_out_date, room_number, extra_services):
+    """
+    Calculate total price for the room booking including extra services.
+    
+    Args:
+        room: RoomType instance
+        check_in_date: datetime.date
+        check_out_date: datetime.date
+        room_number: int
+        extra_services: list of service IDs
+    
+    Returns:
+        Decimal: total price
+    """
+ 
+    
+    # Calculate number of nights
+    number_of_nights = (check_out_date - check_in_date).days
+    
+    # Get room price for each date
+    total_price = Decimal('0')
+    for i in range(number_of_nights):
+        current_date = check_in_date + timedelta(days=i)
+        # Check if there's a special price for this date
+        price_obj = room.prices.filter(
+            date_from__lte=current_date,
+            date_to__gte=current_date
+        ).order_by('-is_special_offer').first()
+        
+        # Use special price if available, otherwise use base price
+        if price_obj:
+            daily_price = Decimal(str(price_obj.price))
+        else:
+            daily_price = Decimal(str(room.base_price))
+        total_price += daily_price
+    
+    # Multiply by number of rooms
+    total_price *= Decimal(str(room_number))
+    
+    # Add extra services
+    if extra_services:
+        services = RoomTypeService.objects.filter(id__in=extra_services)
+        for service in services:
+            # Add service price for each room and each night
+            service_price = Decimal(str(service.additional_fee))
+            service_total = service_price * Decimal(str(room_number)) * Decimal(str(number_of_nights))
+            total_price += service_total
+    
+    return total_price
+
 def room_detail(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
     
@@ -84,17 +137,27 @@ def room_detail(request, room_id):
             # Get and validate form data
             check_in_str = request.POST.get('check_in_date', '').strip()
             check_out_str = request.POST.get('check_out_date', '').strip()
-            room_number = int(request.POST.get('room_number', 1))
-            adult_number = int(request.POST.get('adult_number', 1))
+            
+            try:
+                room_number = int(request.POST.get('room_number', 1))
+                adult_number = int(request.POST.get('adult_number', 1))
+            except ValueError:
+                messages.error(request, "يجب أن يكون عدد الغرف وعدد الأشخاص أرقاماً صحيحة.")
+                return redirect('rooms:room_detail', room_id=room_id)
+            
             extra_services = request.POST.getlist('extra_services')
             
             if not check_in_str or not check_out_str:
                 messages.error(request, "يرجى تحديد تاريخ الدخول والخروج.")
                 return redirect('rooms:room_detail', room_id=room_id)
             
-            # Parse dates
-            check_in_date = datetime.strptime(check_in_str, '%Y-%m-%d').date()
-            check_out_date = datetime.strptime(check_out_str, '%Y-%m-%d').date()
+            try:
+                # Parse dates
+                check_in_date = datetime.strptime(check_in_str, '%Y-%m-%d').date()
+                check_out_date = datetime.strptime(check_out_str, '%Y-%m-%d').date()
+            except ValueError:
+                messages.error(request, "صيغة التاريخ غير صحيحة. يجب أن تكون بالشكل YYYY-MM-DD.")
+                return redirect('rooms:room_detail', room_id=room_id)
             
             # Validate dates
             today = timezone.now().date()
@@ -121,8 +184,12 @@ def room_detail(request, room_id):
                 messages.error(request, message)
                 return redirect('rooms:room_detail', room_id=room_id)
             
-            # Calculate total price
-            total_price = calculate_total_price(room, check_in_date, check_out_date, room_number, extra_services)
+            try:
+                # Calculate total price
+                total_price = calculate_total_price(room, check_in_date, check_out_date, room_number, extra_services)
+            except Exception as e:
+                messages.error(request, f"حدث خطأ في حساب السعر: {str(e)}")
+                return redirect('rooms:room_detail', room_id=room_id)
             
             # Store booking data in session
             request.session['booking_data'] = {
@@ -139,8 +206,9 @@ def room_detail(request, room_id):
             # Redirect to checkout
             return redirect('payments:checkout', hotel_id=room.hotel.id)
             
-        except (ValueError, TypeError) as e:
-            messages.error(request, "حدث خطأ في البيانات المدخلة. يرجى المحاولة مرة أخرى.")
+        except Exception as e:
+            print(f"Error in room_detail: {str(e)}")  # Add logging
+            messages.error(request, f"حدث خطأ في معالجة البيانات: {str(e)}")
             return redirect('rooms:room_detail', room_id=room_id)
     
     image=RoomImage.objects.filter(room_type=room)
