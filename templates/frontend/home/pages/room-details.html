@@ -637,6 +637,36 @@ $(document).ready(function() {
             }
         }
     });
+    $('#load-more-reviews').on('click', function(e) {
+      e.preventDefault();
+      var button = $(this);
+      var nextPage = button.data('next-page');
+      var roomId = button.data('room-id');
+
+      if (nextPage) {
+        $.ajax({
+          url: `/rooms/room_detail/${roomId}/?page=${nextPage}`,
+          type: 'GET',
+          dataType: 'html',
+          success: function(data) {
+            var newReviewsHtml = $(data).find('.comments-list .list-items').html();
+            $('.comments-list .list-items').append(newReviewsHtml);
+
+            var nextButtonHtml = $(data).find('#load-more-reviews');
+            if (nextButtonHtml.length > 0) {
+              button.data('next-page', nextButtonHtml.data('next-page'));
+            } else {
+              button.remove();
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error("Error loading reviews:", error);
+          }
+        });
+      } else {
+        button.remove();
+      }
+    });
 
     // Initialize datepicker for check-out date
     $("#check_out_datepicker").datepicker({
@@ -705,21 +735,13 @@ $(document).ready(function() {
         this.submit();
     });
 
-    // Handle price calculation
-    let basePrice = parseFloat($('#totalPrice').val()) || 0;
-    let currentPrice = basePrice;
-
-    $('.service-checkbox').on('change', function() {
-        const additionalFee = parseFloat($(this).data('price')) || 0;
-        if ($(this).is(':checked')) {
-            currentPrice += additionalFee;
-        } else {
-            currentPrice -= additionalFee;
-        }
-        $('#totalPrice').val(currentPrice.toFixed(2));
     });
-});
 </script>
-{% endblock %}
+
+
+<!-- ... existing code ... -->
+
+{% endblock extra_js %}
+
 
 {% endblock content %}
