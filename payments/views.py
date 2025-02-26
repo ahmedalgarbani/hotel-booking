@@ -136,35 +136,44 @@ def confirm_payment(request, room_id):
     return redirect('payments:checkout', room_id=room_id)
 
 def hotel_checkout(request, hotel_id):
-    # Get the user's cart
-    cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
+    # Get the hotel
+    hotel = get_object_or_404(Hotel, id=hotel_id)
     
-    # Get cart items for this specific hotel
-    cart_items = cart.items.filter(
-        deleted_at__isnull=True,
-        room_type__hotel_id=hotel_id
-    )
+    # Get booking data from session if it exists (direct booking)
+    booking_data = request.session.get('booking_data')
     
-    if not cart_items.exists():
-        messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
-        return redirect('ShoppingCart:cart')
-    
-    # Get hotel payment methods
-    hotel = cart_items.first().room_type.hotel
-    payment_methods = HotelPaymentMethod.objects.filter(
-        hotel=hotel,
-        is_active=True
-    )
-    
-    # Calculate total price for this hotel's items
-    total_price = sum(item.Total_price for item in cart_items)
-    
-    context = {
-        'hotel': hotel,
-        'cart_items': cart_items,
-        'payment_methods': payment_methods,
-        'total_price': total_price
-    }
+    if booking_data:
+        # Direct booking
+        room = get_object_or_404(RoomType, id=booking_data['room_id'])
+        payment_methods = HotelPaymentMethod.objects.filter(hotel=hotel, is_active=True)
+        
+        context = {
+            'hotel': hotel,
+            'room': room,
+            'booking_data': booking_data,
+            'payment_methods': payment_methods,
+            'total_price': booking_data['total_price'],
+            'is_direct_booking': True
+        }
+    else:
+        # Cart booking
+        cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
+        cart_items = cart.items.filter(deleted_at__isnull=True, room_type__hotel_id=hotel_id)
+        
+        if not cart_items.exists():
+            messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
+            return redirect('ShoppingCart:cart')
+        
+        payment_methods = HotelPaymentMethod.objects.filter(hotel=hotel, is_active=True)
+        total_price = sum(item.Total_price for item in cart_items)
+        
+        context = {
+            'hotel': hotel,
+            'cart_items': cart_items,
+            'payment_methods': payment_methods,
+            'total_price': total_price,
+            'is_direct_booking': False
+        }
     
     return render(request, 'frontend/home/pages/checkout.html', context)
 

@@ -98,99 +98,34 @@
                   <p class="mb-0"><strong>تعليمات الدفع:</strong> {{ method.description }}</p>
                 </div>
                 <div class="contact-form-action">
-                  <form action="{% url 'payments:confirm_payment' room.id %}" method="POST">
+                  {% if is_direct_booking %}
+                  <form action="{% url 'payments:hotel_confirm_payment' hotel.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="room_id" value="{{ booking_data.room_id }}">
+                    <input type="hidden" name="check_in_date" value="{{ booking_data.check_in_date }}">
+                    <input type="hidden" name="check_out_date" value="{{ booking_data.check_out_date }}">
+                    <input type="hidden" name="room_number" value="{{ booking_data.room_number }}">
+                    <input type="hidden" name="adult_number" value="{{ booking_data.adult_number }}">
+                    <input type="hidden" name="payment_method" value="{{ method.id }}">
+                    <input type="hidden" name="total_price" value="{{ booking_data.total_price }}">
+                    {% if booking_data.extra_services %}
+                    {% for service_id in booking_data.extra_services %}
+                    <input type="hidden" name="extra_services" value="{{ service_id }}">
+                    {% endfor %}
+                    {% endif %}
+                    <button type="submit" class="theme-btn text-center w-100 mb-2">
+                      <i class="la la-check-circle mr-2 font-size-18"></i>تأكيد الدفع
+                    </button>
+                  </form>
+                  {% else %}
+                  <form action="{% url 'payments:hotel_confirm_payment' hotel.id %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="payment_method" value="{{ method.id }}">
-                    <input type="hidden" name="check_in_date" value="{{ check_in }}">
-                    <input type="hidden" name="check_out_date" value="{{ check_out }}">
-                    <div class="row">
-                      <div class="col-lg-6">
-                        <div class="input-box">
-                          <label class="label-text">تاريخ تسجيل الدخول</label>
-                          <div class="form-group">
-                            <span class="la la-calendar form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              value="{{ check_in_display }}"
-                              readonly
-                              style="background-color: #f9f9f9; direction: rtl;"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6">
-                        <div class="input-box">
-                          <label class="label-text">تاريخ تسجيل الخروج</label>
-                          <div class="form-group">
-                            <span class="la la-calendar form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              value="{{ check_out_display }}"
-                              readonly
-                              style="background-color: #f9f9f9; direction: rtl;"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6">
-                        <div class="input-box">
-                          <label class="label-text">إسم صاحب التحويل</label>
-                          <div class="form-group">
-                            <span class="la la-user form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              name="transfer_owner_name"
-                              placeholder="إسم صاحب التحويل"
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6">
-                        <div class="input-box">
-                          <label class="label-text">رقم الحواله</label>
-                          <div class="form-group">
-                            <span class="la la-hashtag form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              name="transfer_number"
-                              placeholder="رقم الحواله"
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="input-box">
-                          <div class="form-group">
-                            <div class="custom-checkbox">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="agreechb"
-                                required
-                              />
-                              <label for="agreechb">
-                                بالموافقة، فإنك توافق على
-                                <a href="#">البنود والشروط</a>.
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="btn-box">
-                          <button type="submit" class="theme-btn">
-                            تأكيد الدفع <i class="la la-arrow-left"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                    <button type="submit" class="theme-btn text-center w-100 mb-2">
+                      <i class="la la-check-circle mr-2 font-size-18"></i>تأكيد الدفع
+                    </button>
                   </form>
+                  {% endif %}
                 </div>
               </div>
               {% endfor %}
@@ -211,43 +146,74 @@
           </div>
           <div class="form-content">
             <div class="card-item shadow-none radius-none mb-0">
-              <div class="card-img pb-4">
-                {% if room.images.first %}
-                <img src="{{ room.images.first.image.url }}" alt="room-img" />
-                {% endif %}
-              </div>
+              {% if is_direct_booking %}
               <div class="card-body p-0">
                 <div class="d-flex justify-content-between">
                   <div>
                     <h3 class="card-title">{{ room.name }}</h3>
-                    <p class="card-meta">{{ room.hotel.name }}</p>
-                  </div>
-                  <div>
-                    <h3 class="card-title">{{ room.base_price }} ريال</h3>
-                    <p class="card-meta">لليلة</p>
+                    <p class="card-meta">{{ hotel.name }}</p>
                   </div>
                 </div>
                 <div class="section-block"></div>
-                <div class="list-items pt-3">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6>تاريخ الدخول:</h6>
-                    <span class="text-black">{{ check_in_display }}</span>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6>تاريخ الخروج:</h6>
-                    <span class="text-black">{{ check_out_display }}</span>
-                  </div>
-                  <div class="section-block my-3"></div>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h3>المجموع</h3>
-                    <h3>{{ room.base_price|add:5 }} ريال</h3>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-muted">شامل الضريبة</span>
-                    <span class="text-muted">5 ريال</span>
+                <ul class="list-items list-items-2 py-3">
+                  <li><span>تاريخ الدخول:</span>{{ booking_data.check_in_date }}</li>
+                  <li><span>تاريخ الخروج:</span>{{ booking_data.check_out_date }}</li>
+                  <li><span>عدد الغرف:</span>{{ booking_data.room_number }}</li>
+                  <li><span>عدد الأشخاص:</span>{{ booking_data.adult_number }}</li>
+                  {% if booking_data.extra_services %}
+                  <li>
+                    <span>الخدمات الإضافية:</span>
+                    <ul>
+                    {% for service in room.room_services.all %}
+                      {% if service.id|stringformat:"s" in booking_data.extra_services %}
+                      <li>{{ service.name }} - ${{ service.additional_fee }}</li>
+                      {% endif %}
+                    {% endfor %}
+                    </ul>
+                  </li>
+                  {% endif %}
+                </ul>
+                <div class="section-block"></div>
+                <ul class="list-items list-items-2 pt-3">
+                  <li><span>السعر الإجمالي:</span>${{ booking_data.total_price }}</li>
+                </ul>
+              </div>
+              {% else %}
+              <div class="card-body p-0">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h3 class="card-title">{{ hotel.name }}</h3>
                   </div>
                 </div>
+                <div class="section-block"></div>
+                {% for item in cart_items %}
+                <div class="room-item mb-3">
+                  <h4>{{ item.room_type.name }}</h4>
+                  <ul class="list-items list-items-2 py-2">
+                    <li><span>تاريخ الدخول:</span>{{ item.check_in_date|date:"Y-m-d" }}</li>
+                    <li><span>تاريخ الخروج:</span>{{ item.check_out_date|date:"Y-m-d" }}</li>
+                    <li><span>عدد الغرف:</span>{{ item.quantity }}</li>
+                    <li><span>عدد الأشخاص:</span>{{ item.adult_number }}</li>
+                    {% if item.shopping_services.exists %}
+                    <li>
+                      <span>الخدمات الإضافية:</span>
+                      <ul>
+                      {% for service in item.shopping_services.all %}
+                        <li>{{ service.services.name }} - ${{ service.services.additional_fee }}</li>
+                      {% endfor %}
+                      </ul>
+                    </li>
+                    {% endif %}
+                    <li><span>السعر:</span>${{ item.Total_price }}</li>
+                  </ul>
+                  <div class="section-block"></div>
+                </div>
+                {% endfor %}
+                <ul class="list-items list-items-2 pt-3">
+                  <li><span>السعر الإجمالي:</span>${{ total_price }}</li>
+                </ul>
               </div>
+              {% endif %}
             </div>
           </div>
         </div>
