@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'notifications', 
     'ShoppingCart',
     
+    
 ]
 
 
@@ -197,7 +198,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '54322',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
