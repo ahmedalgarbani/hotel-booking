@@ -4,7 +4,7 @@ from users.models import CustomUser
 from django.utils.translation import gettext_lazy as _ 
 
 from rooms.models import RoomType 
-from services.models import HotelService 
+from services.models import HotelService, RoomTypeService 
 
 
 class ShoppingCart(models.Model):
@@ -57,3 +57,16 @@ class ShoppingCartItem(models.Model):
     class Meta:
         db_table = 'shopping_cart_item' # اسم الجدول في قاعدة البيانات
         # verbose_name = 'عنصر عربة التسوق' # الاسم المستعار للنموذج
+
+
+class AdditionalService(models.Model):
+    services = models.ForeignKey(RoomTypeService,related_name = 'item_services',on_delete=models.CASCADE,null=True)
+    shoppingcartitem = models.ForeignKey(ShoppingCartItem,related_name = 'shopping_services',on_delete=models.CASCADE,null=True)
+
+    def __str__(self):
+        return f"{self.name} (${self.price})"
+
+    class Meta:
+        db_table = 'additional_services'
+        verbose_name = _("خدمة إضافية")
+        verbose_name_plural = _("الخدمات الإضافية")
