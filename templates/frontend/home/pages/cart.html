@@ -122,10 +122,10 @@
                     </table>
                     
                     <div class="hotel-checkout text-left mt-3">
-                      <a href="{% url 'payments:checkout' hotel_group.hotel.id %}" class="btn btn-primary">
+                      <a href="{% url 'payments:checkout' hotel_group.hotel.id %}?hotel_cart_items={{ hotel_group.hotel.id }}" class="btn btn-primary">
                         متابعة الدفع لـ {{ hotel_group.hotel.name }}
                       </a>
-                    </div>
+                  </div>
                   </div>
                 {% endfor %}
                 
