@@ -34,6 +34,10 @@ def check_room_availability(room_type, check_in_date, check_out_date, room_numbe
     if not all([room_type, check_in_date, check_out_date, room_number]):
         return False, "بيانات الحجز غير مكتملة"
     
+    # Check if room type is active
+    if not room_type.is_active:
+        return False, "هذا النوع من الغرف غير متاح للحجز حالياً"
+    
     # Calculate number of nights
     number_of_nights = (check_out_date - check_in_date).days
     
@@ -49,11 +53,21 @@ def check_room_availability(room_type, check_in_date, check_out_date, room_numbe
     # Check availability for each date
     unavailable_dates = []
     for date in dates_range:
-        availability = room_type.availabilities.filter(availability_date=date).first()
+        # Get availability for this date
+        availability = room_type.availabilities.filter(
+            availability_date=date
+        ).select_related('room_status').first()
+        
         if not availability:
             unavailable_dates.append(date.strftime('%Y-%m-%d'))
-        elif availability.available_rooms < room_number:
-            return False, f"عدد الغرف المطلوب غير متوفر في تاريخ {date.strftime('%Y-%m-%d')}"
+        else:
+            # Check if room status allows booking
+            if not availability.room_status.is_available:
+                return False, f"الغرف غير متاحة للحجز في تاريخ {date.strftime('%Y-%m-%d')} بسبب {availability.room_status.name}"
+            
+            # Check if enough rooms are available
+            if availability.available_rooms < room_number:
+                return False, f"عدد الغرف المطلوب غير متوفر في تاريخ {date.strftime('%Y-%m-%d')}. المتوفر: {availability.available_rooms} غرفة"
     
     if unavailable_dates:
         return False, f"الغرف غير متوفرة في التواريخ التالية: {', '.join(unavailable_dates)}"
@@ -67,16 +81,18 @@ def room_detail(request, room_id):
     
     if request.method == 'POST':
         try:
+            # Get and validate form data
             check_in_str = request.POST.get('check_in_date', '').strip()
             check_out_str = request.POST.get('check_out_date', '').strip()
             room_number = int(request.POST.get('room_number', 1))
             adult_number = int(request.POST.get('adult_number', 1))
+            extra_services = request.POST.getlist('extra_services')
             
             if not check_in_str or not check_out_str:
                 messages.error(request, "يرجى تحديد تاريخ الدخول والخروج.")
                 return redirect('rooms:room_detail', room_id=room_id)
             
-            # Try to parse the date in YYYY-MM-DD format
+            # Parse dates
             check_in_date = datetime.strptime(check_in_str, '%Y-%m-%d').date()
             check_out_date = datetime.strptime(check_out_str, '%Y-%m-%d').date()
             
@@ -105,30 +121,26 @@ def room_detail(request, room_id):
                 messages.error(request, message)
                 return redirect('rooms:room_detail', room_id=room_id)
             
-            # Get selected extra services
-            extra_services = request.POST.getlist('extra_services')
-            
             # Calculate total price
-            total_price = float(request.POST.get('total_price', room.base_price))
+            total_price = calculate_total_price(room, check_in_date, check_out_date, room_number, extra_services)
             
             # Store booking data in session
             request.session['booking_data'] = {
                 'room_id': room_id,
-                'hotel_id': room.hotel.id,  
+                'hotel_id': room.hotel.id,
                 'check_in_date': check_in_str,
                 'check_out_date': check_out_str,
                 'room_number': room_number,
                 'adult_number': adult_number,
                 'extra_services': extra_services,
-                'total_price': total_price
+                'total_price': str(total_price)
             }
             
-            # Redirect to payment page with hotel_id
+            # Redirect to checkout
             return redirect('payments:checkout', hotel_id=room.hotel.id)
-                
+            
         except (ValueError, TypeError) as e:
-            print("Date parsing error:", e)
-            messages.error(request, "صيغة التاريخ غير صحيحة. الرجاء استخدام التنسيق YYYY-MM-DD")
+            messages.error(request, "حدث خطأ في البيانات المدخلة. يرجى المحاولة مرة أخرى.")
             return redirect('rooms:room_detail', room_id=room_id)
     
     image=RoomImage.objects.filter(room_type=room)
