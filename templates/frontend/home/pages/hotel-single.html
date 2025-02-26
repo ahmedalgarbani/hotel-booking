@@ -216,110 +216,7 @@ START TOUR DETAIL AREA
                 class="single-content-item padding-top-40px padding-bottom-30px"
               >
                 <h3 class="title font-size-20">التوفر</h3>
-                <div class="contact-form-action padding-bottom-35px">
-                  <form method="post">
-                    <div class="row">
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text"
-                            >تسجيل دخول تسجيل خروج</label
-                          >
-                          <div class="form-group">
-                            <span class="la la-calendar form-icon"></span>
-                            <input
-                              class="date-picker-multiple form-control"
-                              type="text"
-                              name="date"
-                              readonly
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">غرف</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الغرف</option>
-                                <option value="1">1 غرفة</option>
-                                <option value="2">2 غرف</option>
-                                <option value="3">3 غرف</option>
-                                <option value="4">4 غرف</option>
-                                <option value="5">5 غرف</option>
-                                <option value="6">6 غرف</option>
-                                <option value="7">7 غرف</option>
-                                <option value="8">8 غرف</option>
-                                <option value="9">9 غرف</option>
-                                <option value="10">10 غرف</option>
-                                <option value="11">11 غرف</option>
-                                <option value="12">12 غرف</option>
-                                <option value="13">13 غرف</option>
-                                <option value="14">14 غرف</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">الكبار (18+)</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الكبار</option>
-                                <option value="1">1 الكبار</option>
-                                <option value="2">2 الكبار</option>
-                                <option value="3">3 الكبار</option>
-                                <option value="4">4 الكبار</option>
-                                <option value="5">5 الكبار</option>
-                                <option value="6">6 الكبار</option>
-                                <option value="7">7 الكبار</option>
-                                <option value="8">8 الكبار</option>
-                                <option value="9">9 الكبار</option>
-                                <option value="10">10 الكبار</option>
-                                <option value="11">11 الكبار</option>
-                                <option value="12">12 الكبار</option>
-                                <option value="13">13 الكبار</option>
-                                <option value="14">14 الكبار</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">الأطفال (0-17)</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الأطفال</option>
-                                <option value="1">1 الأطفال</option>
-                                <option value="2">2 الأطفال</option>
-                                <option value="3">3 الأطفال</option>
-                                <option value="4">4 الأطفال</option>
-                                <option value="5">5 الأطفال</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="btn-box">
-                          <button type="button" class="theme-btn">
-                            ابحث الآن
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+               
                 <!-- end contact-form-action -->
                 <h3 class="title font-size-20">الغرف المتاحة</h3>
                 {% for availability in available_room_types %}
@@ -393,7 +290,7 @@ START TOUR DETAIL AREA
               <!-- end single-content-item -->
               <div class="section-block"></div>
             </div>
-        
+{% comment %}         
             <div id="faq" class="page-scroll">
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -559,7 +456,7 @@ START TOUR DETAIL AREA
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
-            </div>
+            </div> {% endcomment %}
             <!-- end faq -->
             <div id="reviews" class="page-scroll">
               <div
@@ -842,138 +739,7 @@ START TOUR DETAIL AREA
         </div>
         <!-- end col-lg-8 -->
         <div class="col-lg-4">
-          <div class="sidebar single-content-sidebar mb-0">
-            <div class="sidebar-widget single-content-widget">
-              <div class="sidebar-widget-item">
-                <div class="sidebar-book-title-wrap mb-3">
-                  <h3>جمع</h3>
-                  <p>
-                    <span class="text-form">من عند</span
-                    ><span class="text-value ms-2 me-1">$399.00</span>
-                    <span class="before-price">$412.00</span>
-                  </p>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div class="contact-form-action">
-                  <form action="#">
-                    <div class="input-box">
-                      <label class="label-text"
-                        >تسجيل دخول تسجيل خروج</label
-                      >
-                      <div class="form-group">
-                        <span class="la la-calendar form-icon"></span>
-                        <input
-                          class="date-picker-multiple form-control"
-                          type="text"
-                          name="date"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                    <div class="input-box">
-                      <label class="label-text">غرف</label>
-                      <div class="form-group">
-                        <div
-                          class="select-contain select2-container-wrapper w-auto"
-                        >
-                          <select class="select-contain-select">
-                            <option value="0">حدد الغرف</option>
-                            <option value="1">1 غرفة</option>
-                            <option value="2">2 غرف</option>
-                            <option value="3">3 غرف</option>
-                            <option value="4">4 غرف</option>
-                            <option value="5">5 غرف</option>
-                            <option value="6">6 غرف</option>
-                            <option value="7">7 غرف</option>
-                            <option value="8">8 غرف</option>
-                            <option value="9">9 غرف</option>
-                            <option value="10">10 غرف</option>
-                            <option value="11">11 غرف</option>
-                            <option value="12">12 غرف</option>
-                            <option value="13">13 غرف</option>
-                            <option value="14">14 غرف</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الكبار <span>Age 18+</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الأطفال <span>2-12 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الرضع <span>0-2 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="btn-box pt-2">
-                <a
-                  href="tour-booking.html"
-                  class="theme-btn text-center w-100 mb-2"
-                  ><i class="la la-shopping-cart me-2 font-size-18"></i>احجز
-                  الآن</a
-                >
-                <a
-                  href="#"
-                  class="theme-btn text-center w-100 theme-btn-transparent"
-                  ><i class="la la-heart-o me-2"></i>أضف إلى قائمة
-                  الامنيات</a
-                >
-                <div
-                  class="d-flex align-items-center justify-content-between pt-2"
-                >
-                  <a
-                    href="#"
-                    class="btn theme-btn-hover-gray font-size-15"
-                    data-bs-toggle="modal"
-                    data-bs-target="#sharePopupForm"
-                    ><i class="la la-share me-1"></i>شارك</a
-                  >
-                  <p>
-                    <i class="la la-eye me-1 font-size-15 color-text-2"></i
-                    >3456
-                  </p>
-                </div>
-              </div>
-            </div>
+          
            
             <div class="sidebar-widget single-content-widget">
               <h3 class="title stroke-shape">نوع حساب؟</h3>

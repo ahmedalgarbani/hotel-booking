@@ -91,6 +91,17 @@ def add_to_cart(request, room_id):
         check_in_date = request.GET.get('check_in_date')
         check_out_date = request.GET.get('check_out_date')
         extra_services = request.GET.getlist('extra_services') 
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
+    room_number = request.GET.get('room_number')
+    adult_number = request.GET.get('adult_number')
+    
+    # Your cart logic here
+    # ...
+    if request.method == 'GET':
+        check_in_date = request.GET.get('check_in_date')
+        check_out_date = request.GET.get('check_out_date')
+        extra_services = request.GET.getlist('extra_services') 
 
         if not all([check_in_date, check_out_date]):
             messages.error(request, 'يرجى تحديد تواريخ تسجيل الدخول والمغادرة')

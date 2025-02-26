@@ -144,4 +144,4 @@ def hotel_search(request):
         'hotels': hotels_query,
     }
 
-    return render(request, 'frontend/home/pages/room-search-result.html', ctx)
+    return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
