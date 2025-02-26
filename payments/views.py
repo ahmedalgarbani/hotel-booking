@@ -1,4 +1,11 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from datetime import datetime
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from decimal import Decimal
+from django.urls import reverse
+
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
 from .models import Payment, HotelPaymentMethod
@@ -163,33 +170,40 @@ def hotel_checkout(request, hotel_id):
         'hotel': hotel,
         'cart_items': cart_items,
         'payment_methods': payment_methods,
-        'total_price': total_price
+        'total_price': total_price,
     }
     
     return render(request, 'frontend/home/pages/checkout.html', context)
 
 
-def hotel_confirm_payment(request, hotel_id):
+# @login_required
+def process_hotel_payment(request, hotel_id):
     if request.method == 'POST':
         # Get the user's cart items for this hotel
         cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
-        cart_items = cart.items.filter(
-            deleted_at__isnull=True,
-            room_type__hotel_id=hotel_id
-        )
+        cart_items = list(cart.items.filter(room_type__hotel_id=hotel_id, deleted_at__isnull=True))
         
-        if not cart_items.exists():
+        if not cart_items:
             messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
             return redirect('ShoppingCart:cart')
         
         payment_method_id = request.POST.get('payment_method')
-        payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+        transfer_owner_name = request.POST.get('transfer_owner_name')
+        transfer_number = request.POST.get('transfer_number')
+        
+        # Validate required data
+        if not all([payment_method_id, transfer_owner_name, transfer_number]):
+            messages.error(request, 'الرجاء ملء جميع الحقول المطلوبة')
+            return redirect('payments:hotel_checkout', hotel_id=hotel_id)
         
         try:
             # Get pending status
-            pending_status = BookingStatus.objects.get(status_code=0)
-            
+            pending_status = BookingStatus.objects.get(booking_status_name='قيد الانتظار')
+            completed_status = BookingStatus.objects.get(booking_status_name='مكتمل')
+
             # Create bookings for each room
+            all_bookings = []
+            total_amount = 0
             for item in cart_items:
                 booking = Booking.objects.create(
                     room=item.room_type,
@@ -200,23 +214,77 @@ def hotel_confirm_payment(request, hotel_id):
                     amount=item.Total_price,
                     status=pending_status
                 )
-                
-                # Create payment record
-                Payment.objects.create(
+                all_bookings.append(booking)
+
+                payment = Payment.objects.create(
+                    payment_method=payment_method_id,
+                    payment_status=1,  # Set to 'مكتمل' directly as payment is confirmed
+                    payment_totalamount=item.Total_price,
                     booking=booking,
-                    payment_method=payment_method,
-                    payment_status=0,  # Pending
-                    payment_totalamount=item.Total_price
+                    payment_note=f"رقم الحوالة: {transfer_number}, اسم المحول: {transfer_owner_name}"
                 )
+
+                booking.status = completed_status
+                booking.save()
                 
+                total_amount += item.Total_price  # Keep track of total amount for confirmation
+
                 # Remove item from cart
                 item.soft_delete()
+                
+            cart.delete()
             
+
             messages.success(request, 'تم إنشاء الحجز بنجاح وفي انتظار تأكيد الدفع')
-            return redirect('payments:user_dashboard_bookings')
+            context = {
+                'cart_items': cart_items,
+                'payment_method': payment_method_id,
+                'transfer_owner_name': transfer_owner_name,
+                'transfer_number': transfer_number,
+                'hotel':Hotel.objects.get(id=hotel_id),
+                'all_bookings':all_bookings,
+                'total_price': total_amount,
+            }
             
+            return render(request, 'frontend/home/pages/payment-complete.html', context)
+
         except Exception as e:
             messages.error(request, f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
             return redirect('ShoppingCart:cart')
+    else:
+        return redirect('ShoppingCart:cart')
+
+
+def payment_complete(request, hotel_id):
+    # Get the user's cart
+    cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
     
-    return redirect('ShoppingCart:cart')
+    # Get cart items for this specific hotel
+    cart_items = cart.items.filter(
+        deleted_at__isnull=True,
+        room_type__hotel_id=hotel_id
+    )
+    
+    
+    if not cart_items.exists():
+        messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
+        return redirect('ShoppingCart:cart')
+    
+    # Get hotel payment methods
+    hotel = cart_items.first().room_type.hotel
+    payment_methods = HotelPaymentMethod.objects.filter(
+        hotel=hotel,
+        is_active=True
+    )
+    
+    # Calculate total price for this hotel's items
+    total_price = sum(item.Total_price for item in cart_items)
+    
+    context = {
+        'hotel': hotel,
+        'cart_items': cart_items,
+        'payment_methods': payment_methods,
+        'total_price': total_price
+    }
+    
+    return render(request, 'frontend/home/pages/payment-complete.html', context)
