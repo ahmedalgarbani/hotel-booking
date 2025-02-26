@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2025 at 01:17 PM
+-- Generation Time: Feb 27, 2025 at 12:31 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -46,7 +46,9 @@ INSERT INTO `additional_services` (`id`, `services_id`, `shoppingcartitem_id`) V
 (6, 1, 30),
 (7, 1, 32),
 (8, 1, 34),
-(9, 1, 35);
+(9, 1, 35),
+(10, 1, 36),
+(11, 1, 39);
 
 -- --------------------------------------------------------
 
@@ -357,6 +359,15 @@ CREATE TABLE `bookings_booking` (
   `status_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `bookings_booking`
+--
+
+INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `check_in_date`, `check_out_date`, `amount`, `created_by_id`, `hotel_id`, `room_id`, `updated_by_id`, `user_id`, `status_id`) VALUES
+(3, '2025-02-26 23:06:51.537318', '2025-02-26 23:19:46.714279', NULL, '2025-02-26 23:06:37.000000', '2025-02-27 23:06:41.000000', 1000.00, NULL, 1, 3, NULL, 8, 1),
+(4, '2025-02-26 23:20:40.242440', '2025-02-26 23:22:46.928224', NULL, '2025-02-26 23:20:27.000000', '2025-02-27 23:20:29.000000', 123.00, NULL, 1, 3, NULL, 9, 1),
+(5, '2025-02-26 23:26:03.828258', '2025-02-26 23:28:33.438903', NULL, '2025-02-26 23:25:40.000000', '2025-02-28 23:25:56.000000', 500.00, NULL, 1, 3, NULL, 9, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -394,6 +405,15 @@ CREATE TABLE `bookings_bookingstatus` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings_bookingstatus`
+--
+
+INSERT INTO `bookings_bookingstatus` (`id`, `created_at`, `updated_at`, `deleted_at`, `booking_status_name`, `status_code`, `created_by_id`, `updated_by_id`) VALUES
+(1, '2025-02-26 22:42:22.247790', '2025-02-26 22:42:22.247790', NULL, 'complete', 0, NULL, NULL),
+(2, '2025-02-26 22:42:30.205040', '2025-02-26 22:42:30.205040', NULL, 'cancel', 1, NULL, NULL),
+(3, '2025-02-26 22:42:46.859735', '2025-02-26 22:42:46.859735', NULL, 'pending', 2, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -440,7 +460,44 @@ CREATE TABLE `django_admin_log` (
 INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
 (1, '2025-02-25 13:09:18.614258', '3', 'جناح - 30.00 (2025-02-25 إلى 2026-02-25)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0633\\u0639\\u0631\"]}}]', 21, 6),
 (2, '2025-02-25 14:19:59.968116', '1', 'ماء', 1, '[{\"added\": {}}]', 34, 6),
-(3, '2025-02-25 19:53:27.877326', '3', 'جناح - 40.00 (2025-02-25 إلى 2026-02-25)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0633\\u0639\\u0631\"]}}]', 21, 6);
+(3, '2025-02-25 19:53:27.877326', '3', 'جناح - 40.00 (2025-02-25 إلى 2026-02-25)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0633\\u0639\\u0631\"]}}]', 21, 6),
+(4, '2025-02-26 22:42:22.249820', '1', 'complete (0)', 1, '[{\"added\": {}}]', 24, 9),
+(5, '2025-02-26 22:42:30.211388', '2', 'cancel (1)', 1, '[{\"added\": {}}]', 24, 9),
+(6, '2025-02-26 22:42:46.861772', '3', 'pending (2)', 1, '[{\"added\": {}}]', 24, 9),
+(7, '2025-02-26 22:43:13.840052', '1', 'Booking #1 - جناح (Grand Hotel)', 1, '[{\"added\": {}}]', 5, 9),
+(8, '2025-02-26 22:44:16.319006', '3', 'Availability object (3)', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 17, 9),
+(9, '2025-02-26 22:44:38.652985', '1', 'Booking #1 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(10, '2025-02-26 22:47:16.034657', '1', 'Booking #1 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(11, '2025-02-26 22:56:58.964094', '1', 'Booking #1 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(12, '2025-02-26 23:02:23.940489', '1', 'Booking #1 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(13, '2025-02-26 23:02:37.998558', '1', 'Booking #1 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(14, '2025-02-26 23:04:14.128664', '2', 'Booking #2 - جناح (Grand Hotel)', 1, '[{\"added\": {}}]', 5, 9),
+(15, '2025-02-26 23:05:22.227479', '2', 'Booking #2 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(16, '2025-02-26 23:05:35.571352', '2', 'Booking #2 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(17, '2025-02-26 23:06:20.736015', '2', 'Booking #2 - جناح (Grand Hotel)', 3, '', 5, 9),
+(18, '2025-02-26 23:06:26.848537', '1', 'Booking #1 - جناح (Grand Hotel)', 3, '', 5, 9),
+(19, '2025-02-26 23:06:51.548210', '3', 'Booking #3 - جناح (Grand Hotel)', 1, '[{\"added\": {}}]', 5, 9),
+(20, '2025-02-26 23:08:06.685301', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(21, '2025-02-26 23:08:23.051271', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(22, '2025-02-26 23:08:59.635185', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(23, '2025-02-26 23:09:13.763119', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(24, '2025-02-26 23:11:42.813007', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(25, '2025-02-26 23:12:00.155188', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(26, '2025-02-26 23:19:46.728403', '3', 'Booking #3 - جناح (Grand Hotel)', 2, '[]', 5, 9),
+(27, '2025-02-26 23:20:40.248281', '4', 'Booking #4 - جناح (Grand Hotel)', 1, '[{\"added\": {}}]', 5, 9),
+(28, '2025-02-26 23:20:54.288167', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(29, '2025-02-26 23:21:34.087706', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(30, '2025-02-26 23:21:46.931652', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(31, '2025-02-26 23:22:10.227411', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(32, '2025-02-26 23:22:23.302407', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(33, '2025-02-26 23:22:37.005808', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(34, '2025-02-26 23:22:46.935120', '4', 'Booking #4 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(35, '2025-02-26 23:26:03.833856', '5', 'Booking #5 - جناح (Grand Hotel)', 1, '[{\"added\": {}}]', 5, 9),
+(36, '2025-02-26 23:26:11.918945', '2', 'Availability object (2)', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 17, 9),
+(37, '2025-02-26 23:26:22.384732', '5', 'Booking #5 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(38, '2025-02-26 23:27:56.903048', '5', 'Booking #5 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(39, '2025-02-26 23:28:20.624485', '5', 'Booking #5 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9),
+(40, '2025-02-26 23:28:33.456414', '5', 'Booking #5 - جناح (Grand Hotel)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 9);
 
 -- --------------------------------------------------------
 
@@ -591,7 +648,8 @@ CREATE TABLE `django_session` (
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('9uxdkno7cshpaf9cpjonz1tu6wmnn5ue', '.eJxVjEEOwiAQRe_C2hBmBAGX7j0DGZipVA1NSrsy3l2bdKHb_977L5VoXWpau8xpZHVWJ3X43TKVh7QN8J3abdJlass8Zr0peqddXyeW52V3_w4q9fqtA0WPJhoPBZ1hw4NAAUJvnEQbrENhZDuUkG2EzEfkzJ4gkAk5OlDvD8_RN5g:1tmj9J:b_OJab0bY4Sl-_DtPyiETKo91BWeudXJAEUoZej9M7Y', '2025-03-11 00:50:13.587074'),
 ('ghbwg3mlkd4hdw8ht67vnm1gt0jd8h31', '.eJxVjMsOwiAQRf-FtSGlPKZ06d5vIANMLWrAQJtojP-uTbrQ7T3nnhdzuC6zWxtVlyIbmWGH381juFLeQLxgPhceSl5q8nxT-E4bP5VIt-Pu_gVmbPP3TVb1xiNE3StvpLG9QPAA5IOWhAARpAiDVRPqTlsJIUxCCSvFgEp5u0UbtZZKdvS4p_pkY_f-AHY0PpM:1tn0bC:Jpm0x7IveznkAqV7e4ndYyHM94FEy3uIfryMBoKHtO0', '2025-03-11 19:28:10.206029'),
-('rlcvc1ff89rc6ni30dhafiguga645jm0', '.eJxVjEEOwiAQAP_C2RBKKbQ9evcNZJfdWtRAU9pEY_y7IelBrzOTeQsP-zb7vfDqI4lROHH6ZQjhzqkKukG6Zhly2taIsibysEVeMvHjfLR_gxnKXLd9aGliojAAKtQGetDUYKucbsAaVLrrwHWutWwRJudCMJNBC3oAMlCnhUuJOXl-LnF9iVF9vr8AP-0:1tnEOD:bCEpfhCtin3pBo4VS9m7uW4GB20RKT2EqsE0A5IMXkU', '2025-03-12 10:11:41.775343');
+('rlcvc1ff89rc6ni30dhafiguga645jm0', '.eJxVjEEOwiAQAP_C2RBKKbQ9evcNZJfdWtRAU9pEY_y7IelBrzOTeQsP-zb7vfDqI4lROHH6ZQjhzqkKukG6Zhly2taIsibysEVeMvHjfLR_gxnKXLd9aGliojAAKtQGetDUYKucbsAaVLrrwHWutWwRJudCMJNBC3oAMlCnhUuJOXl-LnF9iVF9vr8AP-0:1tnEOD:bCEpfhCtin3pBo4VS9m7uW4GB20RKT2EqsE0A5IMXkU', '2025-03-12 10:11:41.775343'),
+('t8iemr1otyvvx1lov7e76izu0kft7prf', '.eJxVjMsOwiAURP-FtSFcKC-X7vsN5PKSqoGktCvjv1uSLnQ5Z87Mmzjct-L2nla3RHIlllx-mcfwTHUU8YH13mhodVsXT4dCz7bTucX0up3u30HBXsaaWamYRMFATooBt5PJXOhkECAI6RNoI4XMmRl2MKW5QQQD_sgeNPl8AaBDNhQ:1tnPb3:Yp1wgaMIsbgEr1PGoDqB4u1PfBUtVkCbLo3PKMHU21Q', '2025-03-12 22:09:41.115728');
 
 -- --------------------------------------------------------
 
@@ -1224,9 +1282,9 @@ CREATE TABLE `rooms_availability` (
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `updated_by_id`, `room_status_id`, `room_type_id`) VALUES
 (1, '2025-02-25 00:47:51.366753', '2025-02-25 00:47:51.366753', NULL, '2025-02-25', 15, 'Automatically generated for 2025-02-25', NULL, 1, NULL, 1, 3),
-(2, '2025-02-25 00:47:51.376750', '2025-02-25 00:47:51.376750', NULL, '2025-02-26', 13, 'Automatically generated for 2025-02-26', NULL, 1, NULL, 1, 3),
-(3, '2025-02-25 00:47:51.384750', '2025-02-25 00:47:51.384750', NULL, '2025-02-27', 14, 'Automatically generated for 2025-02-27', NULL, 1, NULL, 1, 3),
-(4, '2025-02-25 00:47:51.393264', '2025-02-25 00:47:51.393264', NULL, '2025-02-28', 12, 'Automatically generated for 2025-02-28', NULL, 1, NULL, 1, 3),
+(2, '2025-02-25 00:47:51.376750', '2025-02-26 23:28:33.450398', NULL, '2025-02-26', 12, 'Automatically generated for 2025-02-26', NULL, 1, NULL, 1, 3),
+(3, '2025-02-25 00:47:51.384750', '2025-02-26 23:28:33.452423', NULL, '2025-02-27', 12, 'Automatically generated for 2025-02-27', NULL, 1, NULL, 1, 3),
+(4, '2025-02-25 00:47:51.393264', '2025-02-26 23:28:33.454417', NULL, '2025-02-28', 12, 'Automatically generated for 2025-02-28', NULL, 1, NULL, 1, 3),
 (5, '2025-02-25 00:47:51.400789', '2025-02-25 00:47:51.400789', NULL, '2025-03-01', 13, 'Automatically generated for 2025-03-01', NULL, 1, NULL, 1, 3),
 (6, '2025-02-25 00:47:51.408789', '2025-02-25 00:47:51.408789', NULL, '2025-03-02', 13, 'Automatically generated for 2025-03-02', NULL, 1, NULL, 1, 3),
 (7, '2025-02-25 00:47:51.416828', '2025-02-25 00:47:51.416828', NULL, '2025-03-03', 13, 'Automatically generated for 2025-03-03', NULL, 1, NULL, 1, 3),
@@ -2468,7 +2526,9 @@ CREATE TABLE `shopping_cart` (
 
 INSERT INTO `shopping_cart` (`id`, `created_at`, `updated_at`, `deleted_at`, `user_id`) VALUES
 (1, '2025-02-25 12:50:45.439248', '2025-02-25 12:50:45.439248', NULL, 6),
-(2, '2025-02-26 10:11:58.375450', '2025-02-26 10:11:58.375450', NULL, 7);
+(2, '2025-02-26 10:11:58.375450', '2025-02-26 10:11:58.375450', NULL, 7),
+(3, '2025-02-26 21:56:12.879313', '2025-02-26 21:56:12.879313', NULL, 8),
+(4, '2025-02-26 22:15:29.754780', '2025-02-26 22:15:29.754780', NULL, 9);
 
 -- --------------------------------------------------------
 
@@ -2531,7 +2591,11 @@ INSERT INTO `shopping_cart_item` (`id`, `item_type`, `quantity`, `Total_price`, 
 (32, 'room', 3, 135.00, '2025-02-26 11:37:00.000000', '2025-02-27 11:37:00.000000', NULL, '2025-02-26 11:38:04.061289', '2025-02-26 11:41:47.462627', '2025-02-26 11:41:47.462627', 2, NULL, 3),
 (33, 'room', 2, 80.00, '2025-02-26 11:41:00.000000', '2025-02-27 11:41:00.000000', NULL, '2025-02-26 11:41:58.252990', '2025-02-26 11:42:00.927154', NULL, 2, NULL, 3),
 (34, 'room', 1, 45.00, '2025-02-26 11:41:00.000000', '2025-02-27 11:41:00.000000', NULL, '2025-02-26 11:42:07.327475', '2025-02-26 11:42:07.333477', NULL, 2, NULL, 3),
-(35, 'room', 2, 90.00, '2025-02-26 11:47:00.000000', '2025-02-27 11:47:00.000000', NULL, '2025-02-26 11:47:10.120102', '2025-02-26 11:47:20.740722', NULL, 2, NULL, 3);
+(35, 'room', 2, 90.00, '2025-02-26 11:47:00.000000', '2025-02-27 11:47:00.000000', NULL, '2025-02-26 11:47:10.120102', '2025-02-26 11:47:20.740722', NULL, 2, NULL, 3),
+(36, 'room', 1, 45.00, '2025-02-26 12:17:00.000000', '2025-02-27 12:17:00.000000', NULL, '2025-02-26 12:17:53.951805', '2025-02-26 12:17:53.974404', NULL, 2, NULL, 3),
+(37, 'room', 1, 40.00, '2025-02-26 21:55:00.000000', '2025-02-27 21:55:00.000000', NULL, '2025-02-26 21:56:12.957180', '2025-02-26 21:56:12.963142', NULL, 3, NULL, 3),
+(38, 'room', 2, 80.00, '2025-02-26 22:15:00.000000', '2025-02-27 22:15:00.000000', NULL, '2025-02-26 22:15:29.778426', '2025-02-26 22:15:34.494696', NULL, 4, NULL, 3),
+(39, 'room', 1, 45.00, '2025-02-26 22:20:00.000000', '2025-02-27 22:20:00.000000', NULL, '2025-02-26 22:21:01.920810', '2025-02-26 22:21:01.937552', NULL, 4, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -2615,7 +2679,9 @@ INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, 
 (4, 'pbkdf2_sha256$870000$9zLiWKu9gRiWRBbUeWDrev$sghK1iE3q399dORnG39xVvlC/7DnXi9zeGM/lhxP3pM=', NULL, 0, 'customer1', 'Customer', 'One', 'customer1@example.com', 0, '2025-02-25 00:47:47.512856', '2025-02-25 00:47:47.512856', '2025-02-25 00:47:48.530187', 'customer', '0533333333', '', 1, NULL),
 (5, 'pbkdf2_sha256$870000$HUjSgQsKOhn25IzKmXBUBD$91vM4KhhcAsTRCqeA8VCvLrKsek+dvmIhcs5GFOBkvM=', NULL, 0, 'staff1', 'Staff', 'One', 'staff1@example.com', 0, '2025-02-25 00:47:48.541227', '2025-02-25 00:47:48.541227', '2025-02-25 00:47:49.577067', 'staff', '0544444444', '', 1, NULL),
 (6, 'pbkdf2_sha256$600000$F2vEmUnNVf4f9fOtOOVItC$hBpnAmdWWvY+ltUvxSC22vKN4E5x+VhY+X5ESW82Lmg=', '2025-02-25 19:28:10.203894', 1, 'ali', '', '', '', 1, '2025-02-25 00:50:01.299612', '2025-02-25 00:50:02.348686', '2025-02-25 00:50:02.348686', '', '', '', 1, NULL),
-(7, 'pbkdf2_sha256$600000$p6JuQ9P7wv2sQhUDaTrogS$lNhIPSDy+us6FyuDwCtaQR57wwXlUTrvXz8I19qijgI=', '2025-02-26 10:11:41.771831', 1, 'ah', '', '', 'ah@ah.com', 1, '2025-02-26 10:11:30.338998', '2025-02-26 10:11:30.821540', '2025-02-26 10:11:30.821540', '', '', '', 1, NULL);
+(7, 'pbkdf2_sha256$600000$p6JuQ9P7wv2sQhUDaTrogS$lNhIPSDy+us6FyuDwCtaQR57wwXlUTrvXz8I19qijgI=', '2025-02-26 10:11:41.771831', 1, 'ah', '', '', 'ah@ah.com', 1, '2025-02-26 10:11:30.338998', '2025-02-26 10:11:30.821540', '2025-02-26 10:11:30.821540', '', '', '', 1, NULL),
+(8, 'pbkdf2_sha256$600000$F253zdmhfnmrvK7AYF9dcI$jH8fkgCEy98J0tLIpQTnKYz+0zmojgruk4eWOMBBw4A=', '2025-02-26 21:55:46.658928', 0, 'ahmed', '', '', 'ashh@s.com', 0, '2025-02-26 21:55:44.921067', '2025-02-26 21:55:46.634082', '2025-02-26 21:55:46.634082', 'user', '', '', 1, NULL),
+(9, 'pbkdf2_sha256$600000$yWuxL9PEPDVFgueE2SlYGu$Ft35HFze9+lLaxzcgqN6sFRhbM+E1jynUXNFTbmw7WU=', '2025-02-26 22:09:41.105654', 1, 'a', '', '', 'a@a.com', 1, '2025-02-26 22:09:34.596256', '2025-02-26 22:09:35.416331', '2025-02-26 22:09:35.416331', '', '', '', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -3078,7 +3144,7 @@ ALTER TABLE `users_customuser_user_permissions`
 -- AUTO_INCREMENT for table `additional_services`
 --
 ALTER TABLE `additional_services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `auth_group`
@@ -3120,7 +3186,7 @@ ALTER TABLE `blog_post`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
@@ -3132,7 +3198,7 @@ ALTER TABLE `bookings_bookingdetail`
 -- AUTO_INCREMENT for table `bookings_bookingstatus`
 --
 ALTER TABLE `bookings_bookingstatus`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `bookings_guest`
@@ -3144,7 +3210,7 @@ ALTER TABLE `bookings_guest`
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
@@ -3306,13 +3372,13 @@ ALTER TABLE `service_offers`
 -- AUTO_INCREMENT for table `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `shopping_cart_item`
 --
 ALTER TABLE `shopping_cart_item`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `token_blacklist_blacklistedtoken`
@@ -3336,7 +3402,7 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
