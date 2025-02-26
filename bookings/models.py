@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from HotelManagement.models import BaseModel
 from django.utils.translation import gettext_lazy as _
+from rooms.models import Availability
 
 from services.models import RoomTypeService
 
@@ -65,7 +66,7 @@ class BookingStatus(BaseModel):
         ordering = ['status_code']
 
     def __str__(self):
-        return f"{self.booking_status_name} ({self.status_code})"
+        return f"{self.booking_status_name}"
 
 
 # ------------ Booking -------------
@@ -126,7 +127,7 @@ class Booking(BaseModel):
         if self.check_in_date and self.check_out_date:
             return (self.check_out_date - self.check_in_date).days
         return 0
-
+    
 
 # ------------ Booking Detail -------------
 class BookingDetail(BaseModel):
