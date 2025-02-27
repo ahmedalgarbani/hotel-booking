@@ -165,10 +165,12 @@ START TOUR DETAIL AREA
                   </p>
                 </div>
               </div>
-              <!-- end single-content-item -->
+              {% if hotel_services %}
+                            <!-- end single-content-item -->
               <div class="section-block"></div>
               <div class="single-content-item py-4">
                 <div class="row">
+                  {% for hotel_services in hotel_services %}
                   <div class="col-lg-4 responsive-column">
                     <div
                       class="single-tour-feature d-flex align-items-center mb-3"
@@ -176,155 +178,25 @@ START TOUR DETAIL AREA
                       <div
                         class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
                       >
-                        <i class="la la-hotel"></i>
+                        <i class="la {{hotel_services.icon}}"></i>
                       </div>
                       <div class="single-feature-titles">
                         <h3 class="title font-size-15 font-weight-medium">
-                          نوع الفندق
+                          {{hotel_services.name}}
                         </h3>
-                        <span class="font-size-13">4 نجوم</span>
+                        <span class="font-size-13">{{hotel_services.description}}</span>
                       </div>
                     </div>
                     <!-- end single-tour-feature -->
                   </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-user"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          أشخاص إضافيون
-                        </h3>
-                        <span class="font-size-13">لا تهمة</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-bed"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          الحد الأدنى للإقامة
-                        </h3>
-                        <span class="font-size-13">2 ليالي</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-money"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مبلغ التأمين
-                        </h3>
-                        <span class="font-size-13">$279</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-globe"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          بلد
-                        </h3>
-                        <span class="font-size-13">فرنسا</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-map"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مدينة
-                        </h3>
-                        <span class="font-size-13">باريس</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-user"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          حي
-                        </h3>
-                        <span class="font-size-13">جمهورية</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-times"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          إلغاء
-                        </h3>
-                        <span class="font-size-13">صارم</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
+                  {% endfor %}
+                 
                 </div>
                 <!-- end row -->
               </div>
               <!-- end single-content-item -->
+              {% endif %}
+
               <div class="section-block"></div>
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -344,113 +216,10 @@ START TOUR DETAIL AREA
                 class="single-content-item padding-top-40px padding-bottom-30px"
               >
                 <h3 class="title font-size-20">التوفر</h3>
-                <div class="contact-form-action padding-bottom-35px">
-                  <form method="post">
-                    <div class="row">
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text"
-                            >تسجيل دخول تسجيل خروج</label
-                          >
-                          <div class="form-group">
-                            <span class="la la-calendar form-icon"></span>
-                            <input
-                              class="date-picker-multiple form-control"
-                              type="text"
-                              name="date"
-                              readonly
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">غرف</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الغرف</option>
-                                <option value="1">1 غرفة</option>
-                                <option value="2">2 غرف</option>
-                                <option value="3">3 غرف</option>
-                                <option value="4">4 غرف</option>
-                                <option value="5">5 غرف</option>
-                                <option value="6">6 غرف</option>
-                                <option value="7">7 غرف</option>
-                                <option value="8">8 غرف</option>
-                                <option value="9">9 غرف</option>
-                                <option value="10">10 غرف</option>
-                                <option value="11">11 غرف</option>
-                                <option value="12">12 غرف</option>
-                                <option value="13">13 غرف</option>
-                                <option value="14">14 غرف</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">الكبار (18+)</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الكبار</option>
-                                <option value="1">1 الكبار</option>
-                                <option value="2">2 الكبار</option>
-                                <option value="3">3 الكبار</option>
-                                <option value="4">4 الكبار</option>
-                                <option value="5">5 الكبار</option>
-                                <option value="6">6 الكبار</option>
-                                <option value="7">7 الكبار</option>
-                                <option value="8">8 الكبار</option>
-                                <option value="9">9 الكبار</option>
-                                <option value="10">10 الكبار</option>
-                                <option value="11">11 الكبار</option>
-                                <option value="12">12 الكبار</option>
-                                <option value="13">13 الكبار</option>
-                                <option value="14">14 الكبار</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">الأطفال (0-17)</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الأطفال</option>
-                                <option value="1">1 الأطفال</option>
-                                <option value="2">2 الأطفال</option>
-                                <option value="3">3 الأطفال</option>
-                                <option value="4">4 الأطفال</option>
-                                <option value="5">5 الأطفال</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="btn-box">
-                          <button type="button" class="theme-btn">
-                            ابحث الآن
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+               
                 <!-- end contact-form-action -->
                 <h3 class="title font-size-20">الغرف المتاحة</h3>
-                {% for availability in availability %}
+                {% for availability in available_room_types %}
                 <!-- start cabin-type -->
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
@@ -467,73 +236,29 @@ START TOUR DETAIL AREA
                     </div>
                 
                     <div class="cabin-type-detail">
-                      <h3 class="title">{{ availability.room_type.name }}</h3>
+                      <a  href="{% url 'rooms:room_detail' availability.room_type.id %}" class="title">{{availability.room_type.name}}</a>
+                     {% if availability.room_type.services %}
+                      
                       <div class="row padding-top-20px">
+                        {% for service in availability.room_type.services %}
                         <div class="col-lg-6 responsive-column">
                           <div class="single-tour-feature d-flex align-items-center mb-3">
                             <div
                               class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
                             >
-                              <i class="la la-wifi"></i>
+                              <i class="la {{service.icon}}"></i>
                             </div>
                             <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">واى فاى مجانى</h3>
+                              <h3 class="title font-size-15 font-weight-medium">{{service}}  </h3>
                             </div>
                           </div>
                         </div>
                         <!-- end col-lg-6 -->
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-bed"></i>
-                            </div>
-                            {% if availability.room_type.beds_count > 0 %}
-                            
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">
-                                {{ availability.room_type.beds_count }} سرير
-                              </h3>
-                            </div>
-                            {% endif %}
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-building"></i>
-                            </div>
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">
-                                {{ availability.room_type.default_capacity }} m²
-                              </h3>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-hotel"></i>
-                            </div>
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">
-                                دش وحوض استحمام
-                              </h3>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
+                        {% endfor %}
                       </div>
                       <!-- end row -->
+                      {% endif %}
                     </div>
-                
                     <div class="cabin-price">
                       <p class="text-uppercase font-size-14">
                         لليلة الواحدة
@@ -565,400 +290,7 @@ START TOUR DETAIL AREA
               <!-- end single-content-item -->
               <div class="section-block"></div>
             </div>
-            <!-- end location-map -->
-            <div id="amenities" class="page-scroll">
-              <div
-                class="single-content-item padding-top-40px padding-bottom-20px"
-              >
-                <h3 class="title font-size-20">وسائل الراحة</h3>
-                <div class="amenities-feature-item pt-4">
-                  <div class="row">
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-wifi"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            وفي
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            حمام السباحة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-television"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            التلفاز
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-coffee"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            قهوة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-tree"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            تكييف
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-gear"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مرافق اللياقة البدنية
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            ثلاجة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-glass"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            بار النبيذ
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-music"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            وسائل الترفيه
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-lock"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            قبو آمن
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-car"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            انتقاء وإفلات
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            خدمة الغرف
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check-circle"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مسموح بدخول الحيوانات الأليفة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-coffee"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            وجبة افطار
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-car"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            موقف سيارات مجاني
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-fire"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            المدفأة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-wheelchair"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            الوصول لذوي الإعاقة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-user-secret"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            بواب
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-building"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مصعد في المبنى
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-gift"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مناسب للأحداث
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-gamepad"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مكان اللعب
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                  </div>
-                  <!-- end row -->
-                </div>
-              </div>
-              <!-- end single-content-item -->
-              <div class="section-block"></div>
-            </div>
-            <!-- end faq -->
+{% comment %}         
             <div id="faq" class="page-scroll">
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -1124,7 +456,7 @@ START TOUR DETAIL AREA
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
-            </div>
+            </div> {% endcomment %}
             <!-- end faq -->
             <div id="reviews" class="page-scroll">
               <div
@@ -1407,138 +739,7 @@ START TOUR DETAIL AREA
         </div>
         <!-- end col-lg-8 -->
         <div class="col-lg-4">
-          <div class="sidebar single-content-sidebar mb-0">
-            <div class="sidebar-widget single-content-widget">
-              <div class="sidebar-widget-item">
-                <div class="sidebar-book-title-wrap mb-3">
-                  <h3>جمع</h3>
-                  <p>
-                    <span class="text-form">من عند</span
-                    ><span class="text-value ms-2 me-1">$399.00</span>
-                    <span class="before-price">$412.00</span>
-                  </p>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div class="contact-form-action">
-                  <form action="#">
-                    <div class="input-box">
-                      <label class="label-text"
-                        >تسجيل دخول تسجيل خروج</label
-                      >
-                      <div class="form-group">
-                        <span class="la la-calendar form-icon"></span>
-                        <input
-                          class="date-picker-multiple form-control"
-                          type="text"
-                          name="date"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                    <div class="input-box">
-                      <label class="label-text">غرف</label>
-                      <div class="form-group">
-                        <div
-                          class="select-contain select2-container-wrapper w-auto"
-                        >
-                          <select class="select-contain-select">
-                            <option value="0">حدد الغرف</option>
-                            <option value="1">1 غرفة</option>
-                            <option value="2">2 غرف</option>
-                            <option value="3">3 غرف</option>
-                            <option value="4">4 غرف</option>
-                            <option value="5">5 غرف</option>
-                            <option value="6">6 غرف</option>
-                            <option value="7">7 غرف</option>
-                            <option value="8">8 غرف</option>
-                            <option value="9">9 غرف</option>
-                            <option value="10">10 غرف</option>
-                            <option value="11">11 غرف</option>
-                            <option value="12">12 غرف</option>
-                            <option value="13">13 غرف</option>
-                            <option value="14">14 غرف</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الكبار <span>Age 18+</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الأطفال <span>2-12 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الرضع <span>0-2 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="btn-box pt-2">
-                <a
-                  href="tour-booking.html"
-                  class="theme-btn text-center w-100 mb-2"
-                  ><i class="la la-shopping-cart me-2 font-size-18"></i>احجز
-                  الآن</a
-                >
-                <a
-                  href="#"
-                  class="theme-btn text-center w-100 theme-btn-transparent"
-                  ><i class="la la-heart-o me-2"></i>أضف إلى قائمة
-                  الامنيات</a
-                >
-                <div
-                  class="d-flex align-items-center justify-content-between pt-2"
-                >
-                  <a
-                    href="#"
-                    class="btn theme-btn-hover-gray font-size-15"
-                    data-bs-toggle="modal"
-                    data-bs-target="#sharePopupForm"
-                    ><i class="la la-share me-1"></i>شارك</a
-                  >
-                  <p>
-                    <i class="la la-eye me-1 font-size-15 color-text-2"></i
-                    >3456
-                  </p>
-                </div>
-              </div>
-            </div>
+          
            
             <div class="sidebar-widget single-content-widget">
               <h3 class="title stroke-shape">نوع حساب؟</h3>

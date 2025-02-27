@@ -1,4 +1,3 @@
-
 from django.urls import path
 from . import views
 
@@ -27,4 +26,11 @@ urlpatterns = [
     path('admin_dashboard_orders',views.admin_dashboard_orders,name='admin_dashboard_orders'),
     path('admin_dashboard_orders_detail',views.admin_dashboard_orders_detail,name='admin_dashboard_orders_detail'),
     path('admin_currency_list',views.admin_currency_list,name='admin_currency_list'),
+    
+    # payment methods for Hotels
+    path('cart/<int:room_id>',views.cart,name='cart'),
+    path('checkout/<int:hotel_id>/', views.hotel_checkout, name='checkout'),
+    path('confirm-payment/<int:room_id>/', views.confirm_payment, name='confirm_payment'),
+#    path('process-hotel-payment/', views.process_hotel_payment, name='process_hotel_payment'),
+#    path('payment_complete/<int:hotel_id>/', views.payment_complete, name='payment_complete'),
 ]

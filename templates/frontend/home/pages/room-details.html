@@ -1,5 +1,41 @@
 {% extends "frontend/layout/master.html" %}
+{% block extra_css %}
+   
+    <style>
+    .messages .alert {
+    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+    border: 2px solid; /* إضافة حدود سميكة */
+    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+    font-weight: bold; /* جعل النص أكثر جرأة */
+}
 
+.messages .alert-success {
+    color: #155724; /* لون نص النجاح (أخضر داكن) */
+    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+}
+
+.messages .alert-error {
+    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+}
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+.messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+</style>
+ {% endblock extra_css %}
 {% block content %}
 
     <!-- ================================
@@ -7,7 +43,7 @@
 ================================= -->
 <section class="room-detail-bread">
   <div class="full-width-slider carousel-action">
-    {% for image in room.images.all %}
+    {% for image in image %}
     <div class="full-width-slide-item">
       <img src="{{ image.image.url }}" alt="{{ room.name }}" />
     </div>
@@ -86,11 +122,14 @@ START TOUR DETAIL AREA
               <div class="single-content-item pb-4">
                 <h3 class="title font-size-26">{{ room.name }}</h3>
                 <p class="pt-2">
-                  <span
-                    class="badge text-bg-warning text-white font-size-16"
-                    >4.6</span
-                  >
-                  <span>(4،209 تعليقات)</span>
+                 <span class="badge text-bg-warning text-white font-size-16">
+    {% if average_rating %}
+        {{ average_rating }}
+    {% else %}
+        لا يوجد تقييمات بعد
+    {% endif %}
+</span>
+                  <span>({{ reviews.paginator.count }} تعليقات)</span>
                 </p>
               </div>
               <!-- end single-content-item -->
@@ -103,7 +142,7 @@ START TOUR DETAIL AREA
                   {{ room.description }}
                 </p>
                 <p class="pb-4">
-              
+
                 </p>
                 <h3 class="title font-size-15 font-weight-medium pb-3">
                   قواعد المنزل
@@ -113,10 +152,7 @@ START TOUR DETAIL AREA
                     <i class="la la-dot-circle me-2"></i>ممنوع التدخين
                     والحفلات والمناسبات.
                   </li>
-                  <li>
-                    <i class="la la-dot-circle me-2"></i>وقت تسجيل الوصول هو
-                    2 ظهراً - 4 عصراً وتسجيل المغادرة 10 صباحاً.
-                  </li>
+
                 </ul>
               </div>
               <!-- end single-content-item -->
@@ -127,438 +163,41 @@ START TOUR DETAIL AREA
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
               >
-                <h3 class="title font-size-20">خدمات</h3>
-                <div class="row pt-4">
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          تأجير دراجات
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          قاعات المؤتمرات
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          سلة فواكه
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          تدليك
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          معالم المدينة
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          تأجير السيارات
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مركز اللياقة البدنية
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          غسيل ملابس
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مساحة خاصة لوقوف السيارات
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-check-circle"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          صرخة يقظة
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                </div>
+                <h3 class="title font-size-20">خدمات ووسائل الراحة </h3>
+<div class="row pt-4">
+  {% for service in services %}
+  {% if service.additional_fee %}
+  <!-- end col-lg-4 -->
+  <div class="col-lg-4 responsive-column">
+    <div
+      class="single-tour-feature d-flex align-items-center mb-3"
+    >
+      <div
+        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
+      >
+        <i class="la {{service.icon}}"></i>
+      </div>
+      <div class="single-feature-titles">
+        <h3 class="title font-size-15 font-weight-medium">
+        {{service.name}}
+        </h3>
+      </div>
+    </div>
+    <!-- end single-tour-feature -->
+  </div>
+  {% endif %}  <!-- نهاية الشرط -->
+  <!-- end col-lg-4 -->
+  {% endfor %}
+</div>
                 <!-- end row -->
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
             </div>
-            <!-- end itinerary -->
-            <div id="amenities" class="page-scroll">
-              <div
-                class="single-content-item padding-top-40px padding-bottom-40px"
-              >
-                <h3 class="title font-size-20">وسائل الراحة</h3>
-                <div class="row pt-4">
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-couch"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          2 مقاعد صوفا
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-television"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          تلفزيون سامسونج ال اي دي 40 بوصة
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-gear"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          خدمة كبير الخدم
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-wifi"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          واى فاى مجانى
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-swimming-pool"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مسبح خاص
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-user"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          خدمة غرف 24 ساعة
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-air-freshener"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          تكييف
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-phone"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          هاتف للإتصال المباشر
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-bullhorn"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مجففة الشعر
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-bathtub"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          حوض الاستحمام
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-hand-holding-usd"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          صندوق الإيداع الآمن
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-luggage-cart"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          تخزين الأمتعة
-                        </h3>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                </div>
-                <!-- end row -->
-              </div>
-              <!-- end single-content-item -->
-              <div class="section-block"></div>
-            </div>
-            <!-- end itinerary -->
-            <div id="location-map" class="page-scroll">
-              <div
-                class="single-content-item padding-top-40px padding-bottom-40px"
-              >
-                <h3 class="title font-size-20">موقعك</h3>
-                <div class="map-container padding-top-30px">
-                  <div id="map"></div>
-                </div>
-                <!-- end map-container -->
-              </div>
-              <!-- end single-content-item -->
-              <div class="section-block"></div>
-            </div>
+
+
             <!-- end location-map -->
+                       <!-- end location-map -->
             <div id="reviews" class="page-scroll">
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -568,132 +207,35 @@ START TOUR DETAIL AREA
                   <div class="row align-items-center">
                     <div class="col-lg-4">
                       <div class="review-summary">
-                        <h2>4.5<span>/5</span></h2>
-                        <p>ممتاز</p>
-                        <span>مرتكز على 4 تقييمات</span>
+                        <h2>
+                          {% if average_rating %}
+                            {{ average_rating }}
+                          {% else %}
+                            0.0
+                          {% endif %}
+                          <span>/5</span>
+                        </h2>
+                        <p>
+                          {% if average_rating >= 4.5 %}
+                            ممتاز
+                          {% elif average_rating >= 3.5 %}
+                            جيد جداً
+                          {% elif average_rating >= 2.5 %}
+                            جيد
+                          {% elif average_rating >= 1.5 %}
+                            مقبول
+                          {% else %}
+                            ضعيف
+                          {% endif %}
+                        </p>
+                        <span>مرتكز على {{ reviews.paginator.count }} تقييم</span>
                       </div>
                     </div>
                     <!-- end col-lg-4 -->
                     <div class="col-lg-8">
                       <div class="review-bars">
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <div class="progress-item">
-                              <h3 class="progressbar-title">الخدمات</h3>
-                              <div
-                                class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
-                              >
-                                <div class="progressbar-box flex-shrink-0">
-                                  <div
-                                    class="progressbar-line"
-                                    data-percent="70%"
-                                  >
-                                    <div
-                                      class="progressbar-line-item bar-bg-1"
-                                    ></div>
-                                  </div>
-                                  <!-- End Skill Bar -->
-                                </div>
-                                <div class="bar-percent">4.6</div>
-                              </div>
-                            </div>
-                            <!-- end progress-item -->
-                          </div>
-                          <!-- end col-lg-6 -->
-                          <div class="col-lg-6">
-                            <div class="progress-item">
-                              <h3 class="progressbar-title">موقعك</h3>
-                              <div
-                                class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
-                              >
-                                <div class="progressbar-box flex-shrink-0">
-                                  <div
-                                    class="progressbar-line"
-                                    data-percent="55%"
-                                  >
-                                    <div
-                                      class="progressbar-line-item bar-bg-2"
-                                    ></div>
-                                  </div>
-                                  <!-- End Skill Bar -->
-                                </div>
-                                <div class="bar-percent">4.7</div>
-                              </div>
-                            </div>
-                            <!-- end progress-item -->
-                          </div>
-                          <!-- end col-lg-6 -->
-                          <div class="col-lg-6">
-                            <div class="progress-item">
-                              <h3 class="progressbar-title">قيمة المال</h3>
-                              <div
-                                class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
-                              >
-                                <div class="progressbar-box flex-shrink-0">
-                                  <div
-                                    class="progressbar-line"
-                                    data-percent="40%"
-                                  >
-                                    <div
-                                      class="progressbar-line-item bar-bg-3"
-                                    ></div>
-                                  </div>
-                                  <!-- End Skill Bar -->
-                                </div>
-                                <div class="bar-percent">2.6</div>
-                              </div>
-                            </div>
-                            <!-- end progress-item -->
-                          </div>
-                          <!-- end col-lg-6 -->
-                          <div class="col-lg-6">
-                            <div class="progress-item">
-                              <h3 class="progressbar-title">النظافة</h3>
-                              <div
-                                class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
-                              >
-                                <div class="progressbar-box flex-shrink-0">
-                                  <div
-                                    class="progressbar-line"
-                                    data-percent="60%"
-                                  >
-                                    <div
-                                      class="progressbar-line-item bar-bg-4"
-                                    ></div>
-                                  </div>
-                                  <!-- End Skill Bar -->
-                                </div>
-                                <div class="bar-percent">3.6</div>
-                              </div>
-                            </div>
-                            <!-- end progress-item -->
-                          </div>
-                          <!-- end col-lg-6 -->
-                          <div class="col-lg-6">
-                            <div class="progress-item">
-                              <h3 class="progressbar-title">مرافق</h3>
-                              <div
-                                class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
-                              >
-                                <div class="progressbar-box flex-shrink-0">
-                                  <div
-                                    class="progressbar-line"
-                                    data-percent="50%"
-                                  >
-                                    <div
-                                      class="progressbar-line-item bar-bg-5"
-                                    ></div>
-                                  </div>
-                                  <!-- End Skill Bar -->
-                                </div>
-                                <div class="bar-percent">2.6</div>
-                              </div>
-                            </div>
-                            <!-- end progress-item -->
-                          </div>
-                          <!-- end col-lg-6 -->
-                        </div>
-                        <!-- end row -->
+                        <!-- تم إزالة أشرطة التقييمات الفردية كما هو مطلوب -->
+                        <p>لا يوجد تقييمات فرعية للخدمات، الموقع، إلخ. في نموذج مراجعة الغرفة هذا.</p>
                       </div>
                     </div>
                     <!-- end col-lg-8 -->
@@ -706,484 +248,127 @@ START TOUR DETAIL AREA
             <!-- end reviews -->
             <div class="review-box">
               <div class="single-content-item padding-top-40px">
-                <h3 class="title font-size-20">عرض 3 تقييمات من النزلاء</h3>
+                <h3 class="title font-size-20">عرض {{ reviews.paginator.count }} تقييمات من النزلاء</h3>
                 <div class="comments-list padding-top-50px">
-                  <div class="comment">
-                    <div class="comment-avatar">
-                      <img
-                        class="avatar__img"
-                        alt=""
-                        src="images/team8.jpg"
-                      />
-                    </div>
-                    <div class="comment-body">
-                      <div class="meta-data">
-                        <h3 class="comment__author">جيني دو</h3>
-                        <div class="meta-data-inner d-flex">
-                          <span
-                            class="ratings d-flex align-items-center me-1"
-                          >
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                          </span>
-                          <p class="comment__date">5 أبريل 2019</p>
-                        </div>
+                  <ul class="list-items">
+                    {% for review in reviews %}
+                    <li class="comment">
+                      <div class="comment-avatar">
+                        <img
+                          class="avatar__img"
+                          alt="صورة المستخدم"
+                          src="" <!-- استخدام static tag هنا -->
+                        />
                       </div>
-                      <p class="comment-content">
-                        لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن
-                        المواطنين يعيشون في تمويله ، فمن المهم تريتاني بحر.
-                        للقول أن هذا قد يكون صحيحًا هو حساسية euripidis
-                        السهلة
-                      </p>
-                      <div
-                        class="comment-reply d-flex align-items-center justify-content-between"
-                      >
-                        <a
-                          class="theme-btn"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#replayPopupForm"
-                        >
-                          <span class="la la-mail-reply me-1"></span>الرد
-                        </a>
-                        <div class="reviews-reaction">
-                          <a href="#" class="comment-like"
-                            ><i class="la la-thumbs-up"></i> 13</a
-                          >
-                          <a href="#" class="comment-dislike"
-                            ><i class="la la-thumbs-down"></i> 2</a
-                          >
-                          <a href="#" class="comment-love"
-                            ><i class="la la-heart-o"></i> 5</a
-                          >
+                      <div class="comment-body">
+                        <div class="meta-data">
+                          <h3 class="comment__author">{{ review.user.get_full_name }}</h3>
+                          <div class="meta-data-inner d-flex align-items-center">
+                            <span class="ratings d-flex align-items-center me-1">
+                              {% for i in stars %}
+                                {% if i <= review.rating %}
+                                  <i class="la la-star"></i>
+                                {% else %}
+                                  <i class="la la-star-o"></i>
+                                {% endif %}
+                              {% endfor %}
+                            </span>
+                            <p class="comment__date">{{ review.created_at|date:"d M Y" }}</p>
+                          </div>
                         </div>
+                        <p class="comment-content">
+                          {{ review.review }}
+                        </p>
+                        <!-- يمكنك إضافة قسم "الرد" إذا كنت تريد ميزة الرد على المراجعات -->
                       </div>
-                    </div>
-                  </div>
-                  <!-- end comments -->
-                  <div class="comment comment-reply-item">
-                    <div class="comment-avatar">
-                      <img
-                        class="avatar__img"
-                        alt=""
-                        src="images/team9.jpg"
-                      />
-                    </div>
-                    <div class="comment-body">
-                      <div class="meta-data">
-                        <h3 class="comment__author">جيني دو</h3>
-                        <div class="meta-data-inner d-flex">
-                          <span
-                            class="ratings d-flex align-items-center me-1"
-                          >
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                          </span>
-                          <p class="comment__date">5 أبريل 2019</p>
-                        </div>
-                      </div>
-                      <p class="comment-content">
-                        لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن
-                        المواطنين يعيشون في تمويله ، فمن المهم تريتاني بحر.
-                        للقول أن هذا قد يكون صحيحًا هو حساسية euripidis
-                        السهلة
-                      </p>
-                      <div
-                        class="comment-reply d-flex align-items-center justify-content-between"
-                      >
-                        <a
-                          class="theme-btn"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#replayPopupForm"
-                        >
-                          <span class="la la-mail-reply me-1"></span>الرد
-                        </a>
-                        <div class="reviews-reaction">
-                          <a href="#" class="comment-like"
-                            ><i class="la la-thumbs-up"></i> 13</a
-                          >
-                          <a href="#" class="comment-dislike"
-                            ><i class="la la-thumbs-down"></i> 2</a
-                          >
-                          <a href="#" class="comment-love"
-                            ><i class="la la-heart-o"></i> 5</a
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end comments -->
-                  <div class="comment">
-                    <div class="comment-avatar">
-                      <img
-                        class="avatar__img"
-                        alt=""
-                        src="images/team10.jpg"
-                      />
-                    </div>
-                    <div class="comment-body">
-                      <div class="meta-data">
-                        <h3 class="comment__author">جيني دو</h3>
-                        <div class="meta-data-inner d-flex">
-                          <span
-                            class="ratings d-flex align-items-center me-1"
-                          >
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                            <i class="la la-star"></i>
-                          </span>
-                          <p class="comment__date">5 أبريل 2019</p>
-                        </div>
-                      </div>
-                      <p class="comment-content">
-                        لوريم إيبسوم جزر ، أمر الألم ببطء إلى اليمين ، لكن
-                        المواطنين يعيشون في تمويله ، فمن المهم تريتاني بحر.
-                        للقول أن هذا قد يكون صحيحًا هو حساسية euripidis
-                        السهلة
-                      </p>
-                      <div
-                        class="comment-reply d-flex align-items-center justify-content-between"
-                      >
-                        <a
-                          class="theme-btn"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#replayPopupForm"
-                        >
-                          <span class="la la-mail-reply me-1"></span>الرد
-                        </a>
-                        <div class="reviews-reaction">
-                          <a href="#" class="comment-like"
-                            ><i class="la la-thumbs-up"></i> 13</a
-                          >
-                          <a href="#" class="comment-dislike"
-                            ><i class="la la-thumbs-down"></i> 2</a
-                          >
-                          <a href="#" class="comment-love"
-                            ><i class="la la-heart-o"></i> 5</a
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end comments -->
+                    </li>
+                    <!-- end comments -->
+                    {% empty %}
+                      <li>
+                        <p>لا يوجد مراجعات حتى الآن.</p>
+                      </li>
+                    {% endfor %}
+                  </ul>
+
+                  {% if reviews.has_next %}
                   <div class="btn-box load-more text-center">
                     <button
                       class="theme-btn theme-btn-small theme-btn-transparent"
                       type="button"
+                      id="load-more-reviews"
+                      data-next-page="{{ reviews.next_page_number }}"
+                      data-room-id="{{ room.id }}"
                     >
                       تحميل المزيد من المراجعة
                     </button>
                   </div>
+                  {% endif %}
+
                 </div>
                 <!-- end comments-list -->
-                <div class="comment-forum padding-top-40px">
-                  <div class="form-box">
-                    <div class="form-title-wrap">
-                      <h3 class="title">أكتب مراجعة</h3>
-                    </div>
-                    <!-- form-title-wrap -->
-                    <div class="form-content">
-                      <div class="rate-option p-2">
+                <!-- تم إزالة نموذج التقييم ذو الفئات لأنه لا يتطابق مع نموذج RoomReview الخاص بك -->
+               <div class="comment-forum padding-top-40px">
+               {% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+    <div class="form-box">
+        <div class="form-title-wrap">
+            <h3 class="title">أكتب مراجعة</h3>
+        </div>
+        <!-- form-title-wrap -->
+        <div class="form-content">
+            <div class="contact-form-action">
+                <form method="post"> <form method="post">
+                    {% csrf_token %} <form method="post">
                         <div class="row">
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>الخدمات</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst1"
-                                  value="1"
-                                />
-                                <label for="lst1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst2"
-                                  value="2"
-                                />
-                                <label for="lst2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst3"
-                                  value="3"
-                                />
-                                <label for="lst3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst4"
-                                  value="4"
-                                />
-                                <label for="lst4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="lst5"
-                                  value="5"
-                                />
-                                <label for="lst5"></label>
-                              </div>
+                            <div class="col-lg-12">
+                                <div class="input-box">
+                                    <label class="label-text">تقييم الغرفة</label>
+                                    <div class="rate-stars-option">
+                                        {% for i in stars %}
+                                            <input type="radio" name="rating" value="{{ i }}" id="rating-{{ i }}" {% if i == 5 %}checked{% endif %} >
+                                            <label for="rating-{{ i }}"></label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>موقعك</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l1"
-                                  value="1"
-                                />
-                                <label for="l1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l2"
-                                  value="2"
-                                />
-                                <label for="l2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l3"
-                                  value="3"
-                                />
-                                <label for="l3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l4"
-                                  value="4"
-                                />
-                                <label for="l4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="l5"
-                                  value="5"
-                                />
-                                <label for="l5"></label>
-                              </div>
+                            <div class="col-lg-12">
+                                <div class="input-box">
+                                    <label class="label-text">رسالة</label>
+                                    <div class="form-group">
+                                        <span class="la la-pencil form-icon"></span>
+                                        {{ form.review }} <span class="la la-pencil form-icon"></span>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>قيمة المال</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm1"
-                                  value="1"
-                                />
-                                <label for="vm1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm2"
-                                  value="2"
-                                />
-                                <label for="vm2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm3"
-                                  value="3"
-                                />
-                                <label for="vm3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm4"
-                                  value="4"
-                                />
-                                <label for="vm4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="vm5"
-                                  value="5"
-                                />
-                                <label for="vm5"></label>
-                              </div>
+                            <div class="col-lg-12">
+                                <div class="btn-box">
+                                    <button type="submit" class="theme-btn">
+                                        إرسال المراجعة
+                                    </button>
+                                </div>
                             </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>النظافة</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln1"
-                                  value="1"
-                                />
-                                <label for="cln1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln2"
-                                  value="2"
-                                />
-                                <label for="cln2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln3"
-                                  value="3"
-                                />
-                                <label for="cln3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln4"
-                                  value="4"
-                                />
-                                <label for="cln4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="cln5"
-                                  value="5"
-                                />
-                                <label for="cln5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
-                          <div class="col-lg-4 responsive-column">
-                            <div class="rate-option-item">
-                              <label>مرافق</label>
-                              <div class="rate-stars-option">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f1"
-                                  value="1"
-                                />
-                                <label for="f1"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f2"
-                                  value="2"
-                                />
-                                <label for="f2"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f3"
-                                  value="3"
-                                />
-                                <label for="f3"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f4"
-                                  value="4"
-                                />
-                                <label for="f4"></label>
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="f5"
-                                  value="5"
-                                />
-                                <label for="f5"></label>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- col-lg-4 -->
                         </div>
-                        <!-- end row -->
-                      </div>
-                      <!-- end rate-option -->
-                      <div class="contact-form-action">
-                        <form method="post">
-                          <div class="row">
-                            <div class="col-lg-6 responsive-column">
-                              <div class="input-box">
-                                <label class="label-text">اسم</label>
-                                <div class="form-group">
-                                  <span class="la la-user form-icon"></span>
-                                  <input
-                                    class="form-control"
-                                    type="text"
-                                    name="text"
-                                    placeholder="اسمك"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-6 responsive-column">
-                              <div class="input-box">
-                                <label class="label-text"
-                                  >البريد الإلكتروني</label
-                                >
-                                <div class="form-group">
-                                  <span
-                                    class="la la-envelope-o form-icon"
-                                  ></span>
-                                  <input
-                                    class="form-control"
-                                    type="email"
-                                    name="email"
-                                    placeholder="عنوان البريد الالكترونى"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-12">
-                              <div class="input-box">
-                                <label class="label-text">رسالة</label>
-                                <div class="form-group">
-                                  <span
-                                    class="la la-pencil form-icon"
-                                  ></span>
-                                  <textarea
-                                    class="message-control form-control"
-                                    name="message"
-                                    placeholder="اكتب رسالة"
-                                  ></textarea>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-lg-12">
-                              <div class="btn-box">
-                                <button type="button" class="theme-btn">
-                                  ترك التعليق
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                      <!-- end contact-form-action -->
-                    </div>
-                    <!-- end form-content -->
-                  </div>
-                  <!-- end form-box -->
-                </div>
+                    </form>
+                </form>
+            </div>
+            <!-- end contact-form-action -->
+        </div>
+        <!-- end form-content -->
+    </div>
+    <!-- end form-box -->
+</div>
                 <!-- end comment-forum -->
               </div>
               <!-- end single-content-item -->
             </div>
+            <!-- end review-box -->
             <!-- end review-box -->
           </div>
           <!-- end single-content-wrap -->
@@ -1195,247 +380,137 @@ START TOUR DETAIL AREA
               <h3 class="title stroke-shape">الحجز الخاص بك</h3>
               <div class="sidebar-widget-item">
                 <div class="contact-form-action">
-                  <form action="#">
+                  <form method="POST" action="{% url 'rooms:room_detail' room.id %}" id="bookingForm">
+                    {% csrf_token %}
                     <div class="input-box">
-                      <label class="label-text">تحقق في</label>
+                      <label class="label-text">تاريخ تسجيل الدخول</label>
                       <div class="form-group">
                         <span class="la la-calendar form-icon"></span>
                         <input
-                          class="date-picker-single form-control"
                           type="text"
-                          name="date"
+                          id="check_in_datepicker"
+                          name="check_in_date"
+                          value="{{ check_in|date:'Y-m-d' }}"
+                          required
                           readonly
+                          style="background-color: #f9f9f9; direction: rtl;"
                         />
                       </div>
                     </div>
                     <div class="input-box">
-                      <label class="label-text">الدفع</label>
+                      <label class="label-text">تاريخ تسجيل الخروج</label>
                       <div class="form-group">
                         <span class="la la-calendar form-icon"></span>
                         <input
-                          class="date-picker-single form-control"
                           type="text"
-                          name="date"
+                          id="check_out_datepicker"
+                          name="check_out_date"
+                          value="{{ check_out|date:'Y-m-d' }}"
+                          required
                           readonly
+                          style="background-color: #f9f9f9; direction: rtl;"
                         />
                       </div>
                     </div>
                     <div class="input-box">
-                      <label class="label-text">غرف</label>
+                      <label class="label-text">عدد الغرف</label>
                       <div class="form-group">
-                        <div
-                          class="select-contain select2-container-wrapper w-auto"
-                        >
-                          <select class="select-contain-select">
-                            <option value="0">اختر الغرفة</option>
-                            <option value="1" selected>1 غرفة</option>
-                            <option value="2">2 غرف</option>
-                            <option value="3">3 غرف</option>
-                            <option value="4">4 غرف</option>
-                            <option value="5">5 غرف</option>
-                            <option value="6">6 غرف</option>
-                            <option value="7">7 غرف</option>
-                            <option value="8">8 غرف</option>
-                            <option value="9">9 غرف</option>
-                            <option value="10">10 غرف</option>
-                          </select>
+                        <span class="la la-bed form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="number"
+                          name="room_number"
+                          id="roomNumber"
+                          min="1"
+                          value="1"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="input-box">
+                      <label class="label-text">عدد الأشخاص</label>
+                      <div class="form-group">
+                        <span class="la la-user form-icon"></span>
+                        <input
+                          class="form-control"
+                          type="number"
+                          name="adult_number"
+                          id="adultNumber"
+                          min="1"
+                          value="1"
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <!-- Extra Services Section -->
+                    <div class="sidebar-widget-item py-4">
+                      <h3 class="title stroke-shape">خدمات إضافية</h3>
+                      <div class="extra-service-wrap">
+                        {% for service in services %}
+                        {% if service.additional_fee %}
+                        <div class="custom-checkbox">
+                          <input
+                            type="checkbox"
+                            class="form-check-input service-checkbox"
+                            name="extra_services"
+                            value="{{ service.id }}"
+                            data-price="{{ service.additional_price }}"
+                          />
+                          <label class="d-flex justify-content-between align-items-center">
+                            {{ service.name }}
+                            <span class="text-black font-weight-regular">${{ service.additional_price }}</span>
+                          </label>
                         </div>
+                        {% endif %}
+                        {% endfor %}
                       </div>
                     </div>
-                  </form>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الكبار <span>سن 18+</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الأطفال <span>2-12 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الرضع <span>0-2 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item py-4">
-                <h3 class="title stroke-shape">خدمات إضافية</h3>
-                <div class="extra-service-wrap">
-                  <form
-                    action="#"
-                    method="post"
-                    class="extraServiceForm"
-                    id="extraServiceForm"
-                  >
-                    <div id="checkboxContainPrice">
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="cleaning"
-                          id="cleaningChb"
-                          value="15.00"
-                        />
-                        <label
-                          for="cleaningChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >رسوم التنظيف
-                          <span class="text-black font-weight-regular"
-                            >$15</span
-                          ></label
-                        >
-                      </div>
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="airport-pickup"
-                          id="airportPickupChb"
-                          value="20.00"
-                        />
-                        <label
-                          for="airportPickupChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >الاستقبال من المطار
-                          <span class="text-black font-weight-regular"
-                            >$20</span
-                          ></label
-                        >
-                      </div>
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="breakfast"
-                          id="breakfastChb"
-                          value="10.00"
-                        />
-                        <label
-                          for="breakfastChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >وجبة افطار
-                          <span class="text-black font-weight-regular"
-                            >$10/ للشخص الواحد</span
-                          ></label
-                        >
-                      </div>
-                      <div class="custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="parking"
-                          id="parkingChb"
-                          value="5.00"
-                        />
-                        <label
-                          for="parkingChb"
-                          class="d-flex justify-content-between align-items-center"
-                          >موقف سيارات
-                          <span class="text-black font-weight-regular"
-                            >$5/ لليلة الواحدة</span
-                          ></label
-                        >
-                      </div>
-                    </div>
+
                     <div class="total-price pt-3">
                       <p class="text-black">السعر الخاص</p>
                       <p class="d-flex align-items-center">
                         <span class="font-size-17 text-black">$</span>
                         <input
                           type="text"
-                          name="total"
+                          id="totalPrice"
+                          name="total_price"
                           class="num"
-                          value="80.00"
+                          value="{{ price }}"
                           readonly="readonly"
-                        /><span>/ لكل غرفة</span>
+                        />
+                        <span>/ لكل ليله</span>
                       </p>
                     </div>
+
+                    <div class="btn-box pt-2">
+                      <button type="submit" class="theme-btn text-center w-100 mb-2">
+                        <i class="la la-check-circle mr-2 font-size-18"></i>متابعة الى الدفع
+                      </button>
+                    </div>
+                    <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" 
+
+
+
+                    id="addToCartBtn"
+                 
+                 
+                    class="theme-btn text-center w-100 mb-2">
+                 
+                 
+                   <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
+                 
+                 
+                 </a>
+                 
+                 
                   </form>
-                </div>
               </div>
               <!-- end sidebar-widget-item -->
-              <div class="btn-box">
-                <a href="cart.html" class="theme-btn text-center w-100 mb-2"
-                  >احجز الآن</a
-                >
-              </div>
             </div>
             <!-- end sidebar-widget -->
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">نوع حساب؟</h3>
-              <div class="sidebar-list">
-                <ul class="list-items">
-                  <li>
-                    <i class="la la-dollar icon-element me-2"></i> ضمان أفضل
-                    الأسعار بدون متاعب
-                  </li>
-                  <li>
-                    <i class="la la-microphone icon-element me-2"></i> خدمة
-                    العملاء متوفرة 24/7
-                  </li>
-                  <li>
-                    <i class="la la-thumbs-up icon-element me-2"></i> جولات
-                    وأنشطة منتقاة بعناية
-                  </li>
-                  <li>
-                    <i class="la la-file-text icon-element me-2"></i> تأمين
-                    سفر مجاني
-                  </li>
-                </ul>
-              </div>
-              <!-- end sidebar-list -->
-            </div>
-            <!-- end sidebar-widget -->
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">احصل على سؤال؟</h3>
-              <p class="font-size-14 line-height-24">
-                لا تتردد في الاتصال بنا. نحن فريق من الخبراء ويسعدنا التحدث
-                إليكم.
-              </p>
-              <div class="sidebar-list pt-3">
-                <ul class="list-items">
-                  <li>
-                    <i class="la la-phone icon-element me-2"></i
-                    ><a href="#">+ 61 23 8093 3400</a>
-                  </li>
-                  <li>
-                    <i class="la la-envelope icon-element me-2"></i
-                    ><a href="mailto:info@trizen.com">info@trizen.com</a>
-                  </li>
-                </ul>
-              </div>
-              <!-- end sidebar-list -->
-            </div>
+
+        </div>
             <!-- end sidebar-widget -->
           </div>
           <!-- end sidebar -->
@@ -1472,82 +547,24 @@ START RELATE TOUR AREA
     </div>
     <!-- end row -->
     <div class="row padding-top-50px">
-      <div class="col-lg-6">
-        <div class="card-item room-card">
-          <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img5.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img29.jpg" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="images/img30.jpg" alt="hotel-img" />
-              </a>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-price pb-2">
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$88.00</span>
-              </p>
-            </div>
-            <h3 class="card-title font-size-26">
-              <a href="room-details.html">غرفة بريميوم مطلة على البحيرة</a>
-            </h3>
-            <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
-            </p>
-            <div class="card-attributes pt-3 pb-4">
-              <ul class="d-flex align-items-center">
-                <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
-                </li>
-              </ul>
-            </div>
-            <div class="card-btn">
-              <a
-                href="room-details.html"
-                class="theme-btn theme-btn-transparent"
-                >احجز الآن</a
-              >
-            </div>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
+
       <!-- end col-lg-6 -->
       <div class="col-lg-6">
         <div class="card-item room-card">
           <div class="card-img-carousel carousel-action carousel--action">
             <div class="card-img">
               <a href="room-details.html" class="d-block">
-                <img src="images/img31.jpg" alt="hotel-img" />
+                <img src"" alt="hotel-img" />
               </a>
             </div>
             <div class="card-img">
               <a href="room-details.html" class="d-block">
-                <img src="images/img32.jpg" alt="hotel-img" />
+                <img src="" alt="hotel-img" />
               </a>
             </div>
             <div class="card-img">
               <a href="room-details.html" class="d-block">
-                <img src="images/img33.jpg" alt="hotel-img" />
+                <img src="" alt="hotel-img" />
               </a>
             </div>
           </div>
@@ -1558,7 +575,7 @@ START RELATE TOUR AREA
                 <span class="price__num">$45.00</span>
               </p>
             </div>
-            <h3 class="card-title font-size-26">
+            <h3 class="title font-size-26">
               <a href="room-details.html"
                 >صالة نوم مشتركة للذكور بسريرين قياسيين</a
               >
@@ -1607,64 +624,255 @@ END RELATE TOUR AREA
 <!-- ================================
 START CTA AREA
 ================================= -->
-<section
-  class="cta-area subscriber-area section-bg-2 padding-top-60px padding-bottom-60px"
->
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="cta-content">
-          <div class="section-heading">
-            <h2 class="sec__title font-size-30 text-white">
-              اشترك لمشاهدة العروض السرية
-            </h2>
-          </div>
-          <!-- end section-heading -->
-        </div>
-      </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="subscriber-box">
-          <div class="contact-form-action">
-            <form action="#">
-              <div class="input-box">
-                <label class="label-text text-white"
-                  >أدخل عنوان البريد الالكتروني</label
-                >
-                <div class="form-group mb-0">
-                  <span class="la la-envelope form-icon"></span>
-                  <input
-                    class="form-control"
-                    type="email"
-                    name="email"
-                    placeholder="عنوان البريد الالكترونى"
-                  />
-                  <button
-                    class="theme-btn theme-btn-small submit-btn"
-                    type="submit"
-                  >
-                    الإشتراك
-                  </button>
-                  <span class="font-size-15 pt-1 text-white-50"
-                    ><i class="la la-lock me-1"></i>لا تقلق معلوماتك آمنة
-                    معنا.</span
-                  >
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-5 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
+
 <!-- end cta-area -->
 <!-- ================================
 END CTA AREA
 ================================= -->
+
+
+<!-- ... existing code ... -->
+
+{% block extra_js %}
+
+
+
+<script>
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+
+
+    let basePrice = parseFloat("{{ price }}");
+
+
+    let totalPriceInput = document.getElementById("totalPrice");
+
+
+    let addToCartBtn = document.getElementById("addToCartBtn");
+
+
+
+
+
+    function updateCartUrl() {
+
+
+      let selectedServices = [];
+
+
+      document.querySelectorAll(".service-checkbox:checked").forEach((checkbox) => {
+
+
+        selectedServices.push(checkbox.value); 
+
+
+      });
+
+
+
+
+
+      let baseUrl = "{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}";
+
+
+      if (selectedServices.length > 0) {
+
+
+        baseUrl += "&extra_services=" + selectedServices.join(",");
+
+
+      }
+
+
+
+
+
+      addToCartBtn.setAttribute("href", baseUrl);
+
+
+    }
+
+
+
+
+
+    document.querySelectorAll(".service-checkbox").forEach((checkbox) => {
+
+
+      checkbox.addEventListener("change", function () {
+
+
+        let additionalFee = parseFloat(this.getAttribute("data-price")) || 0;
+
+
+
+
+
+        if (this.checked) {
+
+
+          basePrice += additionalFee;
+
+
+        } else {
+
+
+          basePrice -= additionalFee;
+
+
+        }
+
+
+
+
+
+        totalPriceInput.value = basePrice.toFixed(2);
+
+
+        updateCartUrl(); 
+
+
+      });
+
+
+    });
+
+
+
+
+
+    updateCartUrl();
+
+
+  });
+
+
+</script>
+<script>
+$(document).ready(function() {
+    // Initialize datepicker for check-in date
+    $("#check_in_datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: 0,
+        onSelect: function(dateText) {
+            $("input[name='check_in_date']").val(dateText);
+            // Set minimum date for checkout datepicker
+            let checkInDate = $(this).datepicker('getDate');
+            $("#check_out_datepicker").datepicker('option', 'minDate', new Date(checkInDate.getTime() + 24*60*60*1000));
+            
+            // Reset check-out date if it's before check-in date
+            let checkOutDate = $("#check_out_datepicker").datepicker('getDate');
+            if (checkOutDate <= checkInDate) {
+                $("#check_out_datepicker").val('');
+            }
+        }
+    });
+    $('#load-more-reviews').on('click', function(e) {
+      e.preventDefault();
+      var button = $(this);
+      var nextPage = button.data('next-page');
+      var roomId = button.data('room-id');
+
+      if (nextPage) {
+        $.ajax({
+          url: `/rooms/room_detail/${roomId}/?page=${nextPage}`,
+          type: 'GET',
+          dataType: 'html',
+          success: function(data) {
+            var newReviewsHtml = $(data).find('.comments-list .list-items').html();
+            $('.comments-list .list-items').append(newReviewsHtml);
+
+            var nextButtonHtml = $(data).find('#load-more-reviews');
+            if (nextButtonHtml.length > 0) {
+              button.data('next-page', nextButtonHtml.data('next-page'));
+            } else {
+              button.remove();
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error("Error loading reviews:", error);
+          }
+        });
+      } else {
+        button.remove();
+      }
+    });
+
+    // Initialize datepicker for check-out date
+    $("#check_out_datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: 1,
+        onSelect: function(dateText) {
+            $("input[name='check_out_date']").val(dateText);
+        }
+    });
+
+    // Handle form submission
+    $('#bookingForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const checkIn = $("input[name='check_in_date']").val();
+        const checkOut = $("input[name='check_out_date']").val();
+        const roomNumber = parseInt($('#roomNumber').val());
+        const adultNumber = parseInt($('#adultNumber').val());
+        const maxCapacity = {{ room.max_capacity }};
+        
+        // Comprehensive validation
+        let errors = [];
+        
+        if (!checkIn) {
+            errors.push("يرجى تحديد تاريخ الدخول");
+        }
+        
+        if (!checkOut) {
+            errors.push("يرجى تحديد تاريخ الخروج");
+        }
+        
+        if (checkIn && checkOut) {
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (checkInDate < today) {
+                errors.push("لا يمكن اختيار تاريخ دخول في الماضي");
+            }
+            
+            if (checkOutDate <= checkInDate) {
+                errors.push("يجب أن يكون تاريخ الخروج بعد تاريخ الدخول");
+            }
+        }
+        
+        if (roomNumber < 1) {
+            errors.push("يجب أن يكون عدد الغرف 1 على الأقل");
+        }
+        
+        if (adultNumber < 1) {
+            errors.push("يجب أن يكون عدد الأشخاص 1 على الأقل");
+        }
+        
+        if (adultNumber > maxCapacity) {
+            errors.push(`السعة القصوى لهذا النوع من الغرف هي ${maxCapacity} أشخاص`);
+        }
+        
+        if (errors.length > 0) {
+            alert(errors.join("\n"));
+            return false;
+        }
+
+        // Submit the form if validation passes
+        this.submit();
+    });
+
+    });
+</script>
+
+
+<!-- ... existing code ... -->
+
+{% endblock extra_js %}
+
 
 {% endblock content %}

@@ -5,6 +5,11 @@ from .models import HotelReview, RoomReview
 from .forms import HotelReviewForm, RoomReviewForm
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Hotel, HotelReview
+from .forms import HotelReviewForm
+
 # Hotel Reviews
 
 def hotel_review_list(request):
@@ -14,11 +19,6 @@ def hotel_review_list(request):
 def hotel_review_detail(request, review_id):
     review = get_object_or_404(HotelReview, id=review_id)
     return render(request, 'reviews/hotel_review_detail.html', {'review': review})
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Hotel, HotelReview
-from .forms import HotelReviewForm
 
 @login_required
 def hotel_review_create(request):

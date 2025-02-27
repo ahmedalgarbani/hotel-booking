@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Post, Comment
+from .models import Category, Post, Comment, Tag
 
 # Register your models here.
 
@@ -21,3 +21,12 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('author', 'post', 'created_at', 'is_approved')
     list_filter = ('is_approved', 'created_at')
     search_fields = ('content', 'author__username', 'post__title')
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'created_at', 'post_count')
+    search_fields = ('name',)
+    
+    def post_count(self, obj):
+        return obj.posts.count()
+    post_count.short_description = 'عدد المقالات'
