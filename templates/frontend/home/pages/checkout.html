@@ -49,14 +49,14 @@
             <h3 class="title">معلومات التحويل</h3>
           </div>
           <div class="form-content">
-            {% if paymentsMethods %}
+            {% if payment_methods %}
             <div class="section-tab check-mark-tab text-center pb-4">
               <ul
                 class="nav nav-tabs justify-content-center"
                 id="paymentTabs"
                 role="tablist"
               >
-                {% for paymentsMethod in paymentsMethods %}
+                {% for paymentsMethod in payment_methods %}
                 <li class="nav-item">
                   <a
                     class="nav-link {% if forloop.first %}active{% endif %}"
@@ -84,7 +84,7 @@
             </div>
 
             <div class="tab-content">
-              {% for method in paymentsMethods %}
+              {% for method in payment_methods %}
               <div
                 class="tab-pane fade {% if forloop.first %}show active{% endif %}"
                 id="content-{{ method.id }}"

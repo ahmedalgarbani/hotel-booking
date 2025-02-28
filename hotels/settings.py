@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$&gp2^!(w4%x2zo)1ohk&xk@$10kcw=3w15(t_q(x6$!6gec(p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151"] 
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34"] 
 
 
 # Application definition
@@ -66,6 +66,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ),
     
+   
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
@@ -76,19 +77,18 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10, 
-    'DEFAULT_PERMISSION_CLASSES': [
-                'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
-    ],
+    
 
     
 
 }
+ 
+ 
+ 
+ 
     #'EXCEPTION_HANDLER': '/api/handle.py'
 
 
@@ -194,7 +194,7 @@ WSGI_APPLICATION = 'hotels.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hotels-booking',
+        'NAME': 'hotel-booking',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

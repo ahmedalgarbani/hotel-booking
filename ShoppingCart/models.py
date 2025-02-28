@@ -21,7 +21,7 @@ class ShoppingCart(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"ShoppingCart for user: {self.user.email if self.user else 'Guest'} (ID: {self.id})"
+        return f"ShoppingCart for user: {self.user.email if self.user else 'Guest'} "
 
     class Meta:
         db_table = 'shopping_cart' # اسم الجدول في قاعدة البيانات
@@ -47,7 +47,7 @@ class ShoppingCartItem(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        item_desc = f"{self.item_type} ID: {self.item_id}"
+        item_desc = f"{self.item_type} "
         if self.item_type == 'room' and self.room_type:
             item_desc = f"Room Type: {self.room_type.name} (ID: {self.room_type.id})"
         elif self.item_type == 'service' and self.hotel_service:

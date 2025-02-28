@@ -49,3 +49,17 @@ class RegisterSerializer(serializers.ModelSerializer):
 #   "user_type": "customer"
 # }
 # ----------------------------------
+
+
+
+# {
+#   "username": "ahmed5112025",
+#   "email": "johnahmed020202025.doe@example.com",
+#   "password": "SecurePass123!",
+#   "first_name": "ahmed",
+#   "last_name": "Nasser",
+#   "phone": 781717609,
+#   "is_active": 1,
+#   "chield_id": null,
+#   "user_type": "customer"
+# }
