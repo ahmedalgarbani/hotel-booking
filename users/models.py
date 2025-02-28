@@ -66,8 +66,6 @@ class CustomUser(AbstractUser):
     def __str__(self):
         full_name = self.get_full_name()
         return f"{full_name or self.username}"
-
-    
     @property
     def is_hotel_manager(self):
         return self.user_type == 'hotel_manager'

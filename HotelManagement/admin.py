@@ -77,8 +77,10 @@ class HotelAdmin(admin.ModelAdmin):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
             return queryset
-        elif request.user.user_type == 'hotel_manager':
+        elif request.user.user_type == 'hotel_manager'   :
             return queryset.filter(manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return queryset.filter(manager=request.user.chield)
         return queryset.none()
     
     def changelist_view(self, request, extra_context=None):
@@ -96,11 +98,11 @@ class HotelAdmin(admin.ModelAdmin):
                 'user_type': 'admin'
             }
         # إحصائيات لمدير الفندق
-        elif request.user.is_hotel_manager and request.user.user_type == 'hotel_manager':
+        elif request.user.is_hotel_manager and  request.user.user_type =='hotel_manager' or request.user.user_type =='hotel_staff':
             hotel = self.get_queryset(request).first()
             if hotel:
                 stats = {
-                    'hotel_name': hotel.name,
+                    'hotel_name': hotel.name ,
                     'verification_status': hotel.is_verified,
                     'verification_date': hotel.verification_date,
                     'total_phones': hotel.phones.count(),
@@ -110,7 +112,7 @@ class HotelAdmin(admin.ModelAdmin):
                     },
                  
                     'total_images': Image.objects.filter(hotel_id=hotel).count(),
-                    'user_type': 'hotel_manager'
+                    'user_type': 'hotel_manager' 
                 }
             else:
                 stats = {
