@@ -75,48 +75,67 @@
                   </div>
                   <div class="nav-btn ms-auto">
                     <div class="notification-wrap d-flex align-items-center">
+
+                      
                       <div class="notification-item me-2">
                         <div class="dropdown">
-                          <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" id="notificationDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="la la-bell"></i>
-                            <span class="noti-count">4</span>
-                          </a>
-                          <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
-                            <div class="dropdown-header drop-reveal-header">
-                              <h6 class="title">
-                                لديك
-                                <strong class="text-black"> 4 </strong> إشعارات
-                              </h6>
-                            </div>
-                            <div class="list-group drop-reveal-list">
-                              <a href="#" class="list-group-item list-group-item-action">
-                                <div class="msg-body d-flex align-items-center">
-                                  <div class="icon-element flex-shrink-0 me-3 ms-0">
-                                    <i class="la la-bell"></i>
-                                  </div>
-                                  <div class="msg-content w-100">
-                                    <h3 class="title pb-1">تم ارسال طلبك</h3>
-                                    <p class="msg-text">قبل دقيقتين</p>
-                                  </div>
+                            <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" id="notificationDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="la la-bell"></i>
+                                <span class="noti-count">{{ unread_notifications_count }}</span>  <!-- عرض عدد الإشعارات غير المقروءة -->
+                            </a>
+                            <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
+                                <div class="dropdown-header drop-reveal-header">
+                                    <h6 class="title">
+                                        لديك
+                                        <strong class="text-black">{{ unread_notifications_count }}</strong> إشعارات غير مقروءة
+                                    </h6>
                                 </div>
-                                <!-- end msg-body -->
-                              </a>
-                           
+                                <div class="list-group drop-reveal-list">
+                                    {% for notification in notifications %}
+                                        {% if notification.status == '0' %}  <!-- عرض فقط الإشعارات غير المقروءة -->
+                                        <a href="#" class="list-group-item list-group-item-action unread">
+                                            <div class="msg-body d-flex align-items-center">
+                                                <div class="icon-element flex-shrink-0 me-3 ms-0">
+                                                    <i class="la la-bell"></i>
+                                                </div>
+                                                <div class="msg-content w-100">
+                                                    <h3 class="title pb-1">{{ notification.message }}</h3>
+                                                    <p class="msg-text">من: {{ notification.sender.get_full_name }}</p>  <!-- عرض اسم المرسل -->
+                                                    <p class="msg-text">{{ notification.send_time|timesince }} مضت</p>
+                    
+                                                    <!-- تحديد نوع الإشعار وعرضه -->
+                                                    <p class="msg-type">
+                                                        {% if notification.notification_type == '0' %}
+                                                            <span class="badge bg-info">معلومة</span>
+                                                        {% elif notification.notification_type == '1' %}
+                                                            <span class="badge bg-warning">تحذير</span>
+                                                        {% elif notification.notification_type == '2' %}
+                                                            <span class="badge bg-success">نجاح</span>
+                                                        {% elif notification.notification_type == '3' %}
+                                                            <span class="badge bg-danger">خطأ</span>
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <a href="#" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
                             </div>
-                            <a href="#" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
-                          </div>
-                          <!-- end dropdown-menu -->
                         </div>
-                      </div>
+                    </div>
+                    
+                    
                       <!-- end notification-item -->
                       <div class="notification-item">
                         <div class="dropdown">
                           <a href="#" class="dropdown-toggle" id="userDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="d-flex align-items-center">
                               <div class="avatar avatar-sm flex-shrink-0 me-2">
-                                <img src="{% static 'images/team8.jpg' %}" alt="team-img">
+                                <img src="{{ user.image.url }}" alt="team-img">
                               </div>
-                              <span class="font-size-14 font-weight-bold"> احمد الجرباني</span>
+                              <span class="font-size-14 font-weight-bold"> {{ user.first_name }} {{ user.last_name }}</span>
                             </div>
                           </a>
                           <div class="dropdown-menu dropdown-reveal dropdown-menu-md dropdown-menu-right">
@@ -124,7 +143,7 @@
                               <h6 class="title text-uppercase">أهلا بك!</h6>
                             </div>
                             <div class="list-group drop-reveal-list user-drop-reveal-list">
-                              <a href="user-dashboard-profile.html" class="list-group-item list-group-item-action">
+                              <a href="{% url 'customer:user_dashboard_profile' %}" class="list-group-item list-group-item-action">
                                 <div class="msg-body">
                                   <div class="msg-content">
                                     <h3 class="title">
@@ -134,7 +153,7 @@
                                 </div>
                                 <!-- end msg-body -->
                               </a>
-                              <a href="user-dashboard-booking.html" class="list-group-item list-group-item-action">
+                              <a href="{% url 'customer:user_dashboard_bookings' %}" class="list-group-item list-group-item-action">
                                 <div class="msg-body">
                                   <div class="msg-content">
                                     <h3 class="title">
@@ -144,7 +163,7 @@
                                 </div>
                                 <!-- end msg-body -->
                               </a>
-                              <a href="user-dashboard-reviews.html" class="list-group-item list-group-item-action">
+                              <a href="{% url 'customer:user_dashboard_reviews' %}" class="list-group-item list-group-item-action">
                                 <div class="msg-body">
                                   <div class="msg-content">
                                     <h3 class="title">
@@ -154,7 +173,7 @@
                                 </div>
                                 <!-- end msg-body -->
                               </a>
-                              <a href="user-dashboard-settings.html" class="list-group-item list-group-item-action">
+                              <a href="{% url 'customer:user_dashboard_settings' %}" class="list-group-item list-group-item-action">
                                 <div class="msg-body">
                                   <div class="msg-content">
                                     <h3 class="title">
@@ -165,7 +184,7 @@
                                 <!-- end msg-body -->
                               </a>
                               <div class="section-block"></div>
-                              <a href="index.html" class="list-group-item list-group-item-action">
+                              <a href="{% url 'home:index' %}" class="list-group-item list-group-item-action">
                                 <div class="msg-body">
                                   <div class="msg-content">
                                     <h3 class="title">

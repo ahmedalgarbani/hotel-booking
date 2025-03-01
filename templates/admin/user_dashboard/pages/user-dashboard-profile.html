@@ -1,8 +1,8 @@
-{% extends "admin/user_dashboard/index.html" %} 
+{% extends "admin/user_dashboard/index.html" %}
 {% load static %}
-{% block section_title %} userprofile {% endblock section_title %}
-{% block path_title %} user profile {%endblock path_title %}
-{% block content %} 
+{% block section_title %} الملف الشخصي للمستخدم {% endblock section_title %}
+{% block path_title %} الملف الشخصي للمستخدم {% endblock path_title %}
+{% block content %}
 <div class="dashboard-main-content">
   <div class="container-fluid">
     <div class="row">
@@ -22,7 +22,7 @@
                       </div>
                     </td>
                     <td>:</td>
-                    <td>علي</td>
+                    <td>{{ user.first_name }}</td>
                   </tr>
                   <tr>
                     <td class="ps-0">
@@ -31,18 +31,16 @@
                       </div>
                     </td>
                     <td>:</td>
-                    <td>توفان</td>
+                    <td>{{ user.last_name }}</td>
                   </tr>
                   <tr>
                     <td class="ps-0">
                       <div class="table-content">
-                        <h3 class="title font-weight-medium">
-                          عنوان البريد الالكترونى
-                        </h3>
+                        <h3 class="title font-weight-medium">عنوان البريد الالكترونى</h3>
                       </div>
                     </td>
                     <td>:</td>
-                    <td>alitufan@gmail.com</td>
+                    <td>{{ user.email }}</td>
                   </tr>
                   <tr>
                     <td class="ps-0">
@@ -51,7 +49,7 @@
                       </div>
                     </td>
                     <td>:</td>
-                    <td>+01 4561 3214</td>
+                    <td> {{ user.phone }}</td>
                   </tr>
                   <tr>
                     <td class="ps-0">
@@ -60,7 +58,7 @@
                       </div>
                     </td>
                     <td>:</td>
-                    <td>03 يونيو 1990</td>
+                    <td>{{ user.date_of_birth|date:"d M Y" }}</td> <!-- احرص على تعديل التاريخ إذا كانت هناك خاصية birthdate -->
                   </tr>
                   <tr>
                     <td class="ps-0">
@@ -69,19 +67,32 @@
                       </div>
                     </td>
                     <td>:</td>
-                    <td>
-                      8800 Orchard Lake Road، Suite 180 فارمنجتون هيلز ،
-                      الولايات المتحدة الأمريكية
+                    <td>{{ user.ip_address }}</td> 
+                  </tr>
+                  <tr>
+                    <td class="ps-0">
+                      <div class="table-content">
+                        <h3 class="title font-weight-medium">تاريخ الإنشاء</h3>
+                      </div>
                     </td>
+                    <td>:</td>
+                    <td>{{ user.created_at|date:"d M Y H:i" }}</td> <!-- عرض تاريخ الإنشاء -->
+                  </tr>
+                  <tr>
+                    <td class="ps-0">
+                      <div class="table-content">
+                        <h3 class="title font-weight-medium">تاريخ التحديث</h3>
+                      </div>
+                    </td>
+                    <td>:</td>
+                    <td>{{ user.updated_at|date:"d M Y H:i" }}</td> <!-- عرض تاريخ التحديث -->
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="section-block"></div>
             <div class="btn-box mt-4">
-              <a href="user-dashboard-settings.html" class="theme-btn"
-                >تعديل الملف الشخصي</a
-              >
+              <a href="{% url 'customer:user_dashboard_settings' %}" class="theme-btn">تعديل الملف الشخصي</a>
             </div>
           </div>
         </div>
