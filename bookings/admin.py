@@ -11,7 +11,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from .models import Booking, BookingStatus, Guest, BookingDetail
+from .models import Booking, Guest, BookingDetail
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
@@ -281,10 +281,6 @@ class BookingAdmin(admin.ModelAdmin):
         return self.generate_pdf('تقرير_أوقات_الذروة', headers, data)
     export_peak_times.short_description = "تصدير تقرير أوقات الذروة"
 
-@admin.register(BookingStatus)
-class BookingStatusAdmin(admin.ModelAdmin):
-    list_display = ['booking_status_name', 'status_code']
-    search_fields = ['booking_status_name']
 
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):

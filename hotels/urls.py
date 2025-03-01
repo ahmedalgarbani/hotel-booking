@@ -35,7 +35,6 @@ urlpatterns = [
     path('customer/', include('customer.urls')),
 
     path('notifications/', include('notifications.urls')),
-    path('ShoppingCart/', include('ShoppingCart.urls')),
 ]
 
 if settings.DEBUG:

@@ -380,7 +380,7 @@ START TOUR DETAIL AREA
               <h3 class="title stroke-shape">الحجز الخاص بك</h3>
               <div class="sidebar-widget-item">
                 <div class="contact-form-action">
-                  <form method="POST" action="{% url 'rooms:room_detail' room.id %}" id="bookingForm">
+                  <form method="POST" action="{% url 'payments:process_booking' room.id %}" id="bookingForm">
                     {% csrf_token %}
                     <div class="input-box">
                       <label class="label-text">تاريخ تسجيل الدخول</label>
@@ -474,8 +474,14 @@ START TOUR DETAIL AREA
                         <input
                           type="text"
                           id="totalPrice"
-                          name="total_price"
+                          name="grand_price"
                           class="num"
+                          value="{{ price }}"
+                          readonly="readonly"
+                        />
+                        <input
+                          type="hidden"
+                          name="total_price"
                           value="{{ price }}"
                           readonly="readonly"
                         />
@@ -488,21 +494,7 @@ START TOUR DETAIL AREA
                         <i class="la la-check-circle mr-2 font-size-18"></i>متابعة الى الدفع
                       </button>
                     </div>
-                    <a href="{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}" 
-
-
-
-                    id="addToCartBtn"
-                 
-                 
-                    class="theme-btn text-center w-100 mb-2">
-                 
-                 
-                   <i class="la la-shopping-cart mr-2 font-size-18"></i>اضافة الى عربة التسوق
-                 
-                 
-                 </a>
-                 
+                   
                  
                   </form>
               </div>
@@ -649,7 +641,6 @@ END CTA AREA
     let totalPriceInput = document.getElementById("totalPrice");
 
 
-    let addToCartBtn = document.getElementById("addToCartBtn");
 
 
 
@@ -673,7 +664,7 @@ END CTA AREA
 
 
 
-      let baseUrl = "{% url 'ShoppingCart:add_to_cart' room.id %}?check_in_date={{ check_in }}&check_out_date={{ check_out }}";
+      let baseUrl = "";
 
 
       if (selectedServices.length > 0) {

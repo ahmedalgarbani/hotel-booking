@@ -24,7 +24,7 @@ def create_availability_for_room_type(sender, instance, created, **kwargs):
             hotel=instance.hotel,
             room_type=instance,
             room_status=room_status,
-            date=today,
+            availability_date=today,
             available_rooms=instance.rooms_count,
             notes="Initial availability created automatically.",
         )

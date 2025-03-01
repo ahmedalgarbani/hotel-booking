@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
+from services.models import RoomTypeService
 from .models import Payment, HotelPaymentMethod
-from bookings.models import Booking, BookingStatus
+from bookings.models import Booking
 from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime, timedelta
-from ShoppingCart.models import ShoppingCart, ShoppingCartItem
+from django.urls import reverse
+
 
 # Create your views here.
 
@@ -15,12 +17,53 @@ from ShoppingCart.models import ShoppingCart, ShoppingCartItem
 # hotel -
 
 
-#خطوة ثاني بعد مناقشة المشرف اضافة السلة 
-def cart(request,room_id):
-    room = get_object_or_404(RoomType, id=room_id)
-    return render(request,'frontend/home/pages/checkout.html',{'room_type':room})
+def process_booking(request, room_id):
+    if request.method == "POST":
+        check_in = request.POST.get("check_in_date")
+        check_out = request.POST.get("check_out_date")
+        room_number = int(request.POST.get("room_number", 1))
+        adult_number = int(request.POST.get("adult_number", 1))
+        total_price = float(request.POST.get("total_price", 0))
+        grand_price = float(request.POST.get("grand_price", 0))
+        
+        extra_services = request.POST.getlist("extra_services")
+        extra_services_details = []
+        extra_services_total = 0
+        
+        for service_id in extra_services:
+            service = RoomTypeService.objects.filter(id=service_id).first()  
+            if service:
+                service_price = service.additional_fee 
+                extra_services_total += service_price
+                extra_services_details.append({
+                    "id": service.id,
+                    "name": service.name,
+                    "price": service_price
+                })
+        request.session["booking_data"] = {
+            "hotel_id": request.POST.get("hotel_id"),
+            "room_id": room_id,
+            "check_in": check_in,
+            "check_out": check_out,
+            "room_number": room_number,
+            "adult_number": adult_number,
+            "total_price": total_price,
+            "extra_services": extra_services_details,
+            "extra_services_total": extra_services_total,
+            "grand_total": grand_price,
+        }
+        
+        return redirect(reverse("payments:add_guest", args=[room_id]))
 
+    
+    return redirect(reverse("rooms:room_detail", args=[room_id]))
 
+def add_guest(request, room_id):
+    booking_data = request.session.get("booking_data", {})
+    if not booking_data:
+        return redirect(reverse("rooms:room_detail", args=[room_id]))
+    
+    return render(request, "frontend/home/pages/add_guest.html", booking_data)
 
 
 #ارسال الى صفحة الدفع بيانات الغرفة 
@@ -102,14 +145,11 @@ def hotel_confirm_payment(request, room_id):
     return redirect('payments:checkout', room_id=room_id)
 
 def hotel_checkout(request, hotel_id):
-    # Get the hotel
     hotel = get_object_or_404(Hotel, id=hotel_id)
     
-    # Get booking data from session if it exists (direct booking)
     booking_data = request.session.get('booking_data')
     
     if booking_data:
-        # Direct booking
         room = get_object_or_404(RoomType, id=booking_data['room_id'])
         payment_methods = HotelPaymentMethod.objects.filter(hotel=hotel, is_active=True)
         
@@ -122,20 +162,13 @@ def hotel_checkout(request, hotel_id):
             'is_direct_booking': True
         }
     else:
-        # Cart booking
-        cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
-        cart_items = cart.items.filter(deleted_at__isnull=True, room_type__hotel_id=hotel_id)
         
-        if not cart_items.exists():
-            messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
-            return redirect('ShoppingCart:cart')
         
         payment_methods = HotelPaymentMethod.objects.filter(hotel=hotel, is_active=True)
         total_price = sum(item.Total_price for item in cart_items)
         
         context = {
             'hotel': hotel,
-            'cart_items': cart_items,
             'payment_methods': payment_methods,
             'total_price': total_price,
             'is_direct_booking': False
@@ -145,60 +178,60 @@ def hotel_checkout(request, hotel_id):
 
 
 def hotel_confirm_payment(request, hotel_id):
-    
-    if request.method == 'POST':
-        # Get the user's cart items for this hotel
-        cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
-        cart_items = cart.items.filter(
-            deleted_at__isnull=True,
-            room_type__hotel_id=hotel_id
-        )
-        print(cart_items)
-        if not cart_items.exists():
-            messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
-            return redirect('ShoppingCart:cart')
+    pass
+    # if request.method == 'POST':
+    #     # Get the user's cart items for this hotel
+    #     cart = get_object_or_404(ShoppingCart, user=request.user, deleted_at__isnull=True)
+    #     cart_items = cart.items.filter(
+    #         deleted_at__isnull=True,
+    #         room_type__hotel_id=hotel_id
+    #     )
+    #     print(cart_items)
+    #     if not cart_items.exists():
+    #         messages.error(request, 'لا توجد غرف في سلة التسوق لهذا الفندق')
+    #         return redirect('ShoppingCart:cart')
         
-        payment_method_id = request.POST.get('payment_method')
-        payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+    #     payment_method_id = request.POST.get('payment_method')
+    #     payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
         
-        try:
-            # Get pending status
-            pending_status = BookingStatus.objects.get(status_code=0)
+    #     try:
+    #         # Get pending status
+    #         pending_status = BookingStatus.objects.get(status_code=0)
             
-            # Create bookings for each room
-            for item in cart_items:
-                booking = Booking.objects.create(
-                    room=item.room_type,
-                    hotel=item.room_type.hotel,
-                    user=request.user,
+    #         # Create bookings for each room
+    #         for item in cart_items:
+    #             booking = Booking.objects.create(
+    #                 room=item.room_type,
+    #                 hotel=item.room_type.hotel,
+    #                 user=request.user,
 
-                    check_in_date=item.check_in_date,
-                    check_out_date=item.check_out_date,
-                    amount=item.Total_price,
-                    status=pending_status
-                )
+    #                 check_in_date=item.check_in_date,
+    #                 check_out_date=item.check_out_date,
+    #                 amount=item.Total_price,
+    #                 status=pending_status
+    #             )
                 
-                # Create payment record
-                Payment.objects.create(
-                    booking=booking,
-                    payment_subtotal=item.Total_price,
-                    payment_method=payment_method,
-                    payment_status=0,  # Pending
-                    payment_totalamount=item.Total_price
-                )
+    #             # Create payment record
+    #             Payment.objects.create(
+    #                 booking=booking,
+    #                 payment_subtotal=item.Total_price,
+    #                 payment_method=payment_method,
+    #                 payment_status=0,  # Pending
+    #                 payment_totalamount=item.Total_price
+    #             )
                 
-                # Remove item from cart
-                # item.soft_delete()
+    #             # Remove item from cart
+    #             # item.soft_delete()
             
-            messages.success(request, 'تم إنشاء الحجز بنجاح وفي انتظار تأكيد الدفع')
-            return redirect('payments:user_dashboard_bookings')
+    #         messages.success(request, 'تم إنشاء الحجز بنجاح وفي انتظار تأكيد الدفع')
+    #         return redirect('payments:user_dashboard_bookings')
             
-        except Exception as e:
-            print(f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
-            messages.error(request, f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
-            return redirect('ShoppingCart:cart')
+    #     except Exception as e:
+    #         print(f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
+    #         messages.error(request, f'حدث خطأ أثناء إنشاء الحجز: {str(e)}')
+    #         return redirect('ShoppingCart:cart')
     
-    return redirect('ShoppingCart:cart')
+    # return redirect('ShoppingCart:cart')
 
 
 

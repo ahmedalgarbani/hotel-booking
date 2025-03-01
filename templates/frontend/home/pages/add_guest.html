@@ -1,0 +1,448 @@
+{% extends "frontend/layout/master.html" %}
+
+{% block content %}
+
+<!-- ================================
+    START BREADCRUMB AREA
+================================= -->
+<section class="breadcrumb-area bread-bg-10">
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="breadcrumb-content text-center">
+            <div class="section-heading">
+              <h2 class="sec__title text-white">اضافه اشخاص</h2>
+              <p class="text-white-50 mt-2">أدخل معلومات الزوار لإكمال الحجز</p>
+            </div>
+            <span class="arrow-blink">
+              <i class="la la-arrow-down"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bread-svg-box">
+    <svg
+      class="bread-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 10"
+      preserveAspectRatio="none"
+    >
+      <polygon points="100 0 50 10 0 0 0 10 100 10"></polygon>
+    </svg>
+  </div>
+</section>
+<!-- ================================
+    END BREADCRUMB AREA
+================================= -->
+
+<!-- ================================
+    START BOOKING AREA
+================================= -->
+<section class="booking-area padding-top-100px padding-bottom-70px">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="form-box">
+          <div class="form-title-wrap">
+            <h3 class="title">معلومات الزوار</h3>
+          </div>
+
+          <div class="tab-content p-4">
+            <!-- Guest Information Form -->
+            <form method="post" action="" id="guestForm">
+              {% csrf_token %}
+              
+              <div class="mb-4 d-flex align-items-center justify-content-between bg-primary text-white p-3 rounded">
+                <h4 class="font-size-16 font-weight-semi-bold d-flex align-items-center mb-0">
+                  <i class="la la-user mr-2"></i> معلومات الزائر
+                </h4>
+                <button type="button" class="theme-btn theme-btn-small add-guest-btn bg-white text-primary" id="addGuestBtn">
+                  <i class="la la-plus-circle mr-1"></i> إضافة زائر آخر
+                </button>
+              </div>
+              
+              <div id="guests-container" class="p-3 border rounded mb-4">
+                <!-- First guest (always visible) -->
+                <div class="guest-info card mb-4 border-0 shadow-sm">
+                  <div class="card-body bg-light rounded p-4">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-box">
+                          <label class="label-text font-weight-bold">الاسم الكامل</label>
+                          <div class="form-group">
+                            <span class="la la-user form-icon"></span>
+                            <input type="text" name="guest_name[]" class="form-control" placeholder="أدخل الاسم الكامل" required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-box">
+                          <label class="label-text font-weight-bold">العمر</label>
+                          <div class="form-group">
+                            <span class="la la-calendar form-icon"></span>
+                            <input type="number" name="guest_age[]" class="form-control age-input" placeholder="أدخل العمر" required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12 mt-3">
+                        <div class="input-box">
+                          <label class="label-text font-weight-bold">رقم بطاقة الهوية</label>
+                          <div class="form-group">
+                            <span class="la la-id-card form-icon"></span>
+                            <input type="text" name="guest_id_number[]" class="form-control id-card-field" placeholder="أدخل رقم بطاقة الهوية" required>
+                            <small class="text-muted id-card-note d-none">اختياري للأشخاص تحت سن 18</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="btn-box pt-3 text-center">
+                <button type="submit" class="theme-btn btn-lg">
+                  <i class="la la-save mr-1"></i> حفظ معلومات الزوار
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- Booking Summary -->
+        <div class="form-box booking-detail-form">
+          <div class="form-title-wrap bg-primary text-white">
+            <h3 class="title">ملخص الحجز</h3>
+          </div>
+          <div class="form-content p-4">
+            <div class="card-item shadow-sm rounded mb-4">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h3 class="card-title text-primary">{{ hotel_id }}</h3>
+                    <p class="card-meta"><i class="la la-door-open mr-1"></i> الغرفة رقم: {{ room_id }}</p>
+                  </div>
+                  <div class="hotel-icon bg-primary-light p-3 rounded-circle">
+                    <i class="la la-hotel text-primary font-size-40"></i>
+                  </div>
+                </div>
+                
+                <div class="booking-dates bg-light p-3 rounded mb-4">
+                  <div class="row">
+                    <div class="col-6 border-right">
+                      <h6 class="font-size-14 text-gray mb-1">تاريخ الدخول</h6>
+                      <p class="font-weight-bold mb-0">{{ check_in }}</p>
+                    </div>
+                    <div class="col-6">
+                      <h6 class="font-size-14 text-gray mb-1">تاريخ الخروج</h6>
+                      <p class="font-weight-bold mb-0">{{ check_out }}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="booking-details">
+                  <ul class="list-items list-items-2 py-3">
+                    <li class="d-flex justify-content-between">
+                      <span><i class="la la-home text-primary mr-1"></i> عدد الغرف:</span>
+                      <span class="font-weight-bold">{{ room_number }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <span><i class="la la-users text-primary mr-1"></i> عدد الأشخاص:</span>
+                      <span class="font-weight-bold">{{ adult_number }}</span>
+                    </li>
+                  </ul>
+                  
+                  {% if extra_services %}
+                  <div class="section-block my-3"></div>
+                  <h5 class="font-size-16 mb-3"><i class="la la-concierge-bell text-primary mr-1"></i> الخدمات الإضافية</h5>
+                  <ul class="list-items list-items-2">
+                    {% for service in extra_services %}
+                    <li class="d-flex justify-content-between">
+                      <span><i class="la la-check-circle text-success mr-1"></i> {{ service.name }}</span>
+                      <span class="font-weight-bold">${{ service.price }}</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                  {% endif %}
+                  
+                  <div class="section-block my-3"></div>
+                  
+                  <div class="price-summary bg-light p-3 rounded mt-4">
+                    <ul class="list-items list-items-2">
+                      <li class="d-flex justify-content-between">
+                        <span>سعر الغرفة:</span>
+                        <span class="font-weight-bold">${{ total_price }}</span>
+                      </li>
+                      <li class="d-flex justify-content-between">
+                        <span>إجمالي الخدمات الإضافية:</span>
+                        <span class="font-weight-bold">${{ extra_services_total }}</span>
+                      </li>
+                      <li class="total-price d-flex justify-content-between">
+                        <span>السعر الإجمالي:</span>
+                        <span class="font-weight-bold text-primary font-size-18">${{ grand_total }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div class="booking-confirmation mt-4">
+                    <div class="alert alert-info d-flex align-items-center">
+                      <i class="la la-info-circle mr-2 font-size-18"></i>
+                      <p class="mb-0 font-size-14">أكمل معلومات الزوار لتأكيد الحجز</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Guest template for JavaScript -->
+<template id="guest-template">
+  <div class="guest-info card mb-4 border-0 shadow-sm">
+    <div class="card-body bg-light rounded p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="font-weight-medium guest-number mb-0">زائر 2</h5>
+        <button type="button" class="remove-guest-btn text-danger bg-transparent border-0">
+          <i class="la la-minus-circle"></i>
+        </button>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-box">
+            <label class="label-text font-weight-bold">الاسم الكامل</label>
+            <div class="form-group">
+              <span class="la la-user form-icon"></span>
+              <input type="text" name="guest_name[]" class="form-control" placeholder="أدخل الاسم الكامل" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-box">
+            <label class="label-text font-weight-bold">العمر</label>
+            <div class="form-group">
+              <span class="la la-calendar form-icon"></span>
+              <input type="number" name="guest_age[]" class="form-control age-input" placeholder="أدخل العمر" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 mt-3">
+          <div class="input-box">
+            <label class="label-text font-weight-bold">رقم بطاقة الهوية</label>
+            <div class="form-group">
+              <span class="la la-id-card form-icon"></span>
+              <input type="text" name="guest_id_number[]" class="form-control id-card-field" placeholder="أدخل رقم بطاقة الهوية" required>
+              <small class="text-muted id-card-note d-none">اختياري للأشخاص تحت سن 18</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const guestsContainer = document.getElementById('guests-container');
+    const template = document.getElementById('guest-template');
+    const addGuestBtn = document.getElementById('addGuestBtn');
+    
+    let guestCount = 1;
+    
+    // Add guest button click handler
+    addGuestBtn.addEventListener('click', function() {
+      guestCount++;
+      
+      const guestNode = document.importNode(template.content, true);
+      const guestNumber = guestNode.querySelector('.guest-number');
+      guestNumber.textContent = 'زائر ' + guestCount;
+      
+      const removeBtn = guestNode.querySelector('.remove-guest-btn');
+      removeBtn.addEventListener('click', function() {
+        this.closest('.guest-info').remove();
+        updateGuestNumbers();
+      });
+      
+      guestsContainer.appendChild(guestNode);
+      
+      // Setup age input handlers for the new guest
+      setupAgeInputHandlers();
+    });
+    
+    // Update guest numbers when a guest is removed
+    function updateGuestNumbers() {
+      const guestInfos = document.querySelectorAll('.guest-info:not(:first-child)');
+      guestCount = 1 + guestInfos.length;
+      
+      guestInfos.forEach((info, index) => {
+        const number = info.querySelector('.guest-number');
+        if (number) {
+          number.textContent = 'زائر ' + (index + 2);
+        }
+      });
+    }
+    
+    // Setup age input handlers
+    function setupAgeInputHandlers() {
+      document.querySelectorAll('.age-input').forEach(input => {
+        if (!input.dataset.hasListener) {
+          input.dataset.hasListener = 'true';
+          
+          input.addEventListener('input', function() {
+            const idCardField = this.closest('.row').querySelector('.id-card-field');
+            const idCardNote = this.closest('.row').querySelector('.id-card-note');
+            
+            if (parseInt(this.value) < 18) {
+              idCardField.removeAttribute('required');
+              idCardNote.classList.remove('d-none');
+            } else {
+              idCardField.setAttribute('required', 'required');
+              idCardNote.classList.add('d-none');
+            }
+          });
+        }
+      });
+    }
+    
+    // Initial setup
+    setupAgeInputHandlers();
+    
+    // Form validation
+    document.getElementById('guestForm').addEventListener('submit', function(e) {
+      let isValid = true;
+      const guests = document.querySelectorAll('.guest-info');
+      
+      guests.forEach(guest => {
+        const nameInput = guest.querySelector('input[name="guest_name[]"]');
+        const ageInput = guest.querySelector('input[name="guest_age[]"]');
+        const idCardInput = guest.querySelector('input[name="guest_id_number[]"]');
+        
+        if (!nameInput.value.trim()) {
+          nameInput.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          nameInput.classList.remove('is-invalid');
+        }
+        
+        if (!ageInput.value.trim()) {
+          ageInput.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          ageInput.classList.remove('is-invalid');
+        }
+        
+        if (parseInt(ageInput.value) >= 18 && !idCardInput.value.trim()) {
+          idCardInput.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          idCardInput.classList.remove('is-invalid');
+        }
+      });
+      
+      if (!isValid) {
+        e.preventDefault();
+        alert('يرجى ملء جميع الحقول المطلوبة');
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Custom styles for the guest form */
+  .guest-info {
+    transition: all 0.3s ease;
+  }
+  
+  .guest-info:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .form-icon {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    color: #5d646d;
+  }
+  
+  .form-control {
+    padding-left: 35px;
+  }
+  
+  .remove-guest-btn {
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .remove-guest-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  .add-guest-btn {
+    transition: all 0.3s;
+  }
+  
+  .add-guest-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  .total-price {
+    font-size: 18px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px dashed #eee;
+  }
+  
+  .is-invalid {
+    border-color: #dc3545 !important;
+  }
+  
+  /* Animation for new guests */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .guest-info:not(:first-child) {
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Additional styles for enhanced booking summary */
+  .bg-primary-light {
+    background-color: rgba(0, 123, 255, 0.1);
+  }
+  
+  .hotel-icon {
+    transition: all 0.3s ease;
+  }
+  
+  .hotel-icon:hover {
+    transform: scale(1.05);
+  }
+  
+  .booking-dates {
+    border-left: 4px solid #007bff;
+  }
+  
+  .price-summary {
+    border-left: 4px solid #007bff;
+  }
+  
+  .form-title-wrap {
+    padding: 15px 20px;
+    border-bottom: 2px solid rgba(0, 123, 255, 0.2);
+  }
+  
+  .booking-confirmation .alert {
+    border-right: 4px solid #17a2b8;
+  }
+</style>
+
+{% endblock content %}

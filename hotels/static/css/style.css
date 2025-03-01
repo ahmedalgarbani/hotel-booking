@@ -6203,6 +6203,11 @@ body {
   visibility: visible;
 }
 
+.owl-carousel .owl-item img{
+  max-height: 200px;
+}
+
+
 /* gallery-card */
 .gallery-card {
   overflow: hidden;

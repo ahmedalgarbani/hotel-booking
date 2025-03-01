@@ -3,10 +3,13 @@ from django.db import models
 from HotelManagement.models import BaseModel
 from django.utils.translation import gettext_lazy as _
 from rooms.models import Availability
-
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from services.models import RoomTypeService
 
-# ------------ Guest -------------
+# ------------ Guest ------------
+
 class Guest(BaseModel):
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
@@ -26,17 +29,24 @@ class Guest(BaseModel):
         verbose_name=_("رقم الهوية"),
         max_length=30
     )
+    age = models.PositiveIntegerField(
+        verbose_name=_("العمر"),
+        null=True,
+        blank=True
+    )
     booking = models.ForeignKey(
         'bookings.Booking',
         on_delete=models.CASCADE,
         verbose_name=_("الحجز"),
         related_name='guests'
     )
-    account = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name=_("المستخدم"),
-        related_name='guests',
+    check_in_date = models.DateTimeField(
+        verbose_name=_("تاريخ تسجيل الدخول"),
+        null=True,
+        blank=True
+    )
+    check_out_date = models.DateTimeField(
+        verbose_name=_("تاريخ تسجيل الخروج"),
         null=True,
         blank=True
     )
@@ -50,27 +60,18 @@ class Guest(BaseModel):
         return f"{self.name} - {self.phone_number}"
 
 
-# ------------ Booking Status -------------
-class BookingStatus(BaseModel):
-    booking_status_name = models.CharField(
-        max_length=50,
-        verbose_name=_("اسم الحالة")
-    )
-    status_code = models.IntegerField(
-        verbose_name=_("رمز الحالة")
-    )
 
-    class Meta:
-        verbose_name = _("حالة الحجز")
-        verbose_name_plural = _("حالات الحجز")
-        ordering = ['status_code']
-
-    def __str__(self):
-        return f"{self.booking_status_name}"
 
 
 # ------------ Booking -------------
+
+
 class Booking(BaseModel):
+    class BookingStatus(models.TextChoices):
+        PENDING = 0, _("قيد الانتظار")
+        CONFIRMED = 1, _("مؤكد")
+        CANCELED = 2, _("ملغي")
+
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -106,11 +107,15 @@ class Booking(BaseModel):
         decimal_places=2,
         verbose_name=_("المبلغ")
     )
-    status = models.ForeignKey(
-        'bookings.BookingStatus',
-        on_delete=models.CASCADE,
-        verbose_name=_("حالة الحجز"),
-        related_name='bookings'
+    status = models.CharField(
+        max_length=10,
+        choices=BookingStatus.choices,
+        default=BookingStatus.PENDING,
+        verbose_name=_("حالة الحجز")
+    )
+    account_status = models.BooleanField(
+        default=True,
+        verbose_name=_("حالة الحساب")
     )
 
     class Meta:
@@ -127,6 +132,7 @@ class Booking(BaseModel):
         if self.check_in_date and self.check_out_date:
             return (self.check_out_date - self.check_in_date).days
         return 0
+
     
 
 # ------------ Booking Detail -------------
