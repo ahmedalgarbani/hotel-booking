@@ -199,3 +199,14 @@ def hotel_confirm_payment(request, hotel_id):
             return redirect('ShoppingCart:cart')
     
     return redirect('ShoppingCart:cart')
+
+
+
+    #داش بورد العميل
+def user_dashboard_bookings(request):
+    # قراءة بيانات الحجوزات من الـ session
+    bookings_with_location = request.session.get('bookings_with_location', [])
+    
+    return render(request, 'admin/user_dashboard/pages/user-bookings.html', {
+        'bookings_with_location': bookings_with_location
+    })

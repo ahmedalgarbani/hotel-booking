@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'blog', 
     'notifications', 
     'ShoppingCart',
-    
+    'customer',
     
 ]
 

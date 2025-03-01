@@ -10,35 +10,36 @@
       <div class="author-content">
         <div class="d-flex align-items-center">
           <div class="author-img avatar-sm">
-            <img src="{% static 'images/team8.jpg' %}" alt="testimonial image">
+            <img src="{{ user.image.url }}" alt="testimonial image">
           </div>
           <div class="author-bio">
-            <h4 class="author__title"> احمد الجرباني</h4>
-            <span class="author__meta">عضو منذ مايو 2017</span>
+            <h4 class="author__title">{{ user.first_name }} {{ user.last_name }}</h4>
+            <span class="author__meta">عضو منذ {{ user.date_joined|date:"F Y" }}</span>
           </div>
         </div>
+
       </div>
       <div class="sidebar-menu-wrap">
         <ul class="sidebar-menu list-items">
             <li class="{% if request.resolver_match.url_name == 'user_dashboard_index' %} page-active {% endif %}">
-            <a href="{% url 'payments:user_dashboard_index' %}"><i class="la la-dashboard me-2"></i>لوحة القيادة</a>
+            <a href="{% url 'customer:user_dashboard_index' %}"><i class="la la-dashboard me-2"></i>لوحة القيادة</a>
           </li>
           
           <li class="{% if request.resolver_match.url_name == 'user_dashboard_bookings' %} page-active {% endif %}">
-            <a href="{% url 'payments:user_dashboard_bookings' %}"><i class="la la-shopping-cart me-2 text-color"></i>الحجز</a>
+            <a href="{% url 'customer:user_dashboard_bookings' %}"><i class="la la-shopping-cart me-2 text-color"></i>الحجز</a>
           </li>
           <li class="{% if request.resolver_match.url_name == 'user_dashboard_profile' %} page-active {% endif %}">
-            <a href="{% url 'payments:user_dashboard_profile' %}"><i class="la la-user me-2 text-color-2"></i>ملفي</a>
+            <a href="{% url 'customer:user_dashboard_profile' %}"><i class="la la-user me-2 text-color-2"></i>ملفي</a>
           </li>
       
           <li class="{% if request.resolver_match.url_name == 'user_dashboard_reviews' %} page-active {% endif %}">
-            <a href="{% url 'payments:user_dashboard_reviews' %}"><i class="la la-star me-2 text-color-3"></i>تعليقاتي</a>
+            <a href="{% url 'customer:user_dashboard_reviews' %}"><i class="la la-star me-2 text-color-3"></i>تعليقاتي</a>
           </li>
           <li class="{% if request.resolver_match.url_name == 'user_dashboard_wishlist' %} page-active {% endif %}">
-            <a href="{% url 'payments:user_dashboard_wishlist' %}"><i class="la la-heart me-2 text-color-4"></i>قائمة الرغبات</a>
+            <a href="{% url 'customer:user_dashboard_wishlist' %}"><i class="la la-heart me-2 text-color-4"></i>قائمة الرغبات</a>
           </li>
           <li class="{% if request.resolver_match.url_name == 'user_dashboard_settings' %} page-active {% endif %}">
-            <a href="{% url 'payments:user_dashboard_settings' %}"><i class="la la-cog me-2 text-color-5"></i>الإعدادات</a>
+            <a href="{% url 'customer:user_dashboard_settings' %}"><i class="la la-cog me-2 text-color-5"></i>الإعدادات</a>
           </li>
           <li>
             <a href="{% url 'home:index' %}"><i class="la la-power-off me-2 text-color-6"></i>تسجيل خروج</a>

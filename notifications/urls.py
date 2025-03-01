@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path # type: ignore #
 from .views import notifications_view, mark_notifications_read
 
 urlpatterns = [
