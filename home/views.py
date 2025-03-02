@@ -14,6 +14,7 @@ from services.models import HotelService
 
 # Create your views here.
 def index(request):
+    request.session.flush() 
     roomTypes = RoomType.objects.filter(is_active = True)
     ctx = {
         'roomTypes':roomTypes

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
 
@@ -74,55 +75,67 @@ class HotelPaymentMethod(models.Model):
 
 
 # ------------Payment-------------
-class Payment(models.Model):
-    TYPE_CHOICES = [
-        ('cash', _('نقدي')),
-        ('e_pay', _('دفع إلكتروني')),
-    ]
-    PaymentStatus_choices = [
-        (0, _('قيد الانتظار')),
-        (1, _('مكتمل')),
-        (2, _('فشل')),
-        (3, _('مسترد')),
-    ]
-
-    payment_method = models.ForeignKey(
-        HotelPaymentMethod,
-        on_delete=models.CASCADE,
-        verbose_name=_("طريقة الدفع"),
-        related_name='payments'
-    )
-    payment_status = models.CharField(
-        max_length=20,
-        choices=PaymentStatus_choices,
-        verbose_name=_("حالة الدفع"),
-        default='pending'
-    )
-    payment_date = models.DateTimeField(auto_now_add=True, verbose_name=_("تاريخ الدفع"))
-    payment_subtotal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("المبلغ الفرعي"))
-    payment_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("قيمة الخصم"), default=0)
-    payment_totalamount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("المبلغ الإجمالي"))
-    payment_currency = models.CharField(max_length=25, default='USD', verbose_name=_("العملة"))
-    payment_note = models.TextField(max_length=300, verbose_name=_("ملاحظات"), blank=True, null=True)
+class Payment(BaseModel):
     booking = models.ForeignKey(
-        'bookings.Booking',
+        'bookings.Booking',  
         on_delete=models.CASCADE,
         verbose_name=_("الحجز"),
         related_name='payments'
     )
-    payment_type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name=_("نوع الدفع"), default='cash')
+    booking_number = models.CharField( 
+        max_length=20,
+        verbose_name=_("رقم الحجز"),
+        db_index=True 
+    )
+    payment_method = models.ForeignKey(
+        HotelPaymentMethod,
+        on_delete=models.CASCADE,
+        verbose_name=_("طريقة الدفع")
+    )
+    payment_status = models.IntegerField(
+        choices=[(0, "قيد الانتظار"), (1, "تم الدفع"), (2, "مرفوض")],
+        verbose_name=_("حالة الدفع"),
+        default=0
+    )
+    payment_date = models.DateTimeField(
+        verbose_name=_("تاريخ الدفع"),
+        default=timezone.now()
+    )
+    payment_subtotal = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("المبلغ الفرعي")
+    )
+    payment_totalamount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("المبلغ الإجمالي")
+    )
+    payment_currency = models.CharField(
+        max_length=10,
+        verbose_name=_("العملة")
+    )
+    payment_type = models.CharField(
+        max_length=10,
+        choices=[('e_pay', "إلكتروني"), ('cash', "نقدي")],
+        verbose_name=_("نوع الدفع")
+    )
+    payment_note = models.TextField(
+        verbose_name=_("ملاحظات الدفع"),
+        blank=True,
+        null=True
+    )
+    payment_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("قيمة الخصم"), default=0)
+
 
     class Meta:
-        verbose_name = _("فاتورة دفع")
-        verbose_name_plural = _("فواتير الدفع")
+        verbose_name = _("دفعة")
+        verbose_name_plural = _("الدفعات")
         ordering = ['-payment_date']
 
     def __str__(self):
-        return f"فاتورة رقم {self.id} - {self.booking.guest.full_name} - {self.payment_totalamount} {self.payment_currency}"
-
-    def save(self, *args, **kwargs):
-        if self.payment_subtotal and self.payment_discount:
-            self.payment_totalamount = self.payment_subtotal - self.payment_discount
-        super().save(*args, **kwargs)
+        return f"دفعة #{self.id} لحجز {self.booking_number}"
 
 
+
+  

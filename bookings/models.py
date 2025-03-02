@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from services.models import RoomTypeService
 
+import uuid
 # ------------ Guest ------------
 
 class Guest(BaseModel):
@@ -17,47 +18,37 @@ class Guest(BaseModel):
         verbose_name=_("الفندق"),
         related_name='guests'
     )
-    name = models.CharField(
-        verbose_name=_("الاسم"),
-        max_length=150
-    )
-    phone_number = models.CharField(
-        verbose_name=_("رقم الهاتف"),
-        max_length=14
-    )
-    id_card_number = models.CharField(
-        verbose_name=_("رقم الهوية"),
-        max_length=30
-    )
-    age = models.PositiveIntegerField(
-        verbose_name=_("العمر"),
-        null=True,
-        blank=True
-    )
     booking = models.ForeignKey(
         'bookings.Booking',
         on_delete=models.CASCADE,
         verbose_name=_("الحجز"),
         related_name='guests'
     )
-    check_in_date = models.DateTimeField(
-        verbose_name=_("تاريخ تسجيل الدخول"),
-        null=True,
-        blank=True
+    booking_number = models.CharField(
+        max_length=20,
+        verbose_name=_("رقم الحجز"),
+        editable=False
     )
-    check_out_date = models.DateTimeField(
-        verbose_name=_("تاريخ تسجيل الخروج"),
-        null=True,
-        blank=True
-    )
+    name = models.CharField(verbose_name=_("الاسم"), max_length=150)
+    phone_number = models.CharField(verbose_name=_("رقم الهاتف"), max_length=14)
+    id_card_number = models.CharField(verbose_name=_("رقم الهوية"), max_length=30)
+    age = models.PositiveIntegerField(verbose_name=_("العمر"), null=True, blank=True)
+    check_in_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الدخول"), null=True, blank=True)
+    check_out_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الخروج"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("ضيف")
         verbose_name_plural = _("الضيوف")
         ordering = ['name']
+        unique_together = ('hotel', 'id_card_number')
+
+    def save(self, *args, **kwargs):
+        if self.booking:
+            self.booking_number = self.booking.booking_number  # ربط برقم الحجز
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} - {self.phone_number}"
+        return f"{self.name} - {self.booking_number}"
 
 
 
@@ -68,10 +59,16 @@ class Guest(BaseModel):
 
 class Booking(BaseModel):
     class BookingStatus(models.TextChoices):
-        PENDING = 0, _("قيد الانتظار")
-        CONFIRMED = 1, _("مؤكد")
-        CANCELED = 2, _("ملغي")
+        PENDING = "0", _("قيد الانتظار")
+        CONFIRMED = "1", _("مؤكد")
+        CANCELED = "2", _("ملغي")
 
+    booking_number = models.CharField(
+        max_length=20,
+        editable=False,
+        verbose_name=_("رقم الحجز")
+    )
+    
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -102,6 +99,11 @@ class Booking(BaseModel):
         null=True,
         blank=True
     )
+    actual_check_out_date = models.DateTimeField(
+        verbose_name=_("تاريخ المغادرة الفعلي"),
+        null=True,
+        blank=True
+    )
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -123,8 +125,13 @@ class Booking(BaseModel):
         verbose_name_plural = _("الحجوزات")
         ordering = ['-check_in_date']
 
+    def save(self, *args, **kwargs):
+        if not self.booking_number:
+            self.booking_number = f"BKG-{uuid.uuid4().hex[:10].upper()}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Booking #{self.id if self.id else 'New'} - {self.room}"
+        return f"Booking #{self.booking_number} - {self.room}"
 
     @property
     def duration(self):
@@ -133,21 +140,18 @@ class Booking(BaseModel):
             return (self.check_out_date - self.check_in_date).days
         return 0
 
-    
-
 # ------------ Booking Detail -------------
 class BookingDetail(BaseModel):
-    service = models.ForeignKey(
-        RoomTypeService,
-        on_delete=models.CASCADE,
-        verbose_name=_("الخدمة"),
-        related_name='booking_details'
-    )
     booking = models.ForeignKey(
         'bookings.Booking',
         on_delete=models.CASCADE,
         verbose_name=_("الحجز"),
         related_name='details'
+    )
+    booking_number = models.CharField(
+        max_length=20,
+        verbose_name=_("رقم الحجز"),
+        editable=False
     )
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
@@ -155,31 +159,27 @@ class BookingDetail(BaseModel):
         verbose_name=_("الفندق"),
         related_name='booking_details'
     )
-    quantity = models.PositiveIntegerField(
-        default=1,
-        verbose_name=_("الكمية")
+    service = models.ForeignKey(
+        RoomTypeService,
+        on_delete=models.CASCADE,
+        verbose_name=_("الخدمة"),
+        related_name='booking_details'
     )
-    price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name=_("السعر")
-    )
-    notes = models.TextField(
-        max_length=300,
-        verbose_name=_("ملاحظات"),
-        blank=True,
-        null=True
-    )
+    quantity = models.PositiveIntegerField(default=1, verbose_name=_("الكمية"))
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("السعر"))
+    total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("الإجمالي"), editable=False)
+    notes = models.TextField(max_length=300, verbose_name=_("ملاحظات"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("تفصيل الحجز")
         verbose_name_plural = _("تفاصيل الحجز")
         ordering = ['service']
 
-    def __str__(self):
-        return f"{self.service} - {self.booking}"
+    def save(self, *args, **kwargs):
+        self.total = self.quantity * self.price
+        if self.booking:
+            self.booking_number = self.booking.booking_number  
+        super().save(*args, **kwargs)
 
-    @property
-    def total(self):
-        """حساب المبلغ الإجمالي"""
-        return self.quantity * self.price
+    def __str__(self):
+        return f"{self.service} - {self.booking_number}"

@@ -52,4 +52,4 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        return queryset.select_related('payment_method', 'payment_status', 'booking')
+        return queryset.select_related('payment_method',  'booking')
