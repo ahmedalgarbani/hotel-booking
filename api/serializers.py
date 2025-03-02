@@ -5,10 +5,18 @@ from rooms.models import RoomType
 
 User = get_user_model()
 
+
+
 class HotelSerializer(serializers.ModelSerializer):
+    rooms = serializers.SerializerMethodField()
+
     class Meta:
         model = Hotel
-        fields = '__all__'
+        fields = ['id', 'name', 'location', 'rooms']
+
+    def get_rooms(self, obj):
+        rooms = RoomType.objects.filter(hotel=obj)
+        return RoomsSerializer(rooms, many=True).data
 
 class RoomsSerializer(serializers.ModelSerializer):
     class Meta:
