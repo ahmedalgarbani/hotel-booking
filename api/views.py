@@ -16,13 +16,14 @@ from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from django.core.exceptions import ValidationError
 from datetime import datetime
 from django.core.exceptions import ValidationError
-
+from rest_framework.decorators import api_view
 
 User = get_user_model()
 # Views
 class HotelsViewSet(viewsets.ModelViewSet):
-    queryset = Hotel.objects.all()
+    queryset = Hotel.objects.filter(is_verified = True)
     serializer_class = HotelSerializer
+
 
 class RoomsViewSet(viewsets.ModelViewSet):
     queryset = RoomType.objects.all()
