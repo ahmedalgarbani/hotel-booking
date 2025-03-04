@@ -36,7 +36,7 @@ def register(request):
                 username=username,
                 email=email,
                 password=password1,
-                user_type='user'
+                user_type='customer'
             )
             
             # Log the user in
