@@ -10,7 +10,6 @@ from rest_framework_simplejwt.views import (
 # Test
 router = DefaultRouter()
 router.register(r'hotels', HotelsViewSet)
-router.register(r'rooms', RoomsViewSet)
 
 urlpatterns = [
     

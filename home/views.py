@@ -2,7 +2,8 @@ from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
 from payments.models import HotelPaymentMethod
-from django.db.models import Avg, Count,Q
+from django.db.models import Avg, Count,Q,OuterRef, Subquery, Max,F
+
 from django.db import models
 from reviews.models import HotelReview
 from rooms.models import Availability, RoomImage, RoomPrice, RoomType
@@ -52,8 +53,21 @@ def hotel_detail(request, slug):
     available_room_types = Availability.objects.filter(
         hotel=hotel,
         available_rooms__gt=0,
-        availability_date=today
-    ).select_related('room_type').distinct()
+    ).select_related('room_type')
+
+    # Subquery to get the latest 'created_at' per room_type
+    latest_availability = Availability.objects.filter(
+        hotel=hotel,
+        room_type=OuterRef('room_type'),
+        available_rooms__gt=0,
+    ).order_by('-created_at')
+
+    # Annotate each availability record with the latest one for each room type
+    available_room_types = available_room_types.annotate(
+        latest_record=Subquery(latest_availability.values('created_at')[:1])
+    ).filter(
+        created_at=F('latest_record')
+    )
 
     for available_room in available_room_types:
         room_price = RoomPrice.objects.filter(
@@ -77,6 +91,7 @@ def hotel_detail(request, slug):
     }
 
     return render(request, 'frontend/home/pages/hotel-single.html', ctx)
+
 
 
 def room_search_result(request):

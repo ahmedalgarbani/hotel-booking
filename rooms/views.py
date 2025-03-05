@@ -28,54 +28,54 @@ from django.db.models import Sum
 from django.utils.dateparse import parse_date
 from decimal import Decimal
 from services.models import RoomTypeService
-def check_room_availability(room_type, check_in_date, check_out_date, room_number):
-    """
-    Check room type availability for specific dates and number of rooms.
-    Returns a tuple (bool, str) where bool indicates availability and str contains any error message.
-    """
-    # Validate input parameters
-    if not all([room_type, check_in_date, check_out_date, room_number]):
-        return False, "بيانات الحجز غير مكتملة"
+# def check_room_availability(room_type, check_in_date, check_out_date, room_number):
+#     """
+#     Check room type availability for specific dates and number of rooms.
+#     Returns a tuple (bool, str) where bool indicates availability and str contains any error message.
+#     """
+#     # Validate input parameters
+#     if not all([room_type, check_in_date, check_out_date, room_number]):
+#         return False, "بيانات الحجز غير مكتملة"
     
-    # Check if room type is active
-    if not room_type.is_active:
-        return False, "هذا النوع من الغرف غير متاح للحجز حالياً"
+#     # Check if room type is active
+#     if not room_type.is_active:
+#         return False, "هذا النوع من الغرف غير متاح للحجز حالياً"
     
-    # Calculate number of nights
-    number_of_nights = (check_out_date - check_in_date).days
+#     # Calculate number of nights
+#     number_of_nights = (check_out_date - check_in_date).days
     
-    if number_of_nights <= 0:
-        return False, "يجب أن يكون تاريخ الخروج بعد تاريخ الدخول"
+#     if number_of_nights <= 0:
+#         return False, "يجب أن يكون تاريخ الخروج بعد تاريخ الدخول"
     
-    if number_of_nights > 30:  # Optional: limit maximum stay
-        return False, "الحد الأقصى للإقامة هو 30 يوماً"
+#     if number_of_nights > 30:  # Optional: limit maximum stay
+#         return False, "الحد الأقصى للإقامة هو 30 يوماً"
         
-    # Generate date range
-    dates_range = [check_in_date + timedelta(days=i) for i in range(number_of_nights)]
+#     # Generate date range
+#     dates_range = [check_in_date + timedelta(days=i) for i in range(number_of_nights)]
     
-    # Check availability for each date
-    unavailable_dates = []
-    for date in dates_range:
-        # Get availability for this date
-        availability = room_type.availabilities.filter(
-            availability_date=date
-        ).select_related('room_status').first()
+#     # Check availability for each date
+#     unavailable_dates = []
+#     for date in dates_range:
+#         # Get availability for this date
+#         availability = room_type.availabilities.filter(
+#             availability_date=date
+#         ).select_related('room_status').first()
         
-        if not availability:
-            unavailable_dates.append(date.strftime('%Y-%m-%d'))
-        else:
-            # Check if room status allows booking
-            if not availability.room_status.is_available:
-                return False, f"الغرف غير متاحة للحجز في تاريخ {date.strftime('%Y-%m-%d')} بسبب {availability.room_status.name}"
+#         if not availability:
+#             unavailable_dates.append(date.strftime('%Y-%m-%d'))
+#         else:
+#             # Check if room status allows booking
+#             if not availability.room_status.is_available:
+#                 return False, f"الغرف غير متاحة للحجز في تاريخ {date.strftime('%Y-%m-%d')} بسبب {availability.room_status.name}"
             
-            # Check if enough rooms are available
-            if availability.available_rooms < room_number:
-                return False, f"عدد الغرف المطلوب غير متوفر في تاريخ {date.strftime('%Y-%m-%d')}. المتوفر: {availability.available_rooms} غرفة"
+#             # Check if enough rooms are available
+#             if availability.available_rooms < room_number:
+#                 return False, f"عدد الغرف المطلوب غير متوفر في تاريخ {date.strftime('%Y-%m-%d')}. المتوفر: {availability.available_rooms} غرفة"
     
-    if unavailable_dates:
-        return False, f"الغرف غير متوفرة في التواريخ التالية: {', '.join(unavailable_dates)}"
+#     if unavailable_dates:
+#         return False, f"الغرف غير متوفرة في التواريخ التالية: {', '.join(unavailable_dates)}"
             
-    return True, "الغرف متوفرة"
+#     return True, "الغرف متوفرة"
 
 #تحت التطوير  
 
@@ -178,8 +178,8 @@ def room_detail(request, room_id):
                 messages.error(request, f"السعة القصوى لهذا النوع من الغرف هي {room.max_capacity} أشخاص.")
                 return redirect('rooms:room_detail', room_id=room_id)
             
-            # Check room availability
-            is_available, message = check_room_availability(room, check_in_date, check_out_date, room_number)
+            is_available, message = check_room_availability(room, room.hotel, room_number)
+         
             if not is_available:
                 messages.error(request, message)
                 return redirect('rooms:room_detail', room_id=room_id)
@@ -204,7 +204,7 @@ def room_detail(request, room_id):
             }
             
             # Redirect to checkout
-            return redirect('payments:checkout', hotel_id=room.hotel.id)
+            return redirect('payments:process_booking', room_id=room.id)
             
         except Exception as e:
             print(f"Error in room_detail: {str(e)}")  # Add logging
@@ -293,7 +293,7 @@ def room_detail(request, room_id):
 
     context = {
         'room': room,
-        'reviews': reviews, # Now 'reviews' is a Page object
+        'reviews': reviews, 
         'services': services_list,
         'price': price,
         'form': form,

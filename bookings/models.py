@@ -1,12 +1,16 @@
 from django.conf import settings
-from django.db import models
+from django.db import models,transaction
 from HotelManagement.models import BaseModel
 from django.utils.translation import gettext_lazy as _
-from rooms.models import Availability
+from rooms.models import Availability, RoomStatus
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from services.models import RoomTypeService
+from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
+
 
 import uuid
 # ------------ Guest ------------
@@ -119,26 +123,80 @@ class Booking(BaseModel):
         default=True,
         verbose_name=_("حالة الحساب")
     )
+    rooms_booked = models.PositiveIntegerField(verbose_name=_("عدد الغرف المحجوزة"), default=1, validators=[MinValueValidator(1)])
+
 
     class Meta:
         verbose_name = _("حجز")
         verbose_name_plural = _("الحجوزات")
         ordering = ['-check_in_date']
 
+
+    from django.core.exceptions import ValidationError
+
     def save(self, *args, **kwargs):
-        if not self.booking_number:
-            self.booking_number = f"BKG-{uuid.uuid4().hex[:10].upper()}"
-        super().save(*args, **kwargs)
+        is_new_booking = self._state.adding  
+        previous_status = None
+
+        if not is_new_booking:
+            previous_booking = Booking.objects.get(pk=self.pk)
+            previous_status = previous_booking.status
+
+        # Get the latest availability record for the hotel and room type
+        latest_availability = (
+            Availability.objects.filter(hotel=self.hotel, room_type=self.room)
+            .order_by('-availability_date')
+            .first()
+        )
+
+        available_rooms = latest_availability.available_rooms if latest_availability else self.room.rooms_count
+
+        # Prevent overbooking: If not enough rooms, raise an error
+        if is_new_booking and self.rooms_booked > available_rooms:
+            raise ValidationError(f"Cannot book {self.rooms_booked} rooms. Only {available_rooms} rooms are available.")
+
+        super().save(*args, **kwargs)  # Save booking first
+
+        today = timezone.now().date()
+
+        if is_new_booking or (previous_status == "1" and self.status == "0"):  
+            self.update_availability(-self.rooms_booked, today)
+
+        if self.actual_check_out_date:
+            self.update_availability(self.rooms_booked, today)
+
+        if previous_status != "2" and self.status == "2":  
+            self.update_availability(self.rooms_booked, today)
+
+
+
+
+    def update_availability(self, change, date):
+        """Ensure availability is updated or created for today's date"""
+        today = timezone.now().date() 
+
+        with transaction.atomic():
+            availability, created = Availability.objects.get_or_create(
+                hotel=self.hotel,
+                room_type=self.room,
+                availability_date=today, 
+                defaults={
+                    "room_status": RoomStatus.objects.get(id=3),  
+                    "available_rooms": max(0, self.room.rooms_count + change),  
+                    "notes": f"Updated due to booking #{self.booking_number}",
+                }
+            )
+
+            if not created:
+                availability.available_rooms = max(0, availability.available_rooms + change)
+                availability.notes = f"Updated due to booking #{self.booking_number}"
+                availability.save()
+
 
     def __str__(self):
-        return f"Booking #{self.booking_number} - {self.room}"
+        return f"Booking #{self.booking_number} - {self.room.name} ({self.rooms_booked} rooms)"
 
-    @property
-    def duration(self):
-        """حساب مدة الإقامة بالأيام"""
-        if self.check_in_date and self.check_out_date:
-            return (self.check_out_date - self.check_in_date).days
-        return 0
+
 
 # ------------ Booking Detail -------------
 class BookingDetail(BaseModel):

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
+from rooms.services import check_room_availability
 from services.models import RoomTypeService
 from django.contrib import messages
 from django.utils import timezone
@@ -27,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 def process_booking(request, room_id):
+    room = get_object_or_404(RoomType, id=room_id)
     if request.method == "POST":
         check_in = request.POST.get("check_in_date")
         check_out = request.POST.get("check_out_date")
@@ -34,7 +36,51 @@ def process_booking(request, room_id):
         adult_number = int(request.POST.get("adult_number", 1))
         total_price = float(request.POST.get("total_price", 0))
         grand_price = float(request.POST.get("grand_price", 0))
+        try:
+            room_number = int(request.POST.get('room_number', 1))
+            adult_number = int(request.POST.get('adult_number', 1))
+        except ValueError:
+            messages.error(request, "يجب أن يكون عدد الغرف وعدد الأشخاص أرقاماً صحيحة.")
+            return redirect('rooms:room_detail', room_id=room_id)
         
+        extra_services = request.POST.getlist('extra_services')
+        
+        if not check_in or not check_out:
+            messages.error(request, "يرجى تحديد تاريخ الدخول والخروج.")
+            return redirect('rooms:room_detail', room_id=room_id)
+        
+        try:
+            # Parse dates
+            check_in_date = datetime.strptime(check_in, '%Y-%m-%d').date()
+            check_out_date = datetime.strptime(check_out, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, "صيغة التاريخ غير صحيحة. يجب أن تكون بالشكل YYYY-MM-DD.")
+            return redirect('rooms:room_detail', room_id=room_id)
+        
+        # Validate dates
+        today = timezone.now().date()
+        if check_in_date < today:
+            messages.error(request, "لا يمكن اختيار تاريخ دخول في الماضي.")
+            return redirect('rooms:room_detail', room_id=room_id)
+        
+        if check_out_date <= check_in_date:
+            messages.error(request, "يجب أن يكون تاريخ الخروج بعد تاريخ الدخول.")
+            return redirect('rooms:room_detail', room_id=room_id)
+        
+        # Validate room number and adult number
+        if room_number < 1:
+            messages.error(request, "يجب أن يكون عدد الغرف 1 على الأقل.")
+            return redirect('rooms:room_detail', room_id=room_id)
+        
+        if adult_number > room.max_capacity:
+            messages.error(request, f"السعة القصوى لهذا النوع من الغرف هي {room.max_capacity} أشخاص.")
+            return redirect('rooms:room_detail', room_id=room_id)
+        
+        is_available, message = check_room_availability(room, room.hotel, room_number)
+     
+        if not is_available:
+            messages.error(request, message)
+            return redirect('rooms:room_detail', room_id=room_id)
         extra_services = request.POST.getlist("extra_services")
         extra_services_details = []
         extra_services_total = 0
@@ -170,7 +216,7 @@ def hotel_confirm_payment(request):
                     return redirect("home:index")
 
                 guests_data = request.session.get("guests", [])
-
+                print(booking_data)
                 transfer_owner_name = request.POST.get("transfer_owner_name", "").strip()
                 transfer_number = request.POST.get("transfer_number", "").strip()
                 payment_method_id = request.POST.get("payment_method")
@@ -187,7 +233,8 @@ def hotel_confirm_payment(request):
                     check_in_date=booking_data["check_in"],
                     check_out_date=booking_data["check_out"],
                     amount=booking_data.get("grand_total", 0),
-                    status=pending_status
+                    status=pending_status,
+                    rooms_booked = booking_data["room_number"]
                 )
 
                 guests_list = []

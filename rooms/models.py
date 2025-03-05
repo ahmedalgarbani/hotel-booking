@@ -263,19 +263,15 @@ class Availability(BaseModel):
         verbose_name = _("توفر الغرف")
         verbose_name_plural = _("توفر الغرف")
         ordering = ['-availability_date', 'room_type']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['hotel', 'room_type', 'availability_date'],
-                name='unique_room_availability'
-            )
-        ]
 
-    def clean(self):
-        super().clean()
+    def save(self, *args, **kwargs):
+        """Ensure availability never exceeds the total room count"""
         if self.available_rooms > self.room_type.rooms_count:
-            raise ValidationError({
-                'available_rooms': _("عدد الغرف المتوفرة لا يمكن أن يتجاوز العدد الكلي للغرف")
-            })
+            self.available_rooms = self.room_type.rooms_count
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.room_type.name} - {self.available_rooms} rooms available on {self.availability_date}"
 
 
 
