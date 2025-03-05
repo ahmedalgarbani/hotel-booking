@@ -143,7 +143,6 @@ def save_guests(request, room_id):
         request.session["guests"] = guests
         request.session.modified = True
 
-        messages.success(request, "تم حفظ معلومات الزوار بنجاح.")
         return redirect("payments:checkout", room_id=room_id)
 
     return redirect("payments:add_guest", room_id=room_id)
