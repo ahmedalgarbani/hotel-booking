@@ -63,8 +63,6 @@ class HotelSerializer(serializers.ModelSerializer):
         return obj.location.address if obj.location else None
 
 
-
-
 class RegisterSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
 

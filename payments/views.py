@@ -155,7 +155,7 @@ def save_guests(request, room_id):
 
 logger = logging.getLogger(__name__)
 
-# @login_required
+@login_required
 def hotel_confirm_payment(request):
     if request.method == 'POST':
         try:
@@ -182,7 +182,8 @@ def hotel_confirm_payment(request):
 
                 booking = Booking.objects.create(
                     hotel_id=booking_data["hotel_id"],
-                    user=CustomUser.objects.get(id=2),  
+                    # user=CustomUser.objects.get(id=request.user.id),  
+                    user=request.user,  
                     room_id=booking_data["room_id"],
                     check_in_date=booking_data["check_in"],
                     check_out_date=booking_data["check_out"],

@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from HotelManagement.models import BaseModel, Hotel
 from django.utils import timezone
-
+from django.db.models import Q
 from users.models import CustomUser
 
 
@@ -117,12 +117,19 @@ class RoomType(BaseModel):
 
     @property
     def available_rooms_count(self):
-        """عدد الغرف المتاحة حالياً"""
-        today = timezone.now().date()
-        availability = self.availabilities.filter(
-            availability_date=today
-        ).first()
-        return availability.available_rooms if availability else 0
+        """Calculate available rooms dynamically based on active bookings and check-out dates."""
+        now = timezone.now()
+        
+        active_bookings = self.bookings.filter(
+            status='1',  
+            check_in_date__lte=now,  
+        ).filter(
+           
+            Q(actual_check_out_date__isnull=True, check_out_date__gt=now) |
+            Q(actual_check_out_date__gt=now)
+        ).count()
+
+        return max(self.rooms_count - active_bookings, 0)
 
 
 class RoomPrice(BaseModel):

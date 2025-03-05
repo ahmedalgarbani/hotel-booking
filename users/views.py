@@ -54,31 +54,38 @@ def logout_view(request):
     messages.success(request, 'تم تسجيل الخروج بنجاح')
     return redirect('home:index')
 
+
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
         remember = request.POST.get('remember')
-        
+
         if not username or not password:
             messages.error(request, 'يرجى إدخال اسم المستخدم وكلمة المرور')
             return redirect('home:index')
-            
+
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None:
+            
             login(request, user)
             
-            if not remember:
-                request.session.set_expiry(0)
-                
+            # تحديد انتهاء الجلسة بناءً على خيار "تذكرني"
+            if remember:
+                request.session.set_expiry(1209600)  # 14 يومًا
+            else:
+                request.session.set_expiry(0)  # تنتهي الجلسة عند غلق المتصفح
+
             messages.success(request, 'تم تسجيل الدخول بنجاح!')
+            
             return redirect('home:index')
         else:
             messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة')
             return redirect('home:index')
-            
+
     return redirect('home:index')
+
 
 def password_reset_view(request):
     messages.info(request, 'سيتم تنفيذ هذه الميزة قريباً')
