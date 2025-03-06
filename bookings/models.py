@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models,transaction
 from HotelManagement.models import BaseModel
-from django.utils.translation import gettext_lazy as _
 from rooms.models import Availability, RoomStatus
 from django.db import models
 from django.utils import timezone
@@ -10,8 +9,6 @@ from django.conf import settings
 from services.models import RoomTypeService
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
-
-
 import uuid
 # ------------ Guest ------------
 
@@ -48,7 +45,7 @@ class Guest(BaseModel):
 
     def save(self, *args, **kwargs):
         if self.booking:
-            self.booking_number = self.booking.booking_number  # ربط برقم الحجز
+            self.booking_number = self.booking.booking_number  
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -124,7 +121,14 @@ class Booking(BaseModel):
         verbose_name=_("حالة الحساب")
     )
     rooms_booked = models.PositiveIntegerField(verbose_name=_("عدد الغرف المحجوزة"), default=1, validators=[MinValueValidator(1)])
-
+    parent_booking = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("الحجز الأصلي"),
+        related_name='extensions'
+    )
 
     class Meta:
         verbose_name = _("حجز")
@@ -132,7 +136,6 @@ class Booking(BaseModel):
         ordering = ['-check_in_date']
 
 
-    from django.core.exceptions import ValidationError
 
     def save(self, *args, **kwargs):
         is_new_booking = self._state.adding  
@@ -142,7 +145,6 @@ class Booking(BaseModel):
             previous_booking = Booking.objects.get(pk=self.pk)
             previous_status = previous_booking.status
 
-        # Get the latest availability record for the hotel and room type
         latest_availability = (
             Availability.objects.filter(hotel=self.hotel, room_type=self.room)
             .order_by('-availability_date')
@@ -151,11 +153,10 @@ class Booking(BaseModel):
 
         available_rooms = latest_availability.available_rooms if latest_availability else self.room.rooms_count
 
-        # Prevent overbooking: If not enough rooms, raise an error
         if is_new_booking and self.rooms_booked > available_rooms:
             raise ValidationError(f"Cannot book {self.rooms_booked} rooms. Only {available_rooms} rooms are available.")
 
-        super().save(*args, **kwargs)  # Save booking first
+        super().save(*args, **kwargs)  
 
         today = timezone.now().date()
 

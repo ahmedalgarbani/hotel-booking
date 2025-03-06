@@ -1,18 +1,24 @@
+from datetime import timedelta
+from pyexpat.errors import messages
 from django.contrib import admin
 from django.db.models import Count
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import path
 from django.utils import timezone
 from django.db.models.functions import TruncHour
 import arabic_reshaper
 from bidi.algorithm import get_display
+from django.utils.translation import gettext_lazy as _
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-
-from bookings.forms import BookingAdminForm
+from django.utils import timezone
+from bookings.forms import BookingAdminForm, BookingExtensionForm
+from rooms.models import Availability, RoomStatus
 from .models import Booking, Guest, BookingDetail
 
 @admin.register(Booking)
@@ -284,6 +290,87 @@ class BookingAdmin(admin.ModelAdmin):
         return self.generate_pdf('تقرير_أوقات_الذروة', headers, data)
     export_peak_times.short_description = "تصدير تقرير أوقات الذروة"
 
+    change_form_template = 'admin/bookings/booking.html'
+    
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                '<path:object_id>/extend/',
+                self.admin_site.admin_view(self.extend_booking),
+                name='booking-extend',
+            ),
+        ]
+        return custom_urls + urls
+
+    def extend_booking(self, request, object_id):
+        original_booking = get_object_or_404(Booking, pk=object_id)
+        
+        if request.method == 'POST':
+            form = BookingExtensionForm(request.POST, booking=original_booking)
+            if form.is_valid():
+                try:
+                    # حفظ التمديد
+                    new_booking = Booking(
+                        parent_booking=original_booking,
+                        hotel=original_booking.hotel,
+                        user=original_booking.user,
+                        room=original_booking.room,
+                        check_in_date=original_booking.check_out_date,
+                        check_out_date=form.cleaned_data['new_check_out'],
+                        rooms_booked=form.cleaned_data['rooms_booked'],
+                        status=Booking.BookingStatus.CONFIRMED,
+                        amount=155,
+                        booking_number=original_booking.booking_number
+                    )
+                    new_booking.save()
+                    
+                    # تحديث توفر الغرف
+                    today = timezone.now().date()
+                    change = -form.cleaned_data['rooms_booked']  # تقليل عدد الغرف المتاحة
+                    
+                    # الحصول على أحدث توفر أو استخدام القيمة الافتراضية
+                    latest_availability = Availability.objects.filter(
+                        hotel=original_booking.hotel,
+                        room_type=original_booking.room
+                    ).order_by('-created_at').first()
+                    
+                    # حساب الغرف المتاحة الحالية
+                    current_available = latest_availability.available_rooms if latest_availability else original_booking.room.rooms_count
+                    
+                    # إنشاء أو تحديث سجل التوفر
+                    availability, created = Availability.objects.update_or_create(
+                        hotel=original_booking.hotel,
+                        room_type=original_booking.room,
+                        availability_date=today,
+                        defaults={
+                            "room_status": RoomStatus.objects.get(id=3),
+                            "available_rooms": max(0, current_available + change),
+                            "notes": f"تم التحديث بسبب تمديد الحجز #{new_booking.booking_number}",
+                        }
+                    )
+
+                    # messages.success(request, 'تم التمديد بنجاح!')
+                    return HttpResponse(
+                        '<script>window.opener.location.reload(); window.close();</script>'
+                    )
+                except Exception as e:
+                    print("--------")
+                    # messages.error(request, f'حدث خطأ: {str(e)}')
+        else:
+            form = BookingExtensionForm(initial={
+                'new_check_out': original_booking.check_out_date + timedelta(days=1),
+                'rooms_booked': original_booking.rooms_booked
+            }, booking=original_booking)
+        
+        context = self.admin_site.each_context(request)
+        context.update({
+            'form': form,
+            'original': original_booking,
+            'opts': self.model._meta,
+        })
+        
+        return render(request, 'admin/bookings/booking_extension.html', context)
 
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):

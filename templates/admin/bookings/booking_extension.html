@@ -1,0 +1,43 @@
+{% load i18n static %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>تمديد الحجز رقم {{ original.booking_number }}</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                {{ form.new_check_out.label_tag }}
+                {{ form.new_check_out }}
+            </div>
+            
+            <div class="form-row">
+                {{ form.rooms_booked.label_tag }}
+                {{ form.rooms_booked }}
+            </div>
+            
+            <div class="submit-row">
+                <button type="submit" class="button">حفظ</button>
+                <button type="button" onclick="window.close()">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-row {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+.form-row label {
+    display: inline-block;
+    width: 200px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
