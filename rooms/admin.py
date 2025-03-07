@@ -14,8 +14,8 @@ from django.template.response import TemplateResponse
 from django.shortcuts import redirect
 from HotelManagement.models import Hotel
 from .models import RoomType, Category, Availability, RoomPrice, RoomImage, RoomStatus
-
 class HotelManagerAdminMixin:
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.user_type == 'hotel_manager':
@@ -28,23 +28,50 @@ class HotelManagerAdminMixin:
         if not request.user.is_superuser:
             if db_field.name == "hotel":
                 kwargs["queryset"] = Hotel.objects.filter(Q(manager=request.user) | Q(manager=request.user.chield))
-
             elif db_field.name == "room_type":
-                kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
+                kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_status":
-                kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
+                kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "category":
-                kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
+                kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_price":
-                kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
+                kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            elif db_field.name == "room_image":
+                kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].required = False
+            if 'created_by' in form.base_fields:
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].widget.attrs['readonly'] = True
+                form.base_fields['created_by'].required = False
+        return form
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            if request.user.is_superuser:
+                obj.updated_by = request.user
+                obj.created_by = request.user
+            elif request.user.user_type == 'hotel_manager' or request.user.user_type == 'hotel_staff':
+                obj.updated_by = request.user
+                obj.created_by = request.user
+        else:
+            obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
+   
+   
 @admin.register(Category)
 class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'hotel', 'description', 'get_room_types_count']
     search_fields = ['name', 'hotel__name']
     list_filter = ['hotel']
-
+    
     def get_room_types_count(self, obj):
         return obj.room_types.count()
     get_room_types_count.short_description = _("عدد أنواع الغرف")
@@ -279,7 +306,7 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     search_fields = ['room_type__name', 'hotel__name']
     list_filter = ['hotel', 'room_type', 'is_special_offer']
     list_editable = ['price', 'is_special_offer']
-
+    
     def get_days_remaining(self, obj):
         today = timezone.now().date()
         if obj.date_to >= today:
