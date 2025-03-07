@@ -18,18 +18,25 @@ from .models import RoomType, Category, Availability, RoomPrice, RoomImage, Room
 class HotelManagerAdminMixin:
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if not request.user.is_superuser:
+        if request.user.user_type == 'hotel_manager':
             qs = qs.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return qs.filter(hotel__manager=request.user.chield)
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if not request.user.is_superuser:
             if db_field.name == "hotel":
-                kwargs["queryset"] = Hotel.objects.filter(manager=request.user)
+                kwargs["queryset"] = Hotel.objects.filter(Q(manager=request.user) | Q(manager=request.user.chield))
+
             elif db_field.name == "room_type":
-                kwargs["queryset"] = RoomType.objects.filter(hotel__manager=request.user)
+                kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_status":
-                kwargs["queryset"] = RoomStatus.objects.filter(hotel__manager=request.user)
+                kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
+            elif db_field.name == "category":
+                kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
+            elif db_field.name == "room_price":
+                kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user)|Q(hotel__manager=request.user.chield))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(Category)
