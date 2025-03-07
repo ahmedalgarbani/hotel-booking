@@ -42,30 +42,26 @@ class HotelManagerAdminMixin:
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+        if not request.user.is_superuser:
+            if obj:  # If the object exists (i.e., we are editing it)
+                if 'created_by' in form.base_fields:
+                    form.base_fields['created_by'].widget.attrs['readonly'] = True
             if 'updated_by' in form.base_fields:
-                form.base_fields['updated_by'].initial = request.user
                 form.base_fields['updated_by'].widget.attrs['readonly'] = True
                 form.base_fields['updated_by'].required = False
-            if 'created_by' in form.base_fields:
-                form.base_fields['created_by'].initial = request.user
-                form.base_fields['created_by'].widget.attrs['readonly'] = True
-                form.base_fields['created_by'].required = False
         return form
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # If the object exists (i.e., we are editing it)
+            return self.readonly_fields + ('created_by', 'updated_by')
+        return self.readonly_fields
+
     def save_model(self, request, obj, form, change):
-        if not change:
-            if request.user.is_superuser:
-                obj.updated_by = request.user
-                obj.created_by = request.user
-            elif request.user.user_type == 'hotel_manager' or request.user.user_type == 'hotel_staff':
-                obj.updated_by = request.user
-                obj.created_by = request.user
-        else:
-            obj.updated_by = request.user
+        if not obj.pk:
+            obj.created_by = request.user
+        obj.updated_by = request.user
         super().save_model(request, obj, form, change)
-   
-   
+
 @admin.register(Category)
 class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'hotel', 'description', 'get_room_types_count']
@@ -133,9 +129,6 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             color, icon
         )
     is_active.short_description = _("نشط")
-
-
-
 
 @admin.register(RoomStatus)
 class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
