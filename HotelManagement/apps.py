@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
-
-class HotelmanagementConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
+class HotelManagementConfig(AppConfig):
     name = 'HotelManagement'
+
+    def ready(self):
+        import HotelManagement.signals
