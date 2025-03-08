@@ -9,12 +9,10 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import status, permissions
-from django.db.utils import IntegrityError
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from django.core.exceptions import ValidationError
-from datetime import datetime
 from django.core.exceptions import ValidationError
 from rest_framework.decorators import api_view
 
@@ -28,6 +26,7 @@ class HotelsViewSet(viewsets.ModelViewSet):
 class RoomsViewSet(viewsets.ModelViewSet):
     queryset = RoomType.objects.all()
     serializer_class = RoomsSerializer
+
 
 class RegisterView(APIView):
     parser_classes = (JSONParser,MultiPartParser, FormParser)

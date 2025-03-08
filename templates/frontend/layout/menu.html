@@ -239,8 +239,8 @@
                                     </li>
                                 </div>
                                 <!-- /Notifications -->
-                                
-              {% if request.user.is_authenticated %}
+                                {% comment %} <a href="{% url 'payments:add_guest' 1 %}" class="">add guest</a> {% endcomment %}
+                {% if request.user.is_authenticated %}
                 <div class="header-right-action">
                   <div class="dropdown">
                     <button class="theme-btn theme-btn-small dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -341,7 +341,7 @@
           if (event.target.closest("li")) {
               var notificationItem = event.target.closest("li");
               // إرسال طلب Ajax لجعل الإشعار مقروء
-              fetch("{% url 'mark_notifications_read' %}", {
+              fetch("{% url 'notifications:mark_notifications_read' %}", {
                   method: "POST",
                   headers: {
                       "X-CSRFToken": "{{ csrf_token }}",

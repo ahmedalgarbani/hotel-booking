@@ -83,7 +83,7 @@ class Payment(BaseModel):
         related_name='payments'
     )
     booking_number = models.CharField( 
-        max_length=20,
+        max_length=255,
         verbose_name=_("رقم الحجز"),
         db_index=True 
     )
@@ -91,6 +91,12 @@ class Payment(BaseModel):
         HotelPaymentMethod,
         on_delete=models.CASCADE,
         verbose_name=_("طريقة الدفع")
+    )
+    transfer_image = models.ImageField(
+        verbose_name=_("صورة السند الدفع"),
+        upload_to='payments/transfer/transfer_image/',
+        null=True,
+        blank=True
     )
     payment_status = models.IntegerField(
         choices=[(0, "قيد الانتظار"), (1, "تم الدفع"), (2, "مرفوض")],

@@ -29,7 +29,7 @@
                   <tr>
                     <th scope="col">فندق</th>
                     <th scope="col">عنوان</th>
-                    <th scope="col">موقعك</th>
+                    <th scope="col">الموقع</th>
                     <th scope="col">تاريخ الطلب</th>
                     <th scope="col">تاريخ التنفيذ</th>
                     <th scope="col">السعر</th>
@@ -53,9 +53,21 @@
                       <td>{{ item.booking.check_out_date|date:"d/m/Y" }}</td>
                       <td>{{ item.booking.amount }}</td>
                       <td>
-                        <span class="badge text-bg-info py-1 px-2">
-                          {{ item.booking.status.booking_status_name }}
+                        {% if item.booking.status == '0' %}
+                        <span class="badge text-bg-warning py-1 px-2">
+                         قيد الانتظار
                         </span>
+                        {% elif item.booking.status == '1' %}
+                        <span class="badge text-bg-info py-1 px-2">
+                          مؤكد
+                        </span>
+                        
+                        {% else %}
+                        <span class="badge text-bg-danger py-1 px-2">
+                          ملغي
+                        </span>
+
+                        {% endif %}
                       </td>
                       <td>
                         <div class="table-content">

@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models,transaction
+from django.urls import reverse
 from HotelManagement.models import BaseModel
+from notifications.models import Notifications
 from rooms.models import Availability, RoomStatus
 from django.db import models
 from django.utils import timezone
@@ -12,7 +14,7 @@ from django.core.exceptions import ValidationError
 import uuid
 # ------------ Guest ------------
 
-class Guest(BaseModel):
+class Guest(models.Model):
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -32,8 +34,24 @@ class Guest(BaseModel):
     )
     name = models.CharField(verbose_name=_("الاسم"), max_length=150)
     phone_number = models.CharField(verbose_name=_("رقم الهاتف"), max_length=14)
-    id_card_number = models.CharField(verbose_name=_("رقم الهوية"), max_length=30)
-    age = models.PositiveIntegerField(verbose_name=_("العمر"), null=True, blank=True)
+    id_card_image = models.ImageField(
+        verbose_name=_("صورة الهوية"),
+        upload_to='guests/id_card_images/',
+        null=True,
+        blank=True
+    )
+    gender = models.CharField(
+        verbose_name=_("الجنس"),
+        max_length=10,
+        choices=[('male', _('ذكر')), ('female', _('أنثى'))],
+        null=True,
+        blank=True
+    )
+    birthday_date = models.DateField(
+        verbose_name=_("تاريخ الميلاد"),
+        null=True,
+        blank=True
+    )
     check_in_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الدخول"), null=True, blank=True)
     check_out_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الخروج"), null=True, blank=True)
 
@@ -41,7 +59,7 @@ class Guest(BaseModel):
         verbose_name = _("ضيف")
         verbose_name_plural = _("الضيوف")
         ordering = ['name']
-        unique_together = ('hotel', 'id_card_number')
+
 
     def save(self, *args, **kwargs):
         if self.booking:
@@ -50,7 +68,6 @@ class Guest(BaseModel):
 
     def __str__(self):
         return f"{self.name} - {self.booking_number}"
-
 
 
 
@@ -169,9 +186,23 @@ class Booking(BaseModel):
         if previous_status != "2" and self.status == "2":  
             self.update_availability(self.rooms_booked, today)
 
+        if self.status == "1": 
+            self.send_notification() 
 
 
 
+    def send_notification(self):
+        """Send a notification to the user to add guests."""
+        message = _("يرجى إضافة الضيوف لحجزك.")
+        action_url = reverse("payments:add_guest", args=[self.room.id]) 
+        Notifications.objects.create(
+            sender=self.user, 
+            user=self.user,
+            message=message,
+            notification_type='1', 
+            action_url=action_url,
+        )
+         
     def update_availability(self, change, date):
         """Ensure availability is updated or created for today's date"""
         today = timezone.now().date() 
@@ -208,7 +239,7 @@ class BookingDetail(BaseModel):
         related_name='details'
     )
     booking_number = models.CharField(
-        max_length=20,
+        max_length=255,
         verbose_name=_("رقم الحجز"),
         editable=False
     )

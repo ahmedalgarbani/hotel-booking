@@ -14,9 +14,7 @@
       </div>
     </div>
   </div>
-  <div class="wave-divider">
- 
-  </div>
+  <div class="wave-divider"></div>
 </section>
 
 <!-- Main Content Section -->
@@ -91,55 +89,13 @@
                     </div>
                     
                     <!-- Payment Form -->
-                    <form action="{% url 'payments:hotel_confirm_payment' %}" method="POST" class="payment-form">
+                    <form action="{% url 'payments:hotel_confirm_payment' %}" method="POST" enctype="multipart/form-data" class="payment-form">
                       {% csrf_token %}
                       <input type="hidden" name="payment_method" value="{{ method.id }}">
                       <input type="hidden" name="check_in_date" value="{{ check_in }}">
                       <input type="hidden" name="check_out_date" value="{{ check_out }}">
                       
                       <div class="form-grid">
-                        <!-- Check-in Date -->
-                        <div class="form-group">
-                          <label class="form-label">تاريخ تسجيل الدخول</label>
-                          <div class="input-with-icon">
-                            <div class="input-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                              </svg>
-                            </div>
-                            <input
-                              class="form-input readonly"
-                              type="text"
-                              value="{{ check_in_display }}"
-                              readonly
-                            />
-                          </div>
-                        </div>
-                        
-                        <!-- Check-out Date -->
-                        <div class="form-group">
-                          <label class="form-label">تاريخ تسجيل الخروج</label>
-                          <div class="input-with-icon">
-                            <div class="input-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                              </svg>
-                            </div>
-                            <input
-                              class="form-input readonly"
-                              type="text"
-                              value="{{ check_out_display }}"
-                              readonly
-                            />
-                          </div>
-                        </div>
-                        
                         <!-- Transfer Owner Name -->
                         <div class="form-group">
                           <label class="form-label">إسم صاحب التحويل</label>
@@ -178,6 +134,28 @@
                               required
                             />
                           </div>
+                        </div>
+                      
+                        <!-- Transfer Image -->
+                        <div class="form-group">
+                          <label class="form-label">صورة التحويل</label>
+                          <div class="input-with-icon">
+                            <div class="input-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                              </svg>
+                            </div>
+                            <input
+                              class="form-input"
+                              type="file"
+                              name="transfer_image"
+                              accept="image/*"
+                              required
+                            />
+                          </div>
+                          <small>قم برفع صورة واضحة لإيصال التحويل.</small>
                         </div>
                       </div>
                       
@@ -372,6 +350,20 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const paymentTabs = document.querySelectorAll(".payment-tab-button");
+    const hiddenInput = document.querySelector('input[name="payment_method"]');
+
+    paymentTabs.forEach(tab => {
+      tab.addEventListener("click", function () {
+        const selectedMethodId = this.id.split("-")[1];
+        hiddenInput.value = selectedMethodId;
+      });
+    });
+  });
+</script>
 
 <style>
   /* Base Styles */

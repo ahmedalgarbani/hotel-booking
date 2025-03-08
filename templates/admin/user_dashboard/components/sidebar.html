@@ -9,9 +9,12 @@
       <!-- end menu-toggler -->
       <div class="author-content">
         <div class="d-flex align-items-center">
+          {% if user.image %}
+
           <div class="author-img avatar-sm">
             <img src="{{ user.image.url }}" alt="testimonial image">
           </div>
+          {% endif %}
           <div class="author-bio">
             <h4 class="author__title">{{ user.first_name }} {{ user.last_name }}</h4>
             <span class="author__meta">عضو منذ {{ user.date_joined|date:"F Y" }}</span>

@@ -23,7 +23,7 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls', namespace='users')),
-    path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagementz')),
+    path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagement')),
     path('', include('home.urls'), name='home'),
     path('rooms/', include('rooms.urls')),
     path('bookings/', include('bookings.urls')),
@@ -34,7 +34,8 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('customer/', include('customer.urls')),
 
-    path('notifications/', include('notifications.urls')),
+    path('notifications/', include('notifications.urls',namespace='notifications')),
+
 ]
 
 if settings.DEBUG:

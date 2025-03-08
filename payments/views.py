@@ -8,6 +8,8 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from django.urls import reverse
 import json
+from datetime import datetime
+import random
 from decimal import Decimal
 from django.core.serializers.json import DjangoJSONEncoder
 from bookings.models import Booking, Guest
@@ -110,24 +112,52 @@ def process_booking(request, room_id):
             "grand_total": grand_price,
         }
         
-        return redirect(reverse("payments:add_guest", args=[room_id]))
+        return redirect(reverse("payments:checkout", args=[room_id]))
 
     
     return redirect(reverse("rooms:room_detail", args=[room_id]))
 
+
+
+
+# Later
 def add_guest(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
     hotel = room.hotel
 
-    booking_data = request.session.get("booking_data", {})
-
-   
-    request.session["booking_data"] = booking_data
-
-    if not booking_data:
+    try:
+        booking = Booking.objects.filter(room=room, user=request.user, status='1').latest('id')
+    except Booking.DoesNotExist:
         return redirect(reverse("rooms:room_detail", args=[room_id]))
 
-    return render(request, "frontend/home/pages/add_guest.html", {"booking_data": booking_data,"room":room,"hotel":hotel},)
+    if request.method == "POST":
+        guests_data = request.POST
+        id_card_images = request.FILES.getlist('id_card_image[]', [])  # Default to an empty list if no files are uploaded
+
+        guests_list = []
+        for i in range(len(guests_data.getlist('name[]'))):
+            guest = Guest(
+                hotel=hotel,
+                booking=booking,
+                name=guests_data.getlist('name[]')[i],
+                phone_number=guests_data.getlist('phone_number[]')[i],
+                gender=guests_data.getlist('gender[]')[i],
+                birthday_date=guests_data.getlist('birthday_date[]')[i],
+                id_card_image=id_card_images[i] if i < len(id_card_images) else None,  # Handle missing files
+                booking_number=booking.booking_number,
+                check_in_date=booking.check_in_date,
+                check_out_date=booking.check_out_date
+            )
+            guests_list.append(guest)
+
+        Guest.objects.bulk_create(guests_list)
+        return redirect(reverse("customer:user_dashboard_index"))
+
+    return render(request, "frontend/home/pages/add_guest.html", {
+        "booking": booking,
+        "room": room,
+        "hotel": hotel,
+    })
 
 
 
@@ -215,42 +245,28 @@ def hotel_confirm_payment(request):
                     messages.error(request, "لم يتم العثور على بيانات الحجز. يرجى إعادة المحاولة.")
                     return redirect("home:index")
 
-                guests_data = request.session.get("guests", [])
-                print(booking_data)
+                # guests_data = request.session.get("guests", [])
                 transfer_owner_name = request.POST.get("transfer_owner_name", "").strip()
                 transfer_number = request.POST.get("transfer_number", "").strip()
                 payment_method_id = request.POST.get("payment_method")
+                transfer_image = request.FILES.get("transfer_image")
 
                 payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
 
                 pending_status = Booking.BookingStatus.PENDING
-
+                booking_number = f"HOTEL-{datetime.now().strftime('%Y%m%d%H%M%S')}-{random.randint(1000, 9999)}"
                 booking = Booking.objects.create(
                     hotel_id=booking_data["hotel_id"],
-                    # user=CustomUser.objects.get(id=request.user.id),  
                     user=request.user,  
                     room_id=booking_data["room_id"],
                     check_in_date=booking_data["check_in"],
                     check_out_date=booking_data["check_out"],
                     amount=booking_data.get("grand_total", 0),
                     status=pending_status,
-                    rooms_booked = booking_data["room_number"]
+                    rooms_booked = booking_data["room_number"],
+                    booking_number = booking_number
                 )
-
-                guests_list = []
-                for guest in guests_data:
-                    guests_list.append(Guest(
-                        hotel_id=booking_data["hotel_id"],
-                        name=guest["name"],
-                        age=guest.get("age"),
-                        id_card_number=guest["id_number"],
-                        booking=booking,
-                        booking_number=booking.booking_number, 
-                        check_in_date=guest.get("check_in_date", booking.check_in_date),
-                        check_out_date=guest.get("check_out_date", booking.check_out_date)
-                    ))
                 
-                Guest.objects.bulk_create(guests_list)
 
                 payment = Payment.objects.create(
                     payment_method=payment_method,
@@ -262,7 +278,9 @@ def hotel_confirm_payment(request):
                     booking=booking,  
                     booking_number=booking.booking_number,
                     payment_type='e_pay' if payment_method.payment_option.method_name != 'نقدي' else 'cash',
-                    payment_note=f"تم التحويل بواسطة: {transfer_owner_name} - رقم التحويل: {transfer_number}"
+                    payment_note=f"تم التحويل بواسطة: {transfer_owner_name} - رقم التحويل: {transfer_number}",
+                    transfer_image = transfer_image
+                    
                 )
 
                 request.session.pop("booking_data", None)

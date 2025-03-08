@@ -1,7 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
+
+from users.models import CustomUser
 from .models import Notifications
 from django.views.decorators.csrf import csrf_exempt
+
+
+
+def all_notifications(request,user_id):
+    user = get_object_or_404(CustomUser,id=user_id)
+    notifications = Notifications.objects.filter(user=user).order_by('-id')
+
+    ctx ={
+        'notifications':notifications
+    }
+    return render(request, 'admin/user_dashboard/pages/all_notifications.html',ctx)
+
 
 def notifications_view(request):
     """عرض الإشعارات غير المقروءة فقط"""
@@ -15,3 +29,12 @@ def mark_notifications_read(request):
         Notifications.objects.filter(user=request.user, status='0').update(status='1')  
         return JsonResponse({"success": True})
     return JsonResponse({"success": False}, status=400)
+
+
+def handle_notification(request, notification_id):
+    notification = get_object_or_404(Notifications, id=notification_id, user=request.user)
+    notification.mark_as_read()
+    if not notification.action_url: 
+        return redirect('customer:user_dashboard_index')
+    else:
+        return redirect(notification.action_url)

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2025 at 06:43 PM
+-- Generation Time: Mar 08, 2025 at 02:12 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -335,7 +335,7 @@ CREATE TABLE `bookings_booking` (
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   `deleted_at` datetime(6) DEFAULT NULL,
-  `booking_number` varchar(20) NOT NULL,
+  `booking_number` varchar(255) NOT NULL,
   `check_in_date` datetime(6) DEFAULT NULL,
   `check_out_date` datetime(6) DEFAULT NULL,
   `actual_check_out_date` datetime(6) DEFAULT NULL,
@@ -356,7 +356,7 @@ CREATE TABLE `bookings_booking` (
 --
 
 INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `booking_number`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `status`, `account_status`, `created_by_id`, `hotel_id`, `room_id`, `updated_by_id`, `user_id`, `rooms_booked`, `parent_booking_id`) VALUES
-(28, '2025-03-06 08:16:46.453526', '2025-03-06 08:17:11.367669', NULL, '', '2025-03-06 00:00:00.000000', '2025-03-07 00:00:00.000000', '2025-03-06 08:17:09.000000', 15.00, '0', 1, NULL, 1, 1, NULL, 7, 6, NULL);
+(38, '2025-03-08 01:11:22.893662', '2025-03-08 01:11:22.893662', NULL, 'HOTEL-20250308041122-6713', '2025-03-08 00:00:00.000000', '2025-03-09 00:00:00.000000', NULL, 15.00, '0', 1, NULL, 1, 1, NULL, 5, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -369,7 +369,7 @@ CREATE TABLE `bookings_bookingdetail` (
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   `deleted_at` datetime(6) DEFAULT NULL,
-  `booking_number` varchar(20) NOT NULL,
+  `booking_number` varchar(255) NOT NULL,
   `quantity` int(10) UNSIGNED NOT NULL CHECK (`quantity` >= 0),
   `price` decimal(10,2) NOT NULL,
   `total` decimal(10,2) NOT NULL,
@@ -389,28 +389,17 @@ CREATE TABLE `bookings_bookingdetail` (
 
 CREATE TABLE `bookings_guest` (
   `id` bigint(20) NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
   `booking_number` varchar(20) NOT NULL,
   `name` varchar(150) NOT NULL,
   `phone_number` varchar(14) NOT NULL,
-  `id_card_number` varchar(30) NOT NULL,
-  `age` int(10) UNSIGNED DEFAULT NULL CHECK (`age` >= 0),
   `check_in_date` datetime(6) DEFAULT NULL,
   `check_out_date` datetime(6) DEFAULT NULL,
   `booking_id` bigint(20) NOT NULL,
-  `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
+  `birthday_date` date DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `id_card_image` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `bookings_guest`
---
-
-INSERT INTO `bookings_guest` (`id`, `created_at`, `updated_at`, `deleted_at`, `booking_number`, `name`, `phone_number`, `id_card_number`, `age`, `check_in_date`, `check_out_date`, `booking_id`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(12, '2025-03-06 08:16:46.510616', '2025-03-06 08:16:46.510616', NULL, '', 'kjhsdkjhfjk', '', '565556', 19, '2025-03-06 00:00:00.000000', '2025-03-07 00:00:00.000000', 28, NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -480,7 +469,36 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (44, '2025-03-06 01:29:39.401566', '27', 'Booking # - room vip 2025 (5 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1),
 (45, '2025-03-06 08:08:33.261922', '27', 'Booking # - room vip 2025 (5 rooms)', 3, '', 5, 1),
 (46, '2025-03-06 08:08:33.266751', '26', 'Booking # - room vip 2025 (1 rooms)', 3, '', 5, 1),
-(47, '2025-03-06 08:17:11.384517', '28', 'Booking # - room vip 2025 (6 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1);
+(47, '2025-03-06 08:17:11.384517', '28', 'Booking # - room vip 2025 (6 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1),
+(48, '2025-03-07 20:31:31.065917', '29', 'Booking # - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1),
+(49, '2025-03-07 20:31:51.527859', '30', 'Booking # - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1),
+(50, '2025-03-07 20:32:07.335843', '29', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(51, '2025-03-07 20:32:07.340504', '28', 'Booking # - room vip 2025 (6 rooms)', 3, '', 5, 1),
+(52, '2025-03-07 20:35:25.396130', '30', 'Booking # - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
+(53, '2025-03-07 20:38:27.524336', '1', 'إشعار من b إلى mosaa - 2', 1, '[{\"added\": {}}]', 41, 1),
+(54, '2025-03-07 20:53:46.592034', '2', 'إشعار من asdjsk إلى asdjsk - 1', 1, '[{\"added\": {}}]', 41, 1),
+(55, '2025-03-07 20:54:03.693250', '2', 'إشعار من asdjsk إلى mosaa - 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u0644\\u0645\"]}}]', 41, 1),
+(56, '2025-03-07 21:08:24.500813', '2', 'إشعار من asdjsk إلى mosaa - 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u0627\\u0644\\u0629\"]}}]', 41, 1),
+(57, '2025-03-07 21:16:17.662816', '30', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(58, '2025-03-07 21:18:23.510897', '31', 'Booking # - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
+(59, '2025-03-07 21:27:39.899164', '31', 'Booking # - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
+(60, '2025-03-07 21:28:12.843852', '31', 'Booking # - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
+(61, '2025-03-07 22:21:49.151074', '1', 'احمد', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0633\\u0645 \\u0627\\u0644\\u0641\\u0646\\u062f\\u0642\"]}}]', 13, 1),
+(62, '2025-03-07 23:40:10.141860', '19', 'ahmedaaaa - ', 3, '', 24, 1),
+(63, '2025-03-07 23:40:10.151569', '20', 'askjdhkjash - ', 3, '', 24, 1),
+(64, '2025-03-07 23:40:10.155694', '21', 'klajsdkasjldk - ', 3, '', 24, 1),
+(65, '2025-03-07 23:40:10.158720', '15', 'lkajds - ', 3, '', 24, 1),
+(66, '2025-03-07 23:40:10.159724', '18', 'lskajdlak - ', 3, '', 24, 1),
+(67, '2025-03-07 23:40:10.166130', '16', 'skajdklasjldk - ', 3, '', 24, 1),
+(68, '2025-03-07 23:40:10.170251', '17', 'sssssssssss - ', 3, '', 24, 1),
+(69, '2025-03-08 01:03:26.434178', '35', 'Booking # - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
+(70, '2025-03-08 01:04:38.139118', '34', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(71, '2025-03-08 01:04:47.429164', '35', 'Booking # - room vip 2025 (1 rooms)', 3, '', 5, 1),
+(72, '2025-03-08 01:04:47.433800', '33', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(73, '2025-03-08 01:04:47.434803', '32', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(74, '2025-03-08 01:04:47.434803', '31', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(75, '2025-03-08 01:05:09.030345', '8', 'room vip 2025 - 15 rooms available on 2025-03-08', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 17, 1),
+(76, '2025-03-08 01:05:09.036144', '7', 'room vip 2025 - 15 rooms available on 2025-03-07', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 17, 1);
 
 -- --------------------------------------------------------
 
@@ -610,7 +628,14 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (49, 'token_blacklist', '0011_linearizes_history', '2025-03-05 18:55:00.637191'),
 (50, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-03-05 18:55:00.722783'),
 (51, 'bookings', '0002_booking_rooms_booked', '2025-03-05 20:55:08.980606'),
-(52, 'bookings', '0003_booking_parent_booking', '2025-03-06 00:37:59.721026');
+(52, 'bookings', '0003_booking_parent_booking', '2025-03-06 00:37:59.721026'),
+(53, 'bookings', '0004_alter_guest_unique_together_guest_birthday_date_and_more', '2025-03-07 19:49:34.724787'),
+(54, 'payments', '0005_payment_transfer_image_alter_payment_payment_date', '2025-03-07 19:58:25.889456'),
+(55, 'notifications', '0003_notifications_action_url', '2025-03-07 20:48:28.497949'),
+(56, 'bookings', '0005_alter_guest_unique_together', '2025-03-07 23:23:55.225937'),
+(57, 'bookings', '0006_alter_bookingdetail_booking_number', '2025-03-08 01:06:45.670662'),
+(58, 'bookings', '0007_alter_bookingdetail_booking_number', '2025-03-08 01:09:20.622131'),
+(59, 'payments', '0006_alter_payment_booking_number_and_more', '2025-03-08 01:10:51.508110');
 
 -- --------------------------------------------------------
 
@@ -629,10 +654,15 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('0sn54dah6b84td4hf50y033ugs57ufnx', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tqg4Q:2vEAesxV17Y7dya87J29AkbyVW55I9ZefmO8TfVlzrQ', '2025-03-21 22:21:30.370701'),
+('2vlxt7a2tnb7z69kqmucph3i3o9geuwb', '.eJxVjEEOwiAURO_C2hAsLfC7dO8ZyAc-ghowpU00xrvbJl3oYjYzb96bWVzmZJdGk82BjezIDr-dQ3-jsg3hiuVSua9lnrLjG8L3tfFzDXQ_7eyfIGFL61sqwl6rDhCUJOmVjghg3Broo9ZuQBexE15FQ8KIwQsD2CkjIBoNcpM2ai3XYun5yNOLjeLzBXLPPok:1tqeAA:w_N-Gimn2GX5anoucMJ2xdbjcvP6L_9CzjGIq7DwI9A', '2025-03-21 20:19:18.115923'),
 ('3l284zd6avprephcge5o4u8f5zv0pedz', '.eJxdj0tuwyAQhu8ya8fCdozBy-57gipCA4wftQMVxlGlKHcvtuIq7QJp-P4HzB0UrnFQ60JBjRZaKCB7ZRrNRG4T7Ce63ufGuxhGnW-W_Kku-bu3NL89vX8KBlyGlK444bnhpUTJK6oMbzqUUuh05LlrGl2j7rBkhneCmGC1YUJiyQWTnWhklUq199PoemUxIrR3GHykef90kUHw_nrMZiAzqdGlZ0tW1idWnRiHg_s1vgjF1ryH3XrVFFJBnQHadY6_JIHoI87qK4yGNkfOMqDvGFClFW8JLtB-XP4ztaegTeY-oLPHfcs_Hj9VtHpK:1tpxqB:rrthkEcER5PU8qO3jlPdbK7MrMpXtAwG9HLKmT61gKQ', '2025-03-19 23:07:51.093730'),
 ('3qsi11xb0eoj0bbvwub0u4160aw78bmu', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tpvah:sZuqLtlzjWQXPsOTdNbO-z3KPrli34_hGl1t7e1FRXE', '2025-03-19 20:43:43.782610'),
 ('5fsxa10j40azsmzvxukhxk5wckw41254', '.eJxVjEEOwiAURO_C2hAsLfC7dO8ZyAc-ghowpU00xrvbJl3oYjYzb96bWVzmZJdGk82BjezIDr-dQ3-jsg3hiuVSua9lnrLjG8L3tfFzDXQ_7eyfIGFL61sqwl6rDhCUJOmVjghg3Broo9ZuQBexE15FQ8KIwQsD2CkjIBoNcpM2ai3XYun5yNOLjeLzBXLPPok:1tpuJS:c-8f7wxVVYGw8Eyarw_XHRouPwBD_fRD7bjOE3_Gnzk', '2025-03-19 19:21:50.420216'),
-('fgvqzg78fi449rbjczlawv62en8jrx8b', '.eJxVjDEOgzAQBP_iOrIM5mxImZ43IK_vHJNEIGGoovw9skSRtDsz-1ZTOPY8HUW2aWZ1VV5dfjeE-JSlAn6E5b7quC77NkNXRZ-06HFled1O9-8gh5JrTVYsAezaRiJ6x8mThCZ11LWwJsAw4GOKiCYNIDMYIs9WnHdArz5fEYU46g:1tq6PO:SpMMaOWZhsSxP5q0Cmj0lcpgWGmOFNdGSiP7Q2O8A9w', '2025-03-20 08:16:46.570327');
+('dyyqcnj01cxrtiis0y0nrglmzwhfwp7v', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tqh0j:y8aKsLvvGNnrlwW5boGQVYDDKVpWtCcmBlHLjLz_hCI', '2025-03-21 23:21:45.692432'),
+('fgvqzg78fi449rbjczlawv62en8jrx8b', '.eJxVjDEOgzAQBP_iOrIM5mxImZ43IK_vHJNEIGGoovw9skSRtDsz-1ZTOPY8HUW2aWZ1VV5dfjeE-JSlAn6E5b7quC77NkNXRZ-06HFled1O9-8gh5JrTVYsAezaRiJ6x8mThCZ11LWwJsAw4GOKiCYNIDMYIs9WnHdArz5fEYU46g:1tq6PO:SpMMaOWZhsSxP5q0Cmj0lcpgWGmOFNdGSiP7Q2O8A9w', '2025-03-20 08:16:46.570327'),
+('pb4qknt4zzqpksgrac85aw0lra2xovps', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tqf3x:WH3sXz6q630fWniOTaqkeDjWlBwcCUvxQwVujYBEWF0', '2025-03-21 21:16:57.167948'),
+('pjguvmv5cs3furu51vieoqzng0zhttp1', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tqiip:8Lq1t6sVHq4Vsuqu8YzQQ0OPt01xzPs60jF6AoBhOjE', '2025-03-22 01:11:23.104915');
 
 -- --------------------------------------------------------
 
@@ -689,7 +719,7 @@ CREATE TABLE `hotelmanagement_hotel` (
 --
 
 INSERT INTO `hotelmanagement_hotel` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `slug`, `profile_picture`, `description`, `business_license_number`, `document_path`, `is_verified`, `verification_date`, `created_by_id`, `location_id`, `manager_id`, `updated_by_id`) VALUES
-(1, '2025-03-01 19:06:29.271764', '2025-03-01 19:06:29.271764', NULL, 'ahmed vip', 'ahmed-vip', 'hotels/images/image_picker_input.dart.png', 'aggggggggggggggggggg', '1515453432132', 'hotel_documents/2025/03/01/image_picker_input.dart.png', 1, '2025-03-01 19:06:26.000000', 1, 1, 2, 1);
+(1, '2025-03-01 19:06:29.271764', '2025-03-07 22:21:49.143958', NULL, 'احمد', 'ahmed-vip', 'hotels/images/image_picker_input.dart.png', 'aggggggggggggggggggg', '1515453432132', 'hotel_documents/2025/03/01/image_picker_input.dart.png', 1, '2025-03-01 19:06:26.000000', 1, 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -804,8 +834,19 @@ CREATE TABLE `notifications_notifications` (
   `notification_type` varchar(50) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `sender_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL
+  `user_id` bigint(20) NOT NULL,
+  `action_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications_notifications`
+--
+
+INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status`, `notification_type`, `is_active`, `sender_id`, `user_id`, `action_url`) VALUES
+(1, 'hello mossa you have to say hello', '2025-03-07 20:38:27.510463', '1', '2', 1, 2, 5, NULL),
+(2, 'ajskhdjkashk', '2025-03-07 20:53:46.588048', '1', '1', 1, 7, 5, '/hotels'),
+(3, 'يرجى إضافة الضيوف لحجزك.', '2025-03-07 21:18:23.507138', '1', '1', 1, 5, 5, '/bookings/31/add-guest/'),
+(4, 'يرجى إضافة الضيوف لحجزك.', '2025-03-07 21:28:12.838903', '1', '1', 1, 5, 5, '/payments/add_guest/1/');
 
 -- --------------------------------------------------------
 
@@ -869,7 +910,7 @@ CREATE TABLE `payments_payment` (
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   `deleted_at` datetime(6) DEFAULT NULL,
-  `booking_number` varchar(20) NOT NULL,
+  `booking_number` varchar(255) NOT NULL,
   `payment_status` int(11) NOT NULL,
   `payment_date` datetime(6) NOT NULL,
   `payment_subtotal` decimal(10,2) NOT NULL,
@@ -881,15 +922,16 @@ CREATE TABLE `payments_payment` (
   `booking_id` bigint(20) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `payment_method_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
+  `updated_by_id` bigint(20) DEFAULT NULL,
+  `transfer_image` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `payments_payment`
 --
 
-INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, `booking_number`, `payment_status`, `payment_date`, `payment_subtotal`, `payment_totalamount`, `payment_currency`, `payment_type`, `payment_note`, `payment_discount`, `booking_id`, `created_by_id`, `payment_method_id`, `updated_by_id`) VALUES
-(12, '2025-03-06 08:16:46.518717', '2025-03-06 08:16:46.518717', NULL, '', 0, '2025-03-06 08:16:46.510616', 15.00, 15.00, '$', 'e_pay', 'تم التحويل بواسطة: jkhkjjh - رقم التحويل: 16515161', 0.00, 28, NULL, 3, NULL);
+INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, `booking_number`, `payment_status`, `payment_date`, `payment_subtotal`, `payment_totalamount`, `payment_currency`, `payment_type`, `payment_note`, `payment_discount`, `booking_id`, `created_by_id`, `payment_method_id`, `updated_by_id`, `transfer_image`) VALUES
+(20, '2025-03-08 01:11:22.928924', '2025-03-08 01:11:22.928924', NULL, 'HOTEL-20250308041122-6713', 0, '2025-03-08 01:11:22.926476', 15.00, 15.00, '$', 'e_pay', 'تم التحويل بواسطة: laksjdkljasl - رقم التحويل: 151516165', 0.00, 38, NULL, 2, NULL, 'payments/transfer/transfer_image/wasell_WlihdS8.jpg');
 
 -- --------------------------------------------------------
 
@@ -1010,7 +1052,9 @@ CREATE TABLE `rooms_availability` (
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
 (4, '2025-03-05 21:15:55.631063', '2025-03-06 08:17:11.380243', NULL, '2025-03-06', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
-(6, '2025-03-05 21:19:57.805376', '2025-03-05 23:08:51.505874', NULL, '2025-03-05', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL);
+(6, '2025-03-05 21:19:57.805376', '2025-03-05 23:08:51.505874', NULL, '2025-03-05', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
+(7, '2025-03-07 19:56:45.856996', '2025-03-08 01:05:09.036144', NULL, '2025-03-07', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
+(8, '2025-03-08 00:38:53.047876', '2025-03-08 01:11:22.923486', NULL, '2025-03-08', 14, 'Updated due to booking #HOTEL-20250308041122-6713', NULL, 1, 3, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1293,11 +1337,11 @@ CREATE TABLE `users_customuser` (
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `is_active`, `chield_id`) VALUES
-(1, 'pbkdf2_sha256$600000$U0vBbjamlzvOok3a0NCd9H$yfdwiYcSW6sk7zcuIe57bjYlbTFT/FyTsy43NUeBioc=', '2025-03-05 20:51:45.182039', 1, 'a', '', '', 'a@a.com', 1, '2025-03-01 18:58:44.494009', '2025-03-01 18:58:45.387318', '2025-03-01 18:58:45.387318', '', '', '', 1, NULL),
+(1, 'pbkdf2_sha256$600000$U0vBbjamlzvOok3a0NCd9H$yfdwiYcSW6sk7zcuIe57bjYlbTFT/FyTsy43NUeBioc=', '2025-03-07 23:21:45.682968', 1, 'a', '', '', 'a@a.com', 1, '2025-03-01 18:58:44.494009', '2025-03-01 18:58:45.387318', '2025-03-01 18:58:45.387318', '', '', '', 1, NULL),
 (2, 'pbkdf2_sha256$600000$Pc3oxZPOdBxmUVe2eOAwit$bXxPnP1siQugYTDEr36L4fCYu5YaVTozzRxUUgVsv1g=', NULL, 1, 'b', '', '', 'b@b.com', 1, '2025-03-01 19:05:26.868670', '2025-03-01 19:05:28.022141', '2025-03-01 19:05:48.735234', 'hotel_manager', '', '', 1, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', 1, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', 1, NULL),
-(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-05 20:17:18.467273', 0, 'mosaa', '', '', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-05 20:10:16.220927', 'customer', '', '', 1, NULL),
+(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-07 22:56:51.795673', 0, 'mosaa', '', '', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-05 20:10:16.220927', 'customer', '', '', 1, NULL),
 (6, 'pbkdf2_sha256$600000$BbNnejHpZOfDP6VnObjVcz$nhsPttz7Xm4OTIK/zOWG0MrrT6q9PAv0jTWQyIffer0=', '2025-03-05 20:13:43.403102', 0, 'mosaa1', '', '', 'mosaa1@mosaa1.com', 0, '2025-03-05 20:13:41.381311', '2025-03-05 20:13:43.386627', '2025-03-05 20:13:43.386627', 'customer', '', '', 1, NULL),
 (7, 'pbkdf2_sha256$600000$vUeJuKMqNFAu6egbZVxQ85$uQPUm3C2c/AmXPOaKjFVNqCkRpV44XZB+IcyyRoeX9I=', '2025-03-06 08:09:12.614518', 0, 'asdjsk', '', '', 'asdjsk@asdjsk.com', 0, '2025-03-06 08:09:10.785662', '2025-03-06 08:09:12.595928', '2025-03-06 08:09:12.595928', 'customer', '', '', 1, NULL);
 
@@ -1417,10 +1461,8 @@ ALTER TABLE `bookings_bookingdetail`
 --
 ALTER TABLE `bookings_guest`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `bookings_guest_hotel_id_id_card_number_ae7bc470_uniq` (`hotel_id`,`id_card_number`),
   ADD KEY `bookings_guest_booking_id_b8c4c07b_fk_bookings_booking_id` (`booking_id`),
-  ADD KEY `bookings_guest_created_by_id_0cc0af08_fk_users_customuser_id` (`created_by_id`),
-  ADD KEY `bookings_guest_updated_by_id_7fb9973c_fk_users_customuser_id` (`updated_by_id`);
+  ADD KEY `bookings_guest_hotel_id_333c72e5` (`hotel_id`);
 
 --
 -- Indexes for table `django_admin_log`
@@ -1779,7 +1821,7 @@ ALTER TABLE `blog_tag`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
@@ -1791,13 +1833,13 @@ ALTER TABLE `bookings_bookingdetail`
 -- AUTO_INCREMENT for table `bookings_guest`
 --
 ALTER TABLE `bookings_guest`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
@@ -1809,7 +1851,7 @@ ALTER TABLE `django_content_type`
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_city`
@@ -1851,7 +1893,7 @@ ALTER TABLE `hotelmanagement_phone`
 -- AUTO_INCREMENT for table `notifications_notifications`
 --
 ALTER TABLE `notifications_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `payments_currency`
@@ -1869,7 +1911,7 @@ ALTER TABLE `payments_hotelpaymentmethod`
 -- AUTO_INCREMENT for table `payments_payment`
 --
 ALTER TABLE `payments_payment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `payments_paymentoption`
@@ -1899,7 +1941,7 @@ ALTER TABLE `reviews_roomreview`
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
@@ -2055,9 +2097,7 @@ ALTER TABLE `bookings_bookingdetail`
 --
 ALTER TABLE `bookings_guest`
   ADD CONSTRAINT `bookings_guest_booking_id_b8c4c07b_fk_bookings_booking_id` FOREIGN KEY (`booking_id`) REFERENCES `bookings_booking` (`id`),
-  ADD CONSTRAINT `bookings_guest_created_by_id_0cc0af08_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
-  ADD CONSTRAINT `bookings_guest_hotel_id_333c72e5_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
-  ADD CONSTRAINT `bookings_guest_updated_by_id_7fb9973c_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+  ADD CONSTRAINT `bookings_guest_hotel_id_333c72e5_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`);
 
 --
 -- Constraints for table `django_admin_log`
