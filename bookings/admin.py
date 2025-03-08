@@ -20,14 +20,45 @@ from django.utils import timezone
 from bookings.forms import BookingAdminForm, BookingExtensionForm
 from rooms.models import Availability, RoomStatus
 from .models import Booking, Guest, BookingDetail
+from django import forms
+from django.contrib.admin.helpers import ActionForm
 
+
+
+class ChangeStatusForm(ActionForm):  
+    new_status = forms.ChoiceField(
+        choices=Booking.BookingStatus.choices,
+        required=True,
+        label="الحالة الجديدة"
+    )
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     form = BookingAdminForm
+    action_form = ChangeStatusForm  
     list_display = ['get_guest_name', 'hotel', 'room', 'check_in_date', 'check_out_date', 'amount', 'status']
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
-    actions = ['export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
+    actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
+
+ 
+   
+    @admin.action(description='تغيير حالة الحجوزات المحددة')
+    def change_booking_status(self, request, queryset):
+        new_status = request.POST.get('new_status')
+        if new_status:
+            for booking in queryset:
+                booking.status = new_status
+                booking.save()  
+                self.message_user(request, f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{dict(Booking.BookingStatus.choices).get(new_status)}'.")
+        else:
+            self.message_user(request, "الرجاء اختيار حالة جديدة.", level='error')
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['status_choices'] = Booking.BookingStatus.choices
+        return super().changelist_view(request, extra_context=extra_context)
+
+  
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':

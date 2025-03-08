@@ -47,6 +47,7 @@ def hotel_detail(request, slug):
         ),
         slug=slug
     )
+    reviews = HotelReview.objects.filter(status = True)
 
     today = datetime.now().date()
 
@@ -87,7 +88,8 @@ def hotel_detail(request, slug):
     ctx = {
         'hotel': hotel,
         'available_room_types': available_room_types,
-        'hotel_services': hotel_services,  
+        'hotel_services': hotel_services, 
+        'reviews':reviews 
     }
 
     return render(request, 'frontend/home/pages/hotel-single.html', ctx)

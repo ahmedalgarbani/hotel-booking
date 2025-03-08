@@ -1,5 +1,42 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
+{% block extra_css %}
+   
+    <style>
+    .messages .alert {
+    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+    border: 2px solid; /* إضافة حدود سميكة */
+    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+    font-weight: bold; /* جعل النص أكثر جرأة */
+}
+
+.messages .alert-success {
+    color: #155724; /* لون نص النجاح (أخضر داكن) */
+    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+}
+
+.messages .alert-error {
+    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+}
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+.messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+</style>
+ {% endblock extra_css %}
 {% block content %}
 
     <!-- ================================
@@ -83,7 +120,15 @@ START BREADCRUMB AREA
 <!-- ================================
 END BREADCRUMB AREA
 ================================= -->
-
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 <!-- ================================
 START TOUR DETAIL AREA
 ================================= -->
@@ -633,15 +678,15 @@ START TOUR DETAIL AREA
                               <div class="rate-option-item">
                                 <label>الخدمات</label>
                                 <div class="rate-stars-option star-rating">
-                                  <input id="service-5" type="radio" name="rating_service" value="5" />
+                                  <input id="service-5" type="radio" name="rating_service" value="5" required />
                                   <label for="service-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-4" type="radio" name="rating_service" value="4" />
+                                  <input id="service-4" type="radio" name="rating_service" value="4" required />
                                   <label for="service-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-3" type="radio" name="rating_service" value="3" />
+                                  <input id="service-3" type="radio" name="rating_service" value="3" required />
                                   <label for="service-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-2" type="radio" name="rating_service" value="2" />
+                                  <input id="service-2" type="radio" name="rating_service" value="2" required />
                                   <label for="service-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-1" type="radio" name="rating_service" value="1" />
+                                  <input id="service-1" type="radio" name="rating_service" value="1" required />
                                   <label for="service-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
@@ -651,15 +696,15 @@ START TOUR DETAIL AREA
                               <div class="rate-option-item">
                                 <label>موقع الفندق</label>
                                 <div class="rate-stars-option star-rating">
-                                  <input id="location-5" type="radio" name="rating_location" value="5" />
+                                  <input id="location-5" type="radio" name="rating_location" value="5" required />
                                   <label for="location-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-4" type="radio" name="rating_location" value="4" />
+                                  <input id="location-4" type="radio" name="rating_location" value="4" required />
                                   <label for="location-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-3" type="radio" name="rating_location" value="3" />
+                                  <input id="location-3" type="radio" name="rating_location" value="3" required />
                                   <label for="location-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-2" type="radio" name="rating_location" value="2" />
+                                  <input id="location-2" type="radio" name="rating_location" value="2" required />
                                   <label for="location-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-1" type="radio" name="rating_location" value="1" />
+                                  <input id="location-1" type="radio" name="rating_location" value="1"required />
                                   <label for="location-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
@@ -669,15 +714,15 @@ START TOUR DETAIL AREA
                               <div class="rate-option-item">
                                 <label>سعر الفندق </label>
                                 <div class="rate-stars-option star-rating">
-                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" />
+                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" required />
                                   <label for="value-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" />
+                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" required />
                                   <label for="value-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" />
+                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" required />
                                   <label for="value-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" />
+                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" required />
                                   <label for="value-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" />
+                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" required/>
                                   <label for="value-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
