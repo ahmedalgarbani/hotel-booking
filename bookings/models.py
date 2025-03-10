@@ -4,6 +4,7 @@ from django.db import models,transaction
 from django.urls import reverse
 from HotelManagement.models import BaseModel
 from notifications.models import Notifications
+from payments.models import Payment
 from rooms.models import Availability, RoomStatus
 from django.db import models
 from django.utils import timezone
@@ -29,7 +30,7 @@ class Guest(models.Model):
         related_name='guests'
     )
     booking_number = models.CharField(
-        max_length=20,
+        max_length=255,
         verbose_name=_("رقم الحجز"),
         editable=False
     )
@@ -274,3 +275,36 @@ class BookingDetail(BaseModel):
 
     def __str__(self):
         return f"{self.service} - {self.booking_number}"
+
+
+
+
+#----------- Booking Extenseion ----------
+
+class ExtensionMovement(models.Model):
+    movement_number = models.AutoField(primary_key=True, verbose_name="رقم الحركة")
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE,verbose_name="رقم الحجز")
+    payment_receipt = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True,verbose_name="رقم سند الدفع")
+    original_departure = models.DateField(verbose_name="تاريخ المغادرة قبل التمديد")
+    extension_date = models.DateField(default=timezone.now, verbose_name="تاريخ التمديد")
+    new_departure = models.DateField(verbose_name="تاريخ المغادرة الجديد")
+    REASON_CHOICES = [
+        ('personal', 'تغيير خطط شخصية'),
+        ('business', 'تمديد أعمال'),
+        ('technical', 'مشكلات فنية (طيران/مواصلات)'),
+        ('other', 'أسباب أخرى'),
+    ]
+    reason = models.CharField(max_length=50, choices=REASON_CHOICES, verbose_name="سبب التمديد")
+    extension_year = models.PositiveIntegerField(editable=False) 
+    duration = models.PositiveIntegerField(verbose_name="مدة التمديد (أيام)", default=0)
+
+
+    def save(self, *args, **kwargs):
+        self.extension_duration = (self.new_departure_date - self.departure_before_extension).days
+        self.extension_year = self.extension_date.year
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"حركة #{self.movement_number} - حجز {self.booking.booking_number}"    
+    
+

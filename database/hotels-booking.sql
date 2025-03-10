@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 09, 2025 at 12:42 AM
+-- Generation Time: Mar 10, 2025 at 01:48 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -249,7 +249,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (159, 'Can add إشعار', 41, 'add_notifications'),
 (160, 'Can change إشعار', 41, 'change_notifications'),
 (161, 'Can delete إشعار', 41, 'delete_notifications'),
-(162, 'Can view إشعار', 41, 'view_notifications');
+(162, 'Can view إشعار', 41, 'view_notifications'),
+(163, 'Can add المفضلات', 42, 'add_favourites'),
+(164, 'Can change المفضلات', 42, 'change_favourites'),
+(165, 'Can delete المفضلات', 42, 'delete_favourites'),
+(166, 'Can view المفضلات', 42, 'view_favourites');
 
 -- --------------------------------------------------------
 
@@ -356,7 +360,7 @@ CREATE TABLE `bookings_booking` (
 --
 
 INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `booking_number`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `status`, `account_status`, `created_by_id`, `hotel_id`, `room_id`, `updated_by_id`, `user_id`, `rooms_booked`, `parent_booking_id`) VALUES
-(38, '2025-03-08 01:11:22.893662', '2025-03-08 23:34:26.823989', NULL, 'HOTEL-20250308041122-6713', '2025-03-08 00:00:00.000000', '2025-03-09 00:00:00.000000', NULL, 15.00, '0', 1, NULL, 1, 1, NULL, 5, 1, NULL);
+(38, '2025-03-08 01:11:22.893662', '2025-03-09 23:38:03.687525', NULL, 'HOTEL-20250308041122-6713', '2025-03-08 00:00:00.000000', '2025-03-09 23:35:53.000000', '2025-03-09 23:38:03.666251', 15.00, '0', 1, NULL, 1, 1, NULL, 5, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -389,7 +393,7 @@ CREATE TABLE `bookings_bookingdetail` (
 
 CREATE TABLE `bookings_guest` (
   `id` bigint(20) NOT NULL,
-  `booking_number` varchar(20) NOT NULL,
+  `booking_number` varchar(255) NOT NULL,
   `name` varchar(150) NOT NULL,
   `phone_number` varchar(14) NOT NULL,
   `check_in_date` datetime(6) DEFAULT NULL,
@@ -399,6 +403,25 @@ CREATE TABLE `bookings_guest` (
   `birthday_date` date DEFAULT NULL,
   `gender` varchar(10) DEFAULT NULL,
   `id_card_image` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings_guest`
+--
+
+INSERT INTO `bookings_guest` (`id`, `booking_number`, `name`, `phone_number`, `check_in_date`, `check_out_date`, `booking_id`, `hotel_id`, `birthday_date`, `gender`, `id_card_image`) VALUES
+(26, 'HOTEL-20250308041122-6713', 'klajsdklajsl', '445', '2025-03-07 23:45:29.000000', '2025-03-09 23:54:25.063374', 38, 1, '2005-03-09', 'male', 'guests/id_card_images/settings_OCZJVSr.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_favourites`
+--
+
+CREATE TABLE `customer_favourites` (
+  `id` bigint(20) NOT NULL,
+  `hotel_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -505,7 +528,11 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (80, '2025-03-08 22:39:49.193719', '39', 'Booking # - room vip 2025 (4 rooms)', 1, '[{\"added\": {}}]', 5, 1),
 (81, '2025-03-08 23:14:20.335343', '41', 'Booking # - room vip 2025 (4 rooms)', 1, '[{\"added\": {}}]', 5, 1),
 (82, '2025-03-08 23:20:13.283766', '40', 'Booking #HOTEL-20250309020932-5334 - room vip 2025 (4 rooms)', 3, '', 5, 1),
-(83, '2025-03-08 23:20:29.357334', '41', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1);
+(83, '2025-03-08 23:20:29.357334', '41', 'Booking # - room vip 2025 (4 rooms)', 3, '', 5, 1),
+(84, '2025-03-09 23:33:07.433387', '38', 'Booking #HOTEL-20250308041122-6713 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\"]}}]', 5, 1),
+(85, '2025-03-09 23:35:59.849143', '38', 'Booking #HOTEL-20250308041122-6713 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\", \"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1),
+(86, '2025-03-09 23:36:58.148346', '38', 'Booking #HOTEL-20250308041122-6713 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 5, 1),
+(87, '2025-03-09 23:45:46.031347', '26', 'klajsdklajsl - HOTEL-20250308041122-6713', 1, '[{\"added\": {}}]', 24, 1);
 
 -- --------------------------------------------------------
 
@@ -536,6 +563,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (23, 'bookings', 'bookingdetail'),
 (24, 'bookings', 'guest'),
 (9, 'contenttypes', 'contenttype'),
+(42, 'customer', 'favourites'),
 (12, 'HotelManagement', 'city'),
 (13, 'HotelManagement', 'hotel'),
 (6, 'HotelManagement', 'hotelrequest'),
@@ -643,7 +671,9 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (57, 'bookings', '0006_alter_bookingdetail_booking_number', '2025-03-08 01:06:45.670662'),
 (58, 'bookings', '0007_alter_bookingdetail_booking_number', '2025-03-08 01:09:20.622131'),
 (59, 'payments', '0006_alter_payment_booking_number_and_more', '2025-03-08 01:10:51.508110'),
-(60, 'reviews', '0003_remove_hotelreview_slug_remove_offer_slug_and_more', '2025-03-08 21:39:06.375363');
+(60, 'reviews', '0003_remove_hotelreview_slug_remove_offer_slug_and_more', '2025-03-08 21:39:06.375363'),
+(61, 'bookings', '0008_alter_guest_booking_number', '2025-03-09 23:45:04.118908'),
+(62, 'customer', '0001_initial', '2025-03-09 23:58:21.931636');
 
 -- --------------------------------------------------------
 
@@ -669,7 +699,6 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('5fsxa10j40azsmzvxukhxk5wckw41254', '.eJxVjEEOwiAURO_C2hAsLfC7dO8ZyAc-ghowpU00xrvbJl3oYjYzb96bWVzmZJdGk82BjezIDr-dQ3-jsg3hiuVSua9lnrLjG8L3tfFzDXQ_7eyfIGFL61sqwl6rDhCUJOmVjghg3Broo9ZuQBexE15FQ8KIwQsD2CkjIBoNcpM2ai3XYun5yNOLjeLzBXLPPok:1tpuJS:c-8f7wxVVYGw8Eyarw_XHRouPwBD_fRD7bjOE3_Gnzk', '2025-03-19 19:21:50.420216'),
 ('dyyqcnj01cxrtiis0y0nrglmzwhfwp7v', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tqh0j:y8aKsLvvGNnrlwW5boGQVYDDKVpWtCcmBlHLjLz_hCI', '2025-03-21 23:21:45.692432'),
 ('fgvqzg78fi449rbjczlawv62en8jrx8b', '.eJxVjDEOgzAQBP_iOrIM5mxImZ43IK_vHJNEIGGoovw9skSRtDsz-1ZTOPY8HUW2aWZ1VV5dfjeE-JSlAn6E5b7quC77NkNXRZ-06HFled1O9-8gh5JrTVYsAezaRiJ6x8mThCZ11LWwJsAw4GOKiCYNIDMYIs9WnHdArz5fEYU46g:1tq6PO:SpMMaOWZhsSxP5q0Cmj0lcpgWGmOFNdGSiP7Q2O8A9w', '2025-03-20 08:16:46.570327'),
-('gxcdajqv49h2t1bvsclwkddurhfh1s3d', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tqjAX:0eiBoomiSdouWCd_YnpB_6i5TGC5pWA6TcjGYIbdRgU', '2025-03-22 01:40:01.591873'),
 ('pb4qknt4zzqpksgrac85aw0lra2xovps', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tqf3x:WH3sXz6q630fWniOTaqkeDjWlBwcCUvxQwVujYBEWF0', '2025-03-21 21:16:57.167948'),
 ('zg5sk06dqzu1vwmexkx83v9j81h5pm92', '.eJxVjDsOwjAQBe_iGlle_2JT0nMGa9fr4ABypDipEHeHSCmgfTPzXiLhtta09bKkicVZBHH63Qjzo7Qd8B3bbZZ5busykdwVedAurzOX5-Vw_w4q9vqtLQYEHqxHp8CwG7NlZjADOdJG-Wgc2OjAew-ZjUKNmgrFADAaZbN4fwDRMjcn:1tr3IS:IMfDVJ6DAhFXBiAcsx1VdF9XpiBiYth_9BOAqZXYc4k', '2025-03-22 23:09:32.357835');
 
@@ -1076,7 +1105,8 @@ INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`
 (4, '2025-03-05 21:15:55.631063', '2025-03-06 08:17:11.380243', NULL, '2025-03-06', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
 (6, '2025-03-05 21:19:57.805376', '2025-03-05 23:08:51.505874', NULL, '2025-03-05', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
 (7, '2025-03-07 19:56:45.856996', '2025-03-08 01:05:09.036144', NULL, '2025-03-07', 15, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
-(8, '2025-03-08 00:38:53.047876', '2025-03-08 23:23:26.782758', NULL, '2025-03-08', 10, 'Updated due to booking #', NULL, 1, 3, 1, NULL);
+(8, '2025-03-08 00:38:53.047876', '2025-03-08 23:23:26.782758', NULL, '2025-03-08', 10, 'Updated due to booking #', NULL, 1, 3, 1, NULL),
+(9, '2025-03-09 23:28:03.395295', '2025-03-09 23:38:03.708459', NULL, '2025-03-09', 15, 'Updated due to booking #HOTEL-20250308041122-6713', NULL, 1, 3, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1488,6 +1518,14 @@ ALTER TABLE `bookings_guest`
   ADD KEY `bookings_guest_hotel_id_333c72e5` (`hotel_id`);
 
 --
+-- Indexes for table `customer_favourites`
+--
+ALTER TABLE `customer_favourites`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_user_hotel` (`user_id`,`hotel_id`),
+  ADD KEY `customer_favourites_hotel_id_8c26062f_fk_HotelMana` (`hotel_id`);
+
+--
 -- Indexes for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
@@ -1805,7 +1843,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -1853,25 +1891,31 @@ ALTER TABLE `bookings_bookingdetail`
 -- AUTO_INCREMENT for table `bookings_guest`
 --
 ALTER TABLE `bookings_guest`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `customer_favourites`
+--
+ALTER TABLE `customer_favourites`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_city`
@@ -1961,7 +2005,7 @@ ALTER TABLE `reviews_roomreview`
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
@@ -2118,6 +2162,13 @@ ALTER TABLE `bookings_bookingdetail`
 ALTER TABLE `bookings_guest`
   ADD CONSTRAINT `bookings_guest_booking_id_b8c4c07b_fk_bookings_booking_id` FOREIGN KEY (`booking_id`) REFERENCES `bookings_booking` (`id`),
   ADD CONSTRAINT `bookings_guest_hotel_id_333c72e5_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`);
+
+--
+-- Constraints for table `customer_favourites`
+--
+ALTER TABLE `customer_favourites`
+  ADD CONSTRAINT `customer_favourites_hotel_id_8c26062f_fk_HotelMana` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
+  ADD CONSTRAINT `customer_favourites_user_id_b1b2dc31_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `django_admin_log`

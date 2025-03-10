@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import path
+from django.urls import path,reverse
 from django.utils import timezone
 from django.db.models.functions import TruncHour
 import arabic_reshaper
@@ -22,7 +22,7 @@ from rooms.models import Availability, RoomStatus
 from .models import Booking, Guest, BookingDetail
 from django import forms
 from django.contrib.admin.helpers import ActionForm
-
+from django.utils.html import format_html
 
 
 class ChangeStatusForm(ActionForm):  
@@ -31,16 +31,27 @@ class ChangeStatusForm(ActionForm):
         required=True,
         label="الحالة الجديدة"
     )
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     form = BookingAdminForm
     action_form = ChangeStatusForm  
-    list_display = ['get_guest_name', 'hotel', 'room', 'check_in_date', 'check_out_date', 'amount', 'status']
+    list_display = [ 'hotel', 'room', 'check_in_date', 'check_out_date', 'amount', 'status','set_checkout_today_toggle']
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
     actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
 
- 
+    def set_checkout_today_toggle(self, obj):
+        if obj.actual_check_out_date is not None:
+            return format_html('<span style="color:green; font-weight:bold;">✔ تم تسجيل خروج المستخدم</span>')
+        url = reverse('bookings:set_actual_check_out_date', args=[obj.pk])        
+        return format_html(
+            f'<a class="button btn btn-warning" href="{url}">سجيل الخروج</a>'
+        )
+    set_checkout_today_toggle.short_description = 'تسجيل الخروج الفعلي'
+
+    
+
    
     @admin.action(description='تغيير حالة الحجوزات المحددة')
     def change_booking_status(self, request, queryset):
@@ -405,9 +416,26 @@ class BookingAdmin(admin.ModelAdmin):
 
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone_number', 'hotel', 'booking']
+    list_display = ['name', 'phone_number', 'hotel', 'booking','set_checkout_today_toggle']
     list_filter = ['hotel']
     search_fields = ['name', 'phone_number']
+
+    def set_checkout_today_toggle(self, obj):
+        
+        url = reverse('bookings:set_guests_check_out_date', args=[obj.pk])        
+        return format_html(
+            f'<a class="button btn btn-warning" href="{url}">سجيل الخروج</a>'
+        )
+    set_checkout_today_toggle.short_description = 'تسجيل الخروج'
+
+    
+
+    
+
+
+
+
+
 
 @admin.register(BookingDetail)
 class BookingDetailAdmin(admin.ModelAdmin):
