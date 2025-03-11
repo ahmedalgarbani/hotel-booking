@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2025 at 03:24 PM
+-- Generation Time: Mar 12, 2025 at 12:44 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -257,7 +257,51 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (167, 'Can add extension movement', 43, 'add_extensionmovement'),
 (168, 'Can change extension movement', 43, 'change_extensionmovement'),
 (169, 'Can delete extension movement', 43, 'delete_extensionmovement'),
-(170, 'Can view extension movement', 43, 'view_extensionmovement');
+(170, 'Can view extension movement', 43, 'view_extensionmovement'),
+(171, 'Can add crontab', 44, 'add_crontabschedule'),
+(172, 'Can change crontab', 44, 'change_crontabschedule'),
+(173, 'Can delete crontab', 44, 'delete_crontabschedule'),
+(174, 'Can view crontab', 44, 'view_crontabschedule'),
+(175, 'Can add interval', 45, 'add_intervalschedule'),
+(176, 'Can change interval', 45, 'change_intervalschedule'),
+(177, 'Can delete interval', 45, 'delete_intervalschedule'),
+(178, 'Can view interval', 45, 'view_intervalschedule'),
+(179, 'Can add periodic task', 46, 'add_periodictask'),
+(180, 'Can change periodic task', 46, 'change_periodictask'),
+(181, 'Can delete periodic task', 46, 'delete_periodictask'),
+(182, 'Can view periodic task', 46, 'view_periodictask'),
+(183, 'Can add periodic task track', 47, 'add_periodictasks'),
+(184, 'Can change periodic task track', 47, 'change_periodictasks'),
+(185, 'Can delete periodic task track', 47, 'delete_periodictasks'),
+(186, 'Can view periodic task track', 47, 'view_periodictasks'),
+(187, 'Can add solar event', 48, 'add_solarschedule'),
+(188, 'Can change solar event', 48, 'change_solarschedule'),
+(189, 'Can delete solar event', 48, 'delete_solarschedule'),
+(190, 'Can view solar event', 48, 'view_solarschedule'),
+(191, 'Can add clocked', 49, 'add_clockedschedule'),
+(192, 'Can change clocked', 49, 'change_clockedschedule'),
+(193, 'Can delete clocked', 49, 'delete_clockedschedule'),
+(194, 'Can view clocked', 49, 'view_clockedschedule'),
+(195, 'Can add info box', 50, 'add_infobox'),
+(196, 'Can change info box', 50, 'change_infobox'),
+(197, 'Can delete info box', 50, 'delete_infobox'),
+(198, 'Can view info box', 50, 'view_infobox'),
+(199, 'Can add room type home', 51, 'add_roomtypehome'),
+(200, 'Can change room type home', 51, 'change_roomtypehome'),
+(201, 'Can delete room type home', 51, 'delete_roomtypehome'),
+(202, 'Can view room type home', 51, 'view_roomtypehome'),
+(203, 'Can add setting', 52, 'add_setting'),
+(204, 'Can change setting', 52, 'change_setting'),
+(205, 'Can delete setting', 52, 'delete_setting'),
+(206, 'Can view setting', 52, 'view_setting'),
+(207, 'Can add social media link', 53, 'add_socialmedialink'),
+(208, 'Can change social media link', 53, 'change_socialmedialink'),
+(209, 'Can delete social media link', 53, 'delete_socialmedialink'),
+(210, 'Can view social media link', 53, 'view_socialmedialink'),
+(211, 'Can add hero slider', 54, 'add_heroslider'),
+(212, 'Can change hero slider', 54, 'change_heroslider'),
+(213, 'Can delete hero slider', 54, 'delete_heroslider'),
+(214, 'Can view hero slider', 54, 'view_heroslider');
 
 -- --------------------------------------------------------
 
@@ -655,7 +699,115 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (159, '2025-03-10 22:53:51.928212', '6', 'room vip 2025 - 15 rooms available on 2025-03-05', 3, '', 17, 1),
 (160, '2025-03-10 22:54:03.355252', '44', 'Booking #44 - room vip 2025 (6 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
 (161, '2025-03-10 22:55:25.540258', '44', 'Booking #44 - room vip 2025 (6 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 5, 1),
-(162, '2025-03-10 23:26:15.983804', '51', 'حركة #51 - حجز 43', 2, '[{\"changed\": {\"fields\": [\"\\u0631\\u0642\\u0645 \\u0633\\u0646\\u062f \\u0627\\u0644\\u062f\\u0641\\u0639\"]}}]', 43, 1);
+(162, '2025-03-10 23:26:15.983804', '51', 'حركة #51 - حجز 43', 2, '[{\"changed\": {\"fields\": [\"\\u0631\\u0642\\u0645 \\u0633\\u0646\\u062f \\u0627\\u0644\\u062f\\u0641\\u0639\"]}}]', 43, 1),
+(163, '2025-03-11 20:50:17.736441', '1', 'جو فريد', 1, '[{\"added\": {}}]', 50, 1),
+(164, '2025-03-11 20:50:44.689619', '2', 'بيئة', 1, '[{\"added\": {}}]', 50, 1),
+(165, '2025-03-11 20:51:13.538181', '3', 'موقع عظيم', 1, '[{\"added\": {}}]', 50, 1),
+(166, '2025-03-11 20:51:47.817027', '4', 'هومي كومفورت', 1, '[{\"added\": {}}]', 50, 1),
+(167, '2025-03-11 21:23:39.145892', '1', 'vip', 1, '[{\"added\": {}}]', 51, 1),
+(168, '2025-03-11 21:23:52.333360', '2', 'normal', 1, '[{\"added\": {}}]', 51, 1),
+(169, '2025-03-11 22:03:40.927943', '1', 'setting Trizen', 1, '[{\"added\": {}}]', 52, 1),
+(170, '2025-03-11 22:24:38.403984', '1', 'socialmedia linked in', 1, '[{\"added\": {}}]', 53, 1),
+(171, '2025-03-11 22:25:16.461185', '2', 'socialmedia instagram', 1, '[{\"added\": {}}]', 53, 1),
+(172, '2025-03-11 22:25:38.992185', '3', 'socialmedia twitter', 1, '[{\"added\": {}}]', 53, 1),
+(173, '2025-03-11 22:26:09.634859', '4', 'socialmedia facebook', 1, '[{\"added\": {}}]', 53, 1),
+(174, '2025-03-11 23:11:54.753615', '5', 'mosa mohamed', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0635\\u0648\\u0631\\u0629 \\u0627\\u0644\\u0634\\u062e\\u0635\\u064a\\u0629\"]}}]', 2, 1),
+(175, '2025-03-11 23:39:01.699992', '1', 'الإقامة في الفندق ، ملاذ الحلم', 1, '[{\"added\": {}}]', 54, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_celery_beat_clockedschedule`
+--
+
+CREATE TABLE `django_celery_beat_clockedschedule` (
+  `id` int(11) NOT NULL,
+  `clocked_time` datetime(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_celery_beat_crontabschedule`
+--
+
+CREATE TABLE `django_celery_beat_crontabschedule` (
+  `id` int(11) NOT NULL,
+  `minute` varchar(240) NOT NULL,
+  `hour` varchar(96) NOT NULL,
+  `day_of_week` varchar(64) NOT NULL,
+  `day_of_month` varchar(124) NOT NULL,
+  `month_of_year` varchar(64) NOT NULL,
+  `timezone` varchar(63) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_celery_beat_intervalschedule`
+--
+
+CREATE TABLE `django_celery_beat_intervalschedule` (
+  `id` int(11) NOT NULL,
+  `every` int(11) NOT NULL,
+  `period` varchar(24) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_celery_beat_periodictask`
+--
+
+CREATE TABLE `django_celery_beat_periodictask` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `task` varchar(200) NOT NULL,
+  `args` longtext NOT NULL,
+  `kwargs` longtext NOT NULL,
+  `queue` varchar(200) DEFAULT NULL,
+  `exchange` varchar(200) DEFAULT NULL,
+  `routing_key` varchar(200) DEFAULT NULL,
+  `expires` datetime(6) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `last_run_at` datetime(6) DEFAULT NULL,
+  `total_run_count` int(10) UNSIGNED NOT NULL CHECK (`total_run_count` >= 0),
+  `date_changed` datetime(6) NOT NULL,
+  `description` longtext NOT NULL,
+  `crontab_id` int(11) DEFAULT NULL,
+  `interval_id` int(11) DEFAULT NULL,
+  `solar_id` int(11) DEFAULT NULL,
+  `one_off` tinyint(1) NOT NULL,
+  `start_time` datetime(6) DEFAULT NULL,
+  `priority` int(10) UNSIGNED DEFAULT NULL CHECK (`priority` >= 0),
+  `headers` longtext NOT NULL,
+  `clocked_id` int(11) DEFAULT NULL,
+  `expire_seconds` int(10) UNSIGNED DEFAULT NULL CHECK (`expire_seconds` >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_celery_beat_periodictasks`
+--
+
+CREATE TABLE `django_celery_beat_periodictasks` (
+  `ident` smallint(6) NOT NULL,
+  `last_update` datetime(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_celery_beat_solarschedule`
+--
+
+CREATE TABLE `django_celery_beat_solarschedule` (
+  `id` int(11) NOT NULL,
+  `event` varchar(24) NOT NULL,
+  `latitude` decimal(9,6) NOT NULL,
+  `longitude` decimal(9,6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -688,6 +840,17 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (24, 'bookings', 'guest'),
 (9, 'contenttypes', 'contenttype'),
 (42, 'customer', 'favourites'),
+(49, 'django_celery_beat', 'clockedschedule'),
+(44, 'django_celery_beat', 'crontabschedule'),
+(45, 'django_celery_beat', 'intervalschedule'),
+(46, 'django_celery_beat', 'periodictask'),
+(47, 'django_celery_beat', 'periodictasks'),
+(48, 'django_celery_beat', 'solarschedule'),
+(54, 'home', 'heroslider'),
+(50, 'home', 'infobox'),
+(51, 'home', 'roomtypehome'),
+(52, 'home', 'setting'),
+(53, 'home', 'socialmedialink'),
 (12, 'HotelManagement', 'city'),
 (13, 'HotelManagement', 'hotel'),
 (6, 'HotelManagement', 'hotelrequest'),
@@ -803,7 +966,35 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (65, 'rooms', '0003_remove_availability_unique_room_availability', '2025-03-10 11:43:13.049373'),
 (66, 'bookings', '0010_remove_booking_booking_number_and_more', '2025-03-10 12:05:58.518464'),
 (67, 'payments', '0008_remove_payment_booking_number_and_more', '2025-03-10 12:05:58.574618'),
-(68, 'users', '0002_customuser_birth_date_customuser_gender', '2025-03-11 14:09:59.975991');
+(68, 'users', '0002_customuser_birth_date_customuser_gender', '2025-03-11 14:09:59.975991'),
+(69, 'django_celery_beat', '0001_initial', '2025-03-11 15:21:42.520330'),
+(70, 'django_celery_beat', '0002_auto_20161118_0346', '2025-03-11 15:21:42.648445'),
+(71, 'django_celery_beat', '0003_auto_20161209_0049', '2025-03-11 15:21:42.682286'),
+(72, 'django_celery_beat', '0004_auto_20170221_0000', '2025-03-11 15:21:42.696363'),
+(73, 'django_celery_beat', '0005_add_solarschedule_events_choices', '2025-03-11 15:21:42.711164'),
+(74, 'django_celery_beat', '0006_auto_20180322_0932', '2025-03-11 15:21:42.798731'),
+(75, 'django_celery_beat', '0007_auto_20180521_0826', '2025-03-11 15:21:42.897347'),
+(76, 'django_celery_beat', '0008_auto_20180914_1922', '2025-03-11 15:21:43.033533'),
+(77, 'django_celery_beat', '0006_auto_20180210_1226', '2025-03-11 15:21:43.126181'),
+(78, 'django_celery_beat', '0006_periodictask_priority', '2025-03-11 15:21:43.151799'),
+(79, 'django_celery_beat', '0009_periodictask_headers', '2025-03-11 15:21:43.183443'),
+(80, 'django_celery_beat', '0010_auto_20190429_0326', '2025-03-11 15:21:43.593268'),
+(81, 'django_celery_beat', '0011_auto_20190508_0153', '2025-03-11 15:21:43.720567'),
+(82, 'django_celery_beat', '0012_periodictask_expire_seconds', '2025-03-11 15:21:43.772461'),
+(83, 'django_celery_beat', '0013_auto_20200609_0727', '2025-03-11 15:21:43.817283'),
+(84, 'django_celery_beat', '0014_remove_clockedschedule_enabled', '2025-03-11 15:21:43.869744'),
+(85, 'django_celery_beat', '0015_edit_solarschedule_events_choices', '2025-03-11 15:21:43.892944'),
+(86, 'django_celery_beat', '0016_alter_crontabschedule_timezone', '2025-03-11 15:21:43.943296'),
+(87, 'django_celery_beat', '0017_alter_crontabschedule_month_of_year', '2025-03-11 15:21:43.973722'),
+(88, 'django_celery_beat', '0018_improve_crontab_helptext', '2025-03-11 15:21:44.006606'),
+(89, 'django_celery_beat', '0019_alter_periodictasks_options', '2025-03-11 15:21:44.020151'),
+(90, 'home', '0001_initial', '2025-03-11 20:49:22.233149'),
+(91, 'home', '0002_infobox_show_at_home', '2025-03-11 20:55:23.417318'),
+(92, 'home', '0003_roomtypehome', '2025-03-11 21:18:24.767434'),
+(93, 'home', '0004_setting', '2025-03-11 21:55:09.279254'),
+(94, 'home', '0005_setting_email_setting_phone_number', '2025-03-11 22:13:20.294007'),
+(95, 'home', '0006_socialmedialink_setting_address', '2025-03-11 22:23:25.428192'),
+(96, 'home', '0007_heroslider', '2025-03-11 23:35:52.279241');
 
 -- --------------------------------------------------------
 
@@ -831,9 +1022,136 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('dyyqcnj01cxrtiis0y0nrglmzwhfwp7v', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tqh0j:y8aKsLvvGNnrlwW5boGQVYDDKVpWtCcmBlHLjLz_hCI', '2025-03-21 23:21:45.692432'),
 ('ez9j8uvrhfnu2tjqto90pzbdtdcc4xqq', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1trz99:1zfUuDNjuztsTia1krQIqehctq6wNgF9pstRHzUSdE8', '2025-03-25 12:55:47.857163'),
 ('fgvqzg78fi449rbjczlawv62en8jrx8b', '.eJxVjDEOgzAQBP_iOrIM5mxImZ43IK_vHJNEIGGoovw9skSRtDsz-1ZTOPY8HUW2aWZ1VV5dfjeE-JSlAn6E5b7quC77NkNXRZ-06HFled1O9-8gh5JrTVYsAezaRiJ6x8mThCZ11LWwJsAw4GOKiCYNIDMYIs9WnHdArz5fEYU46g:1tq6PO:SpMMaOWZhsSxP5q0Cmj0lcpgWGmOFNdGSiP7Q2O8A9w', '2025-03-20 08:16:46.570327'),
+('g07eibhv9mous6a8s5dj20pkrrwsb3gy', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1ts6Xf:EIDy7qDNMNY1sdIMDMvjJwo17us0ZhkgX8i92fTHQyA', '2025-03-25 20:49:35.809703'),
 ('o4r8mx5t58xbn5b7upvk1phaoh0xxdbb', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1trlzK:0IxNVmAoD6-YBkE8C78VKVaEjgR7z_MHpA5R5qETBSM', '2025-03-24 22:52:46.778244'),
 ('pb4qknt4zzqpksgrac85aw0lra2xovps', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tqf3x:WH3sXz6q630fWniOTaqkeDjWlBwcCUvxQwVujYBEWF0', '2025-03-21 21:16:57.167948'),
 ('zg5sk06dqzu1vwmexkx83v9j81h5pm92', '.eJxVjDsOwjAQBe_iGlle_2JT0nMGa9fr4ABypDipEHeHSCmgfTPzXiLhtta09bKkicVZBHH63Qjzo7Qd8B3bbZZ5busykdwVedAurzOX5-Vw_w4q9vqtLQYEHqxHp8CwG7NlZjADOdJG-Wgc2OjAew-ZjUKNmgrFADAaZbN4fwDRMjcn:1tr3IS:IMfDVJ6DAhFXBiAcsx1VdF9XpiBiYth_9BOAqZXYc4k', '2025-03-22 23:09:32.357835');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_heroslider`
+--
+
+CREATE TABLE `home_heroslider` (
+  `id` bigint(20) NOT NULL,
+  `image1` varchar(100) NOT NULL,
+  `image2` varchar(100) NOT NULL,
+  `image3` varchar(100) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_heroslider`
+--
+
+INSERT INTO `home_heroslider` (`id`, `image1`, `image2`, `image3`, `title`, `description`, `is_active`) VALUES
+(1, 'slider_images/hero--bg2.jpg', 'slider_images/hero--bg3.jpg', 'slider_images/hero-bg5.jpg', 'الإقامة في الفندق ، ملاذ الحلم', 'ابحث عن المكان المثالي للإقامة\r\nلرحلتك القادمة', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_infobox`
+--
+
+CREATE TABLE `home_infobox` (
+  `id` bigint(20) NOT NULL,
+  `icon` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` longtext NOT NULL,
+  `show_at_home` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_infobox`
+--
+
+INSERT INTO `home_infobox` (`id`, `icon`, `title`, `description`, `show_at_home`) VALUES
+(1, 'las la-radiation', 'جو فريد', 'يختلف كل منها في كيفية قطرها', 1),
+(2, 'la la-tree', 'بيئة', 'يختلف كل منها في كيفية قطرها', 1),
+(3, 'las la-map-marked-alt', 'موقع عظيم', 'يختلف كل منها في كيفية قطرها', 1),
+(4, 'las la-bed', 'هومي كومفورت', 'يختلف كل منها في كيفية قطرها', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_roomtypehome`
+--
+
+CREATE TABLE `home_roomtypehome` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `image` varchar(100) NOT NULL,
+  `link` varchar(200) DEFAULT NULL,
+  `show_at_home` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_roomtypehome`
+--
+
+INSERT INTO `home_roomtypehome` (`id`, `name`, `image`, `link`, `show_at_home`) VALUES
+(1, 'vip', 'room_types/wasell.jpg', 'http://127.0.0.1:8000/hotels', 1),
+(2, 'normal', 'room_types/najim.jpg', 'http://127.0.0.1:8000/rooms', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_setting`
+--
+
+CREATE TABLE `home_setting` (
+  `id` bigint(20) NOT NULL,
+  `site_name` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `default_currency` varchar(100) NOT NULL,
+  `color` varchar(100) NOT NULL,
+  `currency_icon` varchar(10) NOT NULL,
+  `default_language` varchar(100) NOT NULL,
+  `currency_Icon_position` int(11) NOT NULL,
+  `logo` varchar(100) DEFAULT NULL,
+  `favicon` varchar(100) DEFAULT NULL,
+  `footer_logo` varchar(100) DEFAULT NULL,
+  `seo_title` varchar(255) NOT NULL,
+  `seo_description` longtext NOT NULL,
+  `seo_keywords` longtext NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone_number` varchar(15) NOT NULL,
+  `address` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_setting`
+--
+
+INSERT INTO `home_setting` (`id`, `site_name`, `description`, `default_currency`, `color`, `currency_icon`, `default_language`, `currency_Icon_position`, `logo`, `favicon`, `footer_logo`, `seo_title`, `seo_description`, `seo_keywords`, `email`, `phone_number`, `address`) VALUES
+(1, 'Trizen', 'gooooooooood hotel booking', 'USD', '#fd7e14', '$', 'Arabic', 0, 'home/components/setting/logo.png', 'home/components/setting/favicon.png', 'home/components/setting/logo2.png', 'hotel trizen', 'hotel trizenhotel trizen', 'hotel trizen', '513', '1313', '11');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_socialmedialink`
+--
+
+CREATE TABLE `home_socialmedialink` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `icon` varchar(100) NOT NULL,
+  `status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_socialmedialink`
+--
+
+INSERT INTO `home_socialmedialink` (`id`, `name`, `link`, `icon`, `status`) VALUES
+(1, 'linked in', 'http://127.0.0.1:8000/sss', 'lab la-linkedin-in', 1),
+(2, 'instagram', 'http://127.0.0.1:8000/sss', 'lab la-instagram', 1),
+(3, 'twitter', 'http://127.0.0.1:8000/sssss', 'lab la-twitter', 1),
+(4, 'facebook', 'http://127.0.0.1:8000/ssssss', 'lab la-facebook-f', 1);
 
 -- --------------------------------------------------------
 
@@ -1166,7 +1484,8 @@ CREATE TABLE `reviews_hotelreview` (
 --
 
 INSERT INTO `reviews_hotelreview` (`id`, `created_at`, `updated_at`, `deleted_at`, `rating_service`, `rating_location`, `rating_value_for_money`, `rating_cleanliness`, `review`, `status`, `created_by_id`, `hotel_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-03-08 21:30:52.514928', '2025-03-08 22:38:38.926913', NULL, 3, 4, 4, 4, 'aslkjdkasjdl', 1, NULL, 1, NULL, 5);
+(1, '2025-03-08 21:30:52.514928', '2025-03-08 22:38:38.926913', NULL, 3, 4, 4, 4, 'aslkjdkasjdl', 1, NULL, 1, NULL, 5),
+(6, '2025-03-11 23:30:32.817157', '2025-03-11 23:30:32.817157', NULL, 4, 4, 3, 4, 'sadjhasdhka', 1, NULL, 1, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -1530,17 +1849,19 @@ CREATE TABLE `users_customuser` (
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `is_active`, `chield_id`, `birth_date`, `gender`) VALUES
-(1, 'pbkdf2_sha256$600000$U0vBbjamlzvOok3a0NCd9H$yfdwiYcSW6sk7zcuIe57bjYlbTFT/FyTsy43NUeBioc=', '2025-03-11 12:55:47.852192', 1, 'a', '', '', 'a@a.com', 1, '2025-03-01 18:58:44.494009', '2025-03-01 18:58:45.387318', '2025-03-01 18:58:45.387318', '', '', '', 1, NULL, NULL, NULL),
+(1, 'pbkdf2_sha256$600000$U0vBbjamlzvOok3a0NCd9H$yfdwiYcSW6sk7zcuIe57bjYlbTFT/FyTsy43NUeBioc=', '2025-03-11 20:49:35.797989', 1, 'a', '', '', 'a@a.com', 1, '2025-03-01 18:58:44.494009', '2025-03-01 18:58:45.387318', '2025-03-01 18:58:45.387318', '', '', '', 1, NULL, NULL, NULL),
 (2, 'pbkdf2_sha256$600000$Pc3oxZPOdBxmUVe2eOAwit$bXxPnP1siQugYTDEr36L4fCYu5YaVTozzRxUUgVsv1g=', NULL, 1, 'b', '', '', 'b@b.com', 1, '2025-03-01 19:05:26.868670', '2025-03-01 19:05:28.022141', '2025-03-01 19:05:48.735234', 'hotel_manager', '', '', 1, NULL, NULL, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', 1, NULL, NULL, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', 1, NULL, NULL, NULL),
-(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-10 22:52:18.818211', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-10 11:50:00.018214', 'customer', '', '', 1, NULL, NULL, NULL),
+(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-10 22:52:18.818211', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-11 23:11:54.749987', 'customer', '', 'users/2025/03/12/img27.jpg', 1, NULL, NULL, NULL),
 (6, 'pbkdf2_sha256$600000$BbNnejHpZOfDP6VnObjVcz$nhsPttz7Xm4OTIK/zOWG0MrrT6q9PAv0jTWQyIffer0=', '2025-03-05 20:13:43.403102', 0, 'mosaa1', '', '', 'mosaa1@mosaa1.com', 0, '2025-03-05 20:13:41.381311', '2025-03-05 20:13:43.386627', '2025-03-05 20:13:43.386627', 'customer', '', '', 1, NULL, NULL, NULL),
 (7, 'pbkdf2_sha256$600000$vUeJuKMqNFAu6egbZVxQ85$uQPUm3C2c/AmXPOaKjFVNqCkRpV44XZB+IcyyRoeX9I=', '2025-03-06 08:09:12.614518', 0, 'asdjsk', '', '', 'asdjsk@asdjsk.com', 0, '2025-03-06 08:09:10.785662', '2025-03-06 08:09:12.595928', '2025-03-06 08:09:12.595928', 'customer', '', '', 1, NULL, NULL, NULL),
 (8, 'pbkdf2_sha256$600000$SFyrTCxLhv3sQ1aeRp9210$x4uW6U+Le+bTAvJQf+0aMsQ2WQnBb6/rMu43cIS53vk=', '2025-03-08 23:09:07.660012', 0, 'alslslsl', '', '', 'alslslsl@alslslsl.com', 0, '2025-03-08 23:09:05.884851', '2025-03-08 23:09:07.648169', '2025-03-08 23:09:07.648169', 'customer', '', '', 1, NULL, NULL, NULL),
 (9, 'pbkdf2_sha256$600000$YyHz1TprqrLxB9Zn86sIJu$VtH3gk7SGQu97sevo51XO3ovW0MjMaVmvTMX/jtAI54=', '2025-03-11 13:39:22.061710', 0, 'ahmed1555', 'ahmed', 'mohamed', 'ahmed1555@gmail.com', 0, '2025-03-11 13:05:30.020217', '2025-03-11 13:05:30.536114', '2025-03-11 13:05:30.536114', 'customer', '781717609', 'users/2025/03/11/topdoctors.jpg', 1, NULL, NULL, NULL),
 (10, 'pbkdf2_sha256$600000$JInLxld88le5EonOREI0JQ$FvAY9r/CHudvTsSBOxEfZob1jwsvvzgpRAWPsDM6szE=', '2025-03-11 13:24:43.650477', 0, 'sakjds888', 'askja', 'kksskks', 'sakjds888@cc.com', 0, '2025-03-11 13:24:32.822351', '2025-03-11 13:24:33.340511', '2025-03-11 13:24:33.340511', 'customer', '123123132132', 'users/2025/03/11/topdoctors_qb7Dipr.jpg', 1, NULL, NULL, NULL),
-(11, 'pbkdf2_sha256$600000$RQcyfOrNwaARSe90TzIKBU$90MYq5xmhjWGc+keDWcELY1dkohhCW05pO8C2RgP+xA=', '2025-03-11 14:11:34.650871', 0, 'asjldhask15', 'ajshdkajs', 'aksljdlas', 'asjldhask15@asd.co', 0, '2025-03-11 14:11:32.868092', '2025-03-11 14:11:34.630556', '2025-03-11 14:11:34.630556', 'customer', '21215151515', 'users/2025/03/11/topdoctors_5NSVJtE.jpg', 1, NULL, '2025-03-09', 'Female');
+(11, 'pbkdf2_sha256$600000$RQcyfOrNwaARSe90TzIKBU$90MYq5xmhjWGc+keDWcELY1dkohhCW05pO8C2RgP+xA=', '2025-03-11 14:11:34.650871', 0, 'asjldhask15', 'ajshdkajs', 'aksljdlas', 'asjldhask15@asd.co', 0, '2025-03-11 14:11:32.868092', '2025-03-11 14:11:34.630556', '2025-03-11 14:11:34.630556', 'customer', '21215151515', 'users/2025/03/11/topdoctors_5NSVJtE.jpg', 1, NULL, '2025-03-09', 'Female'),
+(12, 'pbkdf2_sha256$600000$cyoobnnbnn1veqfofkr18v$Q3A3UVNX8rMFNQOeuwLDAxNV9v68C9+85WPeG58gGsQ=', '2025-03-11 15:03:22.973314', 0, 'ammaralwan', 'ammar', 'alwan', 'ammaralwan@ss.com', 0, '2025-03-11 15:03:07.343237', '2025-03-11 15:03:09.211771', '2025-03-11 15:03:09.211771', 'customer', '781717177', 'users/2025/03/11/terms.jpg', 1, NULL, '1996-04-18', 'Female'),
+(13, 'pbkdf2_sha256$600000$FqqK1ybDPJVmeLbEpH5xM5$XxlG67Ut3xXs/TN8aC0TcX2qZMHyLlyXteu8KboTH60=', '2025-03-11 15:07:08.449784', 0, 'asdjhasj', 'asjdhjkash', 'asdas', 'sajh@asd.cc', 0, '2025-03-11 15:07:06.624072', '2025-03-11 15:07:08.427732', '2025-03-11 15:07:08.427732', 'customer', '88186541312', 'users/2025/03/11/terms_iJzbCqG.jpg', 1, NULL, '2003-03-13', 'Female');
 
 -- --------------------------------------------------------
 
@@ -1686,6 +2007,48 @@ ALTER TABLE `django_admin_log`
   ADD KEY `django_admin_log_user_id_c564eba6_fk_users_customuser_id` (`user_id`);
 
 --
+-- Indexes for table `django_celery_beat_clockedschedule`
+--
+ALTER TABLE `django_celery_beat_clockedschedule`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `django_celery_beat_crontabschedule`
+--
+ALTER TABLE `django_celery_beat_crontabschedule`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `django_celery_beat_intervalschedule`
+--
+ALTER TABLE `django_celery_beat_intervalschedule`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `django_celery_beat_periodictask`
+--
+ALTER TABLE `django_celery_beat_periodictask`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`),
+  ADD KEY `django_celery_beat_p_crontab_id_d3cba168_fk_django_ce` (`crontab_id`),
+  ADD KEY `django_celery_beat_p_interval_id_a8ca27da_fk_django_ce` (`interval_id`),
+  ADD KEY `django_celery_beat_p_solar_id_a87ce72c_fk_django_ce` (`solar_id`),
+  ADD KEY `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` (`clocked_id`);
+
+--
+-- Indexes for table `django_celery_beat_periodictasks`
+--
+ALTER TABLE `django_celery_beat_periodictasks`
+  ADD PRIMARY KEY (`ident`);
+
+--
+-- Indexes for table `django_celery_beat_solarschedule`
+--
+ALTER TABLE `django_celery_beat_solarschedule`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq` (`event`,`latitude`,`longitude`);
+
+--
 -- Indexes for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
@@ -1704,6 +2067,37 @@ ALTER TABLE `django_migrations`
 ALTER TABLE `django_session`
   ADD PRIMARY KEY (`session_key`),
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
+
+--
+-- Indexes for table `home_heroslider`
+--
+ALTER TABLE `home_heroslider`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_infobox`
+--
+ALTER TABLE `home_infobox`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_roomtypehome`
+--
+ALTER TABLE `home_roomtypehome`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_setting`
+--
+ALTER TABLE `home_setting`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `home_socialmedialink`
+--
+ALTER TABLE `home_socialmedialink`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `hotelmanagement_city`
@@ -1994,7 +2388,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=215;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -2060,19 +2454,79 @@ ALTER TABLE `customer_favourites`
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
+
+--
+-- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
+--
+ALTER TABLE `django_celery_beat_clockedschedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `django_celery_beat_crontabschedule`
+--
+ALTER TABLE `django_celery_beat_crontabschedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `django_celery_beat_intervalschedule`
+--
+ALTER TABLE `django_celery_beat_intervalschedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `django_celery_beat_periodictask`
+--
+ALTER TABLE `django_celery_beat_periodictask`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `django_celery_beat_solarschedule`
+--
+ALTER TABLE `django_celery_beat_solarschedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+
+--
+-- AUTO_INCREMENT for table `home_heroslider`
+--
+ALTER TABLE `home_heroslider`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `home_infobox`
+--
+ALTER TABLE `home_infobox`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `home_roomtypehome`
+--
+ALTER TABLE `home_roomtypehome`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `home_setting`
+--
+ALTER TABLE `home_setting`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `home_socialmedialink`
+--
+ALTER TABLE `home_socialmedialink`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_city`
@@ -2144,7 +2598,7 @@ ALTER TABLE `payments_paymentoption`
 -- AUTO_INCREMENT for table `reviews_hotelreview`
 --
 ALTER TABLE `reviews_hotelreview`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `reviews_offer`
@@ -2240,7 +2694,7 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
@@ -2340,6 +2794,15 @@ ALTER TABLE `customer_favourites`
 ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `django_celery_beat_periodictask`
+--
+ALTER TABLE `django_celery_beat_periodictask`
+  ADD CONSTRAINT `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` FOREIGN KEY (`clocked_id`) REFERENCES `django_celery_beat_clockedschedule` (`id`),
+  ADD CONSTRAINT `django_celery_beat_p_crontab_id_d3cba168_fk_django_ce` FOREIGN KEY (`crontab_id`) REFERENCES `django_celery_beat_crontabschedule` (`id`),
+  ADD CONSTRAINT `django_celery_beat_p_interval_id_a8ca27da_fk_django_ce` FOREIGN KEY (`interval_id`) REFERENCES `django_celery_beat_intervalschedule` (`id`),
+  ADD CONSTRAINT `django_celery_beat_p_solar_id_a87ce72c_fk_django_ce` FOREIGN KEY (`solar_id`) REFERENCES `django_celery_beat_solarschedule` (`id`);
 
 --
 -- Constraints for table `hotelmanagement_city`

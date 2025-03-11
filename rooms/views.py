@@ -131,6 +131,7 @@ def calculate_total_price(room, check_in_date, check_out_date, room_number, extr
 
 def room_detail(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
+    external_rooms = RoomType.objects.exclude(id=room_id)[:6]
     
     if request.method == 'POST':
         try:
@@ -283,5 +284,6 @@ def room_detail(request, room_id):
         'check_out_display': check_out_date.strftime('%d/%m/%Y %I:%M %p'),
         'average_rating': average_rating,
         'image':image,
+        'external_rooms':external_rooms
     }
     return render(request, 'frontend/home/pages/room-details.html', context)

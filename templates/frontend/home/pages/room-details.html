@@ -1,4 +1,5 @@
 {% extends "frontend/layout/master.html" %}
+{% load static %}
 {% block extra_css %}
    
     <style>
@@ -244,7 +245,6 @@ START TOUR DETAIL AREA
                     <div class="col-lg-8">
                       <div class="review-bars">
                         <!-- تم إزالة أشرطة التقييمات الفردية كما هو مطلوب -->
-                        <p>لا يوجد تقييمات فرعية للخدمات، الموقع، إلخ. في نموذج مراجعة الغرفة هذا.</p>
                       </div>
                     </div>
                     <!-- end col-lg-8 -->
@@ -266,7 +266,7 @@ START TOUR DETAIL AREA
                         <img
                           class="avatar__img"
                           alt="صورة المستخدم"
-                          src="{{review.user.profile.image.url}}" 
+                          src="{{review.user.image.url}}" 
                         />
                       </div>
                       <div class="comment-body">
@@ -534,6 +534,7 @@ END TOUR DETAIL AREA
 <!-- ================================
 START RELATE TOUR AREA
 ================================= -->
+{% if external_rooms %}
 <section class="related-tour-area section--padding">
   <div class="container">
     <div class="row">
@@ -549,60 +550,58 @@ START RELATE TOUR AREA
     <!-- end row -->
     <div class="row padding-top-50px">
 
+      {% for external_rooms in external_rooms %}
       <!-- end col-lg-6 -->
       <div class="col-lg-6">
         <div class="card-item room-card">
           <div class="card-img-carousel carousel-action carousel--action">
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src"" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="" alt="hotel-img" />
-              </a>
-            </div>
-            <div class="card-img">
-              <a href="room-details.html" class="d-block">
-                <img src="" alt="hotel-img" />
-              </a>
-            </div>
+            {% for image in external_rooms.images.all|slice:":3" %}
+                <div class="card-img">
+                  <a href="{% url 'rooms:room_detail' external_rooms.id %}" class="d-block">
+                    <img src="{{ image.image.url }}" alt="{{ external_rooms.name }}" class="img-fluid">
+                  </a>
+                </div>
+                {% empty %}
+                <div class="card-img">
+                  <img src="{% static 'images/default-room.jpg' %}" alt="Default room image" class="img-fluid">
+                </div>
+                {% endfor %}
+           
+            
+           
           </div>
           <div class="card-body">
             <div class="card-price pb-2">
               <p>
                 <span class="price__from">من عند</span>
-                <span class="price__num">$45.00</span>
+                <span class="price__num">{{external_rooms.base_price}}</span>
               </p>
             </div>
             <h3 class="title font-size-26">
-              <a href="room-details.html"
-                >صالة نوم مشتركة للذكور بسريرين قياسيين</a
+              <a href="{% url 'rooms:room_detail' external_rooms.id %}"
+                >{{external_rooms.name}}</a
               >
             </h3>
             <p class="card-text pt-2">
-              Lorem ipsum dolor sit amet، consectetur adipiscing elit. سأفتح
-              الكدح الشاق للغاية ، وميزة deleniti المخترع هنا من الإزعاج منا
-              ، لا أكره أن أسأل! من السهل فتح قضية تجنب الخطأ.
+              {{external_rooms.description}}
             </p>
             <div class="card-attributes pt-3 pb-4">
               <ul class="d-flex align-items-center">
                 <li class="d-flex align-items-center">
-                  <i class="la la-bed"></i><span>2 سرير</span>
+                  <i class="la la-bed"></i><span>{{external_rooms.beds_count}} سرير</span>
                 </li>
                 <li class="d-flex align-items-center">
                   <i class="la la-building"></i
-                  ><span>24 قدم<sup>2</sup></span>
+                  ><span> {{external_rooms.room_size}}<sup>2</sup></span>
                 </li>
                 <li class="d-flex align-items-center">
-                  <i class="la la-bathtub"></i><span>2 حمام</span>
+                  <i class="la la-bathtub"></i><span>اشخاص {{external_rooms.max_capacity}}</span>
                 </li>
               </ul>
             </div>
             <div class="card-btn">
               <a
-                href="room-details.html"
+                href="{% url 'rooms:room_detail' external_rooms.id %}"
                 class="theme-btn theme-btn-transparent"
                 >احجز الآن</a
               >
@@ -612,23 +611,16 @@ START RELATE TOUR AREA
         <!-- end card-item -->
       </div>
       <!-- end col-lg-6 -->
+      {% endfor %}
     </div>
     <!-- end row -->
   </div>
   <!-- end container -->
 </section>
+{% endif %}
 <!-- end related-tour-area -->
 <!-- ================================
 END RELATE TOUR AREA
-================================= -->
-
-<!-- ================================
-START CTA AREA
-================================= -->
-
-<!-- end cta-area -->
-<!-- ================================
-END CTA AREA
 ================================= -->
 
 

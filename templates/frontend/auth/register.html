@@ -103,9 +103,9 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating password-container">
-                                        <input type="password" class="form-control" id="password" name="password2" 
+                                        <input type="password" class="form-control" id="password2" name="password2" 
                                                placeholder="كلمة المرور" required>
-                                        <label for="password">كلمة المرور</label>
+                                        <label for="password2">كلمة المرور</label>
                                         <button type="button" class="btn btn-link password-toggle" aria-label="Toggle password visibility">
                                             <i class="bi bi-eye"></i>
                                         </button>
@@ -127,21 +127,31 @@
 
                                 <!-- Gender -->
                                 <div class="col-12">
-                                <div class="form-section">
-                                    <h2>الجنس </h2>
-                                    <select name="gender" id="gender" required>
-                                        <option value="">اختر الجنس </option>
-                                        <option value="Female">انثى </option>
-                                        <option value="Male">ذكر </option>
-                                    </select>
+                                    <div class="form-section mb-3">
+                                        <h5 class="mb-2">الجنس</h5>
+                                        <select class="form-select" name="gender" id="gender" required>
+                                            <option value="">اختر الجنس</option>
+                                            <option value="Female">أنثى</option>
+                                            <option value="Male">ذكر</option>
+                                        </select>
+                                    </div>
+                                
+                                    <div class="form-section">
+                                        <h5 class="mb-2">تاريخ الميلاد</h5>
+                                        <div class="form-floating">
+                                            <input 
+                                                type="date" 
+                                                class="form-control" 
+                                                id="birth_date" 
+                                                name="birth_date" 
+                                                required
+                                            >
+                                            <label for="birth_date">تاريخ الميلاد</label>
+                                            <div class="invalid-feedback text-end">يجب أن تكون أكبر من 18 عامًا</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating">
-                                    <input type="date" class="form-control" id="birth_date" name="birth_date" required>
-                                    <label for="birth_date">تاريخ الميلاد </label>
-                                    <div class="invalid-feedback"> يجب ان تكون اكبر من 18 عام</div>
-                                </div>
-                                </div>
-                               
+                                
     
                                 <div class="col-12">
                                     <label class="form-label">الصورة الشخصية</label>
@@ -295,23 +305,22 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registrationForm');
+            const birthDateInput = document.getElementById('birth_date');
             const passwordInput = document.getElementById('password');
+            const passwordInput2 = document.getElementById('password2');
             const passwordToggle = document.querySelector('.password-toggle');
             const profileImageInput = document.getElementById('profileImage');
             const imagePreview = document.getElementById('imagePreview').querySelector('img');
         
-            // Toggle password visibility
             passwordToggle.addEventListener('click', function() {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 
-                // Toggle eye icon
                 const icon = this.querySelector('i');
                 icon.classList.toggle('bi-eye');
                 icon.classList.toggle('bi-eye-slash');
             });
         
-            // Handle image preview
             profileImageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
@@ -323,7 +332,6 @@
                 }
             });
         
-            // Phone number validation
             const phoneInput = document.getElementById('phoneNumber');
             phoneInput.addEventListener('input', function(e) {
                 const phoneRegex = /^\+?1?\d{0,15}$/;
@@ -334,17 +342,36 @@
                 }
             });
         
-            // Form validation
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                // Clear previous custom validations
+                const birthDateValue = birthDateInput.value;
+        if (!birthDateValue) {
+            birthDateInput.setCustomValidity('الرجاء إدخال تاريخ ميلاد صحيح.');
+        } else {
+            const birthDate = new Date(birthDateValue);
+            const today = new Date();
+            const age = today.getFullYear() - birthDate.getFullYear();
+
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            const dayDiff = today.getDate() - birthDate.getDate();
+            
+            if (age < 18 || (age === 18 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
+                birthDateInput.setCustomValidity('يجب أن تكون أكبر من 18 عامًا.');
+            } else {
+                birthDateInput.setCustomValidity('');
+            }
+        }
                 phoneInput.setCustomValidity('');
                 profileImageInput.setCustomValidity('');
                 
-                // Password confirmation check
-                const password = document.getElementById('password').value;
-                
+                const password = passwordInput.value;
+        const confirmPassword = passwordInput2.value;
+
+        if (password !== confirmPassword) {
+            passwordInput2.setCustomValidity('كلمات المرور غير متطابقة.');
+        } else {
+            passwordInput2.setCustomValidity('');
+        }
             
                 if (!form.checkValidity()) {
                     e.stopPropagation();
@@ -352,19 +379,13 @@
                     return;
                 }
             
-                // Submit the form normally if all validations pass
                 form.submit();
             });
         
-            // Support for RTL
             function setDirection(dir) {
                 document.documentElement.setAttribute('dir', dir);
-                // Update any specific RTL styles or behaviors here
             }
         
-            // Example usage (you can trigger this based on user preference or language selection):
-            // setDirection('rtl'); // For Arabic
-            // setDirection('ltr'); // For English
         });
     </script>
 

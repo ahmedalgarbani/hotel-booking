@@ -6,10 +6,10 @@
     <meta name="author" content="TechyDevs" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>{% block title %}Trizen - Travel Booking{% endblock %}</title>
+    <title>{% block title %}{{setting.site_name}}{% endblock %}</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{% static 'images/favicon.png' %}" />
+    <link rel="icon" href="{{setting.logo.url}}" />
 
     <!-- Google Fonts -->
     <link
