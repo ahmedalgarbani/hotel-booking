@@ -187,7 +187,7 @@
                                 <!-- end msg-body -->
                               </a>
                               <div class="section-block"></div>
-                              <a href="{% url 'home:index' %}" class="list-group-item list-group-item-action">
+                              <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action">
                                 <div class="msg-body">
                                   <div class="msg-content">
                                     <h3 class="title">
@@ -224,7 +224,7 @@
                 <div class="col-lg-6">
                   <div class="breadcrumb-content">
                     <div class="section-heading">
-                      <h2 class="sec__title font-size-30 text-white">{% block section_title %}مرحبا بك احمد الجرباني{% endblock section_title %}</h2>
+                      <h2 class="sec__title font-size-30 text-white">{% block section_title %}مرحبا بك {{request.user.first_name}} {% endblock section_title %}</h2>
                     </div>
                   </div>
                   <!-- end breadcrumb-content -->

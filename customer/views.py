@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_index(request):
     user = request.user  
 
@@ -30,7 +30,7 @@ def user_dashboard_index(request):
     })
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_bookings(request):
     bookings = Booking.objects.filter(user=request.user).order_by('-check_in_date')
 
@@ -67,7 +67,7 @@ def user_dashboard_bookings(request):
 
 
 
-@login_required
+@login_required(login_url='/users/login')
 def cancel_booking(request, booking_id):
     try:
         booking = Booking.objects.get(id=booking_id, user=request.user)
@@ -81,7 +81,7 @@ def cancel_booking(request, booking_id):
 
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_settings(request):
     user = request.user
     if request.method == "POST":
@@ -96,7 +96,7 @@ def user_dashboard_settings(request):
     return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html', {'form': form, 'user': user})
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_settings_password(request):
     return render(request,'admin/user_dashboard/pages/user-dashboard-settings.html')
 
@@ -105,7 +105,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_settings_email(request):
     if request.method == 'POST':
         current_email = request.POST.get('current_email')
@@ -143,7 +143,7 @@ def user_dashboard_settings_email(request):
 
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_wishlist(request):
     
     ctx = {
@@ -152,7 +152,7 @@ def user_dashboard_wishlist(request):
     return render(request,'admin/user_dashboard/pages/user-dashboard-wishlist.html',ctx)
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_reviews(request):
     # جلب المراجعات من قاعدة البيانات
     hotel_reviews = HotelReview.objects.all()  # جلب جميع مراجعات الفنادق
@@ -172,7 +172,7 @@ def user_dashboard_reviews(request):
 
 
 
-@login_required
+@login_required(login_url='/users/login')
 def user_dashboard_profile(request):
     user = request.user  
 

@@ -23,7 +23,7 @@ def hotel_review_detail(request, review_id):
     review = get_object_or_404(HotelReview, id=review_id)
     return render(request, 'reviews/hotel_review_detail.html', {'review': review})
 
-@login_required
+@login_required(login_url='/users/login')
 def hotel_review_create(request):
     if request.method == 'POST':
         hotel = get_object_or_404(Hotel, id=request.POST.get('hotel_id'))
@@ -47,7 +47,7 @@ def hotel_review_create(request):
     else:
         return redirect('home:index')
 
-@login_required
+@login_required(login_url='/users/login')
 def hotel_review_update(request, review_id):
     review = get_object_or_404(HotelReview, id=review_id)
     if request.method == 'POST':
@@ -59,7 +59,7 @@ def hotel_review_update(request, review_id):
         form = HotelReviewForm(instance=review)
     return render(request, 'reviews/hotel_review_form.html', {'form': form})
 
-@login_required
+@login_required(login_url='/users/login')
 def hotel_review_delete(request, review_id):
     review = get_object_or_404(HotelReview, id=review_id)
     if request.method == 'POST':
@@ -78,7 +78,7 @@ def room_review_detail(request, review_id):
     review = get_object_or_404(RoomReview, id=review_id)
     return render(request, 'reviews/room_review_detail.html', {'review': review})
 
-@login_required
+@login_required(login_url='/users/login')
 def room_review_create(request,room_id):
     room = get_object_or_404(RoomType,id = room_id)
     if request.method == 'POST':
@@ -108,7 +108,7 @@ def room_review_create(request,room_id):
     
     return redirect('rooms:room_detail',room_id=room.id)
 
-@login_required
+@login_required(login_url='/users/login')
 def room_review_update(request, review_id):
     review = get_object_or_404(RoomReview, id=review_id)
     if request.method == 'POST':
@@ -120,7 +120,7 @@ def room_review_update(request, review_id):
         form = RoomReviewForm(instance=review)
     return render(request, 'reviews/room_review_form.html', {'form': form})
 
-@login_required
+@login_required(login_url='/users/login')
 def room_review_delete(request, review_id):
     review = get_object_or_404(RoomReview, id=review_id)
     if request.method == 'POST':

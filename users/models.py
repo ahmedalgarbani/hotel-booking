@@ -41,7 +41,15 @@ class CustomUser(AbstractUser):
         blank=True,
         help_text=_('الصورة الشخصية للمستخدم')
     )
-    
+    gender = models.CharField(
+        max_length=10,
+        choices=[('Male', _('Male')), ('Female', _('Female'))],
+        verbose_name=_("الجنس"),
+        null=True
+    )
+    birth_date = models.DateField(verbose_name=_("تاريخ الميلاد"),        null=True
+)
+
     is_active = models.BooleanField(
         default=True,
         verbose_name=_('نشط'),

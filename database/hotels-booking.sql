@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2025 at 01:21 AM
+-- Generation Time: Mar 11, 2025 at 03:24 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -373,7 +373,8 @@ INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, 
 (38, '2025-03-08 01:11:22.893662', '2025-03-10 22:12:18.163026', NULL, '2025-03-08 00:00:00.000000', '2025-03-09 23:35:53.000000', '2025-03-10 22:12:18.150646', 15.00, '0', 1, NULL, 1, 1, NULL, 5, 1, NULL),
 (42, '2025-03-10 00:51:46.630124', '2025-03-10 13:11:59.858373', NULL, '2025-03-09 23:35:53.000000', '2025-03-12 23:35:53.000000', '2025-03-10 13:11:59.852678', 155.00, '1', 1, NULL, 1, 1, NULL, 5, 1, 38),
 (43, '2025-03-10 21:25:09.565380', '2025-03-10 22:19:39.914616', NULL, '2025-03-07 21:24:47.000000', '2025-03-14 21:24:53.000000', NULL, 156.00, '0', 1, 8, 1, 1, 5, 5, 1, NULL),
-(44, '2025-03-10 22:52:46.663370', '2025-03-11 00:04:24.729258', NULL, '2025-03-11 00:00:00.000000', '2025-03-15 00:00:00.000000', '2025-03-11 00:04:24.714519', 360.00, '2', 1, NULL, 1, 1, NULL, 5, 6, NULL);
+(44, '2025-03-10 22:52:46.663370', '2025-03-11 00:04:24.729258', NULL, '2025-03-11 00:00:00.000000', '2025-03-15 00:00:00.000000', '2025-03-11 00:04:24.714519', 360.00, '2', 1, NULL, 1, 1, NULL, 5, 6, NULL),
+(45, '2025-03-11 13:39:35.551101', '2025-03-11 13:39:35.551101', NULL, '2025-03-11 00:00:00.000000', '2025-03-12 00:00:00.000000', NULL, 30.00, '0', 1, NULL, 1, 1, NULL, 9, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -801,7 +802,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (64, 'bookings', '0009_extensionmovement', '2025-03-10 11:43:07.598679'),
 (65, 'rooms', '0003_remove_availability_unique_room_availability', '2025-03-10 11:43:13.049373'),
 (66, 'bookings', '0010_remove_booking_booking_number_and_more', '2025-03-10 12:05:58.518464'),
-(67, 'payments', '0008_remove_payment_booking_number_and_more', '2025-03-10 12:05:58.574618');
+(67, 'payments', '0008_remove_payment_booking_number_and_more', '2025-03-10 12:05:58.574618'),
+(68, 'users', '0002_customuser_birth_date_customuser_gender', '2025-03-11 14:09:59.975991');
 
 -- --------------------------------------------------------
 
@@ -825,9 +827,9 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('3l284zd6avprephcge5o4u8f5zv0pedz', '.eJxdj0tuwyAQhu8ya8fCdozBy-57gipCA4wftQMVxlGlKHcvtuIq7QJp-P4HzB0UrnFQ60JBjRZaKCB7ZRrNRG4T7Ce63ufGuxhGnW-W_Kku-bu3NL89vX8KBlyGlK444bnhpUTJK6oMbzqUUuh05LlrGl2j7rBkhneCmGC1YUJiyQWTnWhklUq199PoemUxIrR3GHykef90kUHw_nrMZiAzqdGlZ0tW1idWnRiHg_s1vgjF1ryH3XrVFFJBnQHadY6_JIHoI87qK4yGNkfOMqDvGFClFW8JLtB-XP4ztaegTeY-oLPHfcs_Hj9VtHpK:1tpxqB:rrthkEcER5PU8qO3jlPdbK7MrMpXtAwG9HLKmT61gKQ', '2025-03-19 23:07:51.093730'),
 ('3qsi11xb0eoj0bbvwub0u4160aw78bmu', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tpvah:sZuqLtlzjWQXPsOTdNbO-z3KPrli34_hGl1t7e1FRXE', '2025-03-19 20:43:43.782610'),
 ('5fsxa10j40azsmzvxukhxk5wckw41254', '.eJxVjEEOwiAURO_C2hAsLfC7dO8ZyAc-ghowpU00xrvbJl3oYjYzb96bWVzmZJdGk82BjezIDr-dQ3-jsg3hiuVSua9lnrLjG8L3tfFzDXQ_7eyfIGFL61sqwl6rDhCUJOmVjghg3Broo9ZuQBexE15FQ8KIwQsD2CkjIBoNcpM2ai3XYun5yNOLjeLzBXLPPok:1tpuJS:c-8f7wxVVYGw8Eyarw_XHRouPwBD_fRD7bjOE3_Gnzk', '2025-03-19 19:21:50.420216'),
-('5x8o8ixoqe6u85adalx6s7e5ansm4fu6', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1trRMd:mGd25IIkUSFKmjx_395vldroJ5OjuHp2Zmue8ZfEFrQ', '2025-03-24 00:51:27.084724'),
 ('9lhq6261aowlqxkq986zwgezos2h3btq', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1trdyD:tNpbB9iuzeEI5iPEea4fleCLODaakyEjJPXthqXKNLs', '2025-03-24 14:19:05.681812'),
 ('dyyqcnj01cxrtiis0y0nrglmzwhfwp7v', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1tqh0j:y8aKsLvvGNnrlwW5boGQVYDDKVpWtCcmBlHLjLz_hCI', '2025-03-21 23:21:45.692432'),
+('ez9j8uvrhfnu2tjqto90pzbdtdcc4xqq', '.eJxVjMEOwiAQRP-FsyEILex69O43kAUWqRpISnsy_rtt0oMe5jLvzbyFp3Upfu08-ymJiziL028XKD657iA9qN6bjK0u8xTkrsiDdnlriV_Xw_07KNTLtjaWaXBWI6E1bKJ1mRAhbMEhOxdGCpm0ijYDK1BjVICkLSjM4NCIzxfWiTdM:1trz99:1zfUuDNjuztsTia1krQIqehctq6wNgF9pstRHzUSdE8', '2025-03-25 12:55:47.857163'),
 ('fgvqzg78fi449rbjczlawv62en8jrx8b', '.eJxVjDEOgzAQBP_iOrIM5mxImZ43IK_vHJNEIGGoovw9skSRtDsz-1ZTOPY8HUW2aWZ1VV5dfjeE-JSlAn6E5b7quC77NkNXRZ-06HFled1O9-8gh5JrTVYsAezaRiJ6x8mThCZ11LWwJsAw4GOKiCYNIDMYIs9WnHdArz5fEYU46g:1tq6PO:SpMMaOWZhsSxP5q0Cmj0lcpgWGmOFNdGSiP7Q2O8A9w', '2025-03-20 08:16:46.570327'),
 ('o4r8mx5t58xbn5b7upvk1phaoh0xxdbb', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1trlzK:0IxNVmAoD6-YBkE8C78VKVaEjgR7z_MHpA5R5qETBSM', '2025-03-24 22:52:46.778244'),
 ('pb4qknt4zzqpksgrac85aw0lra2xovps', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tqf3x:WH3sXz6q630fWniOTaqkeDjWlBwcCUvxQwVujYBEWF0', '2025-03-21 21:16:57.167948'),
@@ -1110,7 +1112,8 @@ INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, 
 (23, '2025-03-10 23:45:21.981578', '2025-03-10 23:45:21.981578', NULL, 0, '2025-03-10 23:45:21.980030', 0.00, 156.00, '$', 'e_pay', 'ssssss', 0.00, 43, NULL, 1, NULL, '/media/wasell_tH5ekhj.jpg'),
 (24, '2025-03-10 23:46:31.772226', '2025-03-10 23:46:31.772226', NULL, 0, '2025-03-10 23:46:31.766272', 0.00, 156.00, '$', 'e_pay', 's,ajhdjkashdkasj', 0.00, 43, NULL, 1, NULL, '/media/wasell_LV6EbGc.jpg'),
 (25, '2025-03-10 23:50:50.400911', '2025-03-10 23:50:50.400911', NULL, 0, '2025-03-10 23:50:50.400911', 0.00, 305.00, '$', 'cash', 'sadasdasda', 55.00, 44, NULL, 1, NULL, '/media/wasell_zFfmS5W.jpg'),
-(26, '2025-03-11 00:14:54.771101', '2025-03-11 00:14:54.771101', NULL, 1, '2025-03-11 00:14:54.767844', 0.00, 156.00, '$', 'e_pay', 'alskkkkkkkkkkkk', 0.00, 43, NULL, 1, NULL, '/media/wasell_IYoXVki.jpg');
+(26, '2025-03-11 00:14:54.771101', '2025-03-11 00:14:54.771101', NULL, 1, '2025-03-11 00:14:54.767844', 0.00, 156.00, '$', 'e_pay', 'alskkkkkkkkkkkk', 0.00, 43, NULL, 1, NULL, '/media/wasell_IYoXVki.jpg'),
+(27, '2025-03-11 13:39:35.605350', '2025-03-11 13:39:35.605350', NULL, 0, '2025-03-11 13:39:35.596598', 30.00, 30.00, '$', 'e_pay', 'تم التحويل بواسطة: ajhdkja - رقم التحويل: 15615151', 0.00, 45, NULL, 1, NULL, 'payments/transfer/transfer_image/wasell_GfDsTxd.jpg');
 
 -- --------------------------------------------------------
 
@@ -1242,7 +1245,7 @@ CREATE TABLE `rooms_availability` (
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
 (10, '2025-03-10 00:51:46.649644', '2025-03-10 23:50:17.566236', NULL, '2025-03-10', 21, 'تم التحديث بسبب تمديد الحجز #52', NULL, 1, 3, 1, NULL),
-(11, '2025-03-11 00:04:24.742393', '2025-03-11 00:14:06.814336', NULL, '2025-03-11', 22, 'تم التحديث بسبب تمديد الحجز #53', NULL, 1, 3, 1, NULL);
+(11, '2025-03-11 00:04:24.742393', '2025-03-11 13:39:35.591118', NULL, '2025-03-11', 20, 'Updated due to booking #45', NULL, 1, 3, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1517,22 +1520,27 @@ CREATE TABLE `users_customuser` (
   `phone` varchar(20) NOT NULL,
   `image` varchar(100) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
-  `chield_id` bigint(20) DEFAULT NULL
+  `chield_id` bigint(20) DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users_customuser`
 --
 
-INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `is_active`, `chield_id`) VALUES
-(1, 'pbkdf2_sha256$600000$U0vBbjamlzvOok3a0NCd9H$yfdwiYcSW6sk7zcuIe57bjYlbTFT/FyTsy43NUeBioc=', '2025-03-10 00:51:27.079885', 1, 'a', '', '', 'a@a.com', 1, '2025-03-01 18:58:44.494009', '2025-03-01 18:58:45.387318', '2025-03-01 18:58:45.387318', '', '', '', 1, NULL),
-(2, 'pbkdf2_sha256$600000$Pc3oxZPOdBxmUVe2eOAwit$bXxPnP1siQugYTDEr36L4fCYu5YaVTozzRxUUgVsv1g=', NULL, 1, 'b', '', '', 'b@b.com', 1, '2025-03-01 19:05:26.868670', '2025-03-01 19:05:28.022141', '2025-03-01 19:05:48.735234', 'hotel_manager', '', '', 1, NULL),
-(3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', 1, NULL),
-(4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', 1, NULL),
-(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-10 22:52:18.818211', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-10 11:50:00.018214', 'customer', '', '', 1, NULL),
-(6, 'pbkdf2_sha256$600000$BbNnejHpZOfDP6VnObjVcz$nhsPttz7Xm4OTIK/zOWG0MrrT6q9PAv0jTWQyIffer0=', '2025-03-05 20:13:43.403102', 0, 'mosaa1', '', '', 'mosaa1@mosaa1.com', 0, '2025-03-05 20:13:41.381311', '2025-03-05 20:13:43.386627', '2025-03-05 20:13:43.386627', 'customer', '', '', 1, NULL),
-(7, 'pbkdf2_sha256$600000$vUeJuKMqNFAu6egbZVxQ85$uQPUm3C2c/AmXPOaKjFVNqCkRpV44XZB+IcyyRoeX9I=', '2025-03-06 08:09:12.614518', 0, 'asdjsk', '', '', 'asdjsk@asdjsk.com', 0, '2025-03-06 08:09:10.785662', '2025-03-06 08:09:12.595928', '2025-03-06 08:09:12.595928', 'customer', '', '', 1, NULL),
-(8, 'pbkdf2_sha256$600000$SFyrTCxLhv3sQ1aeRp9210$x4uW6U+Le+bTAvJQf+0aMsQ2WQnBb6/rMu43cIS53vk=', '2025-03-08 23:09:07.660012', 0, 'alslslsl', '', '', 'alslslsl@alslslsl.com', 0, '2025-03-08 23:09:05.884851', '2025-03-08 23:09:07.648169', '2025-03-08 23:09:07.648169', 'customer', '', '', 1, NULL);
+INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `is_active`, `chield_id`, `birth_date`, `gender`) VALUES
+(1, 'pbkdf2_sha256$600000$U0vBbjamlzvOok3a0NCd9H$yfdwiYcSW6sk7zcuIe57bjYlbTFT/FyTsy43NUeBioc=', '2025-03-11 12:55:47.852192', 1, 'a', '', '', 'a@a.com', 1, '2025-03-01 18:58:44.494009', '2025-03-01 18:58:45.387318', '2025-03-01 18:58:45.387318', '', '', '', 1, NULL, NULL, NULL),
+(2, 'pbkdf2_sha256$600000$Pc3oxZPOdBxmUVe2eOAwit$bXxPnP1siQugYTDEr36L4fCYu5YaVTozzRxUUgVsv1g=', NULL, 1, 'b', '', '', 'b@b.com', 1, '2025-03-01 19:05:26.868670', '2025-03-01 19:05:28.022141', '2025-03-01 19:05:48.735234', 'hotel_manager', '', '', 1, NULL, NULL, NULL),
+(3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', 1, NULL, NULL, NULL),
+(4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', 1, NULL, NULL, NULL),
+(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-10 22:52:18.818211', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-10 11:50:00.018214', 'customer', '', '', 1, NULL, NULL, NULL),
+(6, 'pbkdf2_sha256$600000$BbNnejHpZOfDP6VnObjVcz$nhsPttz7Xm4OTIK/zOWG0MrrT6q9PAv0jTWQyIffer0=', '2025-03-05 20:13:43.403102', 0, 'mosaa1', '', '', 'mosaa1@mosaa1.com', 0, '2025-03-05 20:13:41.381311', '2025-03-05 20:13:43.386627', '2025-03-05 20:13:43.386627', 'customer', '', '', 1, NULL, NULL, NULL),
+(7, 'pbkdf2_sha256$600000$vUeJuKMqNFAu6egbZVxQ85$uQPUm3C2c/AmXPOaKjFVNqCkRpV44XZB+IcyyRoeX9I=', '2025-03-06 08:09:12.614518', 0, 'asdjsk', '', '', 'asdjsk@asdjsk.com', 0, '2025-03-06 08:09:10.785662', '2025-03-06 08:09:12.595928', '2025-03-06 08:09:12.595928', 'customer', '', '', 1, NULL, NULL, NULL),
+(8, 'pbkdf2_sha256$600000$SFyrTCxLhv3sQ1aeRp9210$x4uW6U+Le+bTAvJQf+0aMsQ2WQnBb6/rMu43cIS53vk=', '2025-03-08 23:09:07.660012', 0, 'alslslsl', '', '', 'alslslsl@alslslsl.com', 0, '2025-03-08 23:09:05.884851', '2025-03-08 23:09:07.648169', '2025-03-08 23:09:07.648169', 'customer', '', '', 1, NULL, NULL, NULL),
+(9, 'pbkdf2_sha256$600000$YyHz1TprqrLxB9Zn86sIJu$VtH3gk7SGQu97sevo51XO3ovW0MjMaVmvTMX/jtAI54=', '2025-03-11 13:39:22.061710', 0, 'ahmed1555', 'ahmed', 'mohamed', 'ahmed1555@gmail.com', 0, '2025-03-11 13:05:30.020217', '2025-03-11 13:05:30.536114', '2025-03-11 13:05:30.536114', 'customer', '781717609', 'users/2025/03/11/topdoctors.jpg', 1, NULL, NULL, NULL),
+(10, 'pbkdf2_sha256$600000$JInLxld88le5EonOREI0JQ$FvAY9r/CHudvTsSBOxEfZob1jwsvvzgpRAWPsDM6szE=', '2025-03-11 13:24:43.650477', 0, 'sakjds888', 'askja', 'kksskks', 'sakjds888@cc.com', 0, '2025-03-11 13:24:32.822351', '2025-03-11 13:24:33.340511', '2025-03-11 13:24:33.340511', 'customer', '123123132132', 'users/2025/03/11/topdoctors_qb7Dipr.jpg', 1, NULL, NULL, NULL),
+(11, 'pbkdf2_sha256$600000$RQcyfOrNwaARSe90TzIKBU$90MYq5xmhjWGc+keDWcELY1dkohhCW05pO8C2RgP+xA=', '2025-03-11 14:11:34.650871', 0, 'asjldhask15', 'ajshdkajs', 'aksljdlas', 'asjldhask15@asd.co', 0, '2025-03-11 14:11:32.868092', '2025-03-11 14:11:34.630556', '2025-03-11 14:11:34.630556', 'customer', '21215151515', 'users/2025/03/11/topdoctors_5NSVJtE.jpg', 1, NULL, '2025-03-09', 'Female');
 
 -- --------------------------------------------------------
 
@@ -2022,7 +2030,7 @@ ALTER TABLE `blog_tag`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
@@ -2064,7 +2072,7 @@ ALTER TABLE `django_content_type`
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_city`
@@ -2124,7 +2132,7 @@ ALTER TABLE `payments_hotelpaymentmethod`
 -- AUTO_INCREMENT for table `payments_payment`
 --
 ALTER TABLE `payments_payment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `payments_paymentoption`
@@ -2232,7 +2240,7 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`

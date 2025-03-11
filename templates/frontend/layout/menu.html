@@ -261,8 +261,10 @@
                 </div>
               {% else %}
                 <div class="header-right-action">
-                  <a href="#" class="theme-btn theme-btn-small theme-btn-transparent me-1" data-bs-toggle="modal" data-bs-target="#signupPopupForm">سجل</a>
-                  <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#loginPopupForm">تسجيل الدخول</a>
+                  {% comment %} <a href="#" class="theme-btn theme-btn-small theme-btn-transparent me-1" data-bs-toggle="modal" data-bs-target="#signupPopupForm">سجل</a> {% endcomment %}
+                  <a href="{% url 'users:register' %}" class="theme-btn theme-btn-small theme-btn-transparent me-1">سجل</a>
+                  <a href="{% url 'users:login' %}" class="theme-btn theme-btn-small">تسجيل الدخول</a>
+                  {% comment %} <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#loginPopupForm">تسجيل الدخول</a> {% endcomment %}
                 </div>
               {% endif %}
             </div>

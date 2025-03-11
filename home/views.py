@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
+from blog.models import Post
 from payments.models import HotelPaymentMethod
 from django.db.models import Avg, Count,Q,OuterRef, Subquery, Max,F
 
@@ -19,8 +20,10 @@ def index(request):
         if not key.startswith("_"): 
             del request.session[key]
     roomTypes = RoomType.objects.filter(is_active = True)
+    blogs = Post.objects.filter(is_published=True)
     ctx = {
-        'roomTypes':roomTypes
+        'roomTypes':roomTypes,
+        'blogs':blogs
     }
     return render(request,'frontend/home/index.html',ctx)
 

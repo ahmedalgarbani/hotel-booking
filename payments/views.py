@@ -221,7 +221,7 @@ def save_guests(request, room_id):
 
 logger = logging.getLogger(__name__)
 
-@login_required
+@login_required(login_url='/users/login')
 def hotel_confirm_payment(request):
     if request.method == 'POST':
         try:

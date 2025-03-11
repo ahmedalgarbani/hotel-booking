@@ -5,49 +5,56 @@ from .models import CustomUser
 
 def register(request):
     if request.method == 'POST':
-        # Get form data
         username = request.POST.get('username')
         email = request.POST.get('email')
-        password1 = request.POST.get('password1')
+        password1 = request.POST.get('password')
         password2 = request.POST.get('password2')
-        
-        # Basic validation
+        phoneNumber = request.POST.get('phoneNumber')
+        firstName = request.POST.get('firstName')
+        lastName = request.POST.get('lastName')
+        birth_date = request.POST.get('birth_date')
+        gender = request.POST.get('gender')
+        profileImage = request.FILES.get("profileImage")
+            
         if not all([username, email, password1, password2]):
             messages.error(request, 'جميع الحقول مطلوبة')
-            return redirect('register')
+            return redirect('users:register')
         
-        # Check if passwords match
         if password1 != password2:
             messages.error(request, 'كلمات المرور غير متطابقة')
-            return redirect('register')
+            return redirect('users:register')
             
-        # Check if user already exists
         if CustomUser.objects.filter(username=username).exists():
             messages.error(request, 'اسم المستخدم موجود بالفعل')
-            return redirect('register')
+            return redirect('users:register')
             
         if CustomUser.objects.filter(email=email).exists():
             messages.error(request, 'البريد الإلكتروني موجود بالفعل')
-            return redirect('register')
+            return redirect('users:register')
             
-        # Create new user
         try:
             user = CustomUser.objects.create_user(
                 username=username,
                 email=email,
                 password=password1,
-                user_type='customer'
+                user_type='customer',
+                phone=phoneNumber,
+                first_name=firstName,
+                last_name=lastName,
+                image=profileImage,
+                gender=gender,
+                birth_date=birth_date
+
             )
             
-            # Log the user in
             login(request, user)
             messages.success(request, 'تم التسجيل بنجاح!')
             return redirect('home:index')
         except Exception as e:
             messages.error(request, 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.')
-            return redirect('register')
+            return redirect('users:register')
         
-    return render(request, 'frontend/layout/master.html')
+    return render(request, 'frontend/auth/register.html')
 
 def logout_view(request):
     logout(request)
@@ -60,6 +67,7 @@ def login_view(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
         remember = request.POST.get('remember')
+        next_url = request.POST.get('next')
 
         if not username or not password:
             messages.error(request, 'يرجى إدخال اسم المستخدم وكلمة المرور')
@@ -68,23 +76,26 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            
             login(request, user)
             
-            # تحديد انتهاء الجلسة بناءً على خيار "تذكرني"
             if remember:
-                request.session.set_expiry(1209600)  # 14 يومًا
+                request.session.set_expiry(1209600) 
             else:
-                request.session.set_expiry(0)  # تنتهي الجلسة عند غلق المتصفح
+                request.session.set_expiry(0) 
 
             messages.success(request, 'تم تسجيل الدخول بنجاح!')
-            
+
+            if next_url:
+                return redirect(next_url)
             return redirect('home:index')
         else:
             messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة')
             return redirect('home:index')
+    else:
+        next_url = request.GET.get('next', '')
+        return render(request, 'frontend/auth/login.html', {'next': next_url})
 
-    return redirect('home:index')
+
 
 
 def password_reset_view(request):
