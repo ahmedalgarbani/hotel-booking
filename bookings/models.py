@@ -29,11 +29,7 @@ class Guest(models.Model):
         verbose_name=_("الحجز"),
         related_name='guests'
     )
-    booking_number = models.CharField(
-        max_length=255,
-        verbose_name=_("رقم الحجز"),
-        editable=False
-    )
+
     name = models.CharField(verbose_name=_("الاسم"), max_length=150)
     phone_number = models.CharField(verbose_name=_("رقم الهاتف"), max_length=14)
     id_card_image = models.ImageField(
@@ -63,13 +59,11 @@ class Guest(models.Model):
         ordering = ['name']
 
 
-    def save(self, *args, **kwargs):
-        if self.booking:
-            self.booking_number = self.booking.booking_number  
+    def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} - {self.booking_number}"
+        return f"{self.name} - {self.id}"
 
 
 
@@ -83,11 +77,7 @@ class Booking(BaseModel):
         CONFIRMED = "1", _("مؤكد")
         CANCELED = "2", _("ملغي")
 
-    booking_number = models.CharField(
-        max_length=20,
-        editable=False,
-        verbose_name=_("رقم الحجز")
-    )
+
     
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
@@ -217,18 +207,18 @@ class Booking(BaseModel):
                 defaults={
                     "room_status": RoomStatus.objects.get(id=3),  
                     "available_rooms": max(0, self.room.rooms_count + change),  
-                    "notes": f"Updated due to booking #{self.booking_number}",
+                    "notes": f"Updated due to booking #{self.id}",
                 }
             )
 
             if not created:
                 availability.available_rooms = max(0, availability.available_rooms + change)
-                availability.notes = f"Updated due to booking #{self.booking_number}"
+                availability.notes = f"Updated due to booking #{self.id}"
                 availability.save()
 
 
     def __str__(self):
-        return f"Booking #{self.booking_number} - {self.room.name} ({self.rooms_booked} rooms)"
+        return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
 
 
 
@@ -240,11 +230,7 @@ class BookingDetail(BaseModel):
         verbose_name=_("الحجز"),
         related_name='details'
     )
-    booking_number = models.CharField(
-        max_length=255,
-        verbose_name=_("رقم الحجز"),
-        editable=False
-    )
+
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -270,11 +256,11 @@ class BookingDetail(BaseModel):
     def save(self, *args, **kwargs):
         self.total = self.quantity * self.price
         if self.booking:
-            self.booking_number = self.booking.booking_number  
+            self.id = self.booking.id  
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.service} - {self.booking_number}"
+        return f"{self.service} - {self.id}"
 
 
 
@@ -300,11 +286,11 @@ class ExtensionMovement(models.Model):
 
 
     def save(self, *args, **kwargs):
-        self.extension_duration = (self.new_departure_date - self.departure_before_extension).days
+        self.extension_duration = (self.new_departure - self.original_departure).days
         self.extension_year = self.extension_date.year
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"حركة #{self.movement_number} - حجز {self.booking.booking_number}"    
+        return f"حركة #{self.movement_number} - حجز {self.booking.id}"    
     
 

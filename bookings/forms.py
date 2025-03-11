@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Booking, Availability
+
+from rooms.services import change_date_format, change_date_format2
+from .models import Booking, Availability, ExtensionMovement
 from django.utils.translation import gettext_lazy as _
 
 
@@ -30,30 +32,40 @@ class BookingAdminForm(forms.ModelForm):
         return cleaned_data
 
 
-
 class BookingExtensionForm(forms.Form):
-    new_check_out = forms.DateTimeField(
+    new_check_out = forms.DateField(
         label=_("تاريخ الخروج الجديد"),
-        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'form-input',
+            'min': "{{ check_out|date:'Y-m-d' }}",
+            'required': 'required'
+        })
     )
-    rooms_booked = forms.IntegerField(
-        label=_("عدد الغرف"),
-        min_value=1,
-        initial=1
+    reason = forms.ChoiceField(
+        label=_("سبب التمديد"),
+        choices=ExtensionMovement.REASON_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-input',
+            'required': 'required'
+        })
     )
 
     def clean_new_check_out(self):
-        new_check_out = self.cleaned_data.get('new_check_out')
+        new_check_out = change_date_format2(str(self.cleaned_data.get('new_check_out')))
+        print(new_check_out)
+        print(self.booking)
+        print(self.booking.check_out_date)
         if self.booking and new_check_out <= self.booking.check_out_date:
             raise ValidationError("يجب أن يكون تاريخ الخروج الجديد بعد تاريخ الخروج الحالي.")
         return new_check_out
+
     def __init__(self, *args, **kwargs):
         self.booking = kwargs.pop('booking', None)
         super().__init__(*args, **kwargs)
-        
+
         if self.booking:
-            available_rooms = self.get_available_rooms()  # دالة لحساب الغرف المتاحة
-            self.fields['rooms_booked'].help_text = f"الغرف المتاحة: {available_rooms}"
+            available_rooms = self.get_available_rooms()  
 
     def get_available_rooms(self):
         latest_availability = (
@@ -66,20 +78,15 @@ class BookingExtensionForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         new_check_out = cleaned_data.get('new_check_out')
-        rooms_booked = cleaned_data.get('rooms_booked')
-        
+
         if self.booking and new_check_out:
-            # التحقق من توفر الغرفة في الفترة الجديدة
             overlapping_bookings = Booking.objects.filter(
                 room=self.booking.room,
                 check_in_date__lt=new_check_out,
                 check_out_date__gt=self.booking.check_out_date
             ).exclude(pk=self.booking.pk)
-            
+
             total_booked = sum(booking.rooms_booked for booking in overlapping_bookings)
             available_rooms = self.get_available_rooms()
-            
-            if total_booked + rooms_booked > available_rooms:
-                raise ValidationError("لا توجد غرف كافية متاحة في الفترة المحددة.")
-        
+
         return cleaned_data

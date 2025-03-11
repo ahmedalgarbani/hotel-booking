@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{% block title %}Trizen - Travel Booking{% endblock %}</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" href="{% static 'images/favicon.png' %}" />
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Template CSS Files -->
     <link rel="stylesheet" href="{% static 'css/bootstrap-rtl.min.css' %}" />
@@ -21,7 +24,10 @@
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
     <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/owl.theme.default.min.css' %}"
+    />
     <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}" />
     <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}" />
@@ -29,7 +35,10 @@
     <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style-rtl.css' %}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
 
     <style>
       /* Custom CSS for centered menu */
@@ -38,11 +47,11 @@
         justify-content: center;
         width: 100%;
       }
-      
+
       .main-menu-content nav {
         flex: 1;
       }
-      
+
       .main-menu-content ul {
         margin: 0;
         padding: 0;
@@ -51,12 +60,12 @@
         justify-content: center;
         align-items: center;
       }
-      
+
       .main-menu-content ul li {
         margin: 0 15px;
         position: relative;
       }
-      
+
       .main-menu-content ul li a {
         font-size: 16px;
         font-weight: 500;
@@ -66,33 +75,33 @@
         display: block;
         transition: all 0.3s ease;
       }
-      
+
       .main-menu-content ul li a:hover {
         color: #007bff;
       }
-      
+
       /* Ensure dropdown menus are properly aligned */
       .dropdown-menu-item {
         position: absolute;
         top: 100%;
         right: 0;
         background: #fff;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         min-width: 200px;
         display: none;
       }
-      
+
       .main-menu-content ul li:hover .dropdown-menu-item {
         display: block;
       }
     </style>
 
-    {% block extra_css %}
-    {% endblock extra_css %}
+    {% block extra_css %} {% endblock extra_css %}
   </head>
   <body>
     <!-- start cssload-loader -->
-    {% comment %} <div class="preloader" id="preloader">
+    {% comment %}
+    <div class="preloader" id="preloader">
       <div class="loader">
         <svg class="spinner" viewBox="0 0 50 50">
           <circle
@@ -105,27 +114,18 @@
           ></circle>
         </svg>
       </div>
-    </div> {% endcomment %}
+    </div>
+    {% endcomment %}
     <!-- end cssload-loader -->
-
 
     {% include "frontend/layout/menu.html" %}
 
+    <!-- Page Content -->
+    {% block content %} {% endblock content %}
+    <!-- /Page Content -->
 
-<!-- Page Content -->
-{% block content %}
-      
-{% endblock content %}
-<!-- /Page Content -->
+    {% include "frontend/layout/footer.html" %}
 
-
-
-
-
-
-{% include "frontend/layout/footer.html" %}
-
-    
     <!-- start back-to-top -->
     <div id="back-to-top">
       <i class="la la-angle-up" title="Go top"></i>
@@ -143,118 +143,128 @@
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <div>
-                <h5 class="modal-title title" id="exampleModalLongTitle">
-                  سجل
-                </h5>
-                <p class="font-size-14">مرحبا! مرحبًا ، قم بإنشاء حساب جديد</p>
-              </div>
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true" class="la la-close"></span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="contact-form-action">
-                <form method="post" action="{% url 'users:register' %}">
-                  {% csrf_token %}
-                  <div class="input-box">
-                    <label class="label-text">اسم المستخدم</label>
-                    <div class="form-group">
-                      <span class="la la-user form-icon"></span>
-                      <input
-                        class="form-control"
-                        type="text"
-                        name="username"
-                        placeholder="اكتب اسم المستخدم الخاص بك"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <!-- end input-box -->
-                  <div class="input-box">
-                    <label class="label-text">عنوان البريد الالكترونى</label>
-                    <div class="form-group">
-                      <span class="la la-envelope form-icon"></span>
-                      <input
-                        class="form-control"
-                        type="email"
-                        name="email"
-                        placeholder="اكتب بريدك الإلكتروني"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <!-- end input-box -->
-                  <div class="input-box">
-                    <label class="label-text">كلمه السر</label>
-                    <div class="form-group">
-                      <span class="la la-lock form-icon"></span>
-                      <input
-                        class="form-control"
-                        type="password"
-                        name="password1"
-                        placeholder="أكتب كلمة المرور"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <!-- end input-box -->
-                  <div class="input-box">
-                    <label class="label-text">اعد كلمة السر</label>
-                    <div class="form-group">
-                      <span class="la la-lock form-icon"></span>
-                      <input
-                        class="form-control"
-                        type="password"
-                        name="password2"
-                        placeholder="اكتب كلمة المرور مرة أخرى"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <!-- end input-box -->
-                  <div class="btn-box pt-3 pb-4 ">
-                    <button type="submit" class="theme-btn w-100">
-                      تسجيل حساب
-                    </button>
-                  </div>
-                  <div class="action-box text-center">
-                    <p class="font-size-14">أو قم بالتسجيل باستخدام</p>
-                    <ul class="social-profile py-3">
-                      <li>
-                        <a href="#" class="bg-5 text-white"
-                          ><i class="lab la-facebook-f"></i
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" class="bg-6 text-white"
-                          ><i class="lab la-twitter"></i
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" class="bg-7 text-white"
-                          ><i class="lab la-instagram"></i
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" class="bg-5 text-white"
-                          ><i class="lab la-linkedin-in"></i
-                        ></a>
-                      </li>
-                    </ul>
-                  </div>
-                </form>
-              </div>
-              <!-- end contact-form-action -->
+
+
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <div class="form-header w-100">
+          <h2 class="modal-title text-center" id="registrationModalLabel">إنشاء حساب جديد</h2>
+          <p class="text-center">أدخل معلوماتك لإنشاء حساب جديد</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="registrationForm">
+          <!-- رفع الصورة -->
+          <div class="profile-upload mb-4">
+            <div class="profile-image position-relative mx-auto">
+              <img id="imagePreview" src="your-default-image.jpg" class="rounded-circle" alt="Profile preview">
+              <label for="profileImage" class="upload-button position-absolute">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </label>
+              <input type="file" id="profileImage" class="d-none" accept="image/*">
             </div>
           </div>
-        </div>
+
+          <!-- محتوى النموذج -->
+          <div class="row g-3">
+            <!-- العمود الأول -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="username">اسم المستخدم</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-end-0">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </span>
+                  <input type="text" class="form-control border-start-0" id="username" required>
+                </div>
+                <span class="error-message"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-end-0">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
+                      <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </span>
+                  <input type="password" class="form-control border-start-0" id="password" required>
+                </div>
+                <span class="error-message"></span>
+              </div>
+
+             
+            </div>
+
+            <!-- العمود الثاني -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-end-0">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                  </span>
+                  <input type="email" class="form-control border-start-0" id="email" required>
+                </div>
+                <span class="error-message"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword">تأكيد كلمة المرور</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-end-0">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
+                      <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </span>
+                  <input type="password" class="form-control border-start-0" id="confirmPassword" required>
+                </div>
+                <span class="error-message"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="phoneNumber">رقم الهاتف</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-end-0">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                  </span>
+                  <input type="tel" class="form-control border-start-0" id="phoneNumber" required>
+                </div>
+                <span class="error-message"></span>
+              </div>
+            </div>
+
+            <!-- عناصر مشتركة -->
+           
+
+             
+            </div>
+          </div>
+
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            <button type="submit" class="btn btn-primary">إنشاء الحساب</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
       </div>
     </div>
     <!-- end modal-popup -->
@@ -329,7 +339,9 @@
                         <label for="rememberchb">تذكرنى</label>
                       </div>
                       <p class="forgot-password">
-                        <a href="{% url 'users:password_reset' %}">هل نسيت كلمة المرور؟</a>
+                        <a href="{% url 'users:password_reset' %}"
+                          >هل نسيت كلمة المرور؟</a
+                        >
                       </p>
                     </div>
                   </div>
@@ -380,11 +392,11 @@
     <!-- jQuery UI قبل Bootstrap -->
     <script src="{% static 'js/jquery-ui.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    
+
     <!-- Essential Plugins -->
     <script src="{% static 'js/moment.min.js' %}"></script>
     <script src="{% static 'js/select2.min.js' %}"></script>
-    
+
     <!-- UI Enhancement Plugins -->
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
@@ -392,96 +404,101 @@
     <script src="{% static 'js/jquery.filer.min.js' %}"></script>
     <script src="{% static 'js/jquery.ripples-min.js' %}"></script>
     <script src="{% static 'js/jquery.superslides.min.js' %}"></script>
-    
+
     <!-- Date & Time Plugins -->
     <script src="{% static 'js/daterangepicker.js' %}"></script>
-    
+
     <!-- Map -->
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries"></script>
     <script src="{% static 'js/map-add.js' %}"></script>
-    
+
     <!-- Custom Scripts -->
     <script src="{% static 'js/animated-headline.js' %}"></script>
     <script src="{% static 'js/quantity-input.js' %}"></script>
     <script src="{% static 'js/superslider-script.js' %}"></script>
-    
+
     <!-- Initialize Scripts -->
     <script src="{% static 'js/main-rtl.js' %}"></script>
 
-
-    {% block extra_js %}
-    {% endblock extra_js %}    
+    {% block extra_js %} {% endblock extra_js %}
     <script>
-        // حل مشكلة تعارض النوافذ المنبثقة
-        $.widget.bridge('uibutton', $.ui.button);
-        $.widget.bridge('uitooltip', $.ui.tooltip);
-        
-        $(document).ready(function() {
-            // منع التعارض بين jQuery UI dialog و Bootstrap modal
-            $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-            
-            // تهيئة Select2
-            if ($.fn.select2) {
-                $('.select-contain-select').select2({
-                    dropdownParent: $('body') // لحل مشكلة ظهور Select2 في النوافذ المنبثقة
-                });
-            }
-            
-            // تهيئة DateRangePicker
-            if ($.fn.daterangepicker) {
-                $('input[name="daterange"]').daterangepicker({
-                    locale: {
-                        direction: 'rtl',
-                        format: 'YYYY/MM/DD'
-                    },
-                    autoUpdateInput: false // لمنع التحديث التلقائي للتاريخ
-                });
-                
-                // معالجة اختيار التاريخ
-                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-                    $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
-                });
-            }
-            
-            // تهيئة Owl Carousel
-            if ($.fn.owlCarousel) {
-                $('.owl-carousel').owlCarousel({
-                    rtl: true,
-                    loop: true,
-                    margin: 10,
-                    nav: true,
-                    responsive: {
-                        0: { items: 1 },
-                        600: { items: 3 },
-                        1000: { items: 5 }
-                    }
-                });
-            }
-            
-            // تهيئة FancyBox للنوافذ المنبثقة
-            if ($.fn.fancybox) {
-                $('[data-fancybox]').fancybox({
-                    touch: false, // لمنع مشاكل اللمس على الموبايل
-                    autoFocus: false, // لمنع التركيز التلقائي
-                    backFocus: false, // لمنع مشاكل التركيز عند الإغلاق
-                    trapFocus: false // لمنع حصر التركيز داخل النافذة
-                });
-            }
-            
-            // تهيئة Bootstrap Modals
-            $('.modal').on('shown.bs.modal', function() {
-                $(this).find('[autofocus]').focus();
-            });
-        });
-        
-        // دالة مساعدة لفتح النوافذ المنبثقة
-        function openModal(modalId) {
-            $('#' + modalId).modal({
-                backdrop: 'static',
-                keyboard: false,
-                show: true
-            });
+      // حل مشكلة تعارض النوافذ المنبثقة
+      $.widget.bridge("uibutton", $.ui.button);
+      $.widget.bridge("uitooltip", $.ui.tooltip);
+
+      $(document).ready(function () {
+        // منع التعارض بين jQuery UI dialog و Bootstrap modal
+        $.fn.modal.Constructor.prototype.enforceFocus = function () {};
+
+        // تهيئة Select2
+        if ($.fn.select2) {
+          $(".select-contain-select").select2({
+            dropdownParent: $("body"), // لحل مشكلة ظهور Select2 في النوافذ المنبثقة
+          });
         }
+
+        // تهيئة DateRangePicker
+        if ($.fn.daterangepicker) {
+          $('input[name="daterange"]').daterangepicker({
+            locale: {
+              direction: "rtl",
+              format: "YYYY/MM/DD",
+            },
+            autoUpdateInput: false, // لمنع التحديث التلقائي للتاريخ
+          });
+
+          // معالجة اختيار التاريخ
+          $('input[name="daterange"]').on(
+            "apply.daterangepicker",
+            function (ev, picker) {
+              $(this).val(
+                picker.startDate.format("YYYY/MM/DD") +
+                  " - " +
+                  picker.endDate.format("YYYY/MM/DD")
+              );
+            }
+          );
+        }
+
+        // تهيئة Owl Carousel
+        if ($.fn.owlCarousel) {
+          $(".owl-carousel").owlCarousel({
+            rtl: true,
+            loop: true,
+            margin: 10,
+            nav: true,
+            responsive: {
+              0: { items: 1 },
+              600: { items: 3 },
+              1000: { items: 5 },
+            },
+          });
+        }
+
+        // تهيئة FancyBox للنوافذ المنبثقة
+        if ($.fn.fancybox) {
+          $("[data-fancybox]").fancybox({
+            touch: false, // لمنع مشاكل اللمس على الموبايل
+            autoFocus: false, // لمنع التركيز التلقائي
+            backFocus: false, // لمنع مشاكل التركيز عند الإغلاق
+            trapFocus: false, // لمنع حصر التركيز داخل النافذة
+          });
+        }
+
+        // تهيئة Bootstrap Modals
+        $(".modal").on("shown.bs.modal", function () {
+          $(this).find("[autofocus]").focus();
+        });
+      });
+
+      // دالة مساعدة لفتح النوافذ المنبثقة
+      function openModal(modalId) {
+        $("#" + modalId).modal({
+          backdrop: "static",
+          keyboard: false,
+          show: true,
+        });
+      }
     </script>
   </body>
 </html>

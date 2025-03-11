@@ -76,17 +76,15 @@ class HotelPaymentMethod(models.Model):
 
 # ------------Payment-------------
 class Payment(BaseModel):
+    payment_choice = [(0, "قيد الانتظار"), (1, "تم الدفع"), (2, "مرفوض")]
+    payment_types_choice = [('e_pay', "إلكتروني"), ('cash', "نقدي")]
     booking = models.ForeignKey(
         'bookings.Booking',  
         on_delete=models.CASCADE,
         verbose_name=_("الحجز"),
         related_name='payments'
     )
-    booking_number = models.CharField( 
-        max_length=255,
-        verbose_name=_("رقم الحجز"),
-        db_index=True 
-    )
+  
     payment_method = models.ForeignKey(
         HotelPaymentMethod,
         on_delete=models.CASCADE,
@@ -99,7 +97,7 @@ class Payment(BaseModel):
         blank=True
     )
     payment_status = models.IntegerField(
-        choices=[(0, "قيد الانتظار"), (1, "تم الدفع"), (2, "مرفوض")],
+        choices=payment_choice,
         verbose_name=_("حالة الدفع"),
         default=0
     )
@@ -123,7 +121,7 @@ class Payment(BaseModel):
     )
     payment_type = models.CharField(
         max_length=10,
-        choices=[('e_pay', "إلكتروني"), ('cash', "نقدي")],
+        choices=payment_types_choice,
         verbose_name=_("نوع الدفع")
     )
     payment_note = models.TextField(
@@ -140,7 +138,7 @@ class Payment(BaseModel):
         ordering = ['-payment_date']
 
     def __str__(self):
-        return f"دفعة #{self.id} لحجز {self.booking_number}"
+        return f"دفعة #{self.id} لحجز {self.id}"
 
 
 

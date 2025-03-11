@@ -1,7 +1,38 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
 {% block content %}
+<style>
 
+  /* Default button styling */
+.add-to-wishlist {
+  color: #6c757d; /* grey by default */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.add-to-wishlist .la-heart-o {
+  color: #6c757d; /* grey heart */
+}
+
+.add-to-wishlist .la-heart {
+  color:red; /* white heart when selected */
+  
+}
+
+/* Blue button when added to wishlist */
+.btn-blue {
+  background-color: #007bff; /* blue background */
+  color: block; /* white text */
+}
+
+.btn-blue .la-heart {
+  color: red; /* white heart icon when selected */
+  
+}
+
+</style>
     <!-- ================================
     START BREADCRUMB AREA
 ================================= -->
@@ -380,14 +411,15 @@ START CARD AREA
                   <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
                 </a>
                  {% endif %}
-                  <div
+                  <a
                     class="add-to-wishlist icon-element"
                     data-bs-toggle="tooltip"
                     data-placement="top"
+                    data-hotel-id={{hotel.id}}
                     title="المرجعية"
                   >
                     <i class="la la-heart-o"></i>
-                  </div>
+                  </a>
                 </div>
                 <div class="card-body">
                   <h3 class="card-title">
@@ -802,5 +834,46 @@ START INFO AREA
 <!-- ================================
 END INFO AREA
 ================================= -->
-
+<script>
+document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
+					button.addEventListener('click', function() {
+          
+						var hotelId = this.getAttribute('data-hotel-id');
+						
+						fetch("{% url 'customer:add_to_favorites' %}", {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',  
+								'X-CSRFToken': '{{ csrf_token }}', 
+							},
+							body: JSON.stringify({
+								'hotel_id': hotelId,
+							}),
+						})
+						.then(response => response.json())  
+						.then(data => {
+							if (data.status === 'success') {
+                var icon = button.querySelector('i');
+                
+                if (!button.classList.contains('btn-blue')) {
+                    // Add blue color and change icon to filled heart
+                    button.classList.add('btn-blue');
+                    icon.classList.remove('la-heart-o');
+                    icon.classList.add('la-heart');
+                } else {
+                    // Remove blue color and revert icon to outline heart
+                    button.classList.remove('btn-blue');
+                    icon.classList.remove('la-heart');
+                    icon.classList.add('la-heart-o');
+                }
+            } else {
+                // Handle failure case (you can add a message or revert changes if needed)
+            }
+						})
+						.catch(error => {
+							console.error('Error:', error);
+						});
+					});
+				});
+			</script>
 {% endblock content %}

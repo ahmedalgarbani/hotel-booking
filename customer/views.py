@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage
-from bookings.models import Booking  
+from HotelManagement.models import Hotel
+from bookings.models import Booking
+from customer.models import Favourites  
 from notifications.models import Notifications
 from reviews.models import HotelReview, RoomReview
 from django.shortcuts import render, redirect
+
+from users.models import CustomUser
 from .forms import UserProfileForm
 from django.contrib.auth.decorators import login_required
 
@@ -140,7 +145,11 @@ def user_dashboard_settings_email(request):
 
 @login_required
 def user_dashboard_wishlist(request):
-    return render(request,'admin/user_dashboard/pages/user-dashboard-wishlist.html')
+    
+    ctx = {
+        'favourites': Favourites.objects.filter(user=request.user)
+    }
+    return render(request,'admin/user_dashboard/pages/user-dashboard-wishlist.html',ctx)
 
 
 @login_required
@@ -168,3 +177,30 @@ def user_dashboard_profile(request):
     user = request.user  
 
     return render(request, 'admin/user_dashboard/pages/user-dashboard-profile.html', {'user': user})
+
+import json
+
+
+def add_to_favorites(request):
+    try:
+        data = json.loads(request.body)  
+        hotel_id = data.get('hotel_id')  
+
+        if not hotel_id:
+            return JsonResponse({'status': 'error', 'message': 'No doctor ID provided'})
+
+        hotel = get_object_or_404(Hotel, id=hotel_id)
+
+        favorite_entry = Favourites.objects.filter(user=request.user, hotel=hotel).first()
+
+        if favorite_entry:
+            favorite_entry.delete()
+            return JsonResponse({'status': 'success', 'message': 'Doctor removed from favorites'})
+        else:
+            Favourites.objects.create(user=request.user, hotel=hotel)
+            return JsonResponse({'status': 'success', 'message': 'Doctor added to favorites'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})

@@ -5,6 +5,87 @@ from .models import RoomType, RoomPrice, Availability
 from datetime import datetime, timedelta
 from django.db.models import Q
 
+from datetime import datetime
+import pytz
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+from .models import RoomPrice, RoomType
+
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+from .models import RoomPrice, RoomType
+from datetime import timedelta
+from django.db.models import Q
+
+def calculate_total_cost(room, check_in_date, check_out_date, room_number):
+    """
+    Calculate the total cost for a booking based on room prices and room type base price.
+    
+    Args:
+        room (RoomType): The room type being booked.
+        check_in_date (date): The check-in date.
+        check_out_date (date): The check-out date.
+        room_number (int): The number of rooms being booked.
+    
+    Returns:
+        float: The total cost for the booking.
+    """
+    total_cost = 0.0
+
+    delta = check_out_date - check_in_date
+    num_days = delta.days
+
+    for i in range(num_days):
+        current_date = check_in_date + timedelta(days=i)
+
+        room_price = RoomPrice.objects.filter(
+            room_type=room,
+            date_from__lte=current_date,
+            date_to__gte=current_date
+        ).first()
+
+        if room_price:
+            total_cost += float(room_price.price) *room_number
+        else:
+            total_cost += float(room.base_price) *room_number
+
+
+    return total_cost
+
+def get_room_price(room):
+    """
+    Retrieves the room price for today's date. 
+    If no specific price is found, it falls back to the room type's base price.
+    """
+    today = timezone.now().date()
+
+    # Check for a RoomPrice entry where today's date is within the defined range
+    room_price_entry = RoomPrice.objects.filter(
+        room_type=room,
+        hotel=room.hotel,
+        date_from__lte=today,
+        date_to__gte=today
+    ).first()
+
+    if room_price_entry:
+        return room_price_entry.price
+
+    # Fallback to room type's base price if no RoomPrice found
+    room_type = get_object_or_404(RoomType, id=room.id)
+    return room_type.base_price
+
+
+
+def change_date_format2(date_str):
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+    
+    utc_timezone = pytz.UTC
+    date_obj_utc = date_obj.replace(tzinfo=utc_timezone)  
+    
+    print(date_obj_utc) 
+    return date_obj_utc
+
+
 
 
 def change_date_format(date_str):
