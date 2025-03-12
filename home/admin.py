@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import HeroSlider, InfoBox, RoomTypeHome, Setting, SocialMediaLink
-
+from .models import TeamMember, Partner, Testimonial
 # Register your models here.
 
 admin.site.register(InfoBox)
@@ -11,3 +11,12 @@ admin.site.register(HeroSlider)
 class HeroSliderAdmin(admin.ModelAdmin):
     list_display = ('title', 'is_active')
     list_filter = ('is_active',)
+
+
+
+   
+
+
+admin.site.register(TeamMember)
+admin.site.register(Partner)
+admin.site.register(Testimonial)
