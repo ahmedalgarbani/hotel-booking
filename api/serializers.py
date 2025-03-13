@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from HotelManagement.models import Hotel
 from rooms.models import RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -15,7 +16,10 @@ class ImageSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.image.url) if obj.image else None
+        if request:
+            return request.build_absolute_uri(obj.image.url) if obj.image else None
+        return obj.image.url if obj.image else None
+
 
 class RoomServiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,6 +55,7 @@ class HotelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
         fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms']
+        
 
     def get_rooms(self, obj):
         rooms = RoomType.objects.filter(hotel=obj)
@@ -63,6 +68,7 @@ class HotelSerializer(serializers.ModelSerializer):
         return obj.location.address if obj.location else None
 
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
 
@@ -73,14 +79,18 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)
-        validated_data["user_type"] = "customer"  
-        user = User.objects.create_user(**validated_data)
-        
+        validated_data["user_type"] = "customer"
+        try:
+            user = User.objects.create_user(**validated_data)
+        except ValidationError as e:
+            raise serializers.ValidationError({'error': str(e)})
+
         if image:
             user.image = image
             user.save()
-            
+
         return user
+
 
 
 
