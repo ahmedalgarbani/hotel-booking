@@ -321,18 +321,18 @@ class ImageAdminForm(forms.ModelForm):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    form = ImageAdminForm
-    list_display = ('image_path', 'image_url', 'hotel_id', 'created_at')
+    # form = ImageAdminForm
+    list_display = ('image_path', 'image_url', 'hotel', 'created_at')
     search_fields = ('image_path',)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
             
-            form.base_fields['hotel_id'].queryset = Hotel.objects.filter(manager=request.user)
-            form.base_fields['hotel_id'].initial = Hotel.objects.filter(manager=request.user).first()
-            form.base_fields['hotel_id'].widget.attrs['readonly'] = True
-            form.base_fields['hotel_id'].required = False
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
             
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
@@ -351,7 +351,7 @@ class ImageAdmin(admin.ModelAdmin):
         
         if not obj.pk and request.user.user_type == 'hotel_manager':
            
-            obj.hotel_id = Hotel.objects.filter(manager=request.user).first()
+            obj.hotel = Hotel.objects.filter(manager=request.user).first()
             obj.created_by = request.user
             obj.updated_by = request.user
         else:
