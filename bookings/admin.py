@@ -28,6 +28,7 @@ from .models import Booking, ExtensionMovement, Guest, BookingDetail
 from django import forms
 from django.contrib.admin.helpers import ActionForm
 from django.utils.html import format_html
+from django.db import transaction
 
 class HotelManagerAdminMixin:
 
@@ -47,8 +48,8 @@ class HotelManagerAdminMixin:
                 kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_status":
                 kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
-            # elif db_field.name == "category":
-            #     kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            elif db_field.name == "parent_booking":
+                kwargs["queryset"] = Booking.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             # elif db_field.name == "room_price":
             #     kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             # elif db_field.name == "room_image":
@@ -92,25 +93,23 @@ class HotelManagerAdminMixin:
             return self.readonly_fields + ('created_by', 'updated_by')
         return self.readonly_fields
 
-    # def save_model(self, request, obj, form, change):
-    #     if not obj.pk:
-    #         obj.created_by = request.user
-    #     obj.updated_by = request.user
-    #     super().save_model(request, obj, form, change)
-
 
 class ChangeStatusForm(ActionForm):  
     new_status = forms.ChoiceField(
-        choices=Booking.BookingStatus.choices,
-        required=True,
+        choices=[('', '-- اختر الحالة --')] + list(Booking.BookingStatus.choices),
+        required=False,
         label="الحالة الجديدة"
     )
 
 @admin.register(Booking)
 class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
-    form = BookingAdminForm
+    # form = BookingAdminForm
     action_form = ChangeStatusForm  
-    list_display = [ 'hotel','id', 'room', 'check_in_date', 'check_out_date', 'amount', 'status','extend_booking_button','set_checkout_today_toggle']
+    list_display = [
+        'hotel', 'id', 'room', 'check_in_date', 'check_out_date', 
+        'amount', 'status', 'payment_status', 'extend_booking_button',
+        'set_checkout_today_toggle'
+    ]
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
     actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
@@ -140,36 +139,68 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     set_checkout_today_toggle.short_description = 'تسجيل الخروج الفعلي'
     extend_booking_button.short_description = 'تمديد الحجز'
 
+    def payment_status(self, obj):
+        payment = obj.payments.last()
+        if not payment:
+            return format_html('<span style="color: red;">لم يتم إنشاء دفعة</span>')
+        status_colors = {
+            0: 'orange',  # معلق
+            1: 'green',   # مكتمل
+            2: 'red'      # ملغي
+        }
+        return format_html(
+            '<span style="color: {};">{}</span>',
+            status_colors.get(payment.payment_status, 'black'),
+            payment.get_payment_status_display()
+        )
+    payment_status.short_description = "حالة الدفع"
+    payment_status.allow_tags = True
 
-    
-
-   
     @admin.action(description='تغيير حالة الحجوزات المحددة')
     def change_booking_status(self, request, queryset):
         new_status = request.POST.get('new_status')
+        if new_status == '':
+            self.message_user(request, "لم يتم اختيار حالة جديدة.", level='warning')
+            return
+        
         if new_status:
-            for booking in queryset:
-                booking.status = new_status
-                booking.save()  
-                self.message_user(request, f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{dict(Booking.BookingStatus.choices).get(new_status)}'.")
-        else:
-            self.message_user(request, "الرجاء اختيار حالة جديدة.", level='error')
+            try:
+                with transaction.atomic():
+                    for booking in queryset:
+                        previous_status = booking.status
+                        booking.status = new_status
+                        booking.save()
+
+                        # عند تأكيد الحجز
+                        if new_status == Booking.BookingStatus.CONFIRMED:
+                            # تحديث حالة الدفع الموجود
+                            payment = booking.payments.first()  # نفترض أن كل حجز له دفعة واحدة
+                            if payment:
+                                payment.payment_status = 1  # تم الدفع
+                                payment.save()
+
+                        # عند إلغاء الحجز
+                        elif new_status == Booking.BookingStatus.CANCELED:
+                            payment = booking.payments.first()
+                            if payment:
+                                payment.payment_status = 2  # مرفوض
+                                payment.save()
+
+                    status_label = dict(Booking.BookingStatus.choices).get(new_status)
+                    success_message = f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{status_label}'"
+                    if new_status in [Booking.BookingStatus.CONFIRMED, Booking.BookingStatus.CANCELED]:
+                        success_message += " وتم تحديث حالات الدفع المرتبطة"
+                    self.message_user(request, success_message)
+
+            except Exception as e:
+                self.message_user(request, f"حدث خطأ أثناء تحديث الحجوزات: {str(e)}", level='error')
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['status_choices'] = Booking.BookingStatus.choices
         return super().changelist_view(request, extra_context=extra_context)
 
-  
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return queryset
-        elif request.user.user_type == 'hotel_manager':
-           
-            return queryset.filter(hotel__manager=request.user)
-        return queryset.none()
-   
+
     def get_guest_name(self, obj):
         guest = obj.guests.first()
         return guest.name if guest else "لا يوجد ضيف"
@@ -547,7 +578,7 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
         return render(request, 'admin/bookings/booking_extension.html', context)
 
 @admin.register(Guest)
-class GuestAdmin(admin.ModelAdmin):
+class GuestAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     list_display = ['name', 'phone_number', 'hotel', 'booking','set_checkout_today_toggle']
     list_filter = ['hotel']
     search_fields = ['name', 'phone_number']
