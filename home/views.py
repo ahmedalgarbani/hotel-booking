@@ -12,39 +12,66 @@ from datetime import datetime
 from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
 from services.models import HotelService
-
+from .models import TeamMember, Partner, Testimonial
 # Create your views here.
+
 def index(request):
     for key in list(request.session.keys()):
         if not key.startswith("_"): 
             del request.session[key]
-    roomTypes = RoomType.objects.filter(is_active = True)
+    
+    roomTypes = RoomType.objects.filter(is_active=True)
     blogs = Post.objects.filter(is_published=True)[:3]
     infoBox = InfoBox.objects.filter(show_at_home=True)[:4]
     roomTypeHome = RoomTypeHome.objects.filter(show_at_home=True)[:2]
-    setting = Setting.objects.latest('id')
-    heroSlider = HeroSlider.objects.filter(is_active=True).latest('id')
-    socialMediaLink = SocialMediaLink.objects.filter(status = True)
+    
+    try:
+        setting = Setting.objects.latest('id')
+    except Setting.DoesNotExist:
+        setting = None  # or provide a default value
+    
+    try:
+        heroSlider = HeroSlider.objects.filter(is_active=True).latest('id')
+    except HeroSlider.DoesNotExist:
+        heroSlider = None  # or provide a default value
+    
+    socialMediaLink = SocialMediaLink.objects.filter(status=True)
     hotels = Hotel.objects.filter(is_verified=True).annotate(
         review_count=Count('hotel_reviews'),
-        average_rating=Avg('hotel_reviews__rating_service')  
+        average_rating=Avg('hotel_reviews__rating_service')
     )[:5]
     
-    
     ctx = {
-        'roomTypes':roomTypes,
-        'blogs':blogs,
-        'infoBox':infoBox,
-        'roomTypeHome':roomTypeHome,
-        'hotels':hotels,
-        'setting':setting,
-        'socialMediaLink':socialMediaLink,
-        'heroSlider':heroSlider
+        'roomTypes': roomTypes,
+        'blogs': blogs,
+        'infoBox': infoBox,
+        'roomTypeHome': roomTypeHome,
+        'hotels': hotels,
+        'setting': setting,
+        'socialMediaLink': socialMediaLink,
+        'heroSlider': heroSlider
     }
-    return render(request,'frontend/home/index.html',ctx)
+    return render(request, 'frontend/home/index.html', ctx)
 
 def about(request):
-    return render(request,'frontend/home/pages/about.html')
+    team_members = TeamMember.objects.all()
+    partners = Partner.objects.all()
+    testimonials = Testimonial.objects.all()
+
+    context = {
+        'team_members': team_members,
+        'partners': partners,
+        'testimonials': testimonials,
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/about.html' ,context)
+
+
+
+
+
 
 def hotels(request):
     hotels = Hotel.objects.filter(is_verified=True)

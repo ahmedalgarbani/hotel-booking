@@ -487,7 +487,7 @@ NAV_MENU_TOP = [
     },
     {
         "name": "عنا",
-        "url": "register_view_url",  
+        "url": "about/",  
     },
     {
         "name": "الفنادق",
