@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
+from blog.models import Post
+from home.models import *
 from payments.models import HotelPaymentMethod
 from django.db.models import Avg, Count,Q,OuterRef, Subquery, Max,F
-
 from django.db import models
 from reviews.models import HotelReview
-from rooms.models import Availability, RoomImage, RoomPrice, RoomType
+from rooms.models import Availability, Category, RoomImage, RoomPrice, RoomType
 from datetime import datetime
 from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
-
 from services.models import HotelService
 
 # Create your views here.
@@ -19,8 +19,27 @@ def index(request):
         if not key.startswith("_"): 
             del request.session[key]
     roomTypes = RoomType.objects.filter(is_active = True)
+    blogs = Post.objects.filter(is_published=True)[:3]
+    infoBox = InfoBox.objects.filter(show_at_home=True)[:4]
+    roomTypeHome = RoomTypeHome.objects.filter(show_at_home=True)[:2]
+    setting = Setting.objects.latest('id')
+    heroSlider = HeroSlider.objects.filter(is_active=True).latest('id')
+    socialMediaLink = SocialMediaLink.objects.filter(status = True)
+    hotels = Hotel.objects.filter(is_verified=True).annotate(
+        review_count=Count('hotel_reviews'),
+        average_rating=Avg('hotel_reviews__rating_service')  
+    )[:5]
+    
+    
     ctx = {
-        'roomTypes':roomTypes
+        'roomTypes':roomTypes,
+        'blogs':blogs,
+        'infoBox':infoBox,
+        'roomTypeHome':roomTypeHome,
+        'hotels':hotels,
+        'setting':setting,
+        'socialMediaLink':socialMediaLink,
+        'heroSlider':heroSlider
     }
     return render(request,'frontend/home/index.html',ctx)
 
@@ -47,6 +66,8 @@ def hotel_detail(request, slug):
         ),
         slug=slug
     )
+    external_hotels = Hotel.objects.exclude(id=hotel.id)[:6]
+    reviews = HotelReview.objects.filter(status = True)
 
     today = datetime.now().date()
 
@@ -87,7 +108,9 @@ def hotel_detail(request, slug):
     ctx = {
         'hotel': hotel,
         'available_room_types': available_room_types,
-        'hotel_services': hotel_services,  
+        'hotel_services': hotel_services, 
+        'reviews':reviews ,
+        'external_hotels':external_hotels
     }
 
     return render(request, 'frontend/home/pages/hotel-single.html', ctx)
@@ -102,9 +125,18 @@ def room_search_result(request):
     return render(request,'frontend/home/pages/room-search-result.html',ctx)
 
 
+from django.core.paginator import Paginator
+
 def room_list(request):
-    roomTypes = RoomType.objects.filter(is_active = True)
-    ctx = {
-        'roomTypes':roomTypes,
+    categories = Category.objects.prefetch_related('room_types').all()
+    all_rooms = RoomType.objects.filter(is_active=True).select_related('category', 'hotel')
+    paginator = Paginator(all_rooms, 10)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'categories': categories,
+        'page_obj': page_obj,
+        'paginator': paginator,
     }
-    return render(request,'frontend/home/pages/room-list.html',ctx)
+    return render(request, 'frontend/home/pages/room-list.html', context)

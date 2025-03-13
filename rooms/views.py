@@ -131,6 +131,7 @@ def calculate_total_price(room, check_in_date, check_out_date, room_number, extr
 
 def room_detail(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
+    external_rooms = RoomType.objects.exclude(id=room_id)[:6]
     
     if request.method == 'POST':
         try:
@@ -267,29 +268,8 @@ def room_detail(request, room_id):
         check_in_date = timezone.now()
         check_out_date = timezone.now() + timedelta(days=1)
 
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            # Check if a review already exists for this user, room, and hotel
-            existing_review = RoomReview.objects.filter(
-                user=request.user,
-                room_type=room,
-                hotel=room.hotel
-            ).first()
-            if existing_review:
-                messages.error(request, "لقد قمت بالفعل بتقييم هذه الغرفة من قبل.") # Display error message
-            else:
-                review = form.save(commit=False)
-                review.room_type = room
-                review.hotel = room.hotel
-                review.user = request.user
-                review.save()
-                messages.success(request, "تمت إضافة مراجعتك بنجاح.") # Optional success message
-                return redirect('rooms:room_detail', room_id=room.id)
-        else:
-            messages.error(request, "يرجى تصحيح الأخطاء في النموذج.") # Display form errors
-    else:
-        form = ReviewForm()
+    
+    form = ReviewForm()
 
     context = {
         'room': room,
@@ -304,5 +284,6 @@ def room_detail(request, room_id):
         'check_out_display': check_out_date.strftime('%d/%m/%Y %I:%M %p'),
         'average_rating': average_rating,
         'image':image,
+        'external_rooms':external_rooms
     }
     return render(request, 'frontend/home/pages/room-details.html', context)

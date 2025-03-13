@@ -77,7 +77,7 @@ def add_hotel_request(request):
     }
     return render(request, 'frontend/hotel/add_hotel.html', context)
 
-@login_required
+@login_required(login_url='/users/login')
 @user_passes_test(is_admin)
 def hotel_requests_list(request):
     """عرض قائمة طلبات إضافة الفنادق للمشرفين"""
@@ -88,7 +88,7 @@ def hotel_requests_list(request):
     }
     return render(request, 'admin/hotel/requests_list.html', context)
 
-@login_required
+@login_required(login_url='/users/login')
 @user_passes_test(is_admin)
 def approve_hotel_request(request, request_id):
     """الموافقة على طلب إضافة فندق"""
@@ -102,7 +102,7 @@ def approve_hotel_request(request, request_id):
     
     return redirect('hotel:requests_list')
 
-@login_required
+@login_required(login_url='/users/login')
 @user_passes_test(is_admin)
 def reject_hotel_request(request, request_id):
     """رفض طلب إضافة فندق"""

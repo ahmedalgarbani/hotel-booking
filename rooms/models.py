@@ -264,10 +264,7 @@ class Availability(BaseModel):
         verbose_name_plural = _("توفر الغرف")
         ordering = ['-availability_date', 'room_type']
 
-    def save(self, *args, **kwargs):
-        """Ensure availability never exceeds the total room count"""
-        if self.available_rooms > self.room_type.rooms_count:
-            self.available_rooms = self.room_type.rooms_count
+    def save(self, *args, **kwargs):        
         super().save(*args, **kwargs)
 
     def __str__(self):

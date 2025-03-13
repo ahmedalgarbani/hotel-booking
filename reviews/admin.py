@@ -39,7 +39,7 @@ class RoomReviewAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('hotel', 'room_type', 'user', 'review', 'status','slug')
+            'fields': ('hotel', 'room_type', 'user', 'review', 'status')
         }),
         (_("Rating"), {
             'fields': ('rating',)

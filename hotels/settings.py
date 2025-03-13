@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'blog', 
     'notifications', 
     'customer',
+        'django_celery_beat',
     
     
 ]
@@ -199,12 +200,13 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '54322',
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -527,3 +529,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ammarragha@gmail.com'
 EMAIL_HOST_PASSWORD = 'dbhv ajjh lphb gcrh'
 DEFAULT_FROM_EMAIL = 'نظام إدارة الفنادق <ammarragha@gmail.com>'
+
+
+# ----- Celebry Settings --------------
+#  Download Redis
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'Asia/Riyadh'

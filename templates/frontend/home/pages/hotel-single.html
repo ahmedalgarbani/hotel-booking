@@ -1,5 +1,42 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
+{% block extra_css %}
+   
+    <style>
+    .messages .alert {
+    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+    border: 2px solid; /* إضافة حدود سميكة */
+    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+    font-weight: bold; /* جعل النص أكثر جرأة */
+}
+
+.messages .alert-success {
+    color: #155724; /* لون نص النجاح (أخضر داكن) */
+    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+}
+
+.messages .alert-error {
+    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+}
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+.messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+</style>
+ {% endblock extra_css %}
 {% block content %}
 
     <!-- ================================
@@ -83,7 +120,15 @@ START BREADCRUMB AREA
 <!-- ================================
 END BREADCRUMB AREA
 ================================= -->
-
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 <!-- ================================
 START TOUR DETAIL AREA
 ================================= -->
@@ -273,11 +318,7 @@ START TOUR DETAIL AREA
                           class="form-check-input"
                           id="selectChb{{ forloop.counter }}"
                         />
-                        <label
-                          for="selectChb{{ forloop.counter }}"
-                          class="theme-btn theme-btn-small"
-                          >تحديد</label
-                        >
+                       
                       </div>
                     </div>
                   </div>
@@ -290,174 +331,7 @@ START TOUR DETAIL AREA
               <!-- end single-content-item -->
               <div class="section-block"></div>
             </div>
-{% comment %}         
-            <div id="faq" class="page-scroll">
-              <div
-                class="single-content-item padding-top-40px padding-bottom-40px"
-              >
-                <h3 class="title font-size-20">أسئلة وأجوبة</h3>
-                <div
-                  class="accordion accordion-item accordions--items padding-top-30px"
-                  id="accordionExample2"
-                >
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingFour">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseFour"
-                          aria-expanded="true"
-                          aria-controls="faqCollapseFour"
-                        >
-                          <span class="ms-3"
-                            >كيف أعرف أن الحجز مقبول أو مؤكد؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseFour"
-                      class="collapse show"
-                      aria-labelledby="faqHeadingFour"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingFive">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseFive"
-                          aria-expanded="false"
-                          aria-controls="faqCollapseFive"
-                        >
-                          <span class="ms-3"
-                            >هل يسمح لي برفض طلبات الحجز؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseFive"
-                      class="collapse"
-                      aria-labelledby="faqHeadingFive"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingSix">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseSix"
-                          aria-expanded="false"
-                          aria-controls="faqCollapseSix"
-                        >
-                          <span class="ms-3"
-                            >ماذا يحدث إذا تركت طلب حجز تنتهي صلاحيته؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseSix"
-                      class="collapse"
-                      aria-labelledby="faqHeadingSix"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingSeven">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseSeven"
-                          aria-expanded="false"
-                          aria-controls="faqCollapseSeven"
-                        >
-                          <span class="ms-3"
-                            >كيف يمكنني تحديد متطلبات الحجز؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseSeven"
-                      class="collapse"
-                      aria-labelledby="faqHeadingSeven"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                </div>
-              </div>
-              <!-- end single-content-item -->
-              <div class="section-block"></div>
-            </div> {% endcomment %}
-            <!-- end faq -->
+
             <div id="reviews" class="page-scroll">
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -467,9 +341,9 @@ START TOUR DETAIL AREA
                   <div class="row align-items-center">
                     <div class="col-lg-4">
                       <div class="review-summary">
-                        <h2>{{review_count}}<span>/5</span></h2>
+                        <h2>{{reviews.count}}<span>/5</span></h2>
                         <p>ممتاز</p>
-                        <span>مرتكز على 4 تقييمات</span>
+                        <span>مرتكز على {{reviews.count}} تقييمات</span>
                       </div>
                     </div>
                     <!-- end col-lg-4 -->
@@ -501,7 +375,7 @@ START TOUR DETAIL AREA
                           <!-- end col-lg-6 -->
                           <div class="col-lg-6">
                             <div class="progress-item">
-                              <h3 class="progressbar-title">موقعك</h3>
+                              <h3 class="progressbar-title">الموقع</h3>
                               <div
                                 class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
                               >
@@ -589,10 +463,17 @@ START TOUR DETAIL AREA
                   {% for review in reviews %}
                   <div class="comment">
                     <div class="comment-avatar">
+                      {% if review.user.image %}
                       <img
                         class="avatar__img"
                         alt="{{ review.user.username }}"
-                        src="{{ review.user.profile.image.url|default:'images/default-avatar.jpg' }}" />
+                        src="{{ review.user.image.url|default:'images/default-avatar.jpg' }}" />
+                        {% else %}
+                        <img
+                        class="avatar__img"
+                        alt="{{ review.user.username }}"
+                        src="{% static 'images/default-avatar.jpg' %}" />
+                      {% endif %}
                     </div>
                     <div class="comment-body">
                       <div class="meta-data">
@@ -633,15 +514,15 @@ START TOUR DETAIL AREA
                               <div class="rate-option-item">
                                 <label>الخدمات</label>
                                 <div class="rate-stars-option star-rating">
-                                  <input id="service-5" type="radio" name="rating_service" value="5" />
+                                  <input id="service-5" type="radio" name="rating_service" value="5" required />
                                   <label for="service-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-4" type="radio" name="rating_service" value="4" />
+                                  <input id="service-4" type="radio" name="rating_service" value="4" required />
                                   <label for="service-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-3" type="radio" name="rating_service" value="3" />
+                                  <input id="service-3" type="radio" name="rating_service" value="3" required />
                                   <label for="service-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-2" type="radio" name="rating_service" value="2" />
+                                  <input id="service-2" type="radio" name="rating_service" value="2" required />
                                   <label for="service-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-1" type="radio" name="rating_service" value="1" />
+                                  <input id="service-1" type="radio" name="rating_service" value="1" required />
                                   <label for="service-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
@@ -651,15 +532,15 @@ START TOUR DETAIL AREA
                               <div class="rate-option-item">
                                 <label>موقع الفندق</label>
                                 <div class="rate-stars-option star-rating">
-                                  <input id="location-5" type="radio" name="rating_location" value="5" />
+                                  <input id="location-5" type="radio" name="rating_location" value="5" required />
                                   <label for="location-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-4" type="radio" name="rating_location" value="4" />
+                                  <input id="location-4" type="radio" name="rating_location" value="4" required />
                                   <label for="location-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-3" type="radio" name="rating_location" value="3" />
+                                  <input id="location-3" type="radio" name="rating_location" value="3" required />
                                   <label for="location-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-2" type="radio" name="rating_location" value="2" />
+                                  <input id="location-2" type="radio" name="rating_location" value="2" required />
                                   <label for="location-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-1" type="radio" name="rating_location" value="1" />
+                                  <input id="location-1" type="radio" name="rating_location" value="1"required />
                                   <label for="location-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
@@ -669,15 +550,15 @@ START TOUR DETAIL AREA
                               <div class="rate-option-item">
                                 <label>سعر الفندق </label>
                                 <div class="rate-stars-option star-rating">
-                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" />
+                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" required />
                                   <label for="value-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" />
+                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" required />
                                   <label for="value-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" />
+                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" required />
                                   <label for="value-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" />
+                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" required />
                                   <label for="value-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" />
+                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" required/>
                                   <label for="value-1" title="1 star"><i class="active fa fa-star"></i></label>
                                 </div>
                               </div>
@@ -787,37 +668,7 @@ START TOUR DETAIL AREA
               <!-- end sidebar-list -->
             </div>
             <!-- end sidebar-widget -->
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">نظمت من قبل</h3>
-              <div class="author-content d-flex">
-                <div class="author-img">
-                  <a href="#"
-                    ><img src="images/team8.jpg" alt="testimonial image"
-                  /></a>
-                </div>
-                <div class="author-bio">
-                  <h4 class="author__title">
-                    <a href="#">royaltravelagency</a>
-                  </h4>
-                  <span class="author__meta">عضو منذ 2017</span>
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star-o"></i>
-                    <span class="ms-2">305 التعليقات</span>
-                  </span>
-                  <div class="btn-box pt-3">
-                    <a
-                      href="#"
-                      class="theme-btn theme-btn-small theme-btn-transparent"
-                      >طرح سؤال</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
+       
             <!-- end sidebar-widget -->
           </div>
           <!-- end sidebar -->
@@ -840,7 +691,7 @@ END TOUR DETAIL AREA
 <!-- ================================
 START RELATE TOUR AREA
 ================================= -->
-{% if hotels.count == 0 %}
+{% if external_hotels %}
 
 <section class="related-tour-area section--padding">
   <div class="container">
@@ -855,7 +706,7 @@ START RELATE TOUR AREA
     </div>
     <!-- end row -->
     <div class="row padding-top-50px">
-      {% for hotels in hotels %}
+      {% for hotels in external_hotels %}
       <!-- end col-lg-4 -->
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
@@ -914,67 +765,5 @@ START RELATE TOUR AREA
 END RELATE TOUR AREA
 ================================= -->
 
-<!-- ================================
-START CTA AREA
-================================= -->
-<section
-  class="cta-area subscriber-area section-bg-2 padding-top-60px padding-bottom-60px"
->
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="cta-content">
-          <div class="section-heading">
-            <h2 class="sec__title font-size-30 text-white">
-              اشترك للحصول على عرض حصري عبر البريد الإلكتروني
-            </h2>
-          </div>
-          <!-- end section-heading -->
-        </div>
-      </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="subscriber-box">
-          <div class="contact-form-action">
-            <form action="#">
-              <div class="input-box">
-                <label class="label-text text-white"
-                  >أدخل عنوان البريد الالكتروني</label
-                >
-                <div class="form-group mb-0">
-                  <span class="la la-envelope form-icon"></span>
-                  <input
-                    class="form-control"
-                    type="email"
-                    name="email"
-                    placeholder="عنوان البريد الالكترونى"
-                  />
-                  <button
-                    class="theme-btn theme-btn-small submit-btn"
-                    type="submit"
-                  >
-                    الإشتراك
-                  </button>
-                  <span class="font-size-15 pt-1 text-white-50"
-                    ><i class="la la-lock me-1"></i>لا تقلق معلوماتك آمنة
-                    معنا.
-                  </span>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-5 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
-<!-- end cta-area -->
-<!-- ================================
-END CTA AREA
-================================= -->
 
 {% endblock content %}

@@ -16,7 +16,7 @@ urlpatterns = [
     # Room Review URLs
     path('room-reviews/', views.room_review_list, name='room_review_list'),
     path('room-reviews/<int:review_id>/', views.room_review_detail, name='room_review_detail'),
-    path('room-reviews/create/', views.room_review_create, name='room_review_create'),
+    path('room-reviews/create/<int:room_id>', views.room_review_create, name='room_review_create'),
     path('room-reviews/<int:review_id>/update/', views.room_review_update, name='room_review_update'),
     path('room-reviews/<int:review_id>/delete/', views.room_review_delete, name='room_review_delete'),
 ]

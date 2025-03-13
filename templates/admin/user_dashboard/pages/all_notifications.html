@@ -1,0 +1,367 @@
+{% extends "admin/user_dashboard/index.html" %}
+{% load static %}
+{% block section_title %} الحجوزات الخاصة بي {% endblock section_title %}
+{% block path_title %} الحجوزات {% endblock path_title %}
+{% block content %}
+
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --text-color: #1f2937;
+      --gray-light: #f3f4f6;
+      --gray-medium: #9ca3af;
+      --gray-dark: #4b5563;
+      --white: #ffffff;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      line-height: 1.5;
+      color: var(--text-color);
+      background-color: var(--gray-light);
+    }
+
+    .header {
+      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      color: var(--white);
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .notifications-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .notification-list {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: start;
+      transition: background-color 0.2s;
+      cursor: pointer;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item:hover {
+      background-color: var(--gray-light);
+    }
+
+    .notification-item.unread {
+      background-color: #f0f7ff;
+    }
+
+    .notification-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .icon-booking {
+      background-color: #e0f2fe;
+      color: var(--primary-color);
+    }
+
+    .icon-success {
+      background-color: #dcfce7;
+      color: var(--success-color);
+    }
+
+    .icon-warning {
+      background-color: #fef3c7;
+      color: var(--warning-color);
+    }
+
+    .icon-danger {
+      background-color: #fee2e2;
+      color: var(--danger-color);
+    }
+
+    .notification-content {
+      flex-grow: 1;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-message {
+      color: var(--gray-dark);
+      font-size: 0.875rem;
+    }
+
+    .notification-time {
+      color: var(--gray-medium);
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      padding: 0.25rem;
+      cursor: pointer;
+      color: var(--gray-dark);
+      transition: color 0.2s;
+    }
+
+    .action-btn:hover {
+      color: var(--primary-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-dark);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-medium);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .notifications-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .filter-buttons {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .notification-item {
+        grid-template-columns: auto 1fr;
+      }
+
+      .notification-time {
+        grid-column: 2;
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+  <header class="header">
+    <h1>
+      <span>🔔</span>
+      Notifications
+    </h1>
+    <button class="filter-btn">
+      Mark all as read
+    </button>
+  </header>
+
+  <div class="container">
+    <div class="notifications-header">
+      <div class="filter-buttons">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Unread</button>
+        <button class="filter-btn">Bookings</button>
+        <button class="filter-btn">System</button>
+      </div>
+    </div>
+<div class="notification-list">
+  {% for notification in notifications %}
+    <div class="notification-item {% if notification.status == '0' %}unread{% endif %}">
+      <!-- Notification Icon (Based on Type) -->
+      <div class="notification-icon 
+        {% if notification.notification_type == '0' %}icon-info
+        {% elif notification.notification_type == '1' %}icon-warning
+        {% elif notification.notification_type == '2' %}icon-success
+        {% elif notification.notification_type == '3' %}icon-danger
+        {% endif %}">
+        {% if notification.notification_type == '0' %}ℹ️
+        {% elif notification.notification_type == '1' %}⚠️
+        {% elif notification.notification_type == '2' %}✓
+        {% elif notification.notification_type == '3' %}❌
+        {% endif %}
+      </div>
+
+      <!-- Notification Content -->
+      <div class="notification-content">
+        <div class="notification-title">
+          {% if notification.notification_type == '0' %}Information
+          {% elif notification.notification_type == '1' %}Warning
+          {% elif notification.notification_type == '2' %}Success
+          {% elif notification.notification_type == '3' %}Error
+          {% endif %}
+        </div>
+        <div class="notification-message">
+          {{ notification.message }}
+        </div>
+
+        <!-- Add Action Button if action_url exists -->
+        {% if notification.action_url %}
+          <div class="notification-action">
+            <a href="{{ notification.action_url }}" class="action-button">
+              Go to Action
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Notification Time -->
+      <div class="notification-time">
+        {{ notification.send_time|timesince }} ago
+      </div>
+    </div>
+  {% endfor %}
+</div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterButtons = document.querySelectorAll('.filter-buttons .filter-btn');
+      const notifications = document.querySelectorAll('.notification-item');
+      const markAllReadBtn = document.querySelector('.header .filter-btn');
+
+      // Filter functionality
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          // Add active class to clicked button
+          button.classList.add('active');
+
+          const filter = button.textContent.toLowerCase();
+          
+          notifications.forEach(notification => {
+            if (filter === 'all') {
+              notification.style.display = 'grid';
+            } else if (filter === 'unread') {
+              notification.style.display = notification.classList.contains('unread') ? 'grid' : 'none';
+            } else if (filter === 'bookings') {
+              notification.style.display = notification.querySelector('.icon-booking') ? 'grid' : 'none';
+            } else if (filter === 'system') {
+              notification.style.display = !notification.querySelector('.icon-booking') ? 'grid' : 'none';
+            }
+          });
+
+          // Show empty state if no notifications match filter
+          const visibleNotifications = Array.from(notifications).filter(n => n.style.display !== 'none');
+          const notificationList = document.querySelector('.notification-list');
+          
+          if (visibleNotifications.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.innerHTML = `
+              <div class="empty-icon">📭</div>
+              <h3>No notifications</h3>
+              <p>You're all caught up!</p>
+            `;
+            notificationList.appendChild(emptyState);
+          } else {
+            const existingEmptyState = notificationList.querySelector('.empty-state');
+            if (existingEmptyState) {
+              existingEmptyState.remove();
+            }
+          }
+        });
+      });
+
+      // Mark all as read functionality
+      markAllReadBtn.addEventListener('click', () => {
+        notifications.forEach(notification => {
+          notification.classList.remove('unread');
+        });
+      });
+
+      // Individual notification click handler
+      notifications.forEach(notification => {
+        notification.addEventListener('click', () => {
+          notification.classList.remove('unread');
+        });
+      });
+    });
+  </script>
+{% endblock %}

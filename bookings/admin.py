@@ -1,10 +1,10 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pyexpat.errors import messages
 from django.contrib import admin
 from django.db.models import Count
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import path
+from django.urls import path,reverse
 from django.utils import timezone
 from django.db.models.functions import TruncHour
 import arabic_reshaper
@@ -23,6 +23,12 @@ from .models import Booking, Guest, BookingDetail
 from HotelManagement.models import Hotel
 from rooms.models import RoomType
 from django.db.models import Q, Sum
+from rooms.services import get_room_price
+from .models import Booking, ExtensionMovement, Guest, BookingDetail
+from django import forms
+from django.contrib.admin.helpers import ActionForm
+from django.utils.html import format_html
+
 class HotelManagerAdminMixin:
 
     def get_queryset(self, request):
@@ -92,13 +98,69 @@ class HotelManagerAdminMixin:
     #     obj.updated_by = request.user
     #     super().save_model(request, obj, form, change)
 
+
+class ChangeStatusForm(ActionForm):  
+    new_status = forms.ChoiceField(
+        choices=Booking.BookingStatus.choices,
+        required=True,
+        label="الحالة الجديدة"
+    )
+
 @admin.register(Booking)
 class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     form = BookingAdminForm
-    list_display = ['get_guest_name', 'hotel', 'room', 'check_in_date', 'check_out_date', 'amount', 'status']
+    action_form = ChangeStatusForm  
+    list_display = [ 'hotel','id', 'room', 'check_in_date', 'check_out_date', 'amount', 'status','extend_booking_button','set_checkout_today_toggle']
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
-    actions = ['export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
+    actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
+
+    def set_checkout_today_toggle(self, obj):
+        if obj.actual_check_out_date is not None:
+            return format_html('<span style="color:green; font-weight:bold;">✔ تم تسجيل خروج المستخدم</span>')
+        url = reverse('bookings:set_actual_check_out_date', args=[obj.pk])        
+        return format_html(
+            f'<a class="button btn btn-warning" href="{url}">سجيل الخروج</a>'
+        )
+    
+
+    def extend_booking_button(self, obj):
+        current_date = timezone.now()  
+
+        if current_date > obj.check_out_date or obj.actual_check_out_date is not None:
+            return format_html('<span style="color:red; font-weight:bold;">✔ غير قابل للتمديد</span>')
+
+        url = reverse('admin:booking-extend', args=[obj.pk])
+        return format_html(
+            '<a class="button btn btn-success form-control" href="{0}" onclick="return showExtensionPopup(this.href);">تمديد الحجز</a>',
+            url
+        )
+
+    
+    set_checkout_today_toggle.short_description = 'تسجيل الخروج الفعلي'
+    extend_booking_button.short_description = 'تمديد الحجز'
+
+
+    
+
+   
+    @admin.action(description='تغيير حالة الحجوزات المحددة')
+    def change_booking_status(self, request, queryset):
+        new_status = request.POST.get('new_status')
+        if new_status:
+            for booking in queryset:
+                booking.status = new_status
+                booking.save()  
+                self.message_user(request, f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{dict(Booking.BookingStatus.choices).get(new_status)}'.")
+        else:
+            self.message_user(request, "الرجاء اختيار حالة جديدة.", level='error')
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['status_choices'] = Booking.BookingStatus.choices
+        return super().changelist_view(request, extra_context=extra_context)
+
+  
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
@@ -374,6 +436,9 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
         ]
         return custom_urls + urls
 
+
+
+
     def extend_booking(self, request, object_id):
         original_booking = get_object_or_404(Booking, pk=object_id)
         
@@ -381,76 +446,191 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
             form = BookingExtensionForm(request.POST, booking=original_booking)
             if form.is_valid():
                 try:
-                    # حفظ التمديد
-                    new_booking = Booking(
-                        parent_booking=original_booking,
-                        hotel=original_booking.hotel,
-                        user=original_booking.user,
-                        room=original_booking.room,
-                        check_in_date=original_booking.check_out_date,
-                        check_out_date=form.cleaned_data['new_check_out'],
-                        rooms_booked=form.cleaned_data['rooms_booked'],
-                        status=Booking.BookingStatus.CONFIRMED,
-                        amount=155,
-                        booking_number=original_booking.booking_number
+                    from datetime import datetime  
+
+                    new_check_out = form.cleaned_data['new_check_out']
+
+                    if isinstance(new_check_out, datetime):
+                        new_check_out = new_check_out.date()
+
+                    latest_extension = ExtensionMovement.objects.filter(
+                        booking=original_booking
+                    ).order_by('-extension_date').first()
+
+                    if latest_extension:
+                        original_departure = latest_extension.new_departure  
+                    else:
+                        original_departure = original_booking.check_out_date.date() 
+
+                    if isinstance(original_departure, datetime):
+                        original_departure = original_departure.date()
+
+                    additional_nights = (new_check_out - original_departure).days
+                    additional_price = additional_nights * get_room_price(original_booking.room)
+                    new_total = original_booking.amount + additional_price  
+
+                    new_extension = ExtensionMovement(
+                        booking=original_booking,
+                        original_departure=original_departure,
+                        new_departure=new_check_out,
+                        duration=additional_nights,
+                        reason=form.cleaned_data['reason']
                     )
-                    new_booking.save()
-                    
-                    # تحديث توفر الغرف
+                    new_extension.save()
+
                     today = timezone.now().date()
-                    change = -form.cleaned_data['rooms_booked']  # تقليل عدد الغرف المتاحة
-                    
-                    # الحصول على أحدث توفر أو استخدام القيمة الافتراضية
                     latest_availability = Availability.objects.filter(
                         hotel=original_booking.hotel,
                         room_type=original_booking.room
                     ).order_by('-created_at').first()
-                    
-                    # حساب الغرف المتاحة الحالية
+
                     current_available = latest_availability.available_rooms if latest_availability else original_booking.room.rooms_count
-                    
-                    # إنشاء أو تحديث سجل التوفر
+
                     availability, created = Availability.objects.update_or_create(
                         hotel=original_booking.hotel,
                         room_type=original_booking.room,
                         availability_date=today,
                         defaults={
-                            "room_status": RoomStatus.objects.get(id=3),
-                            "available_rooms": max(0, current_available + change),
-                            "notes": f"تم التحديث بسبب تمديد الحجز #{new_booking.booking_number}",
+                            "available_rooms": max(0, current_available + original_booking.rooms_booked),
+                            "notes": f"تم التحديث بسبب تمديد الحجز #{new_extension.movement_number}",
                         }
                     )
 
-                    # messages.success(request, 'تم التمديد بنجاح!')
-                    return HttpResponse(
-                        '<script>window.opener.location.reload(); window.close();</script>'
-                    )
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'تم التمديد بنجاح!',
+                        'additional_nights': additional_nights,
+                        'additional_price': additional_price,
+                        'new_total': new_total,
+                        'redirect_url': '/admin/'  
+                    })
+
                 except Exception as e:
-                    print("--------")
-                    # messages.error(request, f'حدث خطأ: {str(e)}')
+                    return JsonResponse({'success': False, 'message': f'حدث خطأ: {str(e)}'})
+
+            else:
+                return JsonResponse({'success': False, 'message': 'التمديد غير صالح، يرجى التحقق من البيانات المدخلة.'})
+
         else:
+            latest_extension = ExtensionMovement.objects.filter(
+                booking=original_booking
+            ).order_by('-extension_date').first()
+
+            if latest_extension:
+                initial_new_check_out = latest_extension.new_departure + timedelta(days=1)
+            else:
+                initial_new_check_out = original_booking.check_out_date + timedelta(days=1)
+
             form = BookingExtensionForm(initial={
-                'new_check_out': original_booking.check_out_date + timedelta(days=1),
-                'rooms_booked': original_booking.rooms_booked
+                'new_check_out': initial_new_check_out,
             }, booking=original_booking)
-        
+
+        additional_nights = 1 
+        additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
+        print(original_booking.rooms_booked)
+        new_total = original_booking.amount + additional_price 
+        print(additional_price)
+
         context = self.admin_site.each_context(request)
+        room_price = get_room_price(original_booking.room)  
         context.update({
             'form': form,
             'original': original_booking,
+            'check_out':initial_new_check_out,
+            'additional_nights': additional_nights,
+            'additional_price': additional_price,
+            'new_total': new_total,
             'opts': self.model._meta,
+            'room_price': room_price
         })
-        
+
         return render(request, 'admin/bookings/booking_extension.html', context)
 
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone_number', 'hotel', 'booking']
+    list_display = ['name', 'phone_number', 'hotel', 'booking','set_checkout_today_toggle']
     list_filter = ['hotel']
     search_fields = ['name', 'phone_number']
+
+    def set_checkout_today_toggle(self, obj):
+        
+        url = reverse('bookings:set_guests_check_out_date', args=[obj.pk])        
+        return format_html(
+            f'<a class="button btn btn-warning" href="{url}">سجيل الخروج</a>'
+        )
+    set_checkout_today_toggle.short_description = 'تسجيل الخروج'
+
+    
+
+    
+
+
+
+
+
 
 @admin.register(BookingDetail)
 class BookingDetailAdmin(admin.ModelAdmin):
     list_display = ['booking', 'quantity', 'price', 'total']
     list_filter = ['booking__status', ]
     search_fields = ['booking__guests__name', 'RoomTypeService__name']
+
+
+
+@admin.register(ExtensionMovement)
+class ExtensionMovementAdmin(admin.ModelAdmin):
+    list_display = (
+        'movement_number', 
+        'booking', 
+        'original_departure', 
+        'new_departure', 
+        'extension_date', 
+        'duration', 
+        'reason',
+        'payment_button'
+    )
+    list_filter = ('extension_date', 'reason', 'extension_year')
+    search_fields = ('booking__id', 'movement_number')
+    readonly_fields = ('extension_year', 'duration')
+    date_hierarchy = 'extension_date'
+
+    fieldsets = (
+        ("معلومات التمديد", {
+            'fields': (
+                'booking',
+                'original_departure',
+                'new_departure',
+                'extension_date',
+                'duration',
+                'reason'
+            )
+        }),
+        ("تفاصيل الدفع", {
+            'fields': ('payment_receipt',)
+        }),
+    )
+
+    def payment_button(self, obj):
+
+            if  obj.booking.actual_check_out_date is not None:
+                return format_html('<span style="color:red; font-weight:bold;">✔ غير قابل للتعديل</span>')
+            
+            if  obj.payment_receipt is not None:
+                return format_html('<span style="color:yellow; font-weight:bold;">✔ تم الدفع</span>')
+
+            url = reverse('bookings:booking_extend_payment', args=[obj.booking.id,obj.pk])
+            return format_html(
+                '<a class="button btn btn-success " href="{0}" onclick="return showExtensionPopup(this.href);">دفع الفاتورة</a>',
+                url
+            )
+
+    
+    # def payment_receipt(self, obj):
+    #     payment_url = reverse('booking:payment_bill', args=[obj.booking.id])
+    #     return format_html(
+    #         '<a class="button" href="{}">فاتورة الدفع</a>',
+    #         payment_url
+    #     )
+    payment_button.short_description = 'فاتورة الدفع'
+    payment_button.allow_tags = True
+

@@ -132,7 +132,7 @@ def post_detail(request, slug):
         'selected_month': month
     })
 
-@login_required
+@login_required(login_url='/users/login')
 def create_post(request):
     if request.method == 'POST':
         title = request.POST.get('title')

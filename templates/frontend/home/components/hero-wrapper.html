@@ -1,12 +1,13 @@
 {% load static %}
+{% if heroSlider %}
 
 <section class="hero-wrapper hero-wrapper2">
   <div class="hero-box pb-0">
     <div id="fullscreen-slide-contain">
       <ul class="slides-container">
-        <li><img src="{% static 'images/hero-bg2.jpg' %}" alt="" /></li>
-        <li><img src="{% static 'images/hero--bg2.jpg' %}" alt="" /></li>
-        <li><img src="{% static 'images/hero--bg3.jpg' %}" alt="" /></li>
+        <li><img src="{{heroSlider.image1.url}}" alt="" /></li>
+        <li><img src="{{heroSlider.image2.url}}" alt="" /></li>
+        <li><img src="{{heroSlider.image3.url}}" alt="" /></li>
       </ul>
     </div>
     <!-- End background slider -->
@@ -15,10 +16,9 @@
         <div class="col-lg-12">
           <div class="hero-content pb-5">
             <div class="section-heading">
-              <p class="sec__desc pb-2">الإقامة في الفندق ، ملاذ الحلم</p>
+              <p class="sec__desc pb-2">{{heroSlider.title}}</p>
               <h2 class="sec__title">
-                ابحث عن المكان المثالي للإقامة <br />
-                لرحلتك القادمة
+                {{heroSlider.description}}
               </h2>
             </div>
           </div>
@@ -125,3 +125,5 @@
     <!-- end container -->
   </div>
 </section>
+
+{% endif %}

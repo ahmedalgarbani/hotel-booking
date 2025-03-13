@@ -2,52 +2,73 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .models import CustomUser
+from datetime import datetime, timedelta
 
 def register(request):
     if request.method == 'POST':
-        # Get form data
+        birth_date = request.POST.get('birth_date')
+
+        try:
+            birth_date_obj = datetime.strptime(birth_date, '%Y-%m-%d')
+            today = datetime.today()
+            min_birth_date = today - timedelta(days=18*365)
+
+            if birth_date_obj > min_birth_date:
+                messages.error(request, 'يجب أن تكون أكبر من 18 عامًا.')
+                return redirect('users:register')
+        except ValueError:
+            messages.error(request, 'تاريخ الميلاد غير صحيح.')
+            return redirect('users:register')
+
         username = request.POST.get('username')
         email = request.POST.get('email')
-        password1 = request.POST.get('password1')
+        password1 = request.POST.get('password')
         password2 = request.POST.get('password2')
-        
-        # Basic validation
+        phoneNumber = request.POST.get('phoneNumber')
+        firstName = request.POST.get('firstName')
+        lastName = request.POST.get('lastName')
+        gender = request.POST.get('gender')
+        profileImage = request.FILES.get("profileImage")
+
         if not all([username, email, password1, password2]):
             messages.error(request, 'جميع الحقول مطلوبة')
-            return redirect('register')
-        
-        # Check if passwords match
+            return redirect('users:register')
+
         if password1 != password2:
             messages.error(request, 'كلمات المرور غير متطابقة')
-            return redirect('register')
-            
-        # Check if user already exists
+            return redirect('users:register')
+
         if CustomUser.objects.filter(username=username).exists():
             messages.error(request, 'اسم المستخدم موجود بالفعل')
-            return redirect('register')
-            
+            return redirect('users:register')
+
         if CustomUser.objects.filter(email=email).exists():
             messages.error(request, 'البريد الإلكتروني موجود بالفعل')
-            return redirect('register')
-            
-        # Create new user
+            return redirect('users:register')
+
         try:
             user = CustomUser.objects.create_user(
                 username=username,
                 email=email,
                 password=password1,
-                user_type='customer'
+                user_type='customer',
+                phone=phoneNumber,
+                first_name=firstName,
+                last_name=lastName,
+                image=profileImage,
+                gender=gender,
+                birth_date=birth_date
             )
             
-            # Log the user in
             login(request, user)
             messages.success(request, 'تم التسجيل بنجاح!')
             return redirect('home:index')
+
         except Exception as e:
             messages.error(request, 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.')
-            return redirect('register')
+            return redirect('users:register')
         
-    return render(request, 'frontend/layout/master.html')
+    return render(request, 'frontend/auth/register.html')
 
 def logout_view(request):
     logout(request)
@@ -60,6 +81,7 @@ def login_view(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
         remember = request.POST.get('remember')
+        next_url = request.POST.get('next')
 
         if not username or not password:
             messages.error(request, 'يرجى إدخال اسم المستخدم وكلمة المرور')
@@ -68,23 +90,26 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            
             login(request, user)
             
-            # تحديد انتهاء الجلسة بناءً على خيار "تذكرني"
             if remember:
-                request.session.set_expiry(1209600)  # 14 يومًا
+                request.session.set_expiry(1209600) 
             else:
-                request.session.set_expiry(0)  # تنتهي الجلسة عند غلق المتصفح
+                request.session.set_expiry(0) 
 
             messages.success(request, 'تم تسجيل الدخول بنجاح!')
-            
+
+            if next_url:
+                return redirect(next_url)
             return redirect('home:index')
         else:
             messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة')
             return redirect('home:index')
+    else:
+        next_url = request.GET.get('next', '')
+        return render(request, 'frontend/auth/login.html', {'next': next_url})
 
-    return redirect('home:index')
+
 
 
 def password_reset_view(request):

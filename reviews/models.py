@@ -12,7 +12,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from django.db import models
-from django.utils.text import slugify
 import uuid
 from unidecode import unidecode  # Import unidecode
 
@@ -32,12 +31,7 @@ class HotelReview(BaseModel):
         on_delete=models.CASCADE,
         related_name='hotel_reviews'
     )
-    slug = models.SlugField(
-        unique=True,
-        max_length=255,
-        verbose_name=_("Slug"),
-        blank=True
-    )
+
     rating_service = models.PositiveSmallIntegerField(
         verbose_name=_("الخدمات"),
         choices=[(i, f"{i} نجوم" if i > 1 else "نجمة واحدة") for i in range(1, 6)],
@@ -89,12 +83,7 @@ class RoomReview(BaseModel):
         verbose_name=_("الفندق"),
         related_name='rooms_reviews'
     )
-    slug = models.SlugField(
-        unique=True,
-        max_length=255,
-        verbose_name=_("Slug"),
-        blank=True
-    )
+
     room_type = models.ForeignKey(
         RoomType,
         on_delete=models.SET_NULL,
@@ -135,15 +124,6 @@ class RoomReview(BaseModel):
             )
         ]
 
-    def save(self, *args, **kwargs):
-        if not self.slug:  # Only generate slug if it doesn't exist
-            # Use unidecode to transliterate to ASCII, then slugify
-            hotel_name_ascii = unidecode(self.hotel.name)
-            room_type_name_ascii = unidecode(self.room_type.name)
-            base_slug = slugify(f"{hotel_name_ascii}-{room_type_name_ascii}-{self.user.username}")
-            unique_slug = f"{base_slug}-{uuid.uuid4()}"  # Append UUID for uniqueness
-            self.slug = unique_slug
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.room_type.name if self.room_type else 'No Room'} ({self.rating} نجوم)"
@@ -166,12 +146,7 @@ class Offer(BaseModel):
         verbose_name=_("تاريخ بداية العرض"),
         help_text=_("متى يبدأ العرض؟")
     )
-    slug = models.SlugField(
-        unique=True,
-        max_length=255,
-        verbose_name=_("Slug"),
-        blank=True
-    )
+
     end_date = models.DateField(
         verbose_name=_("تاريخ نهاية العرض"),
         help_text=_("متى ينتهي العرض؟")

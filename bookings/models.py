@@ -1,6 +1,10 @@
+from unittest.mock import DEFAULT
 from django.conf import settings
 from django.db import models,transaction
+from django.urls import reverse
 from HotelManagement.models import BaseModel
+from notifications.models import Notifications
+from payments.models import Payment
 from rooms.models import Availability, RoomStatus
 from django.db import models
 from django.utils import timezone
@@ -12,7 +16,7 @@ from django.core.exceptions import ValidationError
 import uuid
 # ------------ Guest ------------
 
-class Guest(BaseModel):
+class Guest(models.Model):
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -25,15 +29,27 @@ class Guest(BaseModel):
         verbose_name=_("الحجز"),
         related_name='guests'
     )
-    booking_number = models.CharField(
-        max_length=20,
-        verbose_name=_("رقم الحجز"),
-        editable=False
-    )
+
     name = models.CharField(verbose_name=_("الاسم"), max_length=150)
     phone_number = models.CharField(verbose_name=_("رقم الهاتف"), max_length=14)
-    id_card_number = models.CharField(verbose_name=_("رقم الهوية"), max_length=30)
-    age = models.PositiveIntegerField(verbose_name=_("العمر"), null=True, blank=True)
+    id_card_image = models.ImageField(
+        verbose_name=_("صورة الهوية"),
+        upload_to='guests/id_card_images/',
+        null=True,
+        blank=True
+    )
+    gender = models.CharField(
+        verbose_name=_("الجنس"),
+        max_length=10,
+        choices=[('male', _('ذكر')), ('female', _('أنثى'))],
+        null=True,
+        blank=True
+    )
+    birthday_date = models.DateField(
+        verbose_name=_("تاريخ الميلاد"),
+        null=True,
+        blank=True
+    )
     check_in_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الدخول"), null=True, blank=True)
     check_out_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الخروج"), null=True, blank=True)
 
@@ -41,16 +57,13 @@ class Guest(BaseModel):
         verbose_name = _("ضيف")
         verbose_name_plural = _("الضيوف")
         ordering = ['name']
-        unique_together = ('hotel', 'id_card_number')
 
-    def save(self, *args, **kwargs):
-        if self.booking:
-            self.booking_number = self.booking.booking_number  
+
+    def save(self, *args, **kwargs): 
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} - {self.booking_number}"
-
+        return f"{self.name} - {self.id}"
 
 
 
@@ -64,11 +77,7 @@ class Booking(BaseModel):
         CONFIRMED = "1", _("مؤكد")
         CANCELED = "2", _("ملغي")
 
-    booking_number = models.CharField(
-        max_length=20,
-        editable=False,
-        verbose_name=_("رقم الحجز")
-    )
+
     
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
@@ -169,9 +178,23 @@ class Booking(BaseModel):
         if previous_status != "2" and self.status == "2":  
             self.update_availability(self.rooms_booked, today)
 
+        if self.status == "1": 
+            self.send_notification() 
 
 
 
+    def send_notification(self):
+        """Send a notification to the user to add guests."""
+        message = _("يرجى إضافة الضيوف لحجزك.")
+        action_url = reverse("payments:add_guest", args=[self.room.id]) 
+        Notifications.objects.create(
+            sender=self.user, 
+            user=self.user,
+            message=message,
+            notification_type='1', 
+            action_url=action_url,
+        )
+         
     def update_availability(self, change, date):
         """Ensure availability is updated or created for today's date"""
         today = timezone.now().date() 
@@ -184,18 +207,18 @@ class Booking(BaseModel):
                 defaults={
                     "room_status": RoomStatus.objects.get(id=3),  
                     "available_rooms": max(0, self.room.rooms_count + change),  
-                    "notes": f"Updated due to booking #{self.booking_number}",
+                    "notes": f"Updated due to booking #{self.id}",
                 }
             )
 
             if not created:
                 availability.available_rooms = max(0, availability.available_rooms + change)
-                availability.notes = f"Updated due to booking #{self.booking_number}"
+                availability.notes = f"Updated due to booking #{self.id}"
                 availability.save()
 
 
     def __str__(self):
-        return f"Booking #{self.booking_number} - {self.room.name} ({self.rooms_booked} rooms)"
+        return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
 
 
 
@@ -207,11 +230,7 @@ class BookingDetail(BaseModel):
         verbose_name=_("الحجز"),
         related_name='details'
     )
-    booking_number = models.CharField(
-        max_length=20,
-        verbose_name=_("رقم الحجز"),
-        editable=False
-    )
+
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -237,8 +256,41 @@ class BookingDetail(BaseModel):
     def save(self, *args, **kwargs):
         self.total = self.quantity * self.price
         if self.booking:
-            self.booking_number = self.booking.booking_number  
+            self.id = self.booking.id  
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.service} - {self.booking_number}"
+        return f"{self.service} - {self.id}"
+
+
+
+
+#----------- Booking Extenseion ----------
+
+class ExtensionMovement(models.Model):
+    movement_number = models.AutoField(primary_key=True, verbose_name="رقم الحركة")
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE,verbose_name="رقم الحجز")
+    payment_receipt = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True,verbose_name="رقم سند الدفع")
+    original_departure = models.DateField(verbose_name="تاريخ المغادرة قبل التمديد")
+    extension_date = models.DateField(default=timezone.now, verbose_name="تاريخ التمديد")
+    new_departure = models.DateField(verbose_name="تاريخ المغادرة الجديد")
+    REASON_CHOICES = [
+        ('personal', 'تغيير خطط شخصية'),
+        ('business', 'تمديد أعمال'),
+        ('technical', 'مشكلات فنية (طيران/مواصلات)'),
+        ('other', 'أسباب أخرى'),
+    ]
+    reason = models.CharField(max_length=50, choices=REASON_CHOICES, verbose_name="سبب التمديد")
+    extension_year = models.PositiveIntegerField(editable=False) 
+    duration = models.PositiveIntegerField(verbose_name="مدة التمديد (أيام)", default=0)
+
+
+    def save(self, *args, **kwargs):
+        self.extension_duration = (self.new_departure - self.original_departure).days
+        self.extension_year = self.extension_date.year
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"حركة #{self.movement_number} - حجز {self.booking.id}"    
+    
+

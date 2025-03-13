@@ -1,5 +1,5 @@
 {% load static %}
-
+{% if roomTypeHome %}
 <section class="room-type-area section--padding">
     <div class="container">
       <div class="row">
@@ -13,42 +13,29 @@
       </div>
       <!-- end row -->
       <div class="row padding-top-50px">
+        {% for roomTypeHome in roomTypeHome %}
         <div class="col-lg-6">
           <div class="room-type-content">
             <div class="image-box">
-              <a href="room-list.html" class="d-block">
+              <a href="{{roomTypeHome.link}}" class="d-block">
                 <img
-                  src="{% static 'images/img27.jpg' %}"
+                  src="{{roomTypeHome.image.url}}"
                   alt="room type img"
                   class="img__item"
                 />
                 <div class="room-type-link">
-                  أسرة النوم <i class="la la-arrow-left ms-2"></i>
+                   {{roomTypeHome.name}} <i class="la la-arrow-left ms-2"></i>
                 </div>
               </a>
             </div>
           </div>
         </div>
         <!-- end col-lg-6 -->
-        <div class="col-lg-6">
-          <div class="room-type-content">
-            <div class="image-box">
-              <a href="room-list.html" class="d-block">
-                <img
-                  src="{% static 'images/img28.jpg' %}"
-                  alt="room type img"
-                  class="img__item"
-                />
-                <div class="room-type-link">
-                  غرفة خاصة <i class="la la-arrow-left ms-2"></i>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-        <!-- end col-lg-6 -->
+        {% endfor %}
       </div>
       <!-- end row -->
     </div>
     <!-- end container -->
   </section>
+
+  {% endif %}

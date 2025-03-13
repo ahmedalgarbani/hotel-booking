@@ -13,6 +13,7 @@ urlpatterns = [
     path('user-dashboard/settings',views.user_dashboard_settings_password,name='user_dashboard_settings_password'),
 
     path('user-dashboard/wishlist',views.user_dashboard_wishlist,name='user_dashboard_wishlist'),
+    path('user-add-to-wishlist',views.add_to_favorites,name='add_to_favorites'),
     path('user-dashboard/reviews',views.user_dashboard_reviews,name='user_dashboard_reviews'),
     path('user-dashboard/profile',views.user_dashboard_profile,name='user_dashboard_profile'),
 

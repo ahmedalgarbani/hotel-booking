@@ -43,6 +43,12 @@ class Notifications(models.Model):
         default=True,
         verbose_name=_("نشط")
     )
+    action_url = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("رابط الإجراء")
+    )
 
     class Meta:
         verbose_name = _("إشعار")
