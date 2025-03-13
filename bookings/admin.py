@@ -20,9 +20,80 @@ from django.utils import timezone
 from bookings.forms import BookingAdminForm, BookingExtensionForm
 from rooms.models import Availability, RoomStatus
 from .models import Booking, Guest, BookingDetail
+from HotelManagement.models import Hotel
+from rooms.models import RoomType
+from django.db.models import Q, Sum
+class HotelManagerAdminMixin:
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.user_type == 'hotel_manager':
+            qs = qs.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return qs.filter(hotel__manager=request.user.chield)
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if not request.user.is_superuser:
+            if db_field.name == "hotel":
+                kwargs["queryset"] = Hotel.objects.filter(Q(manager=request.user) | Q(manager=request.user.chield))
+            elif db_field.name == "room":
+                kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            elif db_field.name == "room_status":
+                kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            # elif db_field.name == "category":
+            #     kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            # elif db_field.name == "room_price":
+            #     kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            # elif db_field.name == "room_image":
+            #     kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+    #     if not request.user.is_superuser:
+    #         if obj:  # If the object exists (i.e., we are editing it)
+    #             if 'created_by' in form.base_fields:
+    #                 form.base_fields['created_by'].widget.attrs['readonly'] = True
+    #         if 'updated_by' in form.base_fields:
+    #             form.base_fields['updated_by'].widget.attrs['readonly'] = True
+    #             form.base_fields['updated_by'].required = False
+    #     return form
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
+            
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['disabled'] = True
+                form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                
+                form.base_fields['created_by'].widget.attrs['disabled'] = True
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].required = False
+        return form
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # If the object exists (i.e., we are editing it)
+            return self.readonly_fields + ('created_by', 'updated_by')
+        return self.readonly_fields
+
+    # def save_model(self, request, obj, form, change):
+    #     if not obj.pk:
+    #         obj.created_by = request.user
+    #     obj.updated_by = request.user
+    #     super().save_model(request, obj, form, change)
 
 @admin.register(Booking)
-class BookingAdmin(admin.ModelAdmin):
+class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     form = BookingAdminForm
     list_display = ['get_guest_name', 'hotel', 'room', 'check_in_date', 'check_out_date', 'amount', 'status']
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']

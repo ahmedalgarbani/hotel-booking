@@ -13,7 +13,9 @@ from django.utils.safestring import mark_safe
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
 from HotelManagement.models import Hotel
+
 from .models import RoomType, Category, Availability, RoomPrice, RoomImage, RoomStatus
+
 class HotelManagerAdminMixin:
 
     def get_queryset(self, request):
@@ -40,15 +42,36 @@ class HotelManagerAdminMixin:
                 kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+    #     if not request.user.is_superuser:
+    #         if obj:  # If the object exists (i.e., we are editing it)
+    #             if 'created_by' in form.base_fields:
+    #                 form.base_fields['created_by'].widget.attrs['readonly'] = True
+    #         if 'updated_by' in form.base_fields:
+    #             form.base_fields['updated_by'].widget.attrs['readonly'] = True
+    #             form.base_fields['updated_by'].required = False
+    #     return form
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if not request.user.is_superuser:
-            if obj:  # If the object exists (i.e., we are editing it)
-                if 'created_by' in form.base_fields:
-                    form.base_fields['created_by'].widget.attrs['readonly'] = True
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
+            
             if 'updated_by' in form.base_fields:
-                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                
+                form.base_fields['created_by'].widget.attrs['disabled'] = True
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].required = False
         return form
 
     def get_readonly_fields(self, request, obj=None):
@@ -174,7 +197,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_filter = ['hotel', 'availability_date', 'room_type', 'room_status']
     list_editable = ['available_rooms']
     date_hierarchy = 'availability_date'
-
+    
     def bulk_create_button(self, obj):
         """عرض زر الإنشاء الجماعي"""
         url = reverse('admin:rooms_availability_bulk_create')
