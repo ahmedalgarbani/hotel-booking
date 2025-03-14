@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
@@ -27,7 +28,7 @@ class Currency(BaseModel):
 
 
 # ------------PaymentOption-------------
-class PaymentOption(models.Model):
+class PaymentOption(BaseModel):
     method_name = models.CharField(max_length=100, verbose_name=_("اسم طريقة الدفع"))
     logo = models.ImageField(upload_to='payment_logos/', null=True, blank=True, verbose_name=_("شعار"))
     currency = models.ForeignKey(
@@ -47,30 +48,33 @@ class PaymentOption(models.Model):
         verbose_name_plural = _("طرق الدفع")
 
 # ------------HotelPaymentMethod-------------
-class HotelPaymentMethod(models.Model):
-    hotel = models.ForeignKey(
-        Hotel,
-        on_delete=models.CASCADE,
-        related_name='payment_methods',
-        verbose_name=_("الفندق")
+class HotelPaymentMethod(BaseModel):
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='payment_methods')
+    payment_option = models.ForeignKey('PaymentOption', on_delete=models.CASCADE)
+    account_name = models.CharField(max_length=100)
+    account_number = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='created_hotel_payment_methods'
     )
-    payment_option = models.ForeignKey(
-        PaymentOption,
-        on_delete=models.CASCADE,
-        verbose_name=_("طريقة الدفع")
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='updated_hotel_payment_methods'
     )
-    account_name = models.CharField(max_length=100, verbose_name=_("اسم الحساب"))
-    account_number = models.CharField(max_length=50, verbose_name=_("رقم الحساب"))
-    iban = models.CharField(max_length=50, verbose_name=_("رقم الآيبان"))
-    description = models.TextField(verbose_name=_("تعليمات الدفع"), blank=True, null=True)
-    is_active = models.BooleanField(default=True, verbose_name=_("نشط"))
 
     def __str__(self):
         return f"{self.hotel.name} - {self.payment_option.method_name}"
 
     class Meta:
-        verbose_name = _("طريقة دفع الفندق")
-        verbose_name_plural = _("طرق دفع الفندق")
+        verbose_name = 'طريقة دفع الفندق'
+        verbose_name_plural = 'طرق دفع الفندق'
         unique_together = ['hotel', 'payment_option']
 
 

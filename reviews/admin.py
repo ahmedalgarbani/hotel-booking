@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import HotelReview, RoomReview, Offer
+from .models import HotelReview, RoomReview
 
 
 @admin.register(HotelReview)
@@ -49,23 +49,3 @@ class RoomReviewAdmin(admin.ModelAdmin):
         }),
     )
 
-
-@admin.register(Offer)
-class OfferAdmin(admin.ModelAdmin):
-    list_display = ('name', 'hotel', 'start_date', 'end_date', 
-                    'discount_percentage', 'is_active', 'created_at')
-    list_filter = ('hotel', 'is_active', 'start_date', 'end_date')
-    search_fields = ('name', 'hotel__name', 'description')
-    ordering = ('-start_date', '-created_at')
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'hotel', 'description', 'is_active')
-        }),
-        (_("Details"), {
-            'fields': ('start_date', 'end_date', 'discount_percentage')
-        }),
-        (_("Timestamps"), {
-            'fields': ('created_at', 'updated_at')
-        }),
-    )
