@@ -51,29 +51,24 @@ class PaymentOption(BaseModel):
 
 # ------------HotelPaymentMethod-------------
 class HotelPaymentMethod(BaseModel):
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='payment_methods')
-    payment_option = models.ForeignKey('PaymentOption', on_delete=models.CASCADE)
-    account_name = models.CharField(max_length=100)
-    account_number = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    # created_by = models.ForeignKey(
-    #     get_user_model(),
-    #     related_name="%(class)s_created",
-    #     verbose_name=_("المنشى"),
-    #     on_delete=models.CASCADE,
-    #     blank=True,
-    #     null=True,
-    # )
-    # updated_by = models.ForeignKey(
-    #     get_user_model(),
-    #     related_name="%(class)s_updated",
-    #     verbose_name=_("المعدل"),
-    #     on_delete=models.CASCADE,
-    #     blank=True,
-    #     null=True,
-    # )
+    hotel = models.ForeignKey(
+        Hotel,
+        on_delete=models.CASCADE,
+        related_name='payment_methods',
+        verbose_name=_("الفندق")
+    )
+    payment_option = models.ForeignKey(
+        PaymentOption,
+        on_delete=models.CASCADE,
+        verbose_name=_("طريقة الدفع")
+    )
+    account_name = models.CharField(max_length=100, verbose_name=_("اسم الحساب"))
+    account_number = models.CharField(max_length=50, verbose_name=_("رقم الحساب"))
+    iban = models.CharField(max_length=50, verbose_name=_("رقم الآيبان"))
+    description = models.TextField(verbose_name=_("تعليمات الدفع"), blank=True, null=True)
+    is_active = models.BooleanField(default=True, verbose_name=_("نشط"))
+
+    
 
     def __str__(self):
         return f"{self.hotel.name} - {self.payment_option.method_name}"
