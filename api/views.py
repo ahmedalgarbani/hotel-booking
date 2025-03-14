@@ -15,14 +15,45 @@ from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
 from rest_framework.decorators import api_view
+from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+
 
 User = get_user_model()
 # Views
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+
 class HotelsViewSet(viewsets.ModelViewSet):
-    queryset = Hotel.objects.filter(is_verified = True)
+    queryset = Hotel.objects.filter(is_verified=True)
     serializer_class = HotelSerializer
+    pagination_class = CustomPagination
+    filterset_fields = ['location', 'services__name']
+    search_fields = ['name', 'description', 'location__address']
+    ordering_fields = ['name', 'created_at']
+
+    @action(detail=False, methods=['get'])
+    def search(self, request):
+        hotel_name = request.query_params.get('name', '')
+        location = request.query_params.get('location', '')
+
+        if not hotel_name and not location:
+            return Response({'error': 'Provide at least one search parameter'}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = Hotel.objects.filter(
+            name__icontains=hotel_name,
+            location__address__icontains=location
+        )
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = HotelSerializer(paginated_queryset, many=True, context={'request': request})
+        return self.get_paginated_response(serializer.data)
+    
 
 
+    
 class RoomsViewSet(viewsets.ModelViewSet):
     queryset = RoomType.objects.all()
     serializer_class = RoomsSerializer
