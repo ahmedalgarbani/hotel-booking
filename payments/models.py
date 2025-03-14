@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -57,22 +58,22 @@ class HotelPaymentMethod(BaseModel):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
-        get_user_model(),
-        related_name="%(class)s_created",
-        verbose_name=_("المنشى"),
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-    )
-    updated_by = models.ForeignKey(
-        get_user_model(),
-        related_name="%(class)s_updated",
-        verbose_name=_("المعدل"),
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-    )
+    # created_by = models.ForeignKey(
+    #     get_user_model(),
+    #     related_name="%(class)s_created",
+    #     verbose_name=_("المنشى"),
+    #     on_delete=models.CASCADE,
+    #     blank=True,
+    #     null=True,
+    # )
+    # updated_by = models.ForeignKey(
+    #     get_user_model(),
+    #     related_name="%(class)s_updated",
+    #     verbose_name=_("المعدل"),
+    #     on_delete=models.CASCADE,
+    #     blank=True,
+    #     null=True,
+    # )
 
     def __str__(self):
         return f"{self.hotel.name} - {self.payment_option.method_name}"
