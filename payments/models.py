@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 
 
 # ------------Currency-------------
@@ -57,16 +58,20 @@ class HotelPaymentMethod(BaseModel):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
+        get_user_model(),
+        related_name="%(class)s_created",
+        verbose_name=_("المنشى"),
+        on_delete=models.CASCADE,
+        blank=True,
         null=True,
-        related_name='created_hotel_payment_methods'
     )
     updated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
+        get_user_model(),
+        related_name="%(class)s_updated",
+        verbose_name=_("المعدل"),
+        on_delete=models.CASCADE,
+        blank=True,
         null=True,
-        related_name='updated_hotel_payment_methods'
     )
 
     def __str__(self):

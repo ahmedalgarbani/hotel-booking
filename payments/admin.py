@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from HotelManagement.models import Hotel
 from .models import Currency, HotelPaymentMethod, PaymentOption, Payment
 from django.db.models import Q
 from bookings.models import Booking
@@ -34,33 +36,34 @@ class PaymentManagerAdminMixin:
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-        # تعيين الفندق تلقائياً بناءً على مدير الفندق
-         if 'booking' in form.base_fields:
-            form.base_fields['booking'].queryset = Booking.objects.filter(
-                hotel__manager=request.user
-            )
-        
-         if 'payment_method' in form.base_fields:
-            form.base_fields['payment_method'].queryset = HotelPaymentMethod.objects.filter(
-                hotel__manager=request.user
-            )
-        
-        # حقول النظام
-         if 'updated_by' in form.base_fields:
-            form.base_fields['updated_by'].initial = request.user
-            form.base_fields['updated_by'].widget.attrs['disabled'] = True
-            form.base_fields['updated_by'].required = False
-        
-         if 'created_by' in form.base_fields:
-            form.base_fields['created_by'].widget.attrs['disabled'] = True
-            form.base_fields['created_by'].initial = request.user
-            form.base_fields['created_by'].required = False
-
+            
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
+            
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['disabled'] = True
+                form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                
+                form.base_fields['created_by'].widget.attrs['disabled'] = True
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].required = False
         return form
+
     def get_readonly_fields(self, request, obj=None):
-        if obj:  # إذا كان الكائن موجود (أي نحن في وضع التعديل)
+        if obj:  # If the object exists (i.e., we are editing it)
             return self.readonly_fields + ('created_by', 'updated_by')
         return self.readonly_fields
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
     
 @admin.register(Payment)
 class PaymentAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
