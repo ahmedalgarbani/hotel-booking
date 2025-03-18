@@ -21,8 +21,39 @@ from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.db.models import Sum
+from bookings.models import Booking
+from payments.models import Payment
+
+
 
 User = get_user_model()
+
+
+
+class CustomAdminSite(admin.AdminSite):
+    def index(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        
+        extra_context['total_bookings'] = Booking.objects.count()
+        # extra_context['total_revenue'] = Payment.objects.filter(status='completed').aggregate(total=Sum('amount'))['total'] or 0
+        # extra_context['active_users'] = User.objects.filter(is_active=True).count()
+        # extra_context['pending_payments'] = Payment.objects.filter(status='pending').count()
+
+        # extra_context['revenue_chart_url'] = "/static/images/revenue_chart.png"
+
+        return super().index(request, extra_context=extra_context)
+
+admin.site = CustomAdminSite()
+
+
+
+
+
+
+
 
 def export_to_excel(modeladmin, request, queryset):
     response = HttpResponse(content_type='application/ms-excel')

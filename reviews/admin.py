@@ -30,22 +30,3 @@ class HotelReviewAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(RoomReview)
-class RoomReviewAdmin(admin.ModelAdmin):
-    list_display = ('hotel', 'room_type', 'user', 'rating', 'status', 'created_at')
-    list_filter = ('hotel', 'room_type', 'status', 'created_at')
-    search_fields = ('hotel__name', 'room_type__name', 'user__username', 'user__email', 'review')
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        (None, {
-            'fields': ('hotel', 'room_type', 'user', 'review', 'status')
-        }),
-        (_("Rating"), {
-            'fields': ('rating',)
-        }),
-        (_("Timestamps"), {
-            'fields': ('created_at', 'updated_at')
-        }),
-    )
-
