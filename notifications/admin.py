@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Notifications
 
-@admin.register(Notifications)
 class NotificationsAdmin(admin.ModelAdmin):
     list_display = ('sender', 'user', 'message', 'send_time', 'status', 'notification_type', 'is_active')
     list_filter = ('status', 'notification_type', 'is_active', 'send_time')
@@ -16,3 +15,11 @@ class NotificationsAdmin(admin.ModelAdmin):
     def mark_as_unread(self, request, queryset):
         queryset.update(status='0')
     mark_as_unread.short_description = "تحديد كغير مقروء"
+
+
+from api.admin import admin_site
+
+# Notification ------------
+
+admin_site.register(Notifications,NotificationsAdmin)
+

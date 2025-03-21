@@ -24,7 +24,7 @@ def index(request):
     blogs = Post.objects.filter(is_published=True)[:3]
     infoBox = InfoBox.objects.filter(show_at_home=True)[:4]
     roomTypeHome = RoomTypeHome.objects.filter(show_at_home=True)[:2]
-    
+    categories = Category.objects.all()
     try:
         setting = Setting.objects.latest('id')
     except Setting.DoesNotExist:
@@ -46,6 +46,7 @@ def index(request):
         'blogs': blogs,
         'infoBox': infoBox,
         'roomTypeHome': roomTypeHome,
+        'categories':categories,
         'hotels': hotels,
         'setting': setting,
         'socialMediaLink': socialMediaLink,

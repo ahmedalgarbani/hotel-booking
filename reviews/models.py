@@ -29,7 +29,7 @@ class HotelReview(BaseModel):
         settings.AUTH_USER_MODEL, 
         verbose_name=_("صاحب المراجعة"),
         on_delete=models.CASCADE,
-        related_name='hotel_reviews'
+        related_name='hotel_review'
     )
 
     rating_service = models.PositiveSmallIntegerField(

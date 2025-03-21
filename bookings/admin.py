@@ -101,7 +101,6 @@ class ChangeStatusForm(ActionForm):
         label="الحالة الجديدة"
     )
 
-@admin.register(Booking)
 class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     # form = BookingAdminForm
     action_form = ChangeStatusForm  
@@ -577,7 +576,6 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
 
         return render(request, 'admin/bookings/booking_extension.html', context)
 
-@admin.register(Guest)
 class GuestAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     list_display = ['name', 'phone_number', 'hotel', 'booking','set_checkout_today_toggle']
     list_filter = ['hotel']
@@ -600,7 +598,6 @@ class GuestAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
 
 
 
-@admin.register(BookingDetail)
 class BookingDetailAdmin(admin.ModelAdmin):
     list_display = ['booking', 'quantity', 'price', 'total']
     list_filter = ['booking__status', ]
@@ -608,7 +605,6 @@ class BookingDetailAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(ExtensionMovement)
 class ExtensionMovementAdmin(admin.ModelAdmin):
     list_display = (
         'movement_number', 
@@ -665,3 +661,12 @@ class ExtensionMovementAdmin(admin.ModelAdmin):
     payment_button.short_description = 'فاتورة الدفع'
     payment_button.allow_tags = True
 
+
+from api.admin import admin_site
+
+
+# Booking-------
+admin_site.register(Booking,BookingAdmin)
+admin_site.register(Guest,GuestAdmin)
+admin_site.register(BookingDetail,BookingDetailAdmin)
+admin_site.register(ExtensionMovement,ExtensionMovementAdmin)

@@ -37,6 +37,9 @@ START BREADCRUMB AREA
       <polygon points="100 0 50 10 0 0 0 10 100 10"></polygon>
     </svg>
   </div>
+  {% if error_message %}
+    <div class="alert alert-warning">{{ error_message }}</div>
+{% endif %}
   <!-- end bread-svg -->
 </section>
 <!-- end breadcrumb-area -->

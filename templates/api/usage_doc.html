@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favourites API Documentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px 30px;
+      }
+      h1,
+      h2 {
+        color: #4caf50;
+      }
+      .endpoint {
+        background-color: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .code {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      .note {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 10px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Favourites API Documentation</h1>
+
+      <h2>1. List User Favourites</h2>
+      <div class="endpoint">
+        <strong>GET /favourites/</strong>
+      </div>
+      <p>Fetches all favourite hotels for the authenticated user.</p>
+      <div class="code">Authorization: Bearer &lt;access_token&gt;</div>
+
+      <h2>2. Add Favourite</h2>
+      <div class="endpoint">
+        <strong>POST /favourites/</strong>
+      </div>
+      <p>Request Body:</p>
+      <div class="code">{ "hotel": 1 }</div>
+
+      <h2>3. Remove Favourite (Query Parameter)</h2>
+      <div class="endpoint">
+        <strong>DELETE /favourites/?hotel=1</strong>
+      </div>
+
+      <h2>4. Remove Favourite (Request Body)</h2>
+      <div class="endpoint">
+        <strong>DELETE /favourites/remove/</strong>
+      </div>
+      <p>Request Body:</p>
+      <div class="code">{ "hotel": 1 }</div>
+
+      <h2>5. Hotel Search with Adult Number Filter</h2>
+      <div class="endpoint">
+        <strong>GET /hotels/search/?name=HotelName&location=City&adult_number=10</strong>
+      </div>
+      <p>Returns hotels that can accommodate the specified number of adults.</p>
+
+      <h2>6. Authentication</h2>
+      <p>All endpoints require an Authorization token in the header:</p>
+      <div class="code">Authorization: Bearer &lt;access_token&gt;</div>
+
+      <h2>7. Error Responses</h2>
+      <div class="note">
+        <strong>400:</strong> Invalid data or missing fields<br />
+        <strong>401:</strong> Authentication credentials missing or invalid<br />
+        <strong>404:</strong> Resource not found<br />
+        <strong>500:</strong> Internal server error
+      </div>
+    </div>
+  </body>
+</html>

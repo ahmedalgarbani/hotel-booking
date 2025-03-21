@@ -31,38 +31,66 @@ def get_query_params(request):
     if request.method == 'GET':
         hotel_name = request.GET.get('hotel_name', '').strip()
         check_date = request.GET.get('check_date', '').strip()
+        category_type = request.GET.get('category_type', '').strip()
 
+        try:
+            room_number = int(request.GET.get('room_number', 0))
+        except ValueError:
+            room_number = 0
+        
         try:
             adult_number = int(request.GET.get('adult_number', 0))
         except ValueError:
             adult_number = 0
 
-       
-
-        check_in,check_out = parse_check_in_date(check_date)
-
+        check_in, check_out = parse_check_in_date(check_date)
 
     elif request.method == 'POST':
         hotel_name = room_type_name = None
-        check_in =change_date_format(request.POST.get('check_in_start', '').strip())
+        category_type = request.POST.get('category_type', '').strip()
+        check_in = change_date_format(request.POST.get('check_in_start', '').strip())
         check_out = change_date_format(request.POST.get('check_out_start', '').strip())
 
+        try:
+            room_number = int(request.POST.get('room_number', 0))
+        except ValueError:
+            room_number = 0
+        
         try:
             adult_number = int(request.POST.get('adult_number', 0))
         except ValueError:
             adult_number = 0
 
-      
+    return hotel_name, check_in, check_out, adult_number, room_number, category_type
 
 
-    return hotel_name, check_in,check_out, adult_number
 
-
-def get_hotels_query(hotel_name):
+def get_hotels_query(hotel_name, category_type=None, room_number=None, adult_number=None):
     hotels_query = Hotel.objects.all()
+
     if hotel_name:
-        cities = City.objects.filter(Q(state__icontains=hotel_name) )
+        cities = City.objects.filter(Q(state__icontains=hotel_name))
         hotels_by_city = Hotel.objects.filter(location__city__in=cities)
         hotels_by_name = Hotel.objects.filter(name__icontains=hotel_name)
         hotels_query = (hotels_by_city | hotels_by_name).distinct()
-    return hotels_query
+
+    if category_type:
+        hotels_query = hotels_query.filter(room_categories__name__icontains=category_type)
+
+    if room_number:
+        hotels_query = hotels_query.filter(
+            room_availabilities__available_rooms__gte=room_number
+        )
+
+    if adult_number:
+        hotels_query = hotels_query.filter(
+            room_types__default_capacity__gte=adult_number
+        )
+
+    if not hotels_query.exists():
+        hotels_query = Hotel.objects.all()
+        error_message = "لا توجد نتائج مطابقة، تم عرض جميع الفنادق المتاحة."
+    else:
+        error_message = ""
+
+    return hotels_query, error_message

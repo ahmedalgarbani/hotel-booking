@@ -33,21 +33,6 @@ User = get_user_model()
 
 
 
-class CustomAdminSite(admin.AdminSite):
-    def index(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        
-        extra_context['total_bookings'] = Booking.objects.count()
-        # extra_context['total_revenue'] = Payment.objects.filter(status='completed').aggregate(total=Sum('amount'))['total'] or 0
-        # extra_context['active_users'] = User.objects.filter(is_active=True).count()
-        # extra_context['pending_payments'] = Payment.objects.filter(status='pending').count()
-
-        # extra_context['revenue_chart_url'] = "/static/images/revenue_chart.png"
-
-        return super().index(request, extra_context=extra_context)
-
-admin.site = CustomAdminSite()
-
 
 
 
@@ -81,7 +66,6 @@ def export_to_excel(modeladmin, request, queryset):
 
 export_to_excel.short_description = "تصدير الفنادق المحددة إلى Excel"
 
-@admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
     list_display = ['name', 'location','get_absolute_url_link',  'verification_status', 'phone_count', 'created_at']
     search_fields = ['name',]
@@ -231,7 +215,6 @@ class HotelAdmin(admin.ModelAdmin):
 
 
 # ----------- Location --------------
-@admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ( 'address', 'city',  'created_at')
     list_filter = ('city',)
@@ -275,7 +258,6 @@ class LocationAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
 # ----------- Phone --------------
-@admin.register(Phone)
 class PhoneAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'country_code', 'hotel', 'created_at')
     search_fields = ('phone_number', 'hotel__name')
@@ -350,7 +332,6 @@ class ImageAdminForm(forms.ModelForm):
                 self.fields['created_by'].disabled = True
                 self.fields['created_by'].required = False
 
-@admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     # form = ImageAdminForm
     list_display = ('image_path', 'image_url', 'hotel', 'created_at')
@@ -415,11 +396,9 @@ class CityAdmin(admin.ModelAdmin):
            
             return queryset.filter(location__hotel__manager=request.user)
         return queryset.none()
-admin.site.register(City, CityAdmin)
 
 # ----------- HotelRequest --------------
 
-@admin.register(HotelRequest)
 class HotelRequestAdmin(admin.ModelAdmin):
     list_display = ['hotel_name', 'name', 'email', 'created_at', 'is_approved']
     list_filter = ['is_approved', 'created_at']
@@ -439,3 +418,25 @@ class HotelRequestAdmin(admin.ModelAdmin):
         else:  # إذا كان هذا تحديث
             obj.updated_by = request.user
         super().save_model(request, obj, form, change)
+
+
+
+
+
+
+
+
+
+
+
+# -------------------------
+from api.admin import admin_site
+ 
+# Hotel -----
+
+admin_site.register(Hotel,HotelAdmin)
+admin_site.register(City,CityAdmin)
+admin_site.register(HotelRequest,HotelRequestAdmin)
+admin_site.register(Phone,PhoneAdmin)
+admin_site.register(Image,ImageAdmin)
+admin_site.register(Location,LocationAdmin)

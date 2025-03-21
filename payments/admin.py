@@ -4,7 +4,7 @@ from HotelManagement.models import Hotel
 from .models import Currency, HotelPaymentMethod, PaymentOption, Payment
 from django.db.models import Q
 from bookings.models import Booking
-
+from api.admin import admin_site
 
 class PaymentManagerAdminMixin:
     def get_queryset(self, request):
@@ -65,27 +65,32 @@ class PaymentManagerAdminMixin:
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
     
-@admin.register(Payment)
 class PaymentAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     list_display = ('booking', 'payment_method', 'payment_status', 'payment_date', 'payment_totalamount')
     list_filter = ('payment_status', 'payment_date', 'booking__hotel')
     search_fields = ('booking__id', 'payment_method__account_name')
     readonly_fields = ('payment_date',)
 
-@admin.register(HotelPaymentMethod)
 class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     list_display = ('hotel', 'payment_option', 'account_name', 'is_active')
     list_filter = ('is_active', 'hotel', 'payment_option')
     search_fields = ('hotel__name', 'account_name')
 
-@admin.register(PaymentOption)
 class PaymentOptionAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     list_display = ('method_name', 'currency', 'is_active')
     list_filter = ('is_active', 'currency')
     search_fields = ('method_name',)
 
-@admin.register(Currency)
 class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     list_display = ('currency_name', 'currency_symbol', 'hotel')
     list_filter = ('hotel',)
     search_fields = ('currency_name', 'currency_symbol')
+
+
+# Payments -------------
+
+
+admin_site.register(Currency,CurrencyAdmin)
+admin_site.register(PaymentOption,PaymentOptionAdmin)
+admin_site.register(HotelPaymentMethod,HotelPaymentMethodAdmin)
+admin_site.register(Payment,PaymentAdmin)

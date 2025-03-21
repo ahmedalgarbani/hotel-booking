@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from HotelManagement.models import Hotel
+from bookings.models import Booking
+from customer.models import Favourites
+from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
 from rooms.models import RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
 from django.core.exceptions import ValidationError
@@ -31,6 +34,73 @@ class HotelServiceSerializer(serializers.ModelSerializer):
         model = HotelService
         fields = ['id', 'name']
 
+class FavouritesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favourites
+        fields = ['hotel']
+
+
+
+class CurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Currency
+        fields = ['id', 'currency_name', 'currency_symbol']
+
+class PaymentOptionSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+    
+    class Meta:
+        model = PaymentOption
+        fields = ['id', 'method_name', 'logo', 'currency']
+
+class HotelPaymentMethodSerializer(serializers.ModelSerializer):
+    payment_option = PaymentOptionSerializer()
+    
+    class Meta:
+        model = HotelPaymentMethod
+        fields = [
+            'id',
+            'payment_option',
+            'account_name',
+            'account_number',
+            'iban',
+            'description',
+            
+        ]      
+
+
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = [
+            'booking', 'payment_method', 'transfer_image', 'payment_status', 
+            'payment_date', 'payment_subtotal', 'payment_totalamount', 
+            'payment_currency', 'payment_type', 'payment_note', 'payment_discount'
+        ]
+        extra_kwargs = {
+            'transfer_image': {'required': False, 'allow_null': True}
+        }
+
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = [
+            'hotel', 'user', 'room', 'check_in_date', 'check_out_date', 
+            'amount', 'status',  'rooms_booked'
+        ]
+
+    def validate(self, data):
+        if data.get('check_in_date') and data.get('check_out_date'):
+            if data['check_in_date'] >= data['check_out_date']:
+                raise serializers.ValidationError('Check-in date must be before check-out date.')
+
+        if data.get('amount') <= 0:
+            raise serializers.ValidationError('Amount must be greater than 0.')
+
+        return data
+        
 class RoomsSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
