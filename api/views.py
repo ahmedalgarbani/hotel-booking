@@ -72,7 +72,8 @@ class HotelsViewSet(viewsets.ModelViewSet):
         return self.get_paginated_response(serializer.data)
 
 class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
- 
+    pagination_class = CustomPagination
+
     queryset = HotelPaymentMethod.objects.filter(is_active=True)  
     serializer_class = HotelPaymentMethodSerializer
 
@@ -117,6 +118,8 @@ class RoomsViewSet(viewsets.ModelViewSet):
 class FavouritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavouritesSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+
 
     def get_queryset(self):
         return Favourites.objects.filter(user=self.request.user)
@@ -231,6 +234,8 @@ def usage(request):
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+
 
     def get_queryset(self):
         return Payment.objects.filter(user=self.request.user)
@@ -292,6 +297,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
 
     def get_queryset(self):
@@ -346,6 +352,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 class NotificationsViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationsSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return Notifications.objects.filter(user=self.request.user, is_active=True).order_by('-send_time')
