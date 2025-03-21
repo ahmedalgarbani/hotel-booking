@@ -3,7 +3,7 @@ from django.views import View
 from rest_framework.routers import DefaultRouter
 
 from customer.models import Favourites
-from .views import BookingViewSet, PaymentViewSet, HotelPaymentMethodViewSet, HotelsViewSet, RoomsViewSet, LoginView, RegisterView,LogoutView,FavouritesViewSet, usage
+from .views import NotificationsViewSet,BookingViewSet, PaymentViewSet, HotelPaymentMethodViewSet, HotelsViewSet, RoomsViewSet, LoginView, RegisterView,LogoutView,FavouritesViewSet, usage
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -17,6 +17,7 @@ router.register(r'favourites', FavouritesViewSet, basename='favourite')
 router.register(r'hotel-payment-methods', HotelPaymentMethodViewSet, basename='hotel-payment-methods')
 router.register(r'payment', PaymentViewSet, basename='payment')
 router.register(r'bookings', BookingViewSet,basename='booking')
+router.register(r'notifications', NotificationsViewSet,basename='notification')
 
 urlpatterns = [
     

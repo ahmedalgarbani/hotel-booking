@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from HotelManagement.models import Hotel
 from bookings.models import Booking
 from customer.models import Favourites
+from notifications.models import Notifications
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
 from rooms.models import RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
@@ -161,6 +162,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
+
+class NotificationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notifications
+        fields = '__all__'
+        read_only_fields = ('sender', 'user', 'send_time')
 
 
 

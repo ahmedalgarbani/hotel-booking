@@ -5,11 +5,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets
 from bookings.models import Booking
 from customer.models import Favourites
+from notifications.models import Notifications
 from payments.models import HotelPaymentMethod, Payment
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
-from .serializers import BookingSerializer, FavouritesSerializer, HotelPaymentMethodSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer
+from .serializers import BookingSerializer, FavouritesSerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -342,7 +343,19 @@ class BookingViewSet(viewsets.ModelViewSet):
 
 
 
+class NotificationsViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationsSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Notifications.objects.filter(user=self.request.user, is_active=True).order_by('-send_time')
+        # return Notifications.objects.all().order_by('-send_time')
+
+    @action(detail=True, methods=['post'])
+    def mark_as_read(self, request, pk=None):
+        notification = self.get_object()
+        notification.mark_as_read()  
+        return Response({'status': 'notification marked as read'}, status=status.HTTP_200_OK)
 
 
 

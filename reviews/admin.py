@@ -65,7 +65,6 @@ class HotelReviewAdmin(admin.ModelAdmin):
     def reject_reviews(self, request, queryset):
         queryset.update(status=False)
 
-@admin.register(RoomReview)
 class RoomReviewAdmin(admin.ModelAdmin):
     list_display = (
         'hotel', 'room_type', 'user', 'rating', 'status', 'created_at'
