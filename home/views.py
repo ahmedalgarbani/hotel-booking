@@ -13,6 +13,7 @@ from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
 from services.models import HotelService
 from .models import TeamMember, Partner, Testimonial
+from .models import PricingPlan
 # Create your views here.
 
 def index(request):
@@ -68,6 +69,54 @@ def about(request):
    
     return render(request,'frontend/home/pages/about.html' ,context)
 
+def price(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/pricing.html' ,context)
+
+def price(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/pricing.html' ,context)
+
+def contact(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/contact.html' ,context)
+
+def service(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/services.html' ,context)
+
+
+
+
+
+
+
+def pricing(request):
+    pricing_plans = PricingPlan.objects.filter(is_active=True)
+    context = {
+        'pricing_plans': pricing_plans,
+    }
+    return render(request, 'frontend/home/pages/pricing.html', context)
 
 
 
