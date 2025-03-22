@@ -5,13 +5,13 @@ from .admin_configurations.user_admin import CustomUserAdmin
 from .admin_configurations.group_admin import CustomGroupAdmin
 from .admin_configurations.activity_log_admin import ActivityLogAdmin
 from django.contrib.auth.models import Group
-
-
-
-
-
-
 from api.admin import admin_site
+
+
+
+
+
+
 
 
 

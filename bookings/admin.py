@@ -591,11 +591,6 @@ class GuestAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
 
     
 
-    
-
-
-
-
 
 
 class BookingDetailAdmin(admin.ModelAdmin):
@@ -665,7 +660,7 @@ class ExtensionMovementAdmin(admin.ModelAdmin):
 from api.admin import admin_site
 
 
-# Booking-------
+# Booking------
 admin_site.register(Booking,BookingAdmin)
 admin_site.register(Guest,GuestAdmin)
 admin_site.register(BookingDetail,BookingDetailAdmin)
