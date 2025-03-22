@@ -13,6 +13,7 @@ urlpatterns = [
     path('hotels',views.hotels,name='hotels'),
     path('hotel/<slug:slug>/', views.hotel_detail, name='hotel_detail'),
     # Rooms
+    path('contact/thank-you/', views.thank_you, name='thank_you'),
     path('pricing/', views.pricing, name='pricing'),
     path('room-search-result', views.room_search_result, name='room-search-result'),
     path('rooms', views.room_list, name='room_list'),
