@@ -35,10 +35,6 @@ class HotelServiceSerializer(serializers.ModelSerializer):
         model = HotelService
         fields = ['id', 'name']
 
-class FavouritesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Favourites
-        fields = ['hotel']
 
 
 
@@ -169,6 +165,11 @@ class NotificationsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('sender', 'user', 'send_time')
 
+class FavouritesSerializer(serializers.ModelSerializer):
+    hotel = HotelSerializer()
+    class Meta:
+        model = Favourites
+        fields = ['hotel']
 
 
 # ------------test------------------

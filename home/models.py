@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
+
 class InfoBox(models.Model):
     icon = models.CharField(max_length=255)  
     title = models.CharField(max_length=255)  
@@ -13,6 +14,7 @@ class InfoBox(models.Model):
     def __str__(self):
         return self.title
     
+
 class RoomTypeHome(models.Model):
     name = models.CharField(max_length=100, verbose_name="اسم الغرفة")  
     image = models.ImageField(upload_to='room_types/', verbose_name="صورة الغرفة")
