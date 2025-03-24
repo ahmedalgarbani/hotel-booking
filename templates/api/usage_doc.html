@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favourites API Documentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px 30px;
+      }
+      h1,
+      h2 {
+        color: #4caf50;
+      }
+      .endpoint {
+        background-color: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .code {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      .note {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Favourites API Documentation</h1>
+
+      <h2>1. List User Favourites</h2>
+      <div class="endpoint">
+        <strong>GET /favourites/</strong>
+      </div>
+      <p>Fetches all favourite hotels for the authenticated user.</p>
+      <div class="code">Authorization: Bearer &lt;access_token&gt;</div>
+
+      <h2>2. Add Favourite</h2>
+      <div class="endpoint">
+        <strong>POST /favourites/</strong>
+      </div>
+      <p>Request Body:</p>
+      <div class="code">{ "hotel": 1 }</div>
+
+      <h2>3. Remove Favourite (Query Parameter)</h2>
+      <div class="endpoint">
+        <strong>DELETE /favourites/?hotel=1</strong>
+      </div>
+
+      <h2>4. Remove Favourite (Request Body)</h2>
+      <div class="endpoint">
+        <strong>DELETE /favourites/remove/</strong>
+      </div>
+      <p>Request Body:</p>
+      <div class="code">{ "hotel": 1 }</div>
+
+      <h2>5. Hotel Search with Adult Number Filter</h2>
+      <div class="endpoint">
+        <strong>GET /hotels/search/?name=HotelName&location=City&adult_number=10</strong>
+      </div>
+      <p>Returns hotels that can accommodate the specified number of adults.</p>
+
+      <h2>6. Authentication</h2>
+      <p>All endpoints require an Authorization token in the header:</p>
+      <div class="code">Authorization: Bearer &lt;access_token&gt;</div>
+
+      <h2>7. Error Responses</h2>
+      <div class="note">
+        <strong>400:</strong> Invalid data or missing fields<br />
+        <strong>401:</strong> Authentication credentials missing or invalid<br />
+        <strong>404:</strong> Resource not found<br />
+        <strong>500:</strong> Internal server error
+      </div>
+      <div class="doc-container">
+        <h2>Notifications API</h2>
+        <p>This endpoint allows authenticated users to view their notifications and mark them as read.</p>
+        
+        <div class="endpoint">
+          <h3>List Notifications</h3>
+          <p><span class="method">Method:</span> GET</p>
+          <p><span class="method">URL:</span> <code>/api/notifications/</code></p>
+          <p>Returns a list of notifications for the authenticated user.</p>
+          <p><strong>Example Response:</strong></p>
+          <pre>{
+        "id": 1,
+        "sender": 2,
+        "user": 1,
+        "message": "Your order has been shipped.",
+        "send_time": "2025-03-21T12:34:56Z",
+        "status": "0",
+        "notification_type": "0",
+        "is_active": true,
+        "action_url": "http://example.com/order/123"
+    }</pre>
+        </div>
+        
+        <div class="endpoint">
+          <h3>Mark Notification as Read</h3>
+          <p><span class="method">Method:</span> POST</p>
+          <p><span class="method">URL:</span> <code>/api/notifications/{'{id}'}/mark_as_read/</code></p>
+          <p>This action marks a specific notification as read.</p>
+          <p><strong>Example Request:</strong></p>
+          <pre>{
+        "id": 1
+    }</pre>
+          <p><strong>Example Response:</strong></p>
+          <pre>{
+        "status": "notification marked as read"
+    }</pre>
+        </div>
+      </div>
+      <div class="doc-container">
+        <h2>Payments, Bookings & Payment Methods API</h2>
+        <p>This documentation describes the endpoints available for managing payments, bookings, and hotel payment methods. All endpoints require an authenticated user.</p>
+        
+        <!-- Payment Endpoints Section -->
+        <div class="endpoint-section">
+          <h3>Payment Endpoints</h3>
+          
+          <div class="endpoint">
+            <h4>List Payments</h4>
+            <p><span class="method">Method:</span> GET</p>
+            <p><span class="method">URL:</span> <code>/api/payments/</code></p>
+            <p>Returns a list of payments for the authenticated user.</p>
+            <p><strong>Example Response:</strong></p>
+            <pre>{
+      "booking": 5,
+      "payment_method": 2,
+      "transfer_image": "http://example.com/media/transfer_image.jpg",
+      "payment_status": 0,
+      "payment_date": "2025-03-21T12:34:56Z",
+      "payment_subtotal": "100.00",
+      "payment_totalamount": "110.00",
+      "payment_currency": "USD",
+      "payment_type": "card",
+      "payment_note": "Payment for booking #5",
+      "payment_discount": "0"
+    }</pre>
+          </div>
+          
+          <div class="endpoint">
+            <h4>Make Payment</h4>
+            <p><span class="method">Method:</span> POST</p>
+            <p><span class="method">URL:</span> <code>/api/payments/make_payment/</code></p>
+            <p>This endpoint creates a new payment for a booking.</p>
+            <p><strong>Required Fields:</strong></p>
+            <ul>
+              <li><code>booking_id</code></li>
+              <li><code>payment_method_id</code></li>
+              <li><code>payment_subtotal</code></li>
+              <li><code>payment_totalamount</code></li>
+              <li><code>payment_currency</code></li>
+              <li><code>payment_type</code></li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre>{
+      "booking_id": 5,
+      "payment_method_id": 2,
+      "payment_subtotal": "100.00",
+      "payment_totalamount": "110.00",
+      "payment_currency": "USD",
+      "payment_type": "card",
+      "transfer_image": "<file>",
+      "payment_note": "Payment for booking #5",
+      "payment_discount": 0
+    }</pre>
+            <p><strong>Example Response:</strong></p>
+            <pre>{
+      "booking": 5,
+      "payment_method": 2,
+      "transfer_image": "http://example.com/media/transfer_image.jpg",
+      "payment_status": 0,
+      "payment_date": "2025-03-21T12:34:56Z",
+      "payment_subtotal": "100.00",
+      "payment_totalamount": "110.00",
+      "payment_currency": "USD",
+      "payment_type": "card",
+      "payment_note": "Payment for booking #5",
+      "payment_discount": "0"
+    }</pre>
+          </div>
+        </div>
+    
+        <!-- Booking Endpoints Section -->
+        <div class="endpoint-section">
+          <h3>Booking Endpoints</h3>
+          
+          <div class="endpoint">
+            <h4>List Bookings</h4>
+            <p><span class="method">Method:</span> GET</p>
+            <p><span class="method">URL:</span> <code>/api/bookings/</code></p>
+            <p>Returns a list of bookings for the authenticated user.</p>
+            <p><strong>Example Response:</strong></p>
+            <pre>{
+      "hotel": 1,
+      "user": 3,
+      "room": 4,
+      "check_in_date": "2025-04-01",
+      "check_out_date": "2025-04-05",
+      "amount": "500.00",
+      "status": "confirmed",
+      "rooms_booked": 1
+    }</pre>
+          </div>
+          
+          <div class="endpoint">
+            <h4>Create Booking</h4>
+            <p><span class="method">Method:</span> POST</p>
+            <p><span class="method">URL:</span> <code>/api/bookings/create_booking/</code></p>
+            <p>This endpoint creates a new booking for the authenticated user.</p>
+            <p><strong>Required Fields:</strong></p>
+            <ul>
+              <li><code>hotel_id</code></li>
+              <li><code>room_id</code></li>
+              <li><code>check_in_date</code></li>
+              <li><code>check_out_date</code></li>
+              <li><code>amount</code></li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre>{
+      "hotel_id": 1,
+      "room_id": 4,
+      "check_in_date": "2025-04-01",
+      "check_out_date": "2025-04-05",
+      "amount": "500.00",
+      "rooms_booked": 1
+    }</pre>
+            <p><strong>Example Response:</strong></p>
+            <pre>{
+      "hotel": 1,
+      "user": 3,
+      "room": 4,
+      "check_in_date": "2025-04-01",
+      "check_out_date": "2025-04-05",
+      "amount": "500.00",
+      "status": "confirmed",
+      "rooms_booked": 1
+    }</pre>
+          </div>
+        </div>
+    
+        <!-- Hotel Payment Method Endpoints Section -->
+        <div class="endpoint-section">
+          <h3>Hotel Payment Method Endpoints</h3>
+          
+          <div class="endpoint">
+            <h4>List Active Payment Methods</h4>
+            <p><span class="method">Method:</span> GET</p>
+            <p><span class="method">URL:</span> <code>/api/hotelpaymentmethods/</code></p>
+            <p>Returns a list of active hotel payment methods.</p>
+            <p><strong>Example Response:</strong></p>
+            <pre>[
+      {
+        "id": 2,
+        "payment_option": {
+          "id": 1,
+          "method_name": "Credit Card",
+          "logo": "http://example.com/media/logo.png",
+          "currency": {
+            "id": 1,
+            "currency_name": "US Dollar",
+            "currency_symbol": "$"
+          }
+        },
+        "account_name": "Hotel ABC",
+        "account_number": "123456789",
+        "iban": "XYZ123456789",
+        "description": "Main payment account"
+      }
+    ]</pre>
+          </div>
+          
+          <div class="endpoint">
+            <h4>Active Payment Methods for a Hotel</h4>
+            <p><span class="method">Method:</span> POST</p>
+            <p><span class="method">URL:</span> <code>/api/hotelpaymentmethods/active_payment_methods/</code></p>
+            <p>This endpoint retrieves active payment methods for a specific hotel.</p>
+            <p><strong>Required Field:</strong></p>
+            <ul>
+              <li><code>hotel_id</code></li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre>{
+      "hotel_id": 1
+    }</pre>
+            <p><strong>Example Response:</strong></p>
+            <pre>[
+      {
+        "id": 2,
+        "payment_option": {
+          "id": 1,
+          "method_name": "Credit Card",
+          "logo": "http://example.com/media/logo.png",
+          "currency": {
+            "id": 1,
+            "currency_name": "US Dollar",
+            "currency_symbol": "$"
+          }
+        },
+        "account_name": "Hotel ABC",
+        "account_number": "123456789",
+        "iban": "XYZ123456789",
+        "description": "Main payment account"
+      }
+    ]</pre>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+  </body>
+</html>

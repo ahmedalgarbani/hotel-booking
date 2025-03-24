@@ -3,13 +3,7 @@ from .models import HeroSlider, InfoBox, RoomTypeHome, Setting, SocialMediaLink
 from .models import TeamMember, Partner, Testimonial, PricingPlan, ContactMessage 
 # Register your models here.
 
-admin.site.register(InfoBox)
-admin.site.register(RoomTypeHome)
-admin.site.register(Setting)
-admin.site.register(SocialMediaLink)
-admin.site.register(HeroSlider)
-admin.site.register(PricingPlan)
-admin.site.register(ContactMessage)
+
 class HeroSliderAdmin(admin.ModelAdmin):
     list_display = ('title', 'is_active')
     list_filter = ('is_active',)
@@ -18,7 +12,17 @@ class HeroSliderAdmin(admin.ModelAdmin):
 
    
 
+from api.admin import admin_site
 
-admin.site.register(TeamMember)
-admin.site.register(Partner)
-admin.site.register(Testimonial)
+
+# home ----------
+admin_site.register(InfoBox)
+admin_site.register(RoomTypeHome)
+admin_site.register(Setting)
+admin_site.register(SocialMediaLink)
+admin_site.register(HeroSlider)
+admin_site.register(TeamMember)
+admin_site.register(Partner)
+admin_site.register(Testimonial)
+admin_site.register(PricingPlan)
+admin_site.register(ContactMessage)

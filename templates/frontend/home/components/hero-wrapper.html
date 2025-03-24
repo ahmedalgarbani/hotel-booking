@@ -49,21 +49,21 @@
                 
                 <!-- end col-lg-3 -->
 
-                {% comment %} {% if roomTypes.count > 0 %}
+                {% if categories.count > 0 %}
                 <div class="col-lg-3 pe-0">
                   <div class="input-box">
                     <label class="label-text">نوع الغرفة</label>
                     <div class="form-group">
-                      <select class="select-contain-select" name="room_type">
+                      <select class="select-contain-select" name="category_type">
                         <option value="">اختر صنف</option>
-                        {% for roomType in roomTypes %}
-                        <option value="{{ roomType.name }}">{{ roomType.name }}</option>
+                        {% for categories in categories %}
+                        <option value="{{ categories.id }}">{{ categories.name }}</option>
                         {% endfor %}
                       </select>
                     </div>
                   </div>
                 </div>
-                {% endif %} {% endcomment %}
+                {% endif %}
                 <!-- end col-lg-3 -->
 
                 <div class="col-lg-3">

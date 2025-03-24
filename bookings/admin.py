@@ -19,25 +19,96 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from django.utils import timezone
 from bookings.forms import BookingAdminForm, BookingExtensionForm
 from rooms.models import Availability, RoomStatus
+from .models import Booking, Guest, BookingDetail
+from HotelManagement.models import Hotel
+from rooms.models import RoomType
+from django.db.models import Q, Sum
 from rooms.services import get_room_price
 from .models import Booking, ExtensionMovement, Guest, BookingDetail
 from django import forms
 from django.contrib.admin.helpers import ActionForm
 from django.utils.html import format_html
+from django.db import transaction
+
+class HotelManagerAdminMixin:
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.user_type == 'hotel_manager':
+            qs = qs.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return qs.filter(hotel__manager=request.user.chield)
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if not request.user.is_superuser:
+            if db_field.name == "hotel":
+                kwargs["queryset"] = Hotel.objects.filter(Q(manager=request.user) | Q(manager=request.user.chield))
+            elif db_field.name == "room":
+                kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            elif db_field.name == "room_status":
+                kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            elif db_field.name == "parent_booking":
+                kwargs["queryset"] = Booking.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            # elif db_field.name == "room_price":
+            #     kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            # elif db_field.name == "room_image":
+            #     kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+    #     if not request.user.is_superuser:
+    #         if obj:  # If the object exists (i.e., we are editing it)
+    #             if 'created_by' in form.base_fields:
+    #                 form.base_fields['created_by'].widget.attrs['readonly'] = True
+    #         if 'updated_by' in form.base_fields:
+    #             form.base_fields['updated_by'].widget.attrs['readonly'] = True
+    #             form.base_fields['updated_by'].required = False
+    #     return form
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
+            
+            if 'updated_by' in form.base_fields:
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['disabled'] = True
+                form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                
+                form.base_fields['created_by'].widget.attrs['disabled'] = True
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].required = False
+        return form
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # If the object exists (i.e., we are editing it)
+            return self.readonly_fields + ('created_by', 'updated_by')
+        return self.readonly_fields
 
 
 class ChangeStatusForm(ActionForm):  
     new_status = forms.ChoiceField(
-        choices=Booking.BookingStatus.choices,
-        required=True,
+        choices=[('', '-- اختر الحالة --')] + list(Booking.BookingStatus.choices),
+        required=False,
         label="الحالة الجديدة"
     )
 
-@admin.register(Booking)
-class BookingAdmin(admin.ModelAdmin):
-    form = BookingAdminForm
+class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
+    # form = BookingAdminForm
     action_form = ChangeStatusForm  
-    list_display = [ 'hotel','id', 'room', 'check_in_date', 'check_out_date', 'amount', 'status','extend_booking_button','set_checkout_today_toggle']
+    list_display = [
+        'hotel', 'id', 'room', 'check_in_date', 'check_out_date', 
+        'amount', 'status', 'payment_status', 'extend_booking_button',
+        'set_checkout_today_toggle'
+    ]
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
     actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
@@ -67,36 +138,68 @@ class BookingAdmin(admin.ModelAdmin):
     set_checkout_today_toggle.short_description = 'تسجيل الخروج الفعلي'
     extend_booking_button.short_description = 'تمديد الحجز'
 
+    def payment_status(self, obj):
+        payment = obj.payments.last()
+        if not payment:
+            return format_html('<span style="color: red;">لم يتم إنشاء دفعة</span>')
+        status_colors = {
+            0: 'orange',  # معلق
+            1: 'green',   # مكتمل
+            2: 'red'      # ملغي
+        }
+        return format_html(
+            '<span style="color: {};">{}</span>',
+            status_colors.get(payment.payment_status, 'black'),
+            payment.get_payment_status_display()
+        )
+    payment_status.short_description = "حالة الدفع"
+    payment_status.allow_tags = True
 
-    
-
-   
     @admin.action(description='تغيير حالة الحجوزات المحددة')
     def change_booking_status(self, request, queryset):
         new_status = request.POST.get('new_status')
+        if new_status == '':
+            self.message_user(request, "لم يتم اختيار حالة جديدة.", level='warning')
+            return
+        
         if new_status:
-            for booking in queryset:
-                booking.status = new_status
-                booking.save()  
-                self.message_user(request, f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{dict(Booking.BookingStatus.choices).get(new_status)}'.")
-        else:
-            self.message_user(request, "الرجاء اختيار حالة جديدة.", level='error')
+            try:
+                with transaction.atomic():
+                    for booking in queryset:
+                        previous_status = booking.status
+                        booking.status = new_status
+                        booking.save()
+
+                        # عند تأكيد الحجز
+                        if new_status == Booking.BookingStatus.CONFIRMED:
+                            # تحديث حالة الدفع الموجود
+                            payment = booking.payments.first()  # نفترض أن كل حجز له دفعة واحدة
+                            if payment:
+                                payment.payment_status = 1  # تم الدفع
+                                payment.save()
+
+                        # عند إلغاء الحجز
+                        elif new_status == Booking.BookingStatus.CANCELED:
+                            payment = booking.payments.first()
+                            if payment:
+                                payment.payment_status = 2  # مرفوض
+                                payment.save()
+
+                    status_label = dict(Booking.BookingStatus.choices).get(new_status)
+                    success_message = f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{status_label}'"
+                    if new_status in [Booking.BookingStatus.CONFIRMED, Booking.BookingStatus.CANCELED]:
+                        success_message += " وتم تحديث حالات الدفع المرتبطة"
+                    self.message_user(request, success_message)
+
+            except Exception as e:
+                self.message_user(request, f"حدث خطأ أثناء تحديث الحجوزات: {str(e)}", level='error')
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['status_choices'] = Booking.BookingStatus.choices
         return super().changelist_view(request, extra_context=extra_context)
 
-  
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return queryset
-        elif request.user.user_type == 'hotel_manager':
-           
-            return queryset.filter(hotel__manager=request.user)
-        return queryset.none()
-   
+
     def get_guest_name(self, obj):
         guest = obj.guests.first()
         return guest.name if guest else "لا يوجد ضيف"
@@ -473,8 +576,7 @@ class BookingAdmin(admin.ModelAdmin):
 
         return render(request, 'admin/bookings/booking_extension.html', context)
 
-@admin.register(Guest)
-class GuestAdmin(admin.ModelAdmin):
+class GuestAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     list_display = ['name', 'phone_number', 'hotel', 'booking','set_checkout_today_toggle']
     list_filter = ['hotel']
     search_fields = ['name', 'phone_number']
@@ -489,14 +591,8 @@ class GuestAdmin(admin.ModelAdmin):
 
     
 
-    
 
 
-
-
-
-
-@admin.register(BookingDetail)
 class BookingDetailAdmin(admin.ModelAdmin):
     list_display = ['booking', 'quantity', 'price', 'total']
     list_filter = ['booking__status', ]
@@ -504,7 +600,6 @@ class BookingDetailAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(ExtensionMovement)
 class ExtensionMovementAdmin(admin.ModelAdmin):
     list_display = (
         'movement_number', 
@@ -561,3 +656,12 @@ class ExtensionMovementAdmin(admin.ModelAdmin):
     payment_button.short_description = 'فاتورة الدفع'
     payment_button.allow_tags = True
 
+
+from api.admin import admin_site
+
+
+# Booking------
+admin_site.register(Booking,BookingAdmin)
+admin_site.register(Guest,GuestAdmin)
+admin_site.register(BookingDetail,BookingDetailAdmin)
+admin_site.register(ExtensionMovement,ExtensionMovementAdmin)

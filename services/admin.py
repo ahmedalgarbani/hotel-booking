@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.utils.html import format_html
+
+from bookings.models import Booking
 from .models import HotelService, RoomTypeService, Offer
 
 
-@admin.register(HotelService)
 class HotelServiceAdmin(admin.ModelAdmin):
     list_display = ("name", "hotel", "is_active", "icon_display")
     list_filter = ("is_active", "hotel")
@@ -17,7 +18,6 @@ class HotelServiceAdmin(admin.ModelAdmin):
     icon_display.short_description = "Icon"
 
 
-@admin.register(RoomTypeService)
 class RoomTypeServiceAdmin(admin.ModelAdmin):
     list_display = ("name", "room_type", "hotel", "is_active", "additional_fee", "icon_display")
     list_filter = ("is_active", "room_type", "hotel")
@@ -31,7 +31,6 @@ class RoomTypeServiceAdmin(admin.ModelAdmin):
     icon_display.short_description = "Icon"
 
 
-@admin.register(Offer)
 class OfferAdmin(admin.ModelAdmin):
     list_display = ("offer_name", "hotel_name", "offer_start_date", "offer_end_date",)
     list_filter = ("offer_start_date", "offer_end_date", "hotel")
@@ -47,3 +46,15 @@ class OfferAdmin(admin.ModelAdmin):
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
+
+
+from api.admin import admin_site
+
+
+
+# Service -----------
+
+admin_site.register(Offer,OfferAdmin)
+admin_site.register(RoomTypeService,RoomTypeServiceAdmin)
+admin_site.register(HotelService,HotelServiceAdmin)
+

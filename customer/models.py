@@ -25,4 +25,4 @@ class Favourites(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.name} - {self.hotel}"
+        return f"{self.user.first_name} - {self.hotel}"

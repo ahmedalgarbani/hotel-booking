@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from api.admin import admin_site
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('users/', include('users.urls', namespace='users')),
     path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagement')),
     path('', include('home.urls'), name='home'),

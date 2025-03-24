@@ -12,8 +12,11 @@ from django.db.models import Q, Sum
 from django.utils.safestring import mark_safe
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
+from HotelManagement.admin import ImageAdmin
 from HotelManagement.models import Hotel
+from api.admin import admin_site
 from .models import RoomType, Category, Availability, RoomPrice, RoomImage, RoomStatus
+
 class HotelManagerAdminMixin:
 
     def get_queryset(self, request):
@@ -40,15 +43,36 @@ class HotelManagerAdminMixin:
                 kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+    #     if not request.user.is_superuser:
+    #         if obj:  # If the object exists (i.e., we are editing it)
+    #             if 'created_by' in form.base_fields:
+    #                 form.base_fields['created_by'].widget.attrs['readonly'] = True
+    #         if 'updated_by' in form.base_fields:
+    #             form.base_fields['updated_by'].widget.attrs['readonly'] = True
+    #             form.base_fields['updated_by'].required = False
+    #     return form
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if not request.user.is_superuser:
-            if obj:  # If the object exists (i.e., we are editing it)
-                if 'created_by' in form.base_fields:
-                    form.base_fields['created_by'].widget.attrs['readonly'] = True
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
+            
             if 'updated_by' in form.base_fields:
-                form.base_fields['updated_by'].widget.attrs['readonly'] = True
+                form.base_fields['updated_by'].initial = request.user
+                form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
+            
+            if 'created_by' in form.base_fields:
+                
+                form.base_fields['created_by'].widget.attrs['disabled'] = True
+                form.base_fields['created_by'].initial = request.user
+                form.base_fields['created_by'].required = False
         return form
 
     def get_readonly_fields(self, request, obj=None):
@@ -62,7 +86,6 @@ class HotelManagerAdminMixin:
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
 
-@admin.register(Category)
 class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'hotel', 'description', 'get_room_types_count']
     search_fields = ['name', 'hotel__name']
@@ -72,7 +95,6 @@ class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         return obj.room_types.count()
     get_room_types_count.short_description = _("عدد أنواع الغرف")
 
-@admin.register(RoomType)
 class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'hotel', 'category', 'default_capacity', 'max_capacity', 'rooms_count', 'base_price', 'is_active', 'get_available_rooms', 'preview_image']
     search_fields = ['name', 'hotel__name']
@@ -130,7 +152,6 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         )
     is_active.short_description = _("نشط")
 
-@admin.register(RoomStatus)
 class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'code', 'hotel', 'is_available', 'get_rooms_count']
     search_fields = ['name', 'code', 'hotel__name']
@@ -166,7 +187,6 @@ class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     is_available.short_description = _("الحالة")
     is_available.boolean = True
 
-@admin.register(Availability)
 class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     change_list_template = 'admin/rooms/availability/change_list.html'
     list_display = ['room_type', 'hotel', 'availability_date', 'available_rooms', 'room_status', 'bulk_create_button']
@@ -174,7 +194,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_filter = ['hotel', 'availability_date', 'room_type', 'room_status']
     list_editable = ['available_rooms']
     date_hierarchy = 'availability_date'
-
+    
     def bulk_create_button(self, obj):
         """عرض زر الإنشاء الجماعي"""
         url = reverse('admin:rooms_availability_bulk_create')
@@ -293,7 +313,6 @@ class BulkAvailabilityAdminForm(forms.Form):
             self.fields['room_status'].queryset = RoomStatus.objects.filter(hotel__manager=user)
             self.fields['room_type'].queryset = RoomType.objects.filter(hotel__manager=user)
 
-@admin.register(RoomPrice)
 class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['room_type', 'hotel', 'price', 'date_from', 'date_to', 'is_special_offer', 'get_days_remaining']
     search_fields = ['room_type__name', 'hotel__name']
@@ -308,7 +327,6 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         return _("منتهي")
     get_days_remaining.short_description = _("المدة المتبقية")
 
-@admin.register(RoomImage)
 class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['room_type', 'hotel', 'preview_image', 'is_main', 'caption']
     search_fields = ['room_type__name', 'hotel__name', 'caption']
@@ -320,3 +338,16 @@ class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.image.url}" width="50" height="50" />')
         return ""
     preview_image.short_description = _("معاينة")
+
+
+
+
+
+admin_site.register(Category,CategoryAdmin)
+
+
+admin_site.register(RoomImage,RoomImageAdmin)
+admin_site.register(RoomPrice,RoomPriceAdmin)
+admin_site.register(Availability,AvailabilityAdmin)
+admin_site.register(RoomStatus,RoomStatusAdmin)
+admin_site.register(RoomType,RoomTypeAdmin)

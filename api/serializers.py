@@ -1,8 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from HotelManagement.models import Hotel
+from bookings.models import Booking
+from customer.models import Favourites
+from notifications.models import Notifications
+from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
 from rooms.models import RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -15,7 +20,10 @@ class ImageSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.image.url) if obj.image else None
+        if request:
+            return request.build_absolute_uri(obj.image.url) if obj.image else None
+        return obj.image.url if obj.image else None
+
 
 class RoomServiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,6 +35,69 @@ class HotelServiceSerializer(serializers.ModelSerializer):
         model = HotelService
         fields = ['id', 'name']
 
+
+
+
+class CurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Currency
+        fields = ['id', 'currency_name', 'currency_symbol']
+
+class PaymentOptionSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+    
+    class Meta:
+        model = PaymentOption
+        fields = ['id', 'method_name', 'logo', 'currency']
+
+class HotelPaymentMethodSerializer(serializers.ModelSerializer):
+    payment_option = PaymentOptionSerializer()
+    
+    class Meta:
+        model = HotelPaymentMethod
+        fields = [
+            'id',
+            'payment_option',
+            'account_name',
+            'account_number',
+            'iban',
+            'description',
+            
+        ]      
+
+
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = [
+            'booking', 'payment_method', 'transfer_image', 'payment_status', 
+            'payment_date', 'payment_subtotal', 'payment_totalamount', 
+            'payment_currency', 'payment_type', 'payment_note', 'payment_discount'
+        ]
+        extra_kwargs = {
+            'transfer_image': {'required': False, 'allow_null': True}
+        }
+
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = [
+            'hotel', 'user', 'room', 'check_in_date', 'check_out_date', 
+            'amount', 'status',  'rooms_booked'
+        ]
+
+    def validate(self, data):
+        if data.get('check_in_date') and data.get('check_out_date'):
+            if data['check_in_date'] >= data['check_out_date']:
+                raise serializers.ValidationError('Check-in date must be before check-out date.')
+
+        if data.get('amount') <= 0:
+            raise serializers.ValidationError('Amount must be greater than 0.')
+
+        return data
+        
 class RoomsSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
@@ -51,6 +122,7 @@ class HotelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
         fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms']
+        
 
     def get_rooms(self, obj):
         rooms = RoomType.objects.filter(hotel=obj)
@@ -63,6 +135,7 @@ class HotelSerializer(serializers.ModelSerializer):
         return obj.location.address if obj.location else None
 
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
 
@@ -73,15 +146,30 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)
-        validated_data["user_type"] = "customer"  
-        user = User.objects.create_user(**validated_data)
-        
+        validated_data["user_type"] = "customer"
+        try:
+            user = User.objects.create_user(**validated_data)
+        except ValidationError as e:
+            raise serializers.ValidationError({'error': str(e)})
+
         if image:
             user.image = image
             user.save()
-            
+
         return user
 
+
+class NotificationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notifications
+        fields = '__all__'
+        read_only_fields = ('sender', 'user', 'send_time')
+
+class FavouritesSerializer(serializers.ModelSerializer):
+    hotel = HotelSerializer()
+    class Meta:
+        model = Favourites
+        fields = ['hotel']
 
 
 # ------------test------------------

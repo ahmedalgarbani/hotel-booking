@@ -1,7 +1,10 @@
+from pyexpat import model
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 
 
 # ------------Currency-------------
@@ -27,7 +30,7 @@ class Currency(BaseModel):
 
 
 # ------------PaymentOption-------------
-class PaymentOption(models.Model):
+class PaymentOption(BaseModel):
     method_name = models.CharField(max_length=100, verbose_name=_("اسم طريقة الدفع"))
     logo = models.ImageField(upload_to='payment_logos/', null=True, blank=True, verbose_name=_("شعار"))
     currency = models.ForeignKey(
@@ -47,7 +50,7 @@ class PaymentOption(models.Model):
         verbose_name_plural = _("طرق الدفع")
 
 # ------------HotelPaymentMethod-------------
-class HotelPaymentMethod(models.Model):
+class HotelPaymentMethod(BaseModel):
     hotel = models.ForeignKey(
         Hotel,
         on_delete=models.CASCADE,
@@ -65,12 +68,14 @@ class HotelPaymentMethod(models.Model):
     description = models.TextField(verbose_name=_("تعليمات الدفع"), blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name=_("نشط"))
 
+    
+
     def __str__(self):
         return f"{self.hotel.name} - {self.payment_option.method_name}"
 
     class Meta:
-        verbose_name = _("طريقة دفع الفندق")
-        verbose_name_plural = _("طرق دفع الفندق")
+        verbose_name = 'طريقة دفع الفندق'
+        verbose_name_plural = 'طرق دفع الفندق'
         unique_together = ['hotel', 'payment_option']
 
 
