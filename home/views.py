@@ -13,6 +13,15 @@ from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
 from services.models import HotelService
 from .models import TeamMember, Partner, Testimonial
+from .models import PricingPlan
+
+
+
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+
+from .models import ContactMessage
+
 # Create your views here.
 
 def index(request):
@@ -69,6 +78,54 @@ def about(request):
    
     return render(request,'frontend/home/pages/about.html' ,context)
 
+def price(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/pricing.html' ,context)
+
+def price(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/pricing.html' ,context)
+
+def contact(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/contact.html' ,context)
+
+def service(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/services.html' ,context)
+
+
+
+
+
+
+
+def pricing(request):
+    pricing_plans = PricingPlan.objects.filter(is_active=True)
+    context = {
+        'pricing_plans': pricing_plans,
+    }
+    return render(request, 'frontend/home/pages/pricing.html', context)
 
 
 
@@ -153,7 +210,7 @@ def room_search_result(request):
     return render(request,'frontend/home/pages/room-search-result.html',ctx)
 
 
-from django.core.paginator import Paginator
+
 
 def room_list(request):
     categories = Category.objects.prefetch_related('room_types').all()
@@ -168,3 +225,36 @@ def room_list(request):
         'paginator': paginator,
     }
     return render(request, 'frontend/home/pages/room-list.html', context)
+
+
+
+
+
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            
+            # حفظ الرسالة في قاعدة البيانات
+            ContactMessage.objects.create(name=name, email=email, message=message)
+            
+            # إرسال البريد الإلكتروني
+            send_mail(
+                f'New contact form submission from {name}',
+                message,
+                email,
+                ['your_email@example.com'],  # استبدل هذا بعنوان بريدك الإلكتروني
+            )
+            
+            return redirect('thank_you')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'frontend/home/pages/contact.html', {'form': form})
+
+def thank_you(request):
+    return render(request, 'frontend/home/pages/thank_you.html')

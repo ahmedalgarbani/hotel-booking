@@ -145,3 +145,35 @@ class Testimonial(models.Model):
 
     def str(self):
         return self.name
+    
+
+class PricingPlan(models.Model):
+    title = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    duration = models.CharField(max_length=50)  # مثال: "كل شهر"
+    features = models.TextField()  # تخزين الميزات كسلسلة مفصولة بفواصل
+    is_active = models.BooleanField(default=False)
+
+    def get_features_list(self):
+        return self.features.split(',')
+
+    def __str__(self):
+        return self.title
+
+    
+
+
+
+
+
+
+   
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

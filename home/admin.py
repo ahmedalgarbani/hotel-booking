@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import HeroSlider, InfoBox, RoomTypeHome, Setting, SocialMediaLink
-from .models import TeamMember, Partner, Testimonial
+from .models import TeamMember, Partner, Testimonial, PricingPlan, ContactMessage 
 # Register your models here.
 
 
@@ -24,3 +24,5 @@ admin_site.register(HeroSlider)
 admin_site.register(TeamMember)
 admin_site.register(Partner)
 admin_site.register(Testimonial)
+admin_site.register(PricingPlan)
+admin_site.register(ContactMessage)

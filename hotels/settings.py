@@ -512,6 +512,18 @@ NAV_MENU_TOP = [
         "url": "/rooms",  
     },
     {
+        "name": "prince",
+        "url": "/price",  
+    },
+    {
+        "name": "contact",
+        "url": "/contact",  
+    },
+    {
+        "name": "service",
+        "url": "/service",  
+    },
+    {
         "name": "اشترك معنا",
         "url": "/users/register/",  
     },
