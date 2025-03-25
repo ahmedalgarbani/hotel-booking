@@ -166,10 +166,14 @@ class NotificationsSerializer(serializers.ModelSerializer):
         read_only_fields = ('sender', 'user', 'send_time')
 
 class FavouritesSerializer(serializers.ModelSerializer):
-    hotel = HotelSerializer()
+    hotel = serializers.PrimaryKeyRelatedField(
+        queryset=Hotel.objects.all(), write_only=True
+    )
+    hotel_data = HotelSerializer(source='hotel', read_only=True)
+
     class Meta:
         model = Favourites
-        fields = ['hotel']
+        fields = ['hotel','hotel_data']
 
 
 # ------------test------------------

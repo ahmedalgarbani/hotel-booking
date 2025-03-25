@@ -153,6 +153,8 @@ class PricingPlan(models.Model):
     duration = models.CharField(max_length=50)  # مثال: "كل شهر"
     features = models.TextField()  # تخزين الميزات كسلسلة مفصولة بفواصل
     is_active = models.BooleanField(default=False)
+    def __str__(self):
+        return self.title
 
     def get_features_list(self):
         return self.features.split(',')
@@ -174,6 +176,9 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    def __str__(self):
+        return f"Message from {self.name} - {self.created_at}"
 
     def __str__(self):
         return self.name

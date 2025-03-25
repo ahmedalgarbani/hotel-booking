@@ -97,7 +97,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=100),  
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),  
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  
     "ROTATE_REFRESH_TOKENS": True,  
     "BLACKLIST_AFTER_ROTATION": True,  
@@ -512,15 +512,15 @@ NAV_MENU_TOP = [
         "url": "/rooms",  
     },
     {
-        "name": "prince",
+        "name": "الاسعار",
         "url": "/price",  
     },
     {
-        "name": "contact",
+        "name": "تواصل معنا",
         "url": "/contact",  
     },
     {
-        "name": "service",
+        "name": "خدماتنا",
         "url": "/service",  
     },
     {
