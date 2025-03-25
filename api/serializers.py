@@ -175,6 +175,15 @@ class FavouritesSerializer(serializers.ModelSerializer):
         model = Favourites
         fields = ['hotel','hotel_data']
 
+  
+class HotelAvabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hotel
+        fields = ['id', 'name', 'location',]
+
+
+
+
 
 # ------------test------------------
 # {

@@ -153,6 +153,8 @@ class PricingPlan(models.Model):
     duration = models.CharField(max_length=50)  # مثال: "كل شهر"
     features = models.TextField()  # تخزين الميزات كسلسلة مفصولة بفواصل
     is_active = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False)
+
     def __str__(self):
         return self.title
 

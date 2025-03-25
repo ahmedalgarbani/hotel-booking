@@ -2,6 +2,7 @@ from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
 from blog.models import Post
+from home.forms import ContactForm
 from home.models import *
 from payments.models import HotelPaymentMethod
 from django.db.models import Avg, Count,Q,OuterRef, Subquery, Max,F
@@ -88,8 +89,10 @@ def price(request):
     return render(request,'frontend/home/pages/pricing.html' ,context)
 
 def price(request):
-
+    pricing_plans = PricingPlan.objects.filter(is_active=True)[:3]
+    
     context = {
+        'pricing_plans': pricing_plans,
     }
 
    
@@ -247,14 +250,26 @@ def contact(request):
                 f'New contact form submission from {name}',
                 message,
                 email,
-                ['your_email@example.com'],  # استبدل هذا بعنوان بريدك الإلكتروني
+                ['ahme@gmail.com'],  # استبدل هذا بعنوان بريدك الإلكتروني
             )
             
             return redirect('thank_you')
     else:
+        try:
+            setting = Setting.objects.latest('id')
+        except Setting.DoesNotExist:
+            setting = None  
+
+        socialMediaLink = SocialMediaLink.objects.filter(status=True)
+
         form = ContactForm()
-    
-    return render(request, 'frontend/home/pages/contact.html', {'form': form})
+        ctx = {
+            'form': form,
+            'setting': setting,
+            'socialMediaLink': socialMediaLink,
+        }
+
+    return render(request, 'frontend/home/pages/contact.html', ctx)
 
 def thank_you(request):
     return render(request, 'frontend/home/pages/thank_you.html')

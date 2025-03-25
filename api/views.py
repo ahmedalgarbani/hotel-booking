@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from httpx import request
 from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets
+from HotelManagement.services import get_hotels_query, get_query_params
 from bookings.models import Booking
 from customer.models import Favourites
 from notifications.models import Notifications
@@ -10,7 +11,7 @@ from payments.models import HotelPaymentMethod, Payment
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
-from .serializers import BookingSerializer, FavouritesSerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer
+from .serializers import BookingSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,7 +25,7 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 
-
+ 
 User = get_user_model()
 # Views
 
@@ -363,6 +364,39 @@ class NotificationsViewSet(viewsets.ModelViewSet):
         notification = self.get_object()
         notification.mark_as_read()  
         return Response({'status': 'notification marked as read'}, status=status.HTTP_200_OK)
+
+
+
+    
+class HotelAvailabilityViewSet(APIView):
+    def get(self, request):
+        
+        hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
+        hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number, check_in, check_out)
+    
+        serializer = HotelSerializer(hotels_query, many=True, context={'request': request})
+        return Response({
+            'adult_number': adult_number,
+            'check_in_start': check_in.strftime('%m/%d/%Y') if check_in else '',
+            'check_out_start': check_out.strftime('%m/%d/%Y') if check_out else '',
+            'hotels': serializer.data,
+            'error_message': error_message,
+        }, status=status.HTTP_200_OK)
+
+
+
+
+
+
+# http://127.0.0.1:8000/api/hotel_availability/?hotel_name=hotel_name&check_in=2025-03-25 00:00:00&check_out=2025-03-28 00:00:00&adult_number=1&room_number=1&category_type=1
+
+
+
+
+
+
+
+
 
 
 

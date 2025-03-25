@@ -18,11 +18,11 @@ START PACKAGE AREA
       </div>
       <!-- end col-lg-12 -->
     </div>
-    <!-- end row -->
+    <!-- end row    -->
     <div class="row padding-top-80px">
       {% for plan in pricing_plans %}
       <div class="col-lg-4 p-0">
-        <div class="package-card {% if plan.is_active %}package-card-active{% endif %}">
+        <div class="package-card {% if plan.is_primary %}package-card-active{% endif %}">
           <div class="package-title">
             <h2 class="package__title">{{ plan.title }}</h2>
             <h3 class="package__price"><span>$</span>{{ plan.price }}</h3>
@@ -43,7 +43,7 @@ START PACKAGE AREA
             {% endfor %}
           </ul>
           <div class="btn-box">
-            <a href="#" class="theme-btn {% if not plan.is_active %}theme-btn-transparent{% endif %}">اختر خطة</a>
+            <a href="{% url 'HotelManagement:add_request' %}" class="theme-btn {% if not plan.is_primary %}theme-btn-transparent{% endif %}">اختر خطة</a>
           </div>
         </div>
         <!-- end package-card -->

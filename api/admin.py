@@ -10,6 +10,15 @@ from services.models import *
 from notifications.models import Notifications
 from reviews.models import HotelReview, RoomReview
 import datetime
+from django.contrib import admin
+from django_celery_beat.models import (
+    IntervalSchedule, 
+    CrontabSchedule,
+    SolarSchedule,
+    ClockedSchedule,
+    PeriodicTask
+)
+
 class CustomAdminSite(admin.AdminSite):
     def index(self, request, extra_context=None):
         extra_context = extra_context or {}
@@ -96,3 +105,9 @@ class CustomAdminSite(admin.AdminSite):
         return super().index(request, extra_context=extra_context)
 
 admin_site = CustomAdminSite(name='custom_admin')
+
+admin_site.register(IntervalSchedule)
+admin_site.register(CrontabSchedule)
+admin_site.register(SolarSchedule)
+admin_site.register(ClockedSchedule)
+admin_site.register(PeriodicTask)
