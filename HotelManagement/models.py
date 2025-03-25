@@ -15,7 +15,7 @@ from .notifications import Notification
 from users.models import CustomUser
 import json
 
-
+  
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,

@@ -131,7 +131,7 @@ def notifications_context(request):
 
 
 
-
+ 
 def hotel_search(request):
     hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
     today = datetime.now().date()
