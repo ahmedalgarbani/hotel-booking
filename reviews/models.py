@@ -75,6 +75,8 @@ class HotelReview(BaseModel):
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.hotel.name} ({self.rating_service} نجوم)"
+    
+    
 
 class RoomReview(BaseModel):
     hotel = models.ForeignKey(
