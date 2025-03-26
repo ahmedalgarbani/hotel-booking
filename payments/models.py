@@ -89,7 +89,6 @@ class Payment(BaseModel):
         verbose_name=_("الحجز"),
         related_name='payments'
     )
-  
     payment_method = models.ForeignKey(
         HotelPaymentMethod,
         on_delete=models.CASCADE,
