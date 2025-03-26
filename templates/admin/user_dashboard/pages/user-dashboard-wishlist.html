@@ -14,7 +14,7 @@
           </div>
           <div class="form-content pt-5 pb-0">
             <div class="row">
-              {% for favourites in favourites %}
+              {% for favourite in favourites %}
               <div class="col-lg-4 responsive-column">
                 <div class="card-item">
                   <div class="card-img">
@@ -22,13 +22,15 @@
                       <img src="images/img1.jpg" alt="hotel-img" />
                     </a>
                     <span class="badge">الأكثر مبيعا</span>
-                    <div
-                      class="add-to-wishlist icon-element"
-                      data-bs-toggle="tooltip"
-                      data-placement="top"
-                      title="إزالة"
-                    >
-                      <i class="la la-heart"></i>
+                    <div class="add-to-wishlist icon-element"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        title="إزالة">
+                        <!-- رابط حذف المفضلة -->
+                        <a href="{% url 'customer:remove_favourite' favourite.id %}" class="remove-favourite-btn">
+                          <i class="la la-heart"></i>
+                      </a>
+                      
                     </div>
                   </div>
                   <div class="card-body">
@@ -41,17 +43,13 @@
                       <span class="review__text">معدل</span>
                       <span class="rating__text">(30 التعليقات)</span>
                     </div>
-                    <div
-                      class="card-price d-flex align-items-center justify-content-between"
-                    >
+                    <div class="card-price d-flex align-items-center justify-content-between">
                       <p>
                         <span class="price__from">من عند</span>
                         <span class="price__num">$88.00</span>
                         <span class="price__text">لليلة الواحدة</span>
                       </p>
-                      <a href="hotel-single.html" class="btn-text"
-                        >انظر التفاصيل<i class="la la-angle-right"></i
-                      ></a>
+                      <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
                     </div>
                   </div>
                 </div>
@@ -82,18 +80,14 @@
               <a class="page-link page-link-nav" href="#">1</a>
             </li>
             <li class="page-item active">
-              <a class="page-link page-link-nav" href="#"
-                >2 <span class="sr-only">(current)</span></a
-              >
+              <a class="page-link page-link-nav" href="#">2 <span class="sr-only">(current)</span></a>
             </li>
             <li class="page-item">
               <a class="page-link page-link-nav" href="#">3</a>
             </li>
             <li class="page-item">
               <a class="page-link page-link-nav" href="#" aria-label="Next">
-                <span aria-hidden="true"
-                  ><i class="la la-angle-right"></i
-                ></span>
+                <span aria-hidden="true"><i class="la la-angle-right"></i></span>
                 <span class="sr-only">Next</span>
               </a>
             </li>
@@ -142,3 +136,27 @@
   <!-- end container-fluid -->
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).on('click', '.remove-favourite-btn', function (e) {
+    e.preventDefault();
+    var url = $(this).attr('href');
+    
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+                alert('تم الحذف بنجاح');
+                location.reload();
+            }
+        },
+        error: function () {
+            alert('حدث خطأ أثناء الحذف');
+        }
+    });
+});
+</script>
+{% endblock %}

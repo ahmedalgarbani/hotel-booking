@@ -204,3 +204,23 @@ def add_to_favorites(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from .models import Favourites
+
+def remove_favourite(request, favourite_id):
+    favourite = get_object_or_404(Favourites, id=favourite_id)
+
+    if favourite.user == request.user:
+        favourite.delete()
+    else:
+        pass
+
+    # إعادة نفس الصفحة بعد الحذف
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':  # تحقق من طلب Ajax
+        return JsonResponse({'success': True})
+    else:
+        return redirect(request.META.get('HTTP_REFERER'))  # العودة إلى نفس الصفحة
