@@ -47,9 +47,94 @@ def about(request):
     return render(request,'frontend/home/pages/about.html')
 
 def hotels(request):
+    # Get search parameters
+    search_query = request.GET.get('search', '')
+    rooms = request.GET.get('rooms', '')
+    persons = request.GET.get('persons', '')
+    max_persons = request.GET.get('max_persons', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    ratings = request.GET.getlist('rating')  # Get all selected ratings
+    services = request.GET.getlist('services')  # Get all selected services
+    
+    # Get all active services for the template
+    all_services = HotelService.objects.filter(is_active=True).values('id', 'name').distinct().order_by('name')
+    # Convert QuerySet to list to remove any potential duplicates based on name
+    all_services = list({service['name']: service for service in all_services}.values())
+    
+    # Start with all verified hotels
     hotels = Hotel.objects.filter(is_verified=True)
+    
+    # Filter by room availability and capacity only if values are provided
+    if rooms and persons and max_persons:
+        try:
+            rooms = int(rooms)
+            persons = int(persons)
+            max_persons = int(max_persons)
+            
+            hotels = hotels.filter(
+                room_types__is_active=True,
+                room_types__rooms_count__gte=rooms,
+                room_types__default_capacity__gte=persons,
+                room_types__max_capacity__gte=max_persons
+            ).distinct()
+        except ValueError:
+            pass  # If conversion fails, ignore the filter
+    
+    # Apply price filter if values are provided
+    if min_price or max_price:  
+        try:
+            if min_price:
+                min_price = float(min_price)
+                hotels = hotels.filter(room_types__base_price__gte=min_price)
+            if max_price:
+                max_price = float(max_price)
+                hotels = hotels.filter(room_types__base_price__lte=max_price)
+            hotels = hotels.distinct()
+        except ValueError:
+            pass  # If conversion fails, ignore the filter
+    
+    # Apply rating filter if any ratings are selected
+    if ratings:
+        try:
+            ratings = [int(r) for r in ratings]
+            # Filter hotels by service rating only
+            hotels = hotels.filter(hotel_reviews__rating_service__in=ratings).distinct()
+        except ValueError:
+            pass  # If conversion fails, ignore the filter
+            
+    # Apply services filter if any services are selected
+    if services:
+        try:
+            services = [int(s) for s in services]
+            # Filter hotels that have the selected service
+            hotels = hotels.filter(hotel_services__id__in=services).distinct()
+            # Annotate hotels with their services for display
+            hotels = hotels.annotate(
+                matched_services=Count('hotel_services', filter=Q(hotel_services__id__in=services))
+            )
+        except ValueError:
+            pass  # If conversion fails, ignore the filter
+    
+    # Apply search filters if search query exists
+    if search_query:
+        hotels = hotels.filter(
+            Q(name__icontains=search_query) |
+            Q(location__address__icontains=search_query) |
+            Q(location__city__state__icontains=search_query)
+        )
+    
     ctx = {
-        'hotels':hotels,
+        'hotels': hotels,
+        'search_query': search_query,
+        'rooms': rooms,
+        'persons': persons,
+        'max_persons': max_persons,
+        'min_price': min_price,
+        'max_price': max_price,
+        'ratings': ratings or [],  # Pass selected ratings back to template
+        'all_services': all_services,  # All available services
+        'selected_services': services or [],  # Currently selected services
     }
     return render(request,'frontend/home/pages/hotel-sidebar.html',ctx)
 
