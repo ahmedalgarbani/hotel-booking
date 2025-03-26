@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
+
 class InfoBox(models.Model):
     icon = models.CharField(max_length=255)  
     title = models.CharField(max_length=255)  
@@ -13,6 +14,7 @@ class InfoBox(models.Model):
     def __str__(self):
         return self.title
     
+
 class RoomTypeHome(models.Model):
     name = models.CharField(max_length=100, verbose_name="اسم الغرفة")  
     image = models.ImageField(upload_to='room_types/', verbose_name="صورة الغرفة")
@@ -105,3 +107,80 @@ class HeroSlider(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+
+
+
+
+
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    bio = models.TextField()
+    image = models.ImageField(upload_to='team/')
+    facebook = models.URLField(blank=True, null=True)
+    twitter = models.URLField(blank=True, null=True)
+    instagram = models.URLField(blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+
+    def str(self):
+        return self.name
+
+class Partner(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='partners/')
+
+    def str(self):
+        return self.name
+
+class Testimonial(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    content = models.TextField()
+    image = models.ImageField(upload_to='testimonials/')
+
+    def str(self):
+        return self.name
+    
+
+class PricingPlan(models.Model):
+    title = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    duration = models.CharField(max_length=50)  # مثال: "كل شهر"
+    features = models.TextField()  # تخزين الميزات كسلسلة مفصولة بفواصل
+    is_active = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+    def get_features_list(self):
+        return self.features.split(',')
+
+    def __str__(self):
+        return self.title
+
+    
+
+
+
+
+
+
+   
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    def __str__(self):
+        return f"Message from {self.name} - {self.created_at}"
+
+    def __str__(self):
+        return self.name

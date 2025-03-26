@@ -21,8 +21,24 @@ from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.db.models import Sum
+from bookings.models import Booking
+from payments.models import Payment
+
+
 
 User = get_user_model()
+
+
+
+
+
+
+
+
+
 
 def export_to_excel(modeladmin, request, queryset):
     response = HttpResponse(content_type='application/ms-excel')
@@ -50,7 +66,6 @@ def export_to_excel(modeladmin, request, queryset):
 
 export_to_excel.short_description = "تصدير الفنادق المحددة إلى Excel"
 
-@admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
     list_display = ['name', 'location','get_absolute_url_link',  'verification_status', 'phone_count', 'created_at']
     search_fields = ['name',]
@@ -200,7 +215,6 @@ class HotelAdmin(admin.ModelAdmin):
 
 
 # ----------- Location --------------
-@admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ( 'address', 'city',  'created_at')
     list_filter = ('city',)
@@ -244,7 +258,6 @@ class LocationAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
 # ----------- Phone --------------
-@admin.register(Phone)
 class PhoneAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'country_code', 'hotel', 'created_at')
     search_fields = ('phone_number', 'hotel__name')
@@ -319,20 +332,19 @@ class ImageAdminForm(forms.ModelForm):
                 self.fields['created_by'].disabled = True
                 self.fields['created_by'].required = False
 
-@admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    form = ImageAdminForm
-    list_display = ('image_path', 'image_url', 'hotel_id', 'created_at')
+    # form = ImageAdminForm
+    list_display = ('image_path', 'image_url', 'hotel', 'created_at')
     search_fields = ('image_path',)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
             
-            form.base_fields['hotel_id'].queryset = Hotel.objects.filter(manager=request.user)
-            form.base_fields['hotel_id'].initial = Hotel.objects.filter(manager=request.user).first()
-            form.base_fields['hotel_id'].widget.attrs['readonly'] = True
-            form.base_fields['hotel_id'].required = False
+            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
+            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
+            form.base_fields['hotel'].widget.attrs['readonly'] = True
+            form.base_fields['hotel'].required = False
             
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
@@ -351,7 +363,7 @@ class ImageAdmin(admin.ModelAdmin):
         
         if not obj.pk and request.user.user_type == 'hotel_manager':
            
-            obj.hotel_id = Hotel.objects.filter(manager=request.user).first()
+            obj.hotel = Hotel.objects.filter(manager=request.user).first()
             obj.created_by = request.user
             obj.updated_by = request.user
         else:
@@ -384,11 +396,9 @@ class CityAdmin(admin.ModelAdmin):
            
             return queryset.filter(location__hotel__manager=request.user)
         return queryset.none()
-admin.site.register(City, CityAdmin)
 
 # ----------- HotelRequest --------------
 
-@admin.register(HotelRequest)
 class HotelRequestAdmin(admin.ModelAdmin):
     list_display = ['hotel_name', 'name', 'email', 'created_at', 'is_approved']
     list_filter = ['is_approved', 'created_at']
@@ -408,3 +418,25 @@ class HotelRequestAdmin(admin.ModelAdmin):
         else:  # إذا كان هذا تحديث
             obj.updated_by = request.user
         super().save_model(request, obj, form, change)
+
+
+
+
+
+
+
+
+
+
+
+# -------------------------
+from api.admin import admin_site
+ 
+# Hotel -----
+
+admin_site.register(Hotel,HotelAdmin)
+admin_site.register(City,CityAdmin)
+admin_site.register(HotelRequest,HotelRequestAdmin)
+admin_site.register(Phone,PhoneAdmin)
+admin_site.register(Image,ImageAdmin)
+admin_site.register(Location,LocationAdmin)

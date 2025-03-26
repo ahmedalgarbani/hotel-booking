@@ -2,6 +2,7 @@ from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
 from blog.models import Post
+from home.forms import ContactForm
 from home.models import *
 from payments.models import HotelPaymentMethod
 from django.db.models import Avg, Count,Q,OuterRef, Subquery, Max,F
@@ -12,39 +13,126 @@ from datetime import datetime
 from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
 from services.models import HotelService
+from .models import TeamMember, Partner, Testimonial
+from .models import PricingPlan
+
+
+
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+
+from .models import ContactMessage
 
 # Create your views here.
+
 def index(request):
     for key in list(request.session.keys()):
         if not key.startswith("_"): 
             del request.session[key]
-    roomTypes = RoomType.objects.filter(is_active = True)
+    
+    roomTypes = RoomType.objects.filter(is_active=True)
     blogs = Post.objects.filter(is_published=True)[:3]
     infoBox = InfoBox.objects.filter(show_at_home=True)[:4]
     roomTypeHome = RoomTypeHome.objects.filter(show_at_home=True)[:2]
-    setting = Setting.objects.latest('id')
-    heroSlider = HeroSlider.objects.filter(is_active=True).latest('id')
-    socialMediaLink = SocialMediaLink.objects.filter(status = True)
+    categories = Category.objects.all()
+    try:
+        setting = Setting.objects.latest('id')
+    except Setting.DoesNotExist:
+        setting = None  # or provide a default value
+    
+    try:
+        heroSlider = HeroSlider.objects.filter(is_active=True).latest('id')
+    except HeroSlider.DoesNotExist:
+        heroSlider = None  # or provide a default value
+    
+    socialMediaLink = SocialMediaLink.objects.filter(status=True)
     hotels = Hotel.objects.filter(is_verified=True).annotate(
         review_count=Count('hotel_reviews'),
-        average_rating=Avg('hotel_reviews__rating_service')  
+        average_rating=Avg('hotel_reviews__rating_service')
     )[:5]
     
-    
     ctx = {
-        'roomTypes':roomTypes,
-        'blogs':blogs,
-        'infoBox':infoBox,
-        'roomTypeHome':roomTypeHome,
-        'hotels':hotels,
-        'setting':setting,
-        'socialMediaLink':socialMediaLink,
-        'heroSlider':heroSlider
+        'roomTypes': roomTypes,
+        'blogs': blogs,
+        'infoBox': infoBox,
+        'roomTypeHome': roomTypeHome,
+        'categories':categories,
+        'hotels': hotels,
+        'setting': setting,
+        'socialMediaLink': socialMediaLink,
+        'heroSlider': heroSlider
     }
-    return render(request,'frontend/home/index.html',ctx)
+    return render(request, 'frontend/home/index.html', ctx)
 
 def about(request):
-    return render(request,'frontend/home/pages/about.html')
+    team_members = TeamMember.objects.all()
+    partners = Partner.objects.all()
+    testimonials = Testimonial.objects.all()
+
+    context = {
+        'team_members': team_members,
+        'partners': partners,
+        'testimonials': testimonials,
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/about.html' ,context)
+
+def price(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/pricing.html' ,context)
+
+def price(request):
+    pricing_plans = PricingPlan.objects.filter(is_active=True)[:3]
+    
+    context = {
+        'pricing_plans': pricing_plans,
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/pricing.html' ,context)
+
+def contact(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/contact.html' ,context)
+
+def service(request):
+
+    context = {
+    }
+
+   
+   
+    return render(request,'frontend/home/pages/services.html' ,context)
+
+
+
+
+
+
+
+def pricing(request):
+    pricing_plans = PricingPlan.objects.filter(is_active=True)
+    context = {
+        'pricing_plans': pricing_plans,
+    }
+    return render(request, 'frontend/home/pages/pricing.html', context)
+
+
+
+
 
 def hotels(request):
     # Get search parameters
@@ -210,7 +298,7 @@ def room_search_result(request):
     return render(request,'frontend/home/pages/room-search-result.html',ctx)
 
 
-from django.core.paginator import Paginator
+
 
 def room_list(request):
     categories = Category.objects.prefetch_related('room_types').all()
@@ -225,3 +313,48 @@ def room_list(request):
         'paginator': paginator,
     }
     return render(request, 'frontend/home/pages/room-list.html', context)
+
+
+
+
+
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            
+            # حفظ الرسالة في قاعدة البيانات
+            ContactMessage.objects.create(name=name, email=email, message=message)
+            
+            # إرسال البريد الإلكتروني
+            send_mail(
+                f'New contact form submission from {name}',
+                message,
+                email,
+                ['ahme@gmail.com'],  # استبدل هذا بعنوان بريدك الإلكتروني
+            )
+            
+            return redirect('thank_you')
+    else:
+        try:
+            setting = Setting.objects.latest('id')
+        except Setting.DoesNotExist:
+            setting = None  
+
+        socialMediaLink = SocialMediaLink.objects.filter(status=True)
+
+        form = ContactForm()
+        ctx = {
+            'form': form,
+            'setting': setting,
+            'socialMediaLink': socialMediaLink,
+        }
+
+    return render(request, 'frontend/home/pages/contact.html', ctx)
+
+def thank_you(request):
+    return render(request, 'frontend/home/pages/thank_you.html')

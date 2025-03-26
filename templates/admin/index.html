@@ -1,0 +1,595 @@
+{% extends "admin/index.html" %} {% load static %} {% block content %}
+<link
+  rel="stylesheet"
+  href="{% static 'assets/css/jquery.fancybox.min.css' %}"
+/>
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+<!--     Fonts and icons     -->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900"
+/>
+<!-- Nucleo Icons -->
+<link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+<link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+<!-- Font Awesome Icons -->
+<script
+  src="https://kit.fontawesome.com/42d5adcbca.js"
+  crossorigin="anonymous"
+></script>
+<!-- Material Icons -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+/>
+<!-- CSS Files -->
+<link
+  id="pagestyle"
+  href="{% static 'assets/css/material-dashboard.css?v=3.2.0' %}"
+  rel="stylesheet"
+/>
+
+<div class="container-fluid py-2">
+  <div class="row">
+    <div class="ms-3"></div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">عدد الفنادق المضافه</p>
+              <h4 class="mb-0">{{total_hotels}}</h4>
+            </div>
+            <div
+              class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg"
+            >
+              <i class="material-symbols-rounded opacity-10">weekend</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0" />
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">
+            <span class="text-success font-weight-bolder"> </span>Ever
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">عدد الحجوزات</p>
+              <h4 class="mb-0">{{total_bookings}}</h4>
+            </div>
+            <div
+              class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg"
+            >
+              <i class="material-symbols-rounded opacity-10">person</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0" />
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">
+            <span class="text-success font-weight-bolder">+3% </span>than last
+            month
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">عمليات الدفع المكتمله</p>
+              <h4 class="mb-0">${{complete_payments}}</h4>
+            </div>
+            <div
+              class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg"
+            >
+              <i class="material-symbols-rounded opacity-10">leaderboard</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0" />
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">
+            <span class="text-danger font-weight-bolder">-2% </span>than
+            yesterday
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">عدد المستخدمين</p>
+              <h4 class="mb-0">{{users_count}}</h4>
+            </div>
+            <div
+              class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg"
+            >
+              <i class="material-symbols-rounded opacity-10">person</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0" />
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">
+            <span class="text-success font-weight-bolder">+5% </span>than
+            yesterday
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-4 col-md-6 mt-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-0">الحجوزات الاسبوعيه</h6>
+          <p class="text-sm">الحجوزات للاسبوع الحالي</p>
+          <div class="pe-2">
+            <div class="chart">
+              <canvas
+                id="chart-bars"
+                class="chart-canvas"
+                height="170"
+              ></canvas>
+            </div>
+          </div>
+          <hr class="dark horizontal" />
+          <div class="d-flex">
+            <i class="material-symbols-rounded text-sm my-auto me-1"
+              >schedule</i
+            >
+            <p class="mb-0 text-sm">تم تحديث البيانات حالا</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 mt-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-0">الدفعات الشهرية</h6>
+          <div class="pe-2">
+            <div class="chart">
+              <canvas
+                id="chart-line"
+                class="chart-canvas"
+                height="170"
+              ></canvas>
+            </div>
+          </div>
+          <hr class="dark horizontal" />
+          <div class="d-flex">
+            <i class="material-symbols-rounded text-sm my-auto me-1"
+              >schedule</i
+            >
+            <p class="mb-0 text-sm">تم التحديث منذ 4 دقائق</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 mt-4 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-0">المستخدمين الجدد</h6>
+          <p class="text-sm">التسجيلات الشهرية</p>
+          <div class="pe-2">
+            <div class="chart">
+              <canvas
+                id="chart-line-tasks"
+                class="chart-canvas"
+                height="170"
+              ></canvas>
+            </div>
+          </div>
+          <hr class="dark horizontal" />
+          <div class="d-flex">
+            <i class="material-symbols-rounded text-sm my-auto me-1"
+              >schedule</i
+            >
+            <p class="mb-0 text-sm">تم التحديث الآن</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-lg-12 col-md-6 mb-md-0 mb-4">
+      <div class="card">
+        <div class="card-header pb-0">
+          <div class="row">
+            <div class="col-lg-6 col-7">
+              <h6>حركه الدفع</h6>
+              <p class="text-sm mb-0">
+                <i class="fa fa-check text-info" aria-hidden="true"></i>
+                <span class="font-weight-bold ms-1"
+                  >{{ payment_transactions|length }} الحركات</span
+                >
+                هذا الشهر
+              </p>
+            </div>
+            <div class="col-lg-6 col-5 my-auto text-end">
+              <div class="dropdown float-lg-end pe-4">
+                <a
+                  class="cursor-pointer"
+                  id="dropdownTable"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="fa fa-ellipsis-v text-secondary"></i>
+                </a>
+                <ul
+                  class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5"
+                  aria-labelledby="dropdownTable"
+                >
+                  <li>
+                    <a
+                      class="dropdown-item border-radius-md"
+                      href="javascript:;"
+                      >Export</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item border-radius-md"
+                      href="javascript:;"
+                      >Filter</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-2">
+          <div class="table-responsive">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    اسم الفندق
+                  </th>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
+                  >
+                    السعر النهائي
+                  </th>
+                  <th
+                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    التاريخ
+                  </th>
+                  <th
+                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    حاله الدفع
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for transaction in payment_transactions %}
+                <tr>
+                  <td>
+                    <div class="d-flex px-2 py-1">
+                      <div>
+                        <img
+                          src="../assets/img/small-logos/logo-hotel.svg"
+                          class="avatar avatar-sm me-3"
+                          alt="hotel"
+                        />
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="mb-0 text-sm">
+                          {{ transaction.hotel_name }}
+                        </h6>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="mb-0 text-sm">${{ transaction.amount }}</h6>
+                    </div>
+                  </td>
+                  <td class="align-middle text-center text-sm">
+                    <span class="text-xs font-weight-bold"
+                      >{{ transaction.date }}</span
+                    >
+                  </td>
+                  <td class="align-middle text-center text-sm">
+                    {% if transaction.status == 0 %}
+                    <span class="badge badge-sm bg-gradient-warning"
+                      >قيد الانتظار</span
+                    >
+
+                    {% elif transaction.status == 1 %}
+                    <span class="badge badge-sm bg-gradient-success"
+                      >تم الدفع</span
+                    >
+
+                    {% elif transaction.status == 2 %}
+                    <span class="badge badge-sm bg-gradient-danger">مرفوض</span>
+
+                    {% else %}
+                    <span class="badge badge-sm bg-gradient-secondary"
+                      >None</span
+                    >
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'assets/js/core/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/perfect-scrollbar.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/smooth-scrollbar.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/chartjs.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/chartjs.min.js' %}"></script>
+<script>
+      var ctx = document.getElementById("chart-bars").getContext("2d");
+
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["الاثنين", "الثلثا", "الاربعا", "الخميس", "الحجمعه", "السبت", "الاحد"],
+          datasets: [{
+            label: "الحجوزات",
+            tension: 0.4,
+            borderWidth: 0,
+            borderRadius: 4,
+            borderSkipped: false,
+            backgroundColor: "#43A047",
+            data: {{ bookings_data|safe }},
+            barThickness: 'flex'
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5],
+                color: '#e5e5e5'
+              },
+              ticks: {
+                suggestedMin: 0,
+                suggestedMax: Math.max(...{{ bookings_data|safe }}) + 10,  <!-- Dynamically set max value -->
+                beginAtZero: true,
+                padding: 10,
+                font: {
+                  size: 14,
+                  lineHeight: 2
+                },
+                color: "#737373"
+              },
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: false,
+                drawOnChartArea: false,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                color: '#737373',
+                padding: 10,
+                font: {
+                  size: 14,
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+
+
+
+  var ctx2 = document.getElementById("chart-line").getContext("2d");
+
+  new Chart(ctx2, {
+    type: "line",
+    data: {
+      labels: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+      datasets: [{
+        label: "المبيعات",
+        tension: 0,
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: "#43A047",
+        pointBorderColor: "transparent",
+        borderColor: "#43A047",
+        backgroundColor: "transparent",
+        fill: true,
+        data: {{ monthly_payments_data }},  <!-- Dynamic data here -->
+        maxBarThickness: 6
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            title: function(context) {
+              const fullMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+                                "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+              return fullMonths[context[0].dataIndex];
+            }
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      scales: {
+        y: {
+          grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: false,
+            borderDash: [4, 4],
+            color: '#e5e5e5'
+          },
+          ticks: {
+            display: true,
+            color: '#737373',
+            padding: 10,
+            font: {
+              size: 12,
+              lineHeight: 2
+            },
+          }
+        },
+        x: {
+          grid: {
+            drawBorder: false,
+            display: false,
+            drawOnChartArea: false,
+            drawTicks: false,
+            borderDash: [5, 5]
+          },
+          ticks: {
+            display: true,
+            color: '#737373',
+            padding: 10,
+            font: {
+              size: 12,
+              lineHeight: 2
+            },
+          }
+        },
+      },
+    },
+  });
+
+
+
+  var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
+
+  new Chart(ctx3, {
+    type: "line",
+    data: {
+      labels: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+             "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+      datasets: [{
+        label: "المستخدمين",
+        tension: 0,
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: "#43A047",
+        pointBorderColor: "transparent",
+        borderColor: "#43A047",
+        backgroundColor: "transparent",
+        fill: true,
+        data: {{ monthly_users_data }},  <!-- Dynamic data here -->
+        maxBarThickness: 6
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false,
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      scales: {
+        y: {
+          grid: {
+            drawBorder: false,
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: false,
+            borderDash: [4, 4],
+            color: '#e5e5e5'
+          },
+          ticks: {
+            display: true,
+            padding: 10,
+            color: '#737373',
+            font: {
+              size: 14,
+              lineHeight: 2
+            },
+          }
+        },
+        x: {
+          grid: {
+            drawBorder: false,
+            display: false,
+            drawOnChartArea: false,
+            drawTicks: false,
+            borderDash: [4, 4]
+          },
+          ticks: {
+            display: true,
+            color: '#737373',
+            padding: 10,
+            font: {
+              size: 14,
+              lineHeight: 2
+            },
+          }
+        },
+      },
+    },
+  });
+</script>
+<script>
+  var win = navigator.platform.indexOf("Win") > -1;
+  if (win && document.querySelector("#sidenav-scrollbar")) {
+    var options = {
+      damping: "0.5",
+    };
+    Scrollbar.init(document.querySelector("#sidenav-scrollbar"), options);
+  }
+</script>
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+
+{% endblock content %}

@@ -2,8 +2,8 @@
 {% load static %}
 {% block content %}
 
-    <!-- ================================
-    START BREADCRUMB AREA
+<!-- ================================
+START BREADCRUMB AREA
 ================================= -->
 <section class="breadcrumb-area bread-bg-9">
   <div class="breadcrumb-wrap">
@@ -145,12 +145,12 @@ START ABOUT AREA
           <img
             src="{% static 'images/img24.jpg' %}"
             alt="about-img"
-            class="img__item img__item-1"
+            class="imgitem imgitem-1"
           />
           <img
             src="{% static 'images/img25.jpg' %}"
             alt="about-img"
-            class="img__item img__item-2"
+            class="imgitem imgitem-2"
           />
         </div>
       </div>
@@ -192,7 +192,7 @@ STAR FUNFACT AREA
                 <span
                   class="counter"
                   data-from="0"
-                  data-to="200"
+                  data-to="{{ partners.count }}"
                   data-refresh-interval="5"
                   >0</span
                 >
@@ -303,29 +303,18 @@ END FUNFACT AREA
       <!-- end col-lg-4 -->
       <div class="col-lg-8">
         <div class="testimonial-carousel carousel-action owl-rtl owl-loaded owl-carousel">
-          
-          <!-- end testimonial-card -->
-          
-          <!-- end testimonial-card -->
-          
-          <!-- end testimonial-card -->
-          
-          <!-- end testimonial-card -->
-        <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(806px, 0px, 0px); transition: all; width: 3224px;"><div class="owl-item cloned" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
+          {% for testimonial in testimonials %}
+          <div class="testimonial-card">
             <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
+              <p class="testi__desc">{{ testimonial.content }}</p>
             </div>
             <div class="author-content d-flex align-items-center">
               <div class="author-img">
-                <img src="{% static 'images/team10.jpg' %}" alt="testimonial image">
+                <img src="{{ testimonial.image.url }}" alt="testimonial image">
               </div>
               <div class="author-bio">
-                <h4 class="author__title">لوك جاكوبس</h4>
-                <span class="author__meta">أستراليا</span>
+                <h4 class="author__title">{{ testimonial.name }}</h4>
+                <span class="author__meta">{{ testimonial.position }}</span>
                 <span class="ratings d-flex align-items-center">
                   <i class="la la-star"></i>
                   <i class="la la-star"></i>
@@ -335,175 +324,9 @@ END FUNFACT AREA
                 </span>
               </div>
             </div>
-          </div></div><div class="owl-item cloned" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team8.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">تشولبول باندي</h4>
-                <span class="author__meta">إيطاليا</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div><div class="owl-item active" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team8.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">ليروي بيل</h4>
-                <span class="author__meta">الولايات المتحدة الأمريكية</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div><div class="owl-item active" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team9.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">ريتشارد بام</h4>
-                <span class="author__meta">كندا</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div><div class="owl-item" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team10.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">لوك جاكوبس</h4>
-                <span class="author__meta">أستراليا</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div><div class="owl-item" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team8.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">تشولبول باندي</h4>
-                <span class="author__meta">إيطاليا</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div><div class="owl-item cloned" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team8.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">ليروي بيل</h4>
-                <span class="author__meta">الولايات المتحدة الأمريكية</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div><div class="owl-item cloned" style="width: 373px; margin-left: 30px;"><div class="testimonial-card">
-            <div class="testi-desc-box">
-              <p class="testi__desc">
-                إنهم ذنب السود في واجبات كيوبيداتات ، لقد هجروا الاستثنائي
-                لروحي ، وليس كدحتي ، فهم في الستائر باستثناء كيوبيدات ليست
-                استثناءً. الاستثنائي كيوبيدات السود لا يعطونه
-              </p>
-            </div>
-            <div class="author-content d-flex align-items-center">
-              <div class="author-img">
-                <img src="{% static 'images/team9.jpg' %}" alt="testimonial image">
-              </div>
-              <div class="author-bio">
-                <h4 class="author__title">ريتشارد بام</h4>
-                <span class="author__meta">كندا</span>
-                <span class="ratings d-flex align-items-center">
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                  <i class="la la-star"></i>
-                </span>
-              </div>
-            </div>
-          </div></div></div></div><div class="owl-nav"><div class="owl-prev"><i class="la la-angle-left"></i></div><div class="owl-next"><i class="la la-angle-right"></i></div></div><div class="owl-dots disabled"></div></div>
+          </div>
+          {% endfor %}
+        </div>
         <!-- end testimonial-carousel -->
       </div>
       <!-- end col-lg-8 -->
@@ -518,11 +341,9 @@ END FUNFACT AREA
 ================================= -->
 
 <!-- ================================
-START INFO AREA
+ START INFO AREA
 ================================= -->
-<section
-  class="info-area padding-top-100px padding-bottom-60px text-center"
->
+<section class="info-area padding-top-100px padding-bottom-60px text-center">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
@@ -535,197 +356,43 @@ START INFO AREA
     </div>
     <!-- end row -->
     <div class="row padding-top-100px">
+      {% for member in team_members %}
       <div class="col-lg-4 responsive-column">
         <div class="card-item team-card">
           <div class="card-img">
-            <img src="{% static 'images/team1.jpg' %}" alt="team-img" />
+            <img src="{{ member.image.url }}" alt="team-img" />
           </div>
           <div class="card-body">
-            <h3 class="card-title">ديفيد روبرتس</h3>
-            <p class="card-meta">المؤسس والمدير</p>
-            <p class="card-text font-size-15 pt-2">
-              Enenatis دائمًا ligula videicula ، lorem aliquet lacusin قبل
-              أن يتم إطلاق البروتين بواسطة حياة رائعة: لا يوجد رجل ليكون
-              ضئيلاً.
-            </p>
+            <h3 class="card-title">{{ member.name }}</h3>
+            <p class="card-meta">{{ member.position }}</p>
+            <p class="card-text font-size-15 pt-2">{{ member.bio }}</p>
             <ul class="social-profile padding-top-20px pb-2">
+              {% if member.facebook %}
               <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
+                <a href="{{ member.facebook }}"><i class="lab la-facebook-f"></i></a>
               </li>
+              {% endif %}
+              {% if member.twitter %}
               <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
+                <a href="{{ member.twitter }}"><i class="lab la-twitter"></i></a>
               </li>
+              {% endif %}
+              {% if member.instagram %}
               <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
+                <a href="{{ member.instagram }}"><i class="lab la-instagram"></i></a>
               </li>
+              {% endif %}
+              {% if member.linkedin %}
               <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
+                <a href="{{ member.linkedin }}"><i class="lab la-linkedin-in"></i></a>
               </li>
+              {% endif %}
             </ul>
           </div>
         </div>
         <!-- end card-item -->
       </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item team-card">
-          <div class="card-img">
-            <img src="{% static 'images/team2.jpg' %}" alt="team-img" />
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">أوغستا سيلفا</h3>
-            <p class="card-meta">الرئيس التنفيذي للعمليات</p>
-            <p class="card-text font-size-15 pt-2">
-              Enenatis دائمًا ligula videicula ، lorem aliquet lacusin قبل
-              أن يتم إطلاق البروتين بواسطة حياة رائعة: لا يوجد رجل ليكون
-              ضئيلاً.
-            </p>
-            <ul class="social-profile padding-top-20px pb-2">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item team-card">
-          <div class="card-img">
-            <img src="{% static 'images/team3.jpg' %}" alt="team-img" />
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">برنيس لوكاس</h3>
-            <p class="card-meta">إدارة حساب المستخدم</p>
-            <p class="card-text font-size-15 pt-2">
-              Enenatis دائمًا ligula videicula ، lorem aliquet lacusin قبل
-              أن يتم إطلاق البروتين بواسطة حياة رائعة: لا يوجد رجل ليكون
-              ضئيلاً.
-            </p>
-            <ul class="social-profile padding-top-20px pb-2">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item team-card">
-          <div class="card-img">
-            <img src="{% static 'images/team4.jpg' %}" alt="team-img" />
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">ديفيد جاكسون</h3>
-            <p class="card-meta">دعم المبيعات</p>
-            <p class="card-text font-size-15 pt-2">
-              Enenatis دائمًا ligula videicula ، lorem aliquet lacusin قبل
-              أن يتم إطلاق البروتين بواسطة حياة رائعة: لا يوجد رجل ليكون
-              ضئيلاً.
-            </p>
-            <ul class="social-profile padding-top-20px pb-2">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item team-card">
-          <div class="card-img">
-            <img src="{% static 'images/team5.jpg' %}" alt="team-img" />
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">كايل مارتن</h3>
-            <p class="card-meta">مدير الطلبات</p>
-            <p class="card-text font-size-15 pt-2">
-              Enenatis دائمًا ligula videicula ، lorem aliquet lacusin قبل
-              أن يتم إطلاق البروتين بواسطة حياة رائعة: لا يوجد رجل ليكون
-              ضئيلاً.
-            </p>
-            <ul class="social-profile padding-top-20px pb-2">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <div class="card-item team-card">
-          <div class="card-img">
-            <img src="{% static 'images/team6.jpg' %}" alt="team-img" />
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">ايفان بورتر</h3>
-            <p class="card-meta">رئيس قسم التصميم</p>
-            <p class="card-text font-size-15 pt-2">
-              Enenatis دائمًا ligula videicula ، lorem aliquet lacusin قبل
-              أن يتم إطلاق البروتين بواسطة حياة رائعة: لا يوجد رجل ليكون
-              ضئيلاً.
-            </p>
-            <ul class="social-profile padding-top-20px pb-2">
-              <li>
-                <a href="#"><i class="lab la-facebook-f"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-instagram"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="lab la-linkedin-in"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- end card-item -->
-      </div>
+      {% endfor %}
       <!-- end col-lg-4 -->
     </div>
     <!-- end row -->
@@ -736,7 +403,5 @@ START INFO AREA
 <!-- ================================
 END INFO AREA
 ================================= -->
-
-
 
 {% endblock content %}

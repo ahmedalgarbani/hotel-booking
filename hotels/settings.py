@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'blog', 
     'notifications', 
     'customer',
-        'django_celery_beat',
+    'django_celery_beat',
     
     
 ]
@@ -97,7 +97,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=100),  
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),  
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  
     "ROTATE_REFRESH_TOKENS": True,  
     "BLACKLIST_AFTER_ROTATION": True,  
@@ -408,8 +408,8 @@ JAZZMIN_SETTINGS = {
         "home.SocialMedia": "fas fa-share-alt"
     },
     # تخصيص الواجهة
-    "custom_css": "admin_assets/css/bootstrap.rtl.css",
-    "custom_js": "admin_assets/js/script.js",
+    "custom_css": "",
+    "custom_js": "",
     "use_google_fonts_cdn": True,
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
@@ -442,25 +442,25 @@ JAZZMIN_SETTINGS = {
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
-    "body_small_text": False,
+    "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "navbar-dark",
-    "accent": "accent-primary",
-    "navbar": "navbar-dark",
+    "brand_colour": "navbar-success",
+    "accent": "accent-olive",
+    "navbar": "navbar-white navbar-light",
     "no_navbar_border": True,
     "navbar_fixed": True,
     "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-primary",
+    "footer_fixed": True,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-light-success",
     "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
+    "sidebar_disable_expand": True,
     "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "default",
-    "dark_mode_theme": "default",
+    "theme": "litera",
+    "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
@@ -487,7 +487,7 @@ NAV_MENU_TOP = [
     },
     {
         "name": "عنا",
-        "url": "register_view_url",  
+        "url": "about/",  
     },
     {
         "name": "الفنادق",
@@ -510,6 +510,18 @@ NAV_MENU_TOP = [
     {
         "name": "الغرف",
         "url": "/rooms",  
+    },
+    {
+        "name": "الاسعار",
+        "url": "/price",  
+    },
+    {
+        "name": "تواصل معنا",
+        "url": "/contact",  
+    },
+    {
+        "name": "خدماتنا",
+        "url": "/service",  
     },
     {
         "name": "اشترك معنا",
@@ -538,3 +550,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_TIMEZONE = 'Asia/Riyadh'
+
+
+
+

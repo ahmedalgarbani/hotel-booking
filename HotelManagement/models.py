@@ -15,7 +15,7 @@ from .notifications import Notification
 from users.models import CustomUser
 import json
 
-
+  
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -319,38 +319,18 @@ class HotelRequest(models.Model):
             password = get_random_string(length=12)
             hotel_manager.set_password(password)
             
-            # إضافة المستخدم إلى مجموعة مدراء الفنادق وإضافة الصلاحيات
-            hotel_manager_group, created = Group.objects.get_or_create(name='hotel_manager')
+            # إضافة المستخدم إلى مجموعة مدراء الفنادق
+            hotel_managers_group = Group.objects.get(name='Hotel Managers')
+            hotel_manager.groups.add(hotel_managers_group)
             
-            if created:
-                # إضافة الصلاحيات الأساسية لمدير الفندق
-                from django.contrib.auth.models import Permission
-                from django.contrib.contenttypes.models import ContentType
-                
-                # إنشاء قائمة بالنماذج والصلاحيات المطلوبة
-                models_permissions = {
-                    Hotel: ['add', 'change', 'view', 'delete'],
-                    Phone: ['add', 'change', 'view', 'delete'],
-                    Image: ['add', 'change', 'view', 'delete'],
-                    Location: ['add', 'change', 'view', 'delete'],
-                    City: ['view'],
-                }
-                
-                # إضافة الصلاحيات لكل نموذج
-                for model, actions in models_permissions.items():
-                    content_type = ContentType.objects.get_for_model(model)
-                    for action in actions:
-                        codename = f"{action}_{model._meta.model_name}"
-                        try:
-                            permission = Permission.objects.get(
-                                content_type=content_type,
-                                codename=codename
-                            )
-                            hotel_manager_group.permissions.add(permission)
-                        except Permission.DoesNotExist:
-                            continue
+            # # إضافة الصلاحيات المخصصة للمستخدم
+            # content_type = ContentType.objects.get_for_model(HotelRequest)
+            # approve_perm = Permission.objects.get(
+            #     codename='can_approve_request',
+            #     content_type=content_type
+            # # )
+            # hotel_manager.user_permissions.add(approve_perm)
             
-            hotel_manager.groups.add(hotel_manager_group)
             hotel_manager.save()
             
             # إرسال بريد إلكتروني للمستخدم مع معلومات تسجيل الدخول

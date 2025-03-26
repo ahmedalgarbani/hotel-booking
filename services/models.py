@@ -112,20 +112,20 @@ class Offer(BaseModel):
     offer_end_date = models.DateField(
         verbose_name=_("تاريخ نهاية العرض")
     )
-    created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='service_offers_created',  # Added specific related_name
-        verbose_name=_("تم الإنشاء بواسطة")
-    )
-    updated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='service_offers_updated',  # Added specific related_name
-        verbose_name=_("تم التحديث بواسطة")
-    )
+    # created_by = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     related_name='service_offers_created',  # Added specific related_name
+    #     verbose_name=_("تم الإنشاء بواسطة")
+    # )
+    # updated_by = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     related_name='service_offers_updated',  # Added specific related_name
+    #     verbose_name=_("تم التحديث بواسطة")
+    # )
     
     class Meta:
         verbose_name = _("عرض")

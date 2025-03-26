@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.db.models import Q
 from users.models import CustomUser
 
-
+ 
 class Category(BaseModel):
     hotel = models.ForeignKey(
         Hotel,

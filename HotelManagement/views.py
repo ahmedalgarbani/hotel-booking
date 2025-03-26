@@ -131,17 +131,18 @@ def notifications_context(request):
 
 
 
-
+ 
 def hotel_search(request):
-    hotel_name, check_in,check_out, adult_number = get_query_params(request)
+    hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
     today = datetime.now().date()
-    hotels_query = get_hotels_query(hotel_name)
+    hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number)
     
     ctx = {
         'adult_number': adult_number,
         'check_in_start': check_in.strftime('%m/%d/%Y') if check_in else '',
         'check_out_start': check_out.strftime('%m/%d/%Y') if check_out else '',
         'hotels': hotels_query,
+        'error_message': error_message,
     }
 
     return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
