@@ -231,6 +231,7 @@
       }
     }
   </style>
+
   <header class="header">
     <h1>
       <span>🔔</span>
@@ -248,55 +249,55 @@
         <button class="filter-btn">Unread</button>
         <button class="filter-btn">Bookings</button>
         <button class="filter-btn">System</button>
+        <button class="filter-btn">Success</button>
+        <button class="filter-btn">Information</button>
+        <button class="filter-btn">Warning</button>
+        <button class="filter-btn">Mistake</button>
       </div>
     </div>
-<div class="notification-list">
-  {% for notification in notifications %}
-    <div class="notification-item {% if notification.status == '0' %}unread{% endif %}">
-      <!-- Notification Icon (Based on Type) -->
-      <div class="notification-icon 
-        {% if notification.notification_type == '0' %}icon-info
-        {% elif notification.notification_type == '1' %}icon-warning
-        {% elif notification.notification_type == '2' %}icon-success
-        {% elif notification.notification_type == '3' %}icon-danger
-        {% endif %}">
-        {% if notification.notification_type == '0' %}ℹ️
-        {% elif notification.notification_type == '1' %}⚠️
-        {% elif notification.notification_type == '2' %}✓
-        {% elif notification.notification_type == '3' %}❌
-        {% endif %}
-      </div>
-
-      <!-- Notification Content -->
-      <div class="notification-content">
-        <div class="notification-title">
-          {% if notification.notification_type == '0' %}Information
-          {% elif notification.notification_type == '1' %}Warning
-          {% elif notification.notification_type == '2' %}Success
-          {% elif notification.notification_type == '3' %}Error
-          {% endif %}
-        </div>
-        <div class="notification-message">
-          {{ notification.message }}
-        </div>
-
-        <!-- Add Action Button if action_url exists -->
-        {% if notification.action_url %}
-          <div class="notification-action">
-            <a href="{{ notification.action_url }}" class="action-button">
-              Go to Action
-            </a>
+    <div class="notification-list">
+      {% for notification in notifications %}
+        <div class="notification-item {% if notification.status == '0' %}unread{% endif %}">
+          <div class="notification-icon 
+            {% if notification.notification_type == '0' %}icon-info
+            {% elif notification.notification_type == '1' %}icon-warning
+            {% elif notification.notification_type == '2' %}icon-success
+            {% elif notification.notification_type == '3' %}icon-danger
+            {% endif %}">
+            {% if notification.notification_type == '0' %}ℹ️
+            {% elif notification.notification_type == '1' %}⚠️
+            {% elif notification.notification_type == '2' %}✓
+            {% elif notification.notification_type == '3' %}❌
+            {% endif %}
           </div>
-        {% endif %}
-      </div>
 
-      <!-- Notification Time -->
-      <div class="notification-time">
-        {{ notification.send_time|timesince }} ago
-      </div>
+          <div class="notification-content">
+            <div class="notification-title">
+              {% if notification.notification_type == '0' %}Information
+              {% elif notification.notification_type == '1' %}Warning
+              {% elif notification.notification_type == '2' %}Success
+              {% elif notification.notification_type == '3' %}Error
+              {% endif %}
+            </div>
+            <div class="notification-message">
+              {{ notification.message }}
+            </div>
+
+            {% if notification.action_url %}
+              <div class="notification-action">
+                <a href="{{ notification.action_url }}" class="action-button">
+                  Go to Action
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="notification-time">
+            {{ notification.send_time|timesince }} ago
+          </div>
+        </div>
+      {% endfor %}
     </div>
-  {% endfor %}
-</div>
   </div>
 
   <script>
@@ -305,16 +306,13 @@
       const notifications = document.querySelectorAll('.notification-item');
       const markAllReadBtn = document.querySelector('.header .filter-btn');
 
-      // Filter functionality
       filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-          // Remove active class from all buttons
           filterButtons.forEach(btn => btn.classList.remove('active'));
-          // Add active class to clicked button
           button.classList.add('active');
 
           const filter = button.textContent.toLowerCase();
-          
+
           notifications.forEach(notification => {
             if (filter === 'all') {
               notification.style.display = 'grid';
@@ -324,13 +322,19 @@
               notification.style.display = notification.querySelector('.icon-booking') ? 'grid' : 'none';
             } else if (filter === 'system') {
               notification.style.display = !notification.querySelector('.icon-booking') ? 'grid' : 'none';
+            } else if (filter === 'success') {
+              notification.style.display = notification.querySelector('.icon-success') ? 'grid' : 'none';
+            } else if (filter === 'information') {
+              notification.style.display = notification.querySelector('.icon-info') ? 'grid' : 'none';
+            } else if (filter === 'warning') {
+              notification.style.display = notification.querySelector('.icon-warning') ? 'grid' : 'none';
+            } else if (filter === 'mistake') {
+              notification.style.display = notification.querySelector('.icon-danger') ? 'grid' : 'none';
             }
           });
 
-          // Show empty state if no notifications match filter
           const visibleNotifications = Array.from(notifications).filter(n => n.style.display !== 'none');
           const notificationList = document.querySelector('.notification-list');
-          
           if (visibleNotifications.length === 0) {
             const emptyState = document.createElement('div');
             emptyState.className = 'empty-state';
@@ -349,14 +353,12 @@
         });
       });
 
-      // Mark all as read functionality
       markAllReadBtn.addEventListener('click', () => {
         notifications.forEach(notification => {
           notification.classList.remove('unread');
         });
       });
 
-      // Individual notification click handler
       notifications.forEach(notification => {
         notification.addEventListener('click', () => {
           notification.classList.remove('unread');
