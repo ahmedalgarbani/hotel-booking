@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2025 at 08:50 PM
+-- Generation Time: Mar 26, 2025 at 01:06 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.12
 
@@ -391,7 +391,15 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (219, 'Can add clocked', 56, 'add_clockedschedule'),
 (220, 'Can change clocked', 56, 'change_clockedschedule'),
 (221, 'Can delete clocked', 56, 'delete_clockedschedule'),
-(222, 'Can view clocked', 56, 'view_clockedschedule');
+(222, 'Can view clocked', 56, 'view_clockedschedule'),
+(223, 'Can add contact message', 57, 'add_contactmessage'),
+(224, 'Can change contact message', 57, 'change_contactmessage'),
+(225, 'Can delete contact message', 57, 'delete_contactmessage'),
+(226, 'Can view contact message', 57, 'view_contactmessage'),
+(227, 'Can add pricing plan', 58, 'add_pricingplan'),
+(228, 'Can change pricing plan', 58, 'change_pricingplan'),
+(229, 'Can delete pricing plan', 58, 'delete_pricingplan'),
+(230, 'Can view pricing plan', 58, 'view_pricingplan');
 
 -- --------------------------------------------------------
 
@@ -576,7 +584,8 @@ CREATE TABLE `customer_favourites` (
 --
 
 INSERT INTO `customer_favourites` (`id`, `hotel_id`, `user_id`) VALUES
-(5, 1, 1);
+(8, 1, 1),
+(9, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -616,7 +625,18 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (14, '2025-03-22 19:41:59.899126', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"Groups\"]}}]', 2, 14),
 (15, '2025-03-22 19:43:03.171468', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"Superuser status\"]}}]', 2, 1),
 (16, '2025-03-22 19:46:11.537228', '2', 'Booking #2 - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0641\\u0646\\u062f\\u0642\"]}}]', 13, 1),
-(17, '2025-03-22 19:49:17.888200', '1', 'دفعة #1 لحجز 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 45, 1);
+(17, '2025-03-22 19:49:17.888200', '1', 'دفعة #1 لحجز 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 45, 1),
+(18, '2025-03-25 18:41:12.399324', '1', 'room vip 2025 (احمد)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0633\\u0639\\u0629 \\u0627\\u0644\\u0627\\u0641\\u062a\\u0631\\u0627\\u0636\\u064a\\u0629\", \"\\u0627\\u0644\\u0633\\u0639\\u0629 \\u0627\\u0644\\u0642\\u0635\\u0648\\u0649\", \"\\u0639\\u062f\\u062f \\u0627\\u0644\\u0623\\u0633\\u0631\\u0629\"]}}]', 5, 1),
+(19, '2025-03-25 18:43:11.087848', '13', 'room vip 2025 - 7 rooms available on 2025-03-21', 3, '', 9, 1),
+(20, '2025-03-25 18:43:11.094577', '12', 'room vip 2025 - 11 rooms available on 2025-03-14', 3, '', 9, 1),
+(21, '2025-03-25 18:43:11.098937', '11', 'room vip 2025 - 20 rooms available on 2025-03-11', 3, '', 9, 1),
+(22, '2025-03-25 18:43:11.106864', '10', 'room vip 2025 - 21 rooms available on 2025-03-10', 3, '', 9, 1),
+(23, '2025-03-25 18:43:22.992445', '14', 'room vip 2025 - 3 rooms available on 2025-03-22', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 9, 1),
+(24, '2025-03-25 19:34:57.637760', '1', 'اساسي', 1, '[{\"added\": {}}]', 58, 1),
+(25, '2025-03-25 19:39:06.775351', '1', 'اساسي', 2, '[{\"changed\": {\"fields\": [\"Features\"]}}]', 58, 1),
+(26, '2025-03-25 19:41:05.608400', '1', 'اساسي', 2, '[{\"changed\": {\"fields\": [\"Is primary\"]}}]', 58, 1),
+(27, '2025-03-25 19:41:51.904355', '2', 'الممتازة', 1, '[{\"added\": {}}]', 58, 1),
+(28, '2025-03-25 19:43:51.573700', '3', 'عادي', 1, '[{\"added\": {}}]', 58, 1);
 
 -- --------------------------------------------------------
 
@@ -750,9 +770,11 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (53, 'django_celery_beat', 'periodictask'),
 (54, 'django_celery_beat', 'periodictasks'),
 (55, 'django_celery_beat', 'solarschedule'),
+(57, 'home', 'contactmessage'),
 (36, 'home', 'heroslider'),
 (37, 'home', 'infobox'),
 (38, 'home', 'partner'),
+(58, 'home', 'pricingplan'),
 (39, 'home', 'roomtypehome'),
 (40, 'home', 'setting'),
 (41, 'home', 'socialmedialink'),
@@ -880,7 +902,11 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (73, 'token_blacklist', '0008_migrate_to_bigautofield', '2025-03-20 20:52:18.138495'),
 (74, 'token_blacklist', '0010_fix_migrate_to_bigautofield', '2025-03-20 20:52:18.241050'),
 (75, 'token_blacklist', '0011_linearizes_history', '2025-03-20 20:52:18.247806'),
-(76, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-03-20 20:52:18.348752');
+(76, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-03-20 20:52:18.348752'),
+(77, 'home', '0002_contactmessage_pricingplan', '2025-03-24 02:27:19.555929'),
+(78, 'home', '0003_contactmessage_is_read', '2025-03-24 02:29:38.722412'),
+(79, 'payments', '0006_alter_payment_payment_date', '2025-03-25 19:07:12.966560'),
+(80, 'home', '0004_pricingplan_is_primary', '2025-03-25 19:40:51.575223');
 
 -- --------------------------------------------------------
 
@@ -902,7 +928,31 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('10jc04f8ra0d6msy20iwtbndlyoweki3', '.eJxVjDsOwjAQBe_iGlnx-htKes5g7dprHECOFCcV4u4QKQW0b2beS0Tc1hq3zkucsjgLZcTpdyRMD247yXdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3JnA4WDdaU8KovS4DgQblA2d0XgMgUkFCa10BSIWVDsqwJ5d1Rlbi_QH1VDgn:1tw4jt:45N9IRJXslTK8GcDupSgftrKaUUvKyyU63SP5_qgWDw', '2025-04-05 19:42:37.663040'),
 ('1wyyijyzy6cub4r19w89mnl7qw8bhuuz', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tveW7:w0_bMaJdKA4cU151I8-SI_4h1xQfVqygPG1DhnuxMjk', '2025-04-04 15:42:39.707201'),
 ('f5c6a194qsar3c9gof2hty33maiu2wa4', '.eJxVjEEOwiAQRe_C2hCgMFCX7j0DYZhBqoYmpV0Z765NutDtf-_9l4hpW2vcOi9xInEWRpx-N0z5wW0HdE_tNss8t3WZUO6KPGiX15n4eTncv4Oaev3WjBAADCnIaBCy9xrBsFUAbA2jthhQDQC2pAADFc00FjcW7ZxHm8X7A99IN9s:1tw4oU:Wka2IeeDOP4iibDwf5_38_ZEqLTDHhDKXVP2DbbmKx0', '2025-04-05 19:47:22.375385'),
+('hw3vuw7833jvh4ty3sbc49c0ywq87fd9', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tx9Au:qmsd5K4Li93kHVbc9JTuEUsWdWfRkE6n-BUfwQ0aaOw', '2025-04-08 18:38:56.956502'),
 ('sc8fatgy9sgv05mlfjeg70tyb164a4m3', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tvMth:Nr3LU7IJ2W30Mfdv96BdPVQ33YKwfJUr3Lob1qH4ie8', '2025-04-03 20:53:49.131757');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_contactmessage`
+--
+
+CREATE TABLE `home_contactmessage` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `message` longtext NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `is_read` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_contactmessage`
+--
+
+INSERT INTO `home_contactmessage` (`id`, `name`, `email`, `message`, `created_at`, `is_read`) VALUES
+(1, 'ahmed', 'asdasj@asdas.com', 'asjhdasjhdgjashgdj6516', '2025-03-25 19:49:05.764396', 0),
+(2, 'ahmed', 'ahmedalgarbani77@gmail.com', 'hello world', '2025-03-25 19:50:16.373420', 0);
 
 -- --------------------------------------------------------
 
@@ -957,6 +1007,31 @@ CREATE TABLE `home_partner` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `home_pricingplan`
+--
+
+CREATE TABLE `home_pricingplan` (
+  `id` bigint(20) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `duration` varchar(50) NOT NULL,
+  `features` longtext NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `is_primary` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_pricingplan`
+--
+
+INSERT INTO `home_pricingplan` (`id`, `title`, `price`, `duration`, `features`, `is_active`, `is_primary`) VALUES
+(1, 'اساسي', 95.96, 'monthly', 'مساحة القرص 350 جيجا بايت,\r\n    عرض النطاق الترددي 45 جيجا بايت,\r\n    ,قواعد البيانات 1\r\n    حسابات البريد الإلكتروني نعم,\r\n    دعم 24 ساعة NO,\r\n    دعم البريد الإلكتروني NO,', 1, 1),
+(2, 'الممتازة', 155.99, 'monthly', 'مساحة القرص 500 جيجا بايت,\r\n    عرض النطاق الترددي 125 جيجا بايت,\r\n    قواعد البيانات 1,\r\n    حسابات البريد الإلكتروني نعم,\r\n    دعم 24 ساعة نعم,\r\n    دعم البريد الإلكتروني نعم,', 1, 0),
+(3, 'عادي', 13.99, 'monthly', 'مساحة القرص 250 جيجا بايت,\r\n    عرض النطاق الترددي 25 جيجا بايت,\r\n    قواعد البيانات 1,\r\n    حسابات البريد الإلكتروني NO,\r\n    دعم 24 ساعة NO,\r\n    دعم البريد الإلكتروني NO,', 1, 0);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `home_roomtypehome`
 --
 
@@ -994,6 +1069,13 @@ CREATE TABLE `home_setting` (
   `seo_keywords` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `home_setting`
+--
+
+INSERT INTO `home_setting` (`id`, `site_name`, `email`, `phone_number`, `description`, `address`, `default_currency`, `color`, `currency_icon`, `default_language`, `currency_Icon_position`, `logo`, `favicon`, `footer_logo`, `seo_title`, `seo_description`, `seo_keywords`) VALUES
+(1, 'Trizen', '513', '1313', 'gooooooooood hotel booking', '11', 'USD', '#fd7e14', '$', 'Arabic', 0, 'home/components/setting/logo.png', 'home/components/setting/favicon.png', 'home/components/setting/logo2.png', 'hotel trizen', 'hotel trizenhotel trizen', 'hotel trizen');
+
 -- --------------------------------------------------------
 
 --
@@ -1007,6 +1089,16 @@ CREATE TABLE `home_socialmedialink` (
   `icon` varchar(100) NOT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_socialmedialink`
+--
+
+INSERT INTO `home_socialmedialink` (`id`, `name`, `link`, `icon`, `status`) VALUES
+(1, 'linked in', 'http://127.0.0.1:8000/sss', 'lab la-linkedin-in', 1),
+(2, 'instagram', 'http://127.0.0.1:8000/sss', 'lab la-instagram', 1),
+(3, 'twitter', 'http://127.0.0.1:8000/sssss', 'lab la-twitter', 1),
+(4, 'facebook', 'http://127.0.0.1:8000/ssssss', 'lab la-facebook-f', 1);
 
 -- --------------------------------------------------------
 
@@ -1405,11 +1497,7 @@ CREATE TABLE `rooms_availability` (
 --
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
-(10, '2025-03-10 00:51:46.649644', '2025-03-10 23:50:17.566236', NULL, '2025-03-10', 21, 'تم التحديث بسبب تمديد الحجز #52', NULL, 1, 3, 1, NULL),
-(11, '2025-03-11 00:04:24.742393', '2025-03-11 13:39:35.591118', NULL, '2025-03-11', 20, 'Updated due to booking #45', NULL, 1, 3, 1, NULL),
-(12, '2025-03-14 22:04:23.980885', '2025-03-14 22:04:23.981720', NULL, '2025-03-14', 11, 'Updated due to booking #1', NULL, 1, 3, 1, NULL),
-(13, '2025-03-21 14:09:26.997940', '2025-03-21 16:24:28.848656', NULL, '2025-03-21', 7, 'Updated due to booking #2', NULL, 1, 3, 1, NULL),
-(14, '2025-03-22 18:36:37.899370', '2025-03-22 18:36:37.899370', NULL, '2025-03-22', 19, 'Updated due to booking #1', NULL, 1, 3, 1, NULL);
+(14, '2025-03-22 18:36:37.899370', '2025-03-25 18:43:22.979455', NULL, '2025-03-22', 3, 'Updated due to booking #1', NULL, 1, 3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1562,7 +1650,7 @@ CREATE TABLE `rooms_roomtype` (
 --
 
 INSERT INTO `rooms_roomtype` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `description`, `default_capacity`, `max_capacity`, `beds_count`, `rooms_count`, `base_price`, `is_active`, `category_id`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(1, '2025-03-01 19:21:28.984379', '2025-03-01 19:21:28.984379', NULL, 'room vip 2025', 'asdaskdjhsa', 15, 15, 15, 15, 15.00, 1, 1, 2, 1, 2);
+(1, '2025-03-01 19:21:28.984379', '2025-03-25 18:41:12.396279', NULL, 'room vip 2025', 'asdaskdjhsa', 4, 4, 6, 15, 15.00, 1, 1, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1654,7 +1742,11 @@ INSERT INTO `token_blacklist_outstandingtoken` (`id`, `token`, `created_at`, `ex
 (4, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE2OTY1OCwiaWF0IjoxNzQyNTY0ODU4LCJqdGkiOiI3YmZmMDBiNDE3NDA0MWE1OGE4ODVlOTk2ODI5MzU2MSIsInVzZXJfaWQiOjF9.j44KPPJZQ4ZQkIx2x3hl_OLIUsQfGJkWSWWac9Eqywg', '2025-03-21 13:47:38.172532', '2025-03-28 13:47:38.000000', 1, '7bff00b4174041a58a885e9968293561'),
 (5, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE3ODkwMywiaWF0IjoxNzQyNTc0MTAzLCJqdGkiOiJmZWZkMzhjOGNjMTQ0NjQ4OGQ2MTNkZmNhYWRmMmY2ZCIsInVzZXJfaWQiOjF9.ChRCQiL6nrmf5sTP0m7bdXxEbvxaBvAIyYT7rFq-FhQ', '2025-03-21 16:21:43.216762', '2025-03-28 16:21:43.000000', 1, 'fefd38c8cc1446488d613dfcaadf2f6d'),
 (6, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE3OTM5NSwiaWF0IjoxNzQyNTc0NTk1LCJqdGkiOiJjN2JhMjM5MGExNDE0ZDhmODY0YmU2MDkyOWQwODFjOSIsInVzZXJfaWQiOjF9.PnuflhhwZoLWLqbkUt4Uj1m8m4G4r_kwcnM7u39Qvno', '2025-03-21 16:29:55.134207', '2025-03-28 16:29:55.000000', 1, 'c7ba2390a1414d8f864be60929d081c9'),
-(7, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE4NDIwMSwiaWF0IjoxNzQyNTc5NDAxLCJqdGkiOiI3MmNjY2M2ZDBhYTk0MGFmODkyYmM5NmEwZjRlYTAwMiIsInVzZXJfaWQiOjF9.pfUqfXNSskZA2fCAhd5k68uGTCMM3ej-fDtOfuneyGM', '2025-03-21 17:50:01.580112', '2025-03-28 17:50:01.000000', 1, '72cccc6d0aa940af892bc96a0f4ea002');
+(7, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE4NDIwMSwiaWF0IjoxNzQyNTc5NDAxLCJqdGkiOiI3MmNjY2M2ZDBhYTk0MGFmODkyYmM5NmEwZjRlYTAwMiIsInVzZXJfaWQiOjF9.pfUqfXNSskZA2fCAhd5k68uGTCMM3ej-fDtOfuneyGM', '2025-03-21 17:50:01.580112', '2025-03-28 17:50:01.000000', 1, '72cccc6d0aa940af892bc96a0f4ea002'),
+(8, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzMwMTE5MSwiaWF0IjoxNzQyNjk2MzkxLCJqdGkiOiJhZDlhOGEzN2ZiMmU0ZDY2YTQwMTIzMzNkMTE2Y2M1YyIsInVzZXJfaWQiOjF9.7A4ahENE76JKcDBvOFIKC-kwIxMtj2ZBVozRTVLEMT4', '2025-03-23 02:19:51.251974', '2025-03-30 02:19:51.000000', 1, 'ad9a8a37fb2e4d66a4012333d116cc5c'),
+(9, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzM4NzI4NywiaWF0IjoxNzQyNzgyNDg3LCJqdGkiOiIxY2RhNTc5ZWQ2Njk0MjQ4OTRjMjVjNzIyMzU1ODkyOSIsInVzZXJfaWQiOjF9.nM9qdEVgGphcINcPJtFCpsmJfOJx_Ah49ZtfZfoVzyg', '2025-03-24 02:14:47.726167', '2025-03-31 02:14:47.000000', 1, '1cda579ed669424894c25c7223558929'),
+(10, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzUwNTg1NywiaWF0IjoxNzQyOTAxMDU3LCJqdGkiOiJjMjczY2Q3ZjVjZjA0YTA4ODI4YWY0YTEzNTEyNWI1MSIsInVzZXJfaWQiOjF9.AioQeB7OWBOg0qtQ3HOQEx4muJ1XwXsop2pkZ6qruDc', '2025-03-25 11:10:57.382630', '2025-04-01 11:10:57.000000', 1, 'c273cd7f5cf04a08828af4a135125b51'),
+(11, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzUzODQ3NCwiaWF0IjoxNzQyOTMzNjc0LCJqdGkiOiI4NjRiYWY5ODAwZDI0ZTZkODQzMTY3OTg4NTkzNjk3ZiIsInVzZXJfaWQiOjF9.7hH_1GfxSHIpLlj--p9z8pM8zANtdsp3MVMf0HO-GQw', '2025-03-25 20:14:34.699535', '2025-04-01 20:14:34.000000', 1, '864baf9800d24e6d843167988593697f');
 
 -- --------------------------------------------------------
 
@@ -1707,7 +1799,7 @@ CREATE TABLE `users_customuser` (
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `chield_id`) VALUES
-(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-03-22 19:38:12.461133', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
+(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-03-25 18:38:56.951621', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
 (2, 'pbkdf2_sha256$600000$mRv4uTHEeVZ15lsGse5C0D$hF0CKJC3qr2/+yCUM252q7NnSKiBR3C+X1CTuLAv7WI=', '2025-03-22 19:47:22.367954', 0, 'b', '', '', 'b@b.com', 1, '2025-03-21 12:48:09.506849', '2025-03-21 12:48:10.018701', '2025-03-22 19:21:25.333335', 'hotel_manager', '', '', NULL, NULL, 1, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', NULL, NULL, 1, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', NULL, NULL, 1, NULL),
@@ -1935,6 +2027,12 @@ ALTER TABLE `django_session`
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
+-- Indexes for table `home_contactmessage`
+--
+ALTER TABLE `home_contactmessage`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `home_heroslider`
 --
 ALTER TABLE `home_heroslider`
@@ -1950,6 +2048,12 @@ ALTER TABLE `home_infobox`
 -- Indexes for table `home_partner`
 --
 ALTER TABLE `home_partner`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_pricingplan`
+--
+ALTER TABLE `home_pricingplan`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2267,7 +2371,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=223;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=231;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -2327,13 +2431,13 @@ ALTER TABLE `bookings_guest`
 -- AUTO_INCREMENT for table `customer_favourites`
 --
 ALTER TABLE `customer_favourites`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
@@ -2369,13 +2473,19 @@ ALTER TABLE `django_celery_beat_solarschedule`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+
+--
+-- AUTO_INCREMENT for table `home_contactmessage`
+--
+ALTER TABLE `home_contactmessage`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `home_heroslider`
@@ -2396,6 +2506,12 @@ ALTER TABLE `home_partner`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `home_pricingplan`
+--
+ALTER TABLE `home_pricingplan`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `home_roomtypehome`
 --
 ALTER TABLE `home_roomtypehome`
@@ -2405,13 +2521,13 @@ ALTER TABLE `home_roomtypehome`
 -- AUTO_INCREMENT for table `home_setting`
 --
 ALTER TABLE `home_setting`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `home_socialmedialink`
 --
 ALTER TABLE `home_socialmedialink`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `home_teammember`
@@ -2573,7 +2689,7 @@ ALTER TABLE `token_blacklist_blacklistedtoken`
 -- AUTO_INCREMENT for table `token_blacklist_outstandingtoken`
 --
 ALTER TABLE `token_blacklist_outstandingtoken`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users_activitylog`

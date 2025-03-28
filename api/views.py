@@ -80,10 +80,12 @@ class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def active_payment_methods(self, request):
-       
+        print("1")
         hotel_id = request.data.get('hotel_id')
+        print("2")
 
         if not hotel_id:
+            print(" 3")
             return Response(
                 {'error': 'hotel_id is required in the request body'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -91,7 +93,9 @@ class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
 
         try:
             hotel = Hotel.objects.get(pk=hotel_id)
+            print(" 4")
         except Hotel.DoesNotExist:
+            print(" 5")
             return Response(
                 {'error': 'Hotel not found'},
                 status=status.HTTP_404_NOT_FOUND
@@ -102,8 +106,10 @@ class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
             is_active=True,
             payment_option__is_active=True
         ).select_related('payment_option__currency')
-
+        
+        print("6")
         serializer = HotelPaymentMethodSerializer(payment_methods, many=True)
+        print("7")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

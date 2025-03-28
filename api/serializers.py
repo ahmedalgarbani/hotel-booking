@@ -55,15 +55,7 @@ class HotelPaymentMethodSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = HotelPaymentMethod
-        fields = [
-            'id',
-            'payment_option',
-            'account_name',
-            'account_number',
-            'iban',
-            'description',
-            
-        ]      
+        fields = '__all__'    
 
 
 
@@ -118,10 +110,11 @@ class HotelSerializer(serializers.ModelSerializer):
     rooms = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
+    paymentOption = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotel
-        fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms']
+        fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms','paymentOption']
         
 
     def get_rooms(self, obj):
@@ -130,6 +123,9 @@ class HotelSerializer(serializers.ModelSerializer):
 
     def get_services(self, obj):
         return HotelServiceSerializer(obj.hotel_services.all(), many=True).data
+    def get_paymentOption(self, obj):
+        return HotelPaymentMethodSerializer(obj.payment_methods.all(), many=True).data
+
 
     def get_location(self, obj):
         return obj.location.address if obj.location else None
