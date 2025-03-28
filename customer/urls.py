@@ -9,7 +9,7 @@ urlpatterns = [
     path('cancel/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
     
     # تعديل المسار settings ليكون مميزًا
-    path('user-dashboard/settings/email', views.user_dashboard_settings_email, name='user_dashboard_settings_email'),
+ path('user-dashboard/settings/email', views.user_dashboard_settings_email, name='user_dashboard_settings_email'),
     path('user-dashboard/settings/password', views.user_dashboard_settings_password, name='user_dashboard_settings_password'),
     path('user-dashboard/settings', views.user_dashboard_settings, name='user_dashboard_settings'),
     

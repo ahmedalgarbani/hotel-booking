@@ -107,6 +107,16 @@
 }
 
     }
+.dropdown-menu.notifications {
+    width: 400px;  
+    padding: 15px;
+}
+
+.list-group-item {
+    padding: 15px 20px; 
+    margin-bottom: 10px;  
+}
+
 </style>
 <header class="header-area">
   <div class="header-top-bar padding-right-100px padding-left-100px">
@@ -142,6 +152,8 @@
                 </div>
               </div>
                                   <!-- Notifications -->
+                                  {% if request.user.is_authenticated %}
+
                                   <div class="notification-container">
                                     <li class="nav-item dropdown noti-nav me-3 pe-0">
                                         <a href="#" class="dropdown-toggle nav-link p-0" data-bs-toggle="dropdown" aria-expanded="false" id="notification-button">
@@ -151,48 +163,52 @@
                                             {% endif %}
                                         </a>
                                         <div class="dropdown-menu notifications dropdown-menu-end" id="notification-dropdown">
-                                            <div class="topnav-dropdown-header">
-                                                <span class="notification-title">الإشعارات</span>
-                                            </div>
-                                            <div class="noti-content">
-                                                <ul class="notification-list" id="notification-list">
-                                                    {% for notification in notifications %}
-                                                        {% if notification.status == '0' %}
-                                                        <li class="notification-message 
-                                                            {% if notification.notification_type == '0' %}info{% endif %}
-                                                            {% if notification.notification_type == '1' %}warning{% endif %}
-                                                            {% if notification.notification_type == '2' %}success{% endif %}
-                                                            {% if notification.notification_type == '3' %}error{% endif %}">
-                                                            <a href="#">
-                                                                <div class="notify-block d-flex">
-                                                                    {% if notification.image %}
-                                                                    <span class="avatar">
-                                                                        <img class="avatar-img" alt="Notification Image" src="{{ notification.image.url }}">
-                                                                    </span>
-                                                                    {% endif %}
-                                                                    <div class="media-body">
-                                                                        <p class="noti-details">
-                                                                            {{ notification.message }}
-                                                                        </p>
-                                                                        <h6>{{ notification.sender.name }} 
-                                                                            <span class="notification-time">
-                                                                                {{ notification.send_time|date:"H:i A" }}
-                                                                                <br>
-                                                                            <small>من: {{ notification.sender.username }}</small>
-                                                                            </span>
-                                                                        </h6>
-                                                                        
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
+                                          <div class="dropdown-header drop-reveal-header">
+                                            <h6 class="title">
+                                                لديك
+                                                <strong class="text-black">{{ unread_notifications_count }}</strong> إشعارات غير مقروءة
+                                            </h6>
+                                        </div>
+
+                                           
+                                        <div class="list-group drop-reveal-list">
+                                          {% for notification in notifications %}
+                                              {% if notification.status == '0' %}  
+                                              <a href="{% url 'notifications:handle_notification' notification.id %}" class="list-group-item list-group-item-action unread">
+                                                  <div class="msg-body d-flex align-items-center">
+                                                      <div class="icon-element flex-shrink-0 me-3 ms-0">
+                                                          <i class="la la-bell"></i>
+                                                      </div>
+                                                      <div class="msg-content w-100">
+                                                          <h3 class="title pb-1">{{ notification.message }}</h3>
+                                                          <p class="msg-text">من: {{ notification.sender.username }}</p>  
+                                                          <p class="msg-text">{{ notification.send_time|timesince }} مضت</p>
+                          
+                                                          <!-- تحديد نوع الإشعار وعرضه -->
+                                                          <p class="msg-type">
+                                                              {% if notification.notification_type == '0' %}
+                                                                  <span class="badge bg-info">معلومة</span>
+                                                              {% elif notification.notification_type == '1' %}
+                                                                  <span class="badge bg-warning">تحذير</span>
+                                                              {% elif notification.notification_type == '2' %}
+                                                                  <span class="badge bg-success">نجاح</span>
+                                                              {% elif notification.notification_type == '3' %}
+                                                                  <span class="badge bg-danger">خطأ</span>
+                                                              {% endif %}
+                                                          </p>
+                                                      </div>
+                                                  </div>
+                                              </a>
+                                              {% endif %}
+                                          {% endfor %}
+                                      </div>
+                                      <a href="{% url 'notifications:all_notifications' user.id %}" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
+
                                         </div>
                                     </li>
                                 </div>
+                                {% endif %}
+
                                 <!-- /Notifications -->
                                 {% comment %} <a href="{% url 'payments:add_guest' 1 %}" class="">add guest</a> {% endcomment %}
                 {% if request.user.is_authenticated %}

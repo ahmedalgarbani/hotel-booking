@@ -7,12 +7,13 @@ from bookings.models import Booking
 from customer.models import Favourites  
 from notifications.models import Notifications
 from reviews.models import HotelReview, RoomReview
-from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 from users.models import CustomUser
 from .forms import UserProfileForm
-from django.contrib.auth.decorators import login_required
 
+from django.contrib.auth import update_session_auth_hash
 
 
 @login_required(login_url='/users/login')
@@ -96,14 +97,35 @@ def user_dashboard_settings(request):
     return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html', {'form': form, 'user': user})
 
 
+
+
+
+
 @login_required(login_url='/users/login')
 def user_dashboard_settings_password(request):
-    return render(request,'admin/user_dashboard/pages/user-dashboard-settings.html')
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.exceptions import ValidationError
+        user = request.user
+
+        if not user.check_password(current_password):
+            messages.error(request, "كلمة المرور الحالية غير صحيحة.")
+        elif new_password != confirm_password:
+            messages.error(request, "كلمتا المرور الجديدتان غير متطابقتين.")
+        elif len(new_password) < 6:
+            messages.error(request, "يجب أن تكون كلمة المرور 6 أحرف على الأقل.")
+        else:
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "تم تغيير كلمة المرور بنجاح.")
+            return redirect('customer:user_dashboard_settings_password')
+
+    return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html')
+
+
 
 @login_required(login_url='/users/login')
 def user_dashboard_settings_email(request):
@@ -142,14 +164,28 @@ def user_dashboard_settings_email(request):
 
 
 
-
 @login_required(login_url='/users/login')
 def user_dashboard_wishlist(request):
+    # جلب المفضلات الخاصة بالمستخدم
+    favourites = Favourites.objects.filter(user=request.user)
     
+    # تحديد رقم الصفحة الذي يتم جلبه من الـ GET request
+    page_number = request.GET.get('page', 1)
+
+    # تقسيم النتائج إلى صفحات باستخدام paginator
+    paginator = Paginator(favourites, 6)
+    
+    try:
+        page_obj = paginator.page(page_number)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    
+    # تمرير المتغيرات إلى القالب
     ctx = {
-        'favourites': Favourites.objects.filter(user=request.user)
+        'favourites': page_obj
     }
-    return render(request,'admin/user_dashboard/pages/user-dashboard-wishlist.html',ctx)
+    
+    return render(request, 'admin/user_dashboard/pages/user-dashboard-wishlist.html', ctx)
 
 
 @login_required(login_url='/users/login')
@@ -207,9 +243,6 @@ def add_to_favorites(request):
 
 
 
-from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse
-from .models import Favourites
 
 def remove_favourite(request, favourite_id):
     favourite = get_object_or_404(Favourites, id=favourite_id)
@@ -219,8 +252,7 @@ def remove_favourite(request, favourite_id):
     else:
         pass
 
-    # إعادة نفس الصفحة بعد الحذف
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':  # تحقق من طلب Ajax
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':  
         return JsonResponse({'success': True})
     else:
-        return redirect(request.META.get('HTTP_REFERER'))  # العودة إلى نفس الصفحة
+        return redirect(request.META.get('HTTP_REFERER')) 

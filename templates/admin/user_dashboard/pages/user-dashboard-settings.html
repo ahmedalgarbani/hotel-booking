@@ -3,6 +3,20 @@
 {% block section_title %} settings {% endblock section_title %}
 {% block path_title %} settings {%endblock path_title %}
 {% block content %}
+
+<style>
+  .alert {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+.alert-info {
+    background-color: #d9edf7;
+    color: #31708f;
+    border: 1px solid #bce8f1;
+}
+
+</style>
 <div class="dashboard-main-content">
   <div class="container-fluid">
     <div class="row">
@@ -165,68 +179,55 @@
           </div>
           <div class="form-content">
             <div class="contact-form-action">
-              <form action="#">
+              <form method="POST">
+                {% csrf_token %}
                 <div class="row">
                   <div class="col-lg-6 responsive-column">
                     <div class="input-box">
-                      <label class="label-text">كلمة المرور الحالي</label>
+                      <label class="label-text">كلمة المرور الحالية</label>
                       <div class="form-group">
                         <span class="la la-lock form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          placeholder="كلمة المرور الحالي"
-                        />
+                        <input class="form-control" type="password" name="current_password" placeholder="كلمة المرور الحالية" required />
                       </div>
                     </div>
                   </div>
-                  <!-- end col-lg-6 -->
                   <div class="col-lg-6 responsive-column">
                     <div class="input-box">
                       <label class="label-text">كلمة سر جديدة</label>
                       <div class="form-group">
                         <span class="la la-lock form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          placeholder="كلمة سر جديدة"
-                        />
+                        <input class="form-control" type="password" name="new_password" placeholder="كلمة سر جديدة" required />
                       </div>
                     </div>
                   </div>
-                  <!-- end col-lg-6 -->
                   <div class="col-lg-6 responsive-column">
                     <div class="input-box">
-                      <label class="label-text"
-                        >كلمة المرور الجديدة مرة أخرى</label
-                      >
+                      <label class="label-text">كلمة المرور الجديدة مرة أخرى</label>
                       <div class="form-group">
                         <span class="la la-lock form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          placeholder="كلمة المرور الجديدة مرة أخرى"
-                        />
+                        <input class="form-control" type="password" name="confirm_password" placeholder="كلمة المرور الجديدة مرة أخرى" required />
                       </div>
                     </div>
                   </div>
-                  <!-- end col-lg-6 -->
                   <div class="col-lg-12">
                     <div class="btn-box">
-                      <button class="theme-btn" type="button">
-                        غير كلمة السر
-                      </button>
+                      <button class="theme-btn" type="submit">غير كلمة السر</button>
                     </div>
                   </div>
-                  <!-- end col-lg-12 -->
                 </div>
-                <!-- end row -->
               </form>
             </div>
+            {% if messages %}
+              <div class="alert alert-info">
+                {% for message in messages %}
+                  <p>{{ message }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
         </div>
-        <!-- end form-box -->
       </div>
+      
       <!-- end col-lg-6 -->
       <div class="col-lg-6">
         <div class="form-box">
