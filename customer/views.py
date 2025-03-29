@@ -8,11 +8,11 @@ from customer.models import Favourites
 from notifications.models import Notifications
 from reviews.models import HotelReview, RoomReview
 from django.shortcuts import render, redirect
-
+from django.contrib import messages
 from users.models import CustomUser
 from .forms import UserProfileForm
 from django.contrib.auth.decorators import login_required
-
+from django.core.exceptions import ValidationError
 
 
 @login_required(login_url='/users/login')
@@ -84,26 +84,67 @@ def cancel_booking(request, booking_id):
 @login_required(login_url='/users/login')
 def user_dashboard_settings(request):
     user = request.user
+    form = UserProfileForm(instance=user)
+    return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html', {'form': form, 'user': user})
+
+
+@login_required(login_url='/users/login')
+def user_profile_dashboard_settings(request):
+    user = request.user
     if request.method == "POST":
-        # تمرير البيانات المرفوعة عبر request.FILES
         form = UserProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            form.save()  # حفظ النموذج
-            return redirect('customer:user_dashboard_settings')  # إعادة التوجيه بعد الحفظ
+            form.save()  
+            return redirect('customer:user_dashboard_settings')  
     else:
         form = UserProfileForm(instance=user)
     
     return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html', {'form': form, 'user': user})
 
 
+
+
 @login_required(login_url='/users/login')
 def user_dashboard_settings_password(request):
-    return render(request,'admin/user_dashboard/pages/user-dashboard-settings.html')
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        newPasswordConfirm = request.POST.get('new_password_confirm')
+        
+        user = request.user
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.exceptions import ValidationError
+        if not user.check_password(current_password):
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'كلمة المرور الحالية غير صحيحة.'}, status=400)
+            else:
+                messages.error(request, 'كلمة المرور الحالية غير صحيحة.')
+                return redirect('customer:user_dashboard_settings')
+            
+        if not newPasswordConfirm == new_password:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'كلمة المرور غير متطابقه.'}, status=400)
+            else:
+                messages.error(request, 'كلمة المرور غير متطابقه.')
+                return redirect('customer:user_dashboard_settings')
+
+        try:
+            user.set_password(newPasswordConfirm)
+            user.save()
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': 'تم تغيير كلمة المرور بنجاح.'})
+            else:
+                messages.success(request, 'تم تغيير كلمة المرور بنجاح.')
+                return redirect('customer:user_dashboard_settings')
+        except ValidationError as e:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'error': f'حدث خطأ: {e}'}, status=400)
+            else:
+                messages.error(request, f'حدث خطأ: {e}')
+                return redirect('customer:user_dashboard_settings')
+
+    return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html')
+
+
 
 @login_required(login_url='/users/login')
 def user_dashboard_settings_email(request):
@@ -117,17 +158,17 @@ def user_dashboard_settings_email(request):
         # التحقق من أن البريد الحالي صحيح
         if user.email != current_email:
             messages.error(request, 'البريد الإلكتروني الحالي غير صحيح.')
-            return redirect('customer:user_dashboard_settings_email')
+            return redirect('customer:user_dashboard_settings')
 
         # التحقق من أن البريدين الجدد متطابقين
         if new_email != confirm_email:
             messages.error(request, 'البريد الإلكتروني الجديدين غير متطابقين.')
-            return redirect('customer:user_dashboard_settings_email')
+            return redirect('customer:user_dashboard_settings')
 
         # التحقق من أن البريد الجديد غير مشابه للبريد الحالي
         if new_email == current_email:
             messages.error(request, 'البريد الإلكتروني الجديد يجب أن يكون مختلفاً عن البريد الإلكتروني الحالي.')
-            return redirect('customer:user_dashboard_settings_email')
+            return redirect('customer:user_dashboard_settings')
 
         # تحديث البريد الإلكتروني
         try:
@@ -136,7 +177,7 @@ def user_dashboard_settings_email(request):
             messages.success(request, 'تم تغيير البريد الإلكتروني بنجاح.')
         except ValidationError as e:
             messages.error(request, f'حدث خطأ: {e}')
-        return redirect('customer:user_dashboard_settings_email')
+        return redirect('customer:user_dashboard_settings')
 
     return render(request, 'admin/user_dashboard/pages/user-dashboard-settings.html')
 

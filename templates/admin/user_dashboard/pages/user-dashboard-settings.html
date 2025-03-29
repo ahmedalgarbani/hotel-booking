@@ -2,6 +2,43 @@
 {% load static %}
 {% block section_title %} settings {% endblock section_title %}
 {% block path_title %} settings {%endblock path_title %}
+{% block extra_css %}
+   
+    <style>
+    .messages .alert {
+    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+    border: 2px solid; /* إضافة حدود سميكة */
+    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+    font-weight: bold; /* جعل النص أكثر جرأة */
+}
+
+.messages .alert-success {
+    color: #155724; /* لون نص النجاح (أخضر داكن) */
+    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+}
+
+.messages .alert-error {
+    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+}
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+.messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+</style>
+ {% endblock extra_css %}
 {% block content %}
 <div class="dashboard-main-content">
   <div class="container-fluid">
@@ -11,9 +48,18 @@
             <div class="form-title-wrap">
                 <h3 class="title">معلومات شخصية</h3>
             </div>
+            {% if messages %}
+                            <div class="messages">
+                                {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
             <!-- Main form for other details -->
             <div class="contact-form-action">
-                <form method="POST" enctype="multipart/form-data"> <!-- تأكد من تضمين enctype هنا -->
+                <form method="POST" action="{% url 'customer:user_profile_dashboard_settings' %}" enctype="multipart/form-data"> <!-- تأكد من تضمين enctype هنا -->
                     {% csrf_token %}
                     <div class="row">
                         <div class="form-content">
@@ -165,7 +211,8 @@
           </div>
           <div class="form-content">
             <div class="contact-form-action">
-              <form action="#">
+              <form action="{% url "customer:user_dashboard_settings_password" %}" method="POST">
+                {% csrf_token %}
                 <div class="row">
                   <div class="col-lg-6 responsive-column">
                     <div class="input-box">
@@ -204,7 +251,7 @@
                         <span class="la la-lock form-icon"></span>
                         <input
                           class="form-control"
-                          type="text"
+                          type="text" name="newPasswordConfirm"
                           placeholder="كلمة المرور الجديدة مرة أخرى"
                         />
                       </div>
@@ -213,7 +260,7 @@
                   <!-- end col-lg-6 -->
                   <div class="col-lg-12">
                     <div class="btn-box">
-                      <button class="theme-btn" type="button">
+                      <button class="theme-btn reset-password" id="reset-password" type="button">
                         غير كلمة السر
                       </button>
                     </div>
@@ -317,4 +364,59 @@
     reader.readAsDataURL(this.files[0]);
   });
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('form').on('click', '.reset-password', function(e) {
+      e.preventDefault(); 
+
+      var form = $(this).closest('form');
+      var url = form.attr('action');
+      var csrfToken = form.find('input[name="csrfmiddlewaretoken"]').val();
+
+      var inputs = form.find('input[type="text"]');
+      var currentPassword = inputs.eq(0).val();
+      var newPassword = inputs.eq(1).val();
+      var newPasswordConfirm = inputs.eq(2).val();
+  
+      console.log("Submitting:", {
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        newPasswordConfirm: newPasswordConfirm,
+        csrfToken: csrfToken
+      });
+  
+      $.ajax({
+        url: url,
+        method: "POST",
+        data: {
+          csrfmiddlewaretoken: csrfToken,
+          current_password: currentPassword,
+          new_password: newPassword,
+          new_password_confirm: newPasswordConfirm
+        },
+        dataType: 'json', 
+        success: function(response) {
+          console.log("Password changed successfully:", response);
+          alert(response.success || "Password changed successfully!");
+        },
+        error: function(xhr, errmsg, err) {
+          try {
+            var errResponse = JSON.parse(xhr.responseText);
+            if (errResponse.error) {
+              alert(errResponse.error);
+            } else {
+              alert("An error occurred. Please try again.");
+            }
+          } catch(e) {
+            alert("An error occurred. Please try again.");
+          }
+          console.error("Error changing password:", errmsg);
+        }
+      });
+    });
+  });
+</script>
+
 {% endblock content %}

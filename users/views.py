@@ -113,5 +113,8 @@ def login_view(request):
 
 
 def password_reset_view(request):
-    messages.info(request, 'سيتم تنفيذ هذه الميزة قريباً')
-    return redirect('home:index')
+    print("hello -----------------")
+    if request.method == 'POST':
+
+        messages.info(request, 'سيتم تنفيذ هذه الميزة قريباً')
+        return redirect('home:index')
