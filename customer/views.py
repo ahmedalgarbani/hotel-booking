@@ -157,7 +157,6 @@ def user_dashboard_settings_email(request):
 
         # التحقق من أن البريد الحالي صحيح
         if user.email != current_email:
-            sweetify.error(request, 'Oops!', text='There was an error', persistent='Ok')
             messages.error(request, 'البريد الإلكتروني الحالي غير صحيح.')
             return redirect('customer:user_dashboard_settings')
 
