@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'notifications', 
     'customer',
     'django_celery_beat',
+    'accounts'
     
     
 ]
