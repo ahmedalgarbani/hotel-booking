@@ -281,6 +281,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         payment = Payment(
             booking=booking,
+            user = request.user,
             payment_method=payment_method,
             payment_subtotal=payment_subtotal,
             payment_totalamount=payment_totalamount,
@@ -300,12 +301,10 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
 
-
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
-
 
     def get_queryset(self):
         return Booking.objects.filter(user=self.request.user)
@@ -315,28 +314,26 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def create_booking(self, request):
-    
-        hotel_id = request.data.get('hotel_id')
-        room_id = request.data.get('room_id')
-        check_in_date = request.data.get('check_in_date')
-        check_out_date = request.data.get('check_out_date')
-        amount = request.data.get('amount')
-        rooms_booked = request.data.get('rooms_booked', 1)
-        
+        required_fields = ["hotel_id", "room_id", "check_in_date", "check_out_date", "amount"]
+        missing_fields = [field for field in required_fields if not request.data.get(field)]
+
+        if missing_fields:
+            return Response(
+                {"error": f"Missing required fields: {', '.join(missing_fields)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        hotel_id = request.data["hotel_id"]
+        room_id = request.data["room_id"]
+        check_in_date = request.data["check_in_date"]
+        check_out_date = request.data["check_out_date"]
+        amount = request.data["amount"]
+        rooms_booked = request.data.get("rooms_booked", 1)
+
         user = get_object_or_404(CustomUser, id=request.user.id)
 
-        if not all([hotel_id, room_id, check_in_date, check_out_date, amount]):
-            return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            hotel = Hotel.objects.get(id=hotel_id)
-        except Hotel.DoesNotExist:
-            return Response({'error': 'Hotel not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            room = RoomType.objects.get(id=room_id)
-        except RoomType.DoesNotExist:
-            return Response({'error': 'Room type not found'}, status=status.HTTP_404_NOT_FOUND)
+        hotel = get_object_or_404(Hotel, id=hotel_id)
+        room = get_object_or_404(RoomType, id=room_id)
 
         booking = Booking.objects.create(
             hotel=hotel,
@@ -349,11 +346,7 @@ class BookingViewSet(viewsets.ModelViewSet):
         )
 
         serializer = BookingSerializer(booking)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-
 
 
 class NotificationsViewSet(viewsets.ModelViewSet):

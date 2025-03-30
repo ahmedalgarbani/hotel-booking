@@ -6,6 +6,8 @@ from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
+from users.models import CustomUser
+
 
 # ------------Currency-------------
 class Currency(BaseModel):
@@ -93,6 +95,14 @@ class Payment(BaseModel):
         HotelPaymentMethod,
         on_delete=models.CASCADE,
         verbose_name=_("طريقة الدفع")
+    )
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        verbose_name=_("المستخدم"),
+        related_name='payments',
+        null=True,
+        blank=True
     )
     transfer_image = models.ImageField(
         verbose_name=_("صورة السند الدفع"),
