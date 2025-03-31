@@ -323,11 +323,30 @@
                       <span class="price-value">${{ booking_data.extra_services_total }}</span>
                       <span class="price-label">إجمالي الخدمات الإضافية:</span>
                     </div>
+                    <div class="price-row">
+                      <span class="price-value">${{ booking_data.total_price }}</span>
+                      <span class="price-label">السعر قبل الخصم:</span>
+                    </div>
+                    <div class="price-row">
+                      <span class="price-value" id="discount">${{ booking_data.extra_services_total }}</span>
+                      <span class="price-label">قيمه الخصم:</span>
+                    </div>
                     <div class="price-divider"></div>
                     <div class="price-row total">
-                      <span class="price-value total-price">${{ booking_data.grand_total }}</span>
-                      <span class="price-label">السعر الإجمالي:</span>
+                      <span class="price-value total-price" id="finalTotal">${{ booking_data.grand_total }}</span>
+                      <span class="price-label">السعر الاجمالي:</span>
                     </div>
+                    <div class="container1">
+                      <h2>ادخل كودالخصم</h2>
+                      <input class="couponinput" type="hidden" id="subtotal"  value="{{booking_data.total_price}}">
+                      <input class="couponinput" type="hidden" id="hotel_id" value="{{booking_data.hotel_id}}">
+                      <input class="couponinput" type="text" id="coupon" placeholder="Enter Coupon Code">
+                      <button  class="couponbutton" onclick="applyCoupon()">تنفيذ </button>
+                      <p class="couponmessage" id="message"></p>
+                      {% comment %} <p><strong>Final Total:</strong> <span id="finalTotal">-</span></p>
+                      <p><strong>Discount:</strong> <span id="discount">-</span></p> {% endcomment %}
+                    </div>
+                   
                   </div>
                 </div>
                 
@@ -350,6 +369,48 @@
     </div>
   </div>
 </section>
+
+<script>
+  function applyCoupon() {
+      let subtotal = document.getElementById("subtotal").value;
+      let hotel_id = document.getElementById("hotel_id").value;
+      let coupon = document.getElementById("coupon").value;
+      let messageEl = document.getElementById("message");
+      let finalTotalEl = document.getElementById("finalTotal");
+      let discountEl = document.getElementById("discount");
+
+      $.ajax({
+          url: "{% url 'services:apply_coupon' %}",
+          method: "POST",
+          data: {
+              subtotal: subtotal,
+              coupon: coupon,
+              hotel_id:hotel_id
+          },
+          success: function(data) {
+              if (data.message.includes("بنجاح")) {
+                  messageEl.style.color = "green";
+                  finalTotalEl.textContent = data.finalTotal.toFixed(2);
+                  discountEl.textContent = data.discount.toFixed(2);
+              } else {
+                  messageEl.style.color = "red";
+              }
+              messageEl.textContent = data.message;
+          },
+          error: function(xhr, status, error) {
+            messageEl.style.color = "red";
+            
+            if (xhr.status === 422) {
+                const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                messageEl.textContent = errorMessage; 
+            } else {
+                messageEl.textContent = "An unexpected error occurred.";
+            }
+            console.error("Error:", error);
+        }
+      });
+  }
+</script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -404,7 +465,33 @@
     margin: 0 auto;
     padding: 0 1rem;
   }
-
+  .container1 {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+.couponinput, .couponbutton {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.couponbutton {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+}
+.couponbutton:hover {
+    background-color: #218838;
+}
+.couponmessage {
+    margin-top: 10px;
+    font-weight: bold;
+}
   .content-wrapper {
     display: flex;
     flex-wrap: wrap;

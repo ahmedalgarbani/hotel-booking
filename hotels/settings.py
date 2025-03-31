@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     
 ]
 
+# python manage.py makemigrations users HotelManagement rooms home bookings payments reviews services blog notifications customer
+
 
 REST_FRAMEWORK = {
      'DEFAULT_PARSER_CLASSES': (
@@ -197,7 +199,7 @@ WSGI_APPLICATION = 'hotels.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hotel-booking',
+        'NAME': 'hotels-booking',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

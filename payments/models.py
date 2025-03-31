@@ -144,6 +144,11 @@ class Payment(BaseModel):
         null=True
     )
     payment_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("قيمة الخصم"), default=0)
+    payment_discount_code = models.CharField(
+       max_length=100,
+        verbose_name=_("كود الخصم"),
+        null=True
+       )
 
 
     class Meta:

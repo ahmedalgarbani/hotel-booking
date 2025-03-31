@@ -4,6 +4,18 @@ from django.utils.html import format_html
 from bookings.models import Booking
 from .models import HotelService, RoomTypeService, Offer
 
+from .models import Coupon
+
+# Customize the admin interface for the Coupon model
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'hotel', 'quantity', 'min_purchase_amount', 'expired_date', 'discount_type', 'discount', 'status', 'created_at', 'updated_at')
+    search_fields = ('name', 'code', 'hotel__name')  # Search by coupon name, code, and hotel name
+    list_filter = ('status', 'discount_type', 'hotel')  # Filter by status, discount type, and hotel
+    ordering = ('-created_at',)  # Order by created_at descending
+
+# Register the Coupon model with the custom admin interface
+admin.site.register(Coupon, CouponAdmin)
+
 
 class HotelServiceAdmin(admin.ModelAdmin):
     list_display = ("name", "hotel", "is_active", "icon_display")
@@ -57,4 +69,5 @@ from api.admin import admin_site
 admin_site.register(Offer,OfferAdmin)
 admin_site.register(RoomTypeService,RoomTypeServiceAdmin)
 admin_site.register(HotelService,HotelServiceAdmin)
+admin_site.register(Coupon,CouponAdmin)
 

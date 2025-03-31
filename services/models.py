@@ -138,3 +138,33 @@ class Offer(BaseModel):
     def clean(self):
         if self.offer_end_date < self.offer_start_date:
             raise ValidationError(_("تاريخ نهاية العرض يجب أن يكون بعد تاريخ البداية"))
+        
+
+
+
+# ------------------ Coupon --------------------------
+
+class Coupon(models.Model):
+    DISCOUNT_TYPES = [
+        ('percent', 'Percent'),
+        ('amount', 'Amount'),
+    ]
+    hotel = models.ForeignKey(
+        Hotel,
+        on_delete=models.CASCADE,
+        related_name="hotel_coupon",
+        verbose_name=_("الفندق")
+    )
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
+    quantity = models.IntegerField()
+    min_purchase_amount = models.IntegerField(default=0)
+    expired_date = models.DateField()
+    discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPES)
+    discount = models.FloatField()
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

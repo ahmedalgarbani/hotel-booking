@@ -76,9 +76,6 @@ class Booking(BaseModel):
         PENDING = "0", _("قيد الانتظار")
         CONFIRMED = "1", _("مؤكد")
         CANCELED = "2", _("ملغي")
-
-
-    
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,

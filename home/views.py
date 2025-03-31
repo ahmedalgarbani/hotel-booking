@@ -29,6 +29,8 @@ def index(request):
     for key in list(request.session.keys()):
         if not key.startswith("_"): 
             del request.session[key]
+        
+
     
     roomTypes = RoomType.objects.filter(is_active=True)
     blogs = Post.objects.filter(is_published=True)[:3]

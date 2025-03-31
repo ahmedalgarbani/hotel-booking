@@ -30,7 +30,7 @@ urlpatterns = [
     path('bookings/', include('bookings.urls', namespace='bookings')),
     path('payments/', include('payments.urls')),
     path('reviews/', include('reviews.urls')),
-    path('services/', include('services.urls')),
+    path('services/', include('services.urls', namespace='services')),
     path('blog/', include('blog.urls')),
     path('api/', include('api.urls')),
     path('customer/', include('customer.urls')),

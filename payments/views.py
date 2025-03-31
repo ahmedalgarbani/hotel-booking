@@ -216,78 +216,76 @@ def save_guests(request, room_id):
 
 
 
-
-
-
 logger = logging.getLogger(__name__)
 
 @login_required(login_url='/users/login')
 def hotel_confirm_payment(request):
-    if request.method == 'POST':
-        try:
-            with transaction.atomic():
-                # إذا لم يتم تسجيل الدخول، يمكن إعادة التوجيه إلى صفحة تسجيل الدخول
-                # if request.user.is_anonymous:
-                #     messages.error(request, "يجب عليك تسجيل الدخول للمتابعة.")
-                #     return redirect("account_login")  
+    if request.method != 'POST':
+        return redirect("payments:checkout", room_id=request.session.get("booking_data", {}).get("room_id", 1))
 
-                booking_data = request.session.get("booking_data")
-                if not booking_data:
-                    messages.error(request, "لم يتم العثور على بيانات الحجز. يرجى إعادة المحاولة.")
-                    return redirect("home:index")
+    try:
+        with transaction.atomic():
+            booking_data = request.session.get("booking_data")
+            if not booking_data:
+                messages.error(request, "لم يتم العثور على بيانات الحجز. يرجى إعادة المحاولة.")
+                return redirect("home:index")
 
-                # guests_data = request.session.get("guests", [])
-                transfer_owner_name = request.POST.get("transfer_owner_name", "").strip()
-                transfer_number = request.POST.get("transfer_number", "").strip()
-                payment_method_id = request.POST.get("payment_method")
-                transfer_image = request.FILES.get("transfer_image")
+            transfer_owner_name = request.POST.get("transfer_owner_name", "").strip()
+            transfer_number = request.POST.get("transfer_number", "").strip()
+            payment_method_id = request.POST.get("payment_method")
+            transfer_image = request.FILES.get("transfer_image")
 
-                payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+            payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+            pending_status = Booking.BookingStatus.PENDING
 
-                pending_status = Booking.BookingStatus.PENDING
-                booking = Booking.objects.create(
-                    hotel_id=booking_data["hotel_id"],
-                    user=request.user,  
-                    room_id=booking_data["room_id"],
-                    check_in_date=booking_data["check_in"],
-                    check_out_date=booking_data["check_out"],
-                    amount=booking_data.get("grand_total", 0),
-                    status=pending_status,
-                    rooms_booked = booking_data["room_number"],
-                )
-                
+            coupon_data = request.session.get("coupon", {})
+            amount_to_pay = coupon_data.get("finalTotal", booking_data.get("grand_total", 0))
+            discount = coupon_data.get("discount", 0)
+            discount_code = coupon_data.get("coupon", "")
 
-                payment = Payment.objects.create(
-                    payment_method=payment_method,
-                    payment_status=0,  
-                    payment_date=timezone.now(),
-                    payment_subtotal=booking_data.get("total_price", 0),
-                    payment_totalamount=booking_data.get("grand_total", 0),
-                    payment_currency=payment_method.payment_option.currency.currency_symbol,
-                    booking=booking,  
-                    payment_type='e_pay' if payment_method.payment_option.method_name != 'نقدي' else 'cash',
-                    payment_note=f"تم التحويل بواسطة: {transfer_owner_name} - رقم التحويل: {transfer_number}",
-                    transfer_image = transfer_image
-                    
-                )
+            booking = Booking.objects.create(
+                hotel_id=booking_data["hotel_id"],
+                user=request.user,
+                room_id=booking_data["room_id"],
+                check_in_date=booking_data["check_in"],
+                check_out_date=booking_data["check_out"],
+                amount=amount_to_pay,
+                status=pending_status,
+                rooms_booked=booking_data["room_number"],
+            )
 
-                request.session.pop("booking_data", None)
-                request.session.pop("guests", None)
+            payment = Payment.objects.create(
+                payment_method=payment_method,
+                payment_status=0,  
+                user=request.user,
+                payment_date=timezone.now(),
+                payment_subtotal=booking_data.get("total_price", 0),
+                payment_discount=discount,
+                payment_discount_code=discount_code,
+                payment_totalamount=amount_to_pay,
+                payment_currency=payment_method.payment_option.currency.currency_symbol,
+                booking=booking,
+                payment_type='e_pay' if payment_method.payment_option.method_name != 'نقدي' else 'cash',
+                payment_note=f"تم التحويل بواسطة: {transfer_owner_name} - رقم التحويل: {transfer_number}",
+                transfer_image=transfer_image
+            )
 
-                messages.success(request, "تم تأكيد الدفع والحجز بنجاح.")
-                return render(request, 'frontend/home/pages/payment-complete.html', {
-                    'payment': payment,
-                    'booking': booking,
-                    'transfer_number': transfer_number,
-                    'transfer_owner_name': transfer_owner_name,
-                })
-        
-        except Exception as e:
-            logger.error(f"خطأ أثناء تأكيد الدفع: {traceback.format_exc()}")
-            messages.error(request, f"حدث خطأ أثناء إتمام العملية: {str(e)}")
-            return redirect("payments:checkout", room_id=booking_data.get("room_id", 1))  
+            request.session.pop("booking_data", None)
+            request.session.pop("coupon", None)
+            request.session.pop("coupon_applied", None)
 
-    return redirect("payments:checkout", room_id=request.session.get("booking_data", {}).get("room_id", 1))
+            messages.success(request, "تم تأكيد الدفع والحجز بنجاح.")
+            return render(request, 'frontend/home/pages/payment-complete.html', {
+                'payment': payment,
+                'booking': booking,
+                'transfer_number': transfer_number,
+                'transfer_owner_name': transfer_owner_name,
+            })
+
+    except Exception as e:
+        logger.error(f"خطأ أثناء تأكيد الدفع: {traceback.format_exc()}")
+        messages.error(request, f"حدث خطأ أثناء إتمام العملية: {str(e)}")
+        return redirect("payments:checkout", room_id=booking_data.get("room_id", 1) if booking_data else 1)  
 
 
 def user_dashboard_bookings(request):

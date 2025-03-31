@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 01:06 PM
+-- Generation Time: Apr 01, 2025 at 12:30 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `auth_group` (
   `id` int(11) NOT NULL,
   `name` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `auth_group`
@@ -49,7 +49,7 @@ CREATE TABLE `auth_group_permissions` (
   `id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL,
   `permission_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `auth_group_permissions`
@@ -99,58 +99,58 @@ INSERT INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
 (41, 1, 80),
 (42, 1, 81),
 (43, 1, 82),
-(47, 1, 115),
-(48, 1, 116),
-(49, 1, 117),
-(50, 1, 118),
-(51, 1, 119),
-(52, 1, 120),
-(53, 1, 121),
-(54, 1, 122),
+(51, 1, 123),
+(52, 1, 124),
+(53, 1, 125),
+(54, 1, 126),
 (55, 1, 127),
 (44, 1, 128),
 (45, 1, 129),
 (46, 1, 130),
-(56, 1, 131),
-(57, 1, 132),
-(58, 1, 133),
-(59, 1, 134),
-(60, 1, 135),
-(61, 1, 136),
-(62, 1, 137),
-(63, 1, 138),
-(64, 1, 139),
-(65, 1, 140),
-(66, 1, 141),
-(67, 1, 142),
-(70, 1, 149),
-(71, 1, 150),
-(68, 1, 153),
-(69, 1, 154),
-(76, 1, 155),
-(77, 1, 156),
-(78, 1, 157),
-(79, 1, 158),
-(72, 1, 163),
-(73, 1, 164),
-(74, 1, 165),
-(75, 1, 166),
-(80, 1, 175),
-(81, 1, 176),
-(82, 1, 177),
-(83, 1, 178),
-(84, 1, 179),
-(85, 1, 180),
-(86, 1, 181),
-(87, 1, 182),
-(88, 1, 183),
-(89, 1, 184),
-(90, 1, 185),
-(91, 1, 186),
-(92, 1, 187),
-(93, 1, 188),
-(94, 1, 189),
-(95, 1, 190);
+(47, 1, 135),
+(48, 1, 136),
+(49, 1, 137),
+(50, 1, 138),
+(56, 1, 139),
+(57, 1, 140),
+(58, 1, 141),
+(59, 1, 142),
+(60, 1, 143),
+(61, 1, 144),
+(62, 1, 145),
+(63, 1, 146),
+(64, 1, 151),
+(65, 1, 152),
+(66, 1, 153),
+(67, 1, 154),
+(70, 1, 157),
+(71, 1, 158),
+(68, 1, 161),
+(69, 1, 162),
+(72, 1, 167),
+(73, 1, 168),
+(74, 1, 169),
+(75, 1, 170),
+(76, 1, 175),
+(77, 1, 176),
+(78, 1, 177),
+(79, 1, 178),
+(91, 1, 187),
+(92, 1, 188),
+(93, 1, 189),
+(94, 1, 190),
+(95, 1, 191),
+(80, 1, 192),
+(81, 1, 193),
+(82, 1, 194),
+(83, 1, 195),
+(84, 1, 196),
+(85, 1, 197),
+(86, 1, 198),
+(87, 1, 199),
+(88, 1, 200),
+(89, 1, 201),
+(90, 1, 202);
 
 -- --------------------------------------------------------
 
@@ -163,7 +163,7 @@ CREATE TABLE `auth_permission` (
   `name` varchar(255) NOT NULL,
   `content_type_id` int(11) NOT NULL,
   `codename` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `auth_permission`
@@ -252,154 +252,166 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (80, 'Can change نوع الغرفة', 5, 'change_roomtype'),
 (81, 'Can delete نوع الغرفة', 5, 'delete_roomtype'),
 (82, 'Can view نوع الغرفة', 5, 'view_roomtype'),
-(83, 'Can add hero slider', 36, 'add_heroslider'),
-(84, 'Can change hero slider', 36, 'change_heroslider'),
-(85, 'Can delete hero slider', 36, 'delete_heroslider'),
-(86, 'Can view hero slider', 36, 'view_heroslider'),
-(87, 'Can add info box', 37, 'add_infobox'),
-(88, 'Can change info box', 37, 'change_infobox'),
-(89, 'Can delete info box', 37, 'delete_infobox'),
-(90, 'Can view info box', 37, 'view_infobox'),
-(91, 'Can add partner', 38, 'add_partner'),
-(92, 'Can change partner', 38, 'change_partner'),
-(93, 'Can delete partner', 38, 'delete_partner'),
-(94, 'Can view partner', 38, 'view_partner'),
-(95, 'Can add room type home', 39, 'add_roomtypehome'),
-(96, 'Can change room type home', 39, 'change_roomtypehome'),
-(97, 'Can delete room type home', 39, 'delete_roomtypehome'),
-(98, 'Can view room type home', 39, 'view_roomtypehome'),
-(99, 'Can add setting', 40, 'add_setting'),
-(100, 'Can change setting', 40, 'change_setting'),
-(101, 'Can delete setting', 40, 'delete_setting'),
-(102, 'Can view setting', 40, 'view_setting'),
-(103, 'Can add social media link', 41, 'add_socialmedialink'),
-(104, 'Can change social media link', 41, 'change_socialmedialink'),
-(105, 'Can delete social media link', 41, 'delete_socialmedialink'),
-(106, 'Can view social media link', 41, 'view_socialmedialink'),
-(107, 'Can add team member', 42, 'add_teammember'),
-(108, 'Can change team member', 42, 'change_teammember'),
-(109, 'Can delete team member', 42, 'delete_teammember'),
-(110, 'Can view team member', 42, 'view_teammember'),
-(111, 'Can add testimonial', 43, 'add_testimonial'),
-(112, 'Can change testimonial', 43, 'change_testimonial'),
-(113, 'Can delete testimonial', 43, 'delete_testimonial'),
-(114, 'Can view testimonial', 43, 'view_testimonial'),
-(115, 'Can add حجز', 13, 'add_booking'),
-(116, 'Can change حجز', 13, 'change_booking'),
-(117, 'Can delete حجز', 13, 'delete_booking'),
-(118, 'Can view حجز', 13, 'view_booking'),
-(119, 'Can add تفصيل الحجز', 14, 'add_bookingdetail'),
-(120, 'Can change تفصيل الحجز', 14, 'change_bookingdetail'),
-(121, 'Can delete تفصيل الحجز', 14, 'delete_bookingdetail'),
-(122, 'Can view تفصيل الحجز', 14, 'view_bookingdetail'),
-(123, 'Can add ضيف', 44, 'add_guest'),
-(124, 'Can change ضيف', 44, 'change_guest'),
-(125, 'Can delete ضيف', 44, 'delete_guest'),
-(126, 'Can view ضيف', 44, 'view_guest'),
-(127, 'Can add extension movement', 15, 'add_extensionmovement'),
-(128, 'Can change extension movement', 15, 'change_extensionmovement'),
-(129, 'Can delete extension movement', 15, 'delete_extensionmovement'),
-(130, 'Can view extension movement', 15, 'view_extensionmovement'),
-(131, 'Can add عملة', 27, 'add_currency'),
-(132, 'Can change عملة', 27, 'change_currency'),
-(133, 'Can delete عملة', 27, 'delete_currency'),
-(134, 'Can view عملة', 27, 'view_currency'),
-(135, 'Can add طريقة دفع الفندق', 29, 'add_hotelpaymentmethod'),
-(136, 'Can change طريقة دفع الفندق', 29, 'change_hotelpaymentmethod'),
-(137, 'Can delete طريقة دفع الفندق', 29, 'delete_hotelpaymentmethod'),
-(138, 'Can view طريقة دفع الفندق', 29, 'view_hotelpaymentmethod'),
-(139, 'Can add طريقة دفع', 28, 'add_paymentoption'),
-(140, 'Can change طريقة دفع', 28, 'change_paymentoption'),
-(141, 'Can delete طريقة دفع', 28, 'delete_paymentoption'),
-(142, 'Can view طريقة دفع', 28, 'view_paymentoption'),
-(143, 'Can add دفعة', 45, 'add_payment'),
-(144, 'Can change دفعة', 45, 'change_payment'),
-(145, 'Can delete دفعة', 45, 'delete_payment'),
-(146, 'Can view دفعة', 45, 'view_payment'),
-(147, 'Can add مراجعة فندق', 17, 'add_hotelreview'),
-(148, 'Can change مراجعة فندق', 17, 'change_hotelreview'),
-(149, 'Can delete مراجعة فندق', 17, 'delete_hotelreview'),
-(150, 'Can view مراجعة فندق', 17, 'view_hotelreview'),
-(151, 'Can add مراجعة غرفة', 16, 'add_roomreview'),
-(152, 'Can change مراجعة غرفة', 16, 'change_roomreview'),
-(153, 'Can delete مراجعة غرفة', 16, 'delete_roomreview'),
-(154, 'Can view مراجعة غرفة', 16, 'view_roomreview'),
-(155, 'Can add خدمة فندقية', 12, 'add_hotelservice'),
-(156, 'Can change خدمة فندقية', 12, 'change_hotelservice'),
-(157, 'Can delete خدمة فندقية', 12, 'delete_hotelservice'),
-(158, 'Can view خدمة فندقية', 12, 'view_hotelservice'),
-(159, 'Can add عرض', 46, 'add_offer'),
-(160, 'Can change عرض', 46, 'change_offer'),
-(161, 'Can delete عرض', 46, 'delete_offer'),
-(162, 'Can view عرض', 46, 'view_offer'),
-(163, 'Can add خدمة نوع الغرفة', 11, 'add_roomtypeservice'),
-(164, 'Can change خدمة نوع الغرفة', 11, 'change_roomtypeservice'),
-(165, 'Can delete خدمة نوع الغرفة', 11, 'delete_roomtypeservice'),
-(166, 'Can view خدمة نوع الغرفة', 11, 'view_roomtypeservice'),
-(167, 'Can add blacklisted token', 47, 'add_blacklistedtoken'),
-(168, 'Can change blacklisted token', 47, 'change_blacklistedtoken'),
-(169, 'Can delete blacklisted token', 47, 'delete_blacklistedtoken'),
-(170, 'Can view blacklisted token', 47, 'view_blacklistedtoken'),
-(171, 'Can add outstanding token', 48, 'add_outstandingtoken'),
-(172, 'Can change outstanding token', 48, 'change_outstandingtoken'),
-(173, 'Can delete outstanding token', 48, 'delete_outstandingtoken'),
-(174, 'Can view outstanding token', 48, 'view_outstandingtoken'),
-(175, 'Can add تصنيف', 25, 'add_category'),
-(176, 'Can change تصنيف', 25, 'change_category'),
-(177, 'Can delete تصنيف', 25, 'delete_category'),
-(178, 'Can view تصنيف', 25, 'view_category'),
-(179, 'Can add تعليق', 24, 'add_comment'),
-(180, 'Can change تعليق', 24, 'change_comment'),
-(181, 'Can delete تعليق', 24, 'delete_comment'),
-(182, 'Can view تعليق', 24, 'view_comment'),
-(183, 'Can add مقال', 23, 'add_post'),
-(184, 'Can change مقال', 23, 'change_post'),
-(185, 'Can delete مقال', 23, 'delete_post'),
-(186, 'Can view مقال', 23, 'view_post'),
-(187, 'Can add وسم', 26, 'add_tag'),
-(188, 'Can change وسم', 26, 'change_tag'),
-(189, 'Can delete وسم', 26, 'delete_tag'),
-(190, 'Can view وسم', 26, 'view_tag'),
-(191, 'Can add إشعار', 49, 'add_notifications'),
-(192, 'Can change إشعار', 49, 'change_notifications'),
-(193, 'Can delete إشعار', 49, 'delete_notifications'),
-(194, 'Can view إشعار', 49, 'view_notifications'),
-(195, 'Can add المفضلات', 50, 'add_favourites'),
-(196, 'Can change المفضلات', 50, 'change_favourites'),
-(197, 'Can delete المفضلات', 50, 'delete_favourites'),
-(198, 'Can view المفضلات', 50, 'view_favourites'),
-(199, 'Can add crontab', 51, 'add_crontabschedule'),
-(200, 'Can change crontab', 51, 'change_crontabschedule'),
-(201, 'Can delete crontab', 51, 'delete_crontabschedule'),
-(202, 'Can view crontab', 51, 'view_crontabschedule'),
-(203, 'Can add interval', 52, 'add_intervalschedule'),
-(204, 'Can change interval', 52, 'change_intervalschedule'),
-(205, 'Can delete interval', 52, 'delete_intervalschedule'),
-(206, 'Can view interval', 52, 'view_intervalschedule'),
-(207, 'Can add periodic task', 53, 'add_periodictask'),
-(208, 'Can change periodic task', 53, 'change_periodictask'),
-(209, 'Can delete periodic task', 53, 'delete_periodictask'),
-(210, 'Can view periodic task', 53, 'view_periodictask'),
-(211, 'Can add periodic task track', 54, 'add_periodictasks'),
-(212, 'Can change periodic task track', 54, 'change_periodictasks'),
-(213, 'Can delete periodic task track', 54, 'delete_periodictasks'),
-(214, 'Can view periodic task track', 54, 'view_periodictasks'),
-(215, 'Can add solar event', 55, 'add_solarschedule'),
-(216, 'Can change solar event', 55, 'change_solarschedule'),
-(217, 'Can delete solar event', 55, 'delete_solarschedule'),
-(218, 'Can view solar event', 55, 'view_solarschedule'),
-(219, 'Can add clocked', 56, 'add_clockedschedule'),
-(220, 'Can change clocked', 56, 'change_clockedschedule'),
-(221, 'Can delete clocked', 56, 'delete_clockedschedule'),
-(222, 'Can view clocked', 56, 'view_clockedschedule'),
-(223, 'Can add contact message', 57, 'add_contactmessage'),
-(224, 'Can change contact message', 57, 'change_contactmessage'),
-(225, 'Can delete contact message', 57, 'delete_contactmessage'),
-(226, 'Can view contact message', 57, 'view_contactmessage'),
-(227, 'Can add pricing plan', 58, 'add_pricingplan'),
-(228, 'Can change pricing plan', 58, 'change_pricingplan'),
-(229, 'Can delete pricing plan', 58, 'delete_pricingplan'),
-(230, 'Can view pricing plan', 58, 'view_pricingplan');
+(83, 'Can add contact message', 36, 'add_contactmessage'),
+(84, 'Can change contact message', 36, 'change_contactmessage'),
+(85, 'Can delete contact message', 36, 'delete_contactmessage'),
+(86, 'Can view contact message', 36, 'view_contactmessage'),
+(87, 'Can add hero slider', 37, 'add_heroslider'),
+(88, 'Can change hero slider', 37, 'change_heroslider'),
+(89, 'Can delete hero slider', 37, 'delete_heroslider'),
+(90, 'Can view hero slider', 37, 'view_heroslider'),
+(91, 'Can add info box', 38, 'add_infobox'),
+(92, 'Can change info box', 38, 'change_infobox'),
+(93, 'Can delete info box', 38, 'delete_infobox'),
+(94, 'Can view info box', 38, 'view_infobox'),
+(95, 'Can add partner', 39, 'add_partner'),
+(96, 'Can change partner', 39, 'change_partner'),
+(97, 'Can delete partner', 39, 'delete_partner'),
+(98, 'Can view partner', 39, 'view_partner'),
+(99, 'Can add pricing plan', 40, 'add_pricingplan'),
+(100, 'Can change pricing plan', 40, 'change_pricingplan'),
+(101, 'Can delete pricing plan', 40, 'delete_pricingplan'),
+(102, 'Can view pricing plan', 40, 'view_pricingplan'),
+(103, 'Can add room type home', 41, 'add_roomtypehome'),
+(104, 'Can change room type home', 41, 'change_roomtypehome'),
+(105, 'Can delete room type home', 41, 'delete_roomtypehome'),
+(106, 'Can view room type home', 41, 'view_roomtypehome'),
+(107, 'Can add setting', 42, 'add_setting'),
+(108, 'Can change setting', 42, 'change_setting'),
+(109, 'Can delete setting', 42, 'delete_setting'),
+(110, 'Can view setting', 42, 'view_setting'),
+(111, 'Can add social media link', 43, 'add_socialmedialink'),
+(112, 'Can change social media link', 43, 'change_socialmedialink'),
+(113, 'Can delete social media link', 43, 'delete_socialmedialink'),
+(114, 'Can view social media link', 43, 'view_socialmedialink'),
+(115, 'Can add team member', 44, 'add_teammember'),
+(116, 'Can change team member', 44, 'change_teammember'),
+(117, 'Can delete team member', 44, 'delete_teammember'),
+(118, 'Can view team member', 44, 'view_teammember'),
+(119, 'Can add testimonial', 45, 'add_testimonial'),
+(120, 'Can change testimonial', 45, 'change_testimonial'),
+(121, 'Can delete testimonial', 45, 'delete_testimonial'),
+(122, 'Can view testimonial', 45, 'view_testimonial'),
+(123, 'Can add حجز', 13, 'add_booking'),
+(124, 'Can change حجز', 13, 'change_booking'),
+(125, 'Can delete حجز', 13, 'delete_booking'),
+(126, 'Can view حجز', 13, 'view_booking'),
+(127, 'Can add تفصيل الحجز', 14, 'add_bookingdetail'),
+(128, 'Can change تفصيل الحجز', 14, 'change_bookingdetail'),
+(129, 'Can delete تفصيل الحجز', 14, 'delete_bookingdetail'),
+(130, 'Can view تفصيل الحجز', 14, 'view_bookingdetail'),
+(131, 'Can add ضيف', 46, 'add_guest'),
+(132, 'Can change ضيف', 46, 'change_guest'),
+(133, 'Can delete ضيف', 46, 'delete_guest'),
+(134, 'Can view ضيف', 46, 'view_guest'),
+(135, 'Can add extension movement', 15, 'add_extensionmovement'),
+(136, 'Can change extension movement', 15, 'change_extensionmovement'),
+(137, 'Can delete extension movement', 15, 'delete_extensionmovement'),
+(138, 'Can view extension movement', 15, 'view_extensionmovement'),
+(139, 'Can add عملة', 27, 'add_currency'),
+(140, 'Can change عملة', 27, 'change_currency'),
+(141, 'Can delete عملة', 27, 'delete_currency'),
+(142, 'Can view عملة', 27, 'view_currency'),
+(143, 'Can add طريقة دفع الفندق', 29, 'add_hotelpaymentmethod'),
+(144, 'Can change طريقة دفع الفندق', 29, 'change_hotelpaymentmethod'),
+(145, 'Can delete طريقة دفع الفندق', 29, 'delete_hotelpaymentmethod'),
+(146, 'Can view طريقة دفع الفندق', 29, 'view_hotelpaymentmethod'),
+(147, 'Can add دفعة', 47, 'add_payment'),
+(148, 'Can change دفعة', 47, 'change_payment'),
+(149, 'Can delete دفعة', 47, 'delete_payment'),
+(150, 'Can view دفعة', 47, 'view_payment'),
+(151, 'Can add طريقة دفع', 28, 'add_paymentoption'),
+(152, 'Can change طريقة دفع', 28, 'change_paymentoption'),
+(153, 'Can delete طريقة دفع', 28, 'delete_paymentoption'),
+(154, 'Can view طريقة دفع', 28, 'view_paymentoption'),
+(155, 'Can add مراجعة فندق', 17, 'add_hotelreview'),
+(156, 'Can change مراجعة فندق', 17, 'change_hotelreview'),
+(157, 'Can delete مراجعة فندق', 17, 'delete_hotelreview'),
+(158, 'Can view مراجعة فندق', 17, 'view_hotelreview'),
+(159, 'Can add مراجعة غرفة', 16, 'add_roomreview'),
+(160, 'Can change مراجعة غرفة', 16, 'change_roomreview'),
+(161, 'Can delete مراجعة غرفة', 16, 'delete_roomreview'),
+(162, 'Can view مراجعة غرفة', 16, 'view_roomreview'),
+(163, 'Can add coupon', 48, 'add_coupon'),
+(164, 'Can change coupon', 48, 'change_coupon'),
+(165, 'Can delete coupon', 48, 'delete_coupon'),
+(166, 'Can view coupon', 48, 'view_coupon'),
+(167, 'Can add خدمة فندقية', 12, 'add_hotelservice'),
+(168, 'Can change خدمة فندقية', 12, 'change_hotelservice'),
+(169, 'Can delete خدمة فندقية', 12, 'delete_hotelservice'),
+(170, 'Can view خدمة فندقية', 12, 'view_hotelservice'),
+(171, 'Can add عرض', 49, 'add_offer'),
+(172, 'Can change عرض', 49, 'change_offer'),
+(173, 'Can delete عرض', 49, 'delete_offer'),
+(174, 'Can view عرض', 49, 'view_offer'),
+(175, 'Can add خدمة نوع الغرفة', 11, 'add_roomtypeservice'),
+(176, 'Can change خدمة نوع الغرفة', 11, 'change_roomtypeservice'),
+(177, 'Can delete خدمة نوع الغرفة', 11, 'delete_roomtypeservice'),
+(178, 'Can view خدمة نوع الغرفة', 11, 'view_roomtypeservice'),
+(179, 'Can add blacklisted token', 50, 'add_blacklistedtoken'),
+(180, 'Can change blacklisted token', 50, 'change_blacklistedtoken'),
+(181, 'Can delete blacklisted token', 50, 'delete_blacklistedtoken'),
+(182, 'Can view blacklisted token', 50, 'view_blacklistedtoken'),
+(183, 'Can add outstanding token', 51, 'add_outstandingtoken'),
+(184, 'Can change outstanding token', 51, 'change_outstandingtoken'),
+(185, 'Can delete outstanding token', 51, 'delete_outstandingtoken'),
+(186, 'Can view outstanding token', 51, 'view_outstandingtoken'),
+(187, 'Can add تصنيف', 25, 'add_category'),
+(188, 'Can change تصنيف', 25, 'change_category'),
+(189, 'Can delete تصنيف', 25, 'delete_category'),
+(190, 'Can view تصنيف', 25, 'view_category'),
+(191, 'Can add تعليق', 24, 'add_comment'),
+(192, 'Can change تعليق', 24, 'change_comment'),
+(193, 'Can delete تعليق', 24, 'delete_comment'),
+(194, 'Can view تعليق', 24, 'view_comment'),
+(195, 'Can add مقال', 23, 'add_post'),
+(196, 'Can change مقال', 23, 'change_post'),
+(197, 'Can delete مقال', 23, 'delete_post'),
+(198, 'Can view مقال', 23, 'view_post'),
+(199, 'Can add وسم', 26, 'add_tag'),
+(200, 'Can change وسم', 26, 'change_tag'),
+(201, 'Can delete وسم', 26, 'delete_tag'),
+(202, 'Can view وسم', 26, 'view_tag'),
+(203, 'Can add إشعار', 52, 'add_notifications'),
+(204, 'Can change إشعار', 52, 'change_notifications'),
+(205, 'Can delete إشعار', 52, 'delete_notifications'),
+(206, 'Can view إشعار', 52, 'view_notifications'),
+(207, 'Can add المفضلات', 53, 'add_favourites'),
+(208, 'Can change المفضلات', 53, 'change_favourites'),
+(209, 'Can delete المفضلات', 53, 'delete_favourites'),
+(210, 'Can view المفضلات', 53, 'view_favourites'),
+(211, 'Can add crontab', 54, 'add_crontabschedule'),
+(212, 'Can change crontab', 54, 'change_crontabschedule'),
+(213, 'Can delete crontab', 54, 'delete_crontabschedule'),
+(214, 'Can view crontab', 54, 'view_crontabschedule'),
+(215, 'Can add interval', 55, 'add_intervalschedule'),
+(216, 'Can change interval', 55, 'change_intervalschedule'),
+(217, 'Can delete interval', 55, 'delete_intervalschedule'),
+(218, 'Can view interval', 55, 'view_intervalschedule'),
+(219, 'Can add periodic task', 56, 'add_periodictask'),
+(220, 'Can change periodic task', 56, 'change_periodictask'),
+(221, 'Can delete periodic task', 56, 'delete_periodictask'),
+(222, 'Can view periodic task', 56, 'view_periodictask'),
+(223, 'Can add periodic task track', 57, 'add_periodictasks'),
+(224, 'Can change periodic task track', 57, 'change_periodictasks'),
+(225, 'Can delete periodic task track', 57, 'delete_periodictasks'),
+(226, 'Can view periodic task track', 57, 'view_periodictasks'),
+(227, 'Can add solar event', 58, 'add_solarschedule'),
+(228, 'Can change solar event', 58, 'change_solarschedule'),
+(229, 'Can delete solar event', 58, 'delete_solarschedule'),
+(230, 'Can view solar event', 58, 'view_solarschedule'),
+(231, 'Can add clocked', 59, 'add_clockedschedule'),
+(232, 'Can change clocked', 59, 'change_clockedschedule'),
+(233, 'Can delete clocked', 59, 'delete_clockedschedule'),
+(234, 'Can view clocked', 59, 'view_clockedschedule'),
+(235, 'Can add chart of accounts', 60, 'add_chartofaccounts'),
+(236, 'Can change chart of accounts', 60, 'change_chartofaccounts'),
+(237, 'Can delete chart of accounts', 60, 'delete_chartofaccounts'),
+(238, 'Can view chart of accounts', 60, 'view_chartofaccounts'),
+(239, 'Can add journal entry', 61, 'add_journalentry'),
+(240, 'Can change journal entry', 61, 'change_journalentry'),
+(241, 'Can delete journal entry', 61, 'delete_journalentry'),
+(242, 'Can view journal entry', 61, 'view_journalentry');
 
 -- --------------------------------------------------------
 
@@ -412,7 +424,7 @@ CREATE TABLE `blog_category` (
   `name` varchar(100) NOT NULL,
   `description` longtext NOT NULL,
   `created_at` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -427,7 +439,7 @@ CREATE TABLE `blog_comment` (
   `is_approved` tinyint(1) NOT NULL,
   `author_id` bigint(20) NOT NULL,
   `post_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -448,7 +460,7 @@ CREATE TABLE `blog_post` (
   `views` int(10) UNSIGNED NOT NULL CHECK (`views` >= 0),
   `author_id` bigint(20) NOT NULL,
   `category_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -460,7 +472,7 @@ CREATE TABLE `blog_post_tags` (
   `id` bigint(20) NOT NULL,
   `post_id` bigint(20) NOT NULL,
   `tag_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -472,7 +484,7 @@ CREATE TABLE `blog_tag` (
   `id` bigint(20) NOT NULL,
   `name` varchar(50) NOT NULL,
   `created_at` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -498,15 +510,14 @@ CREATE TABLE `bookings_booking` (
   `room_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `bookings_booking`
 --
 
 INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `status`, `account_status`, `rooms_booked`, `created_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-03-21 14:09:26.937021', '2025-03-22 18:36:37.884405', NULL, '2025-03-21 00:00:00.000000', '2025-03-22 00:00:00.000000', NULL, 60.00, '2', 1, 4, NULL, 1, NULL, 1, NULL, 5),
-(2, '2025-03-21 16:24:28.828372', '2025-03-22 19:46:11.532795', NULL, '2025-03-22 00:00:00.000000', '2025-03-25 00:00:00.000000', NULL, 1500.00, '0', 1, 4, NULL, 2, NULL, 1, NULL, 1);
+(3, '2025-03-31 22:26:12.575097', '2025-03-31 22:26:12.575097', NULL, '2025-04-01 00:00:00.000000', '2025-04-02 00:00:00.000000', NULL, 3.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -528,7 +539,7 @@ CREATE TABLE `bookings_bookingdetail` (
   `hotel_id` bigint(20) NOT NULL,
   `service_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -546,7 +557,7 @@ CREATE TABLE `bookings_extensionmovement` (
   `duration` int(10) UNSIGNED NOT NULL CHECK (`duration` >= 0),
   `booking_id` bigint(20) NOT NULL,
   `payment_receipt_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -565,7 +576,7 @@ CREATE TABLE `bookings_guest` (
   `check_out_date` datetime(6) DEFAULT NULL,
   `booking_id` bigint(20) NOT NULL,
   `hotel_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -577,15 +588,7 @@ CREATE TABLE `customer_favourites` (
   `id` bigint(20) NOT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `customer_favourites`
---
-
-INSERT INTO `customer_favourites` (`id`, `hotel_id`, `user_id`) VALUES
-(8, 1, 1),
-(9, 2, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -602,41 +605,22 @@ CREATE TABLE `django_admin_log` (
   `change_message` longtext NOT NULL,
   `content_type_id` int(11) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `django_admin_log`
 --
 
 INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
-(1, '2025-03-20 20:54:43.292651', '1', 'إشعار من a إلى a - 1', 1, '[{\"added\": {}}]', 49, 1),
-(2, '2025-03-20 20:56:26.265504', '1', 'sanaa, sanaa', 1, '[{\"added\": {}}]', 21, 1),
-(3, '2025-03-21 14:10:13.428778', '1', 'دفعة #1 لحجز 1', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062f\\u0641\\u0639\"]}}]', 45, 1),
-(4, '2025-03-21 14:16:00.033390', '1', 'لخخي', 1, '[{\"added\": {}}]', 36, 1),
-(5, '2025-03-21 15:43:05.265581', '2', 'دفعة #2 لحجز 2', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062f\\u0641\\u0639\"]}}]', 45, 1),
-(6, '2025-03-21 17:49:23.694765', '2', 'إشعار من a إلى a - 0', 1, '[{\"added\": {}}]', 49, 1),
-(7, '2025-03-21 17:50:30.939099', '2', 'إشعار من a إلى ajshdkajs aksljdlas - 0', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u0644\\u0645\"]}}]', 49, 1),
-(8, '2025-03-22 19:20:25.707525', '2', 'b', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0648\\u0639 \\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 2, 1),
-(9, '2025-03-22 19:20:42.033900', '1', 'احمد', 2, '[]', 18, 1),
-(10, '2025-03-22 19:21:25.343236', '2', 'b', 2, '[{\"changed\": {\"fields\": [\"Superuser status\"]}}]', 2, 1),
-(11, '2025-03-22 19:39:20.667319', '8', 'alslslsl', 2, '[{\"changed\": {\"fields\": [\"password\"]}}]', 2, 1),
-(12, '2025-03-22 19:39:25.906533', '8', 'alslslsl', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0648\\u0639 \\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 2, 1),
-(13, '2025-03-22 19:41:52.172210', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0648\\u0639 \\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 2, 14),
-(14, '2025-03-22 19:41:59.899126', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"Groups\"]}}]', 2, 14),
-(15, '2025-03-22 19:43:03.171468', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"Superuser status\"]}}]', 2, 1),
-(16, '2025-03-22 19:46:11.537228', '2', 'Booking #2 - room vip 2025 (4 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0641\\u0646\\u062f\\u0642\"]}}]', 13, 1),
-(17, '2025-03-22 19:49:17.888200', '1', 'دفعة #1 لحجز 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 45, 1),
-(18, '2025-03-25 18:41:12.399324', '1', 'room vip 2025 (احمد)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0633\\u0639\\u0629 \\u0627\\u0644\\u0627\\u0641\\u062a\\u0631\\u0627\\u0636\\u064a\\u0629\", \"\\u0627\\u0644\\u0633\\u0639\\u0629 \\u0627\\u0644\\u0642\\u0635\\u0648\\u0649\", \"\\u0639\\u062f\\u062f \\u0627\\u0644\\u0623\\u0633\\u0631\\u0629\"]}}]', 5, 1),
-(19, '2025-03-25 18:43:11.087848', '13', 'room vip 2025 - 7 rooms available on 2025-03-21', 3, '', 9, 1),
-(20, '2025-03-25 18:43:11.094577', '12', 'room vip 2025 - 11 rooms available on 2025-03-14', 3, '', 9, 1),
-(21, '2025-03-25 18:43:11.098937', '11', 'room vip 2025 - 20 rooms available on 2025-03-11', 3, '', 9, 1),
-(22, '2025-03-25 18:43:11.106864', '10', 'room vip 2025 - 21 rooms available on 2025-03-10', 3, '', 9, 1),
-(23, '2025-03-25 18:43:22.992445', '14', 'room vip 2025 - 3 rooms available on 2025-03-22', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 9, 1),
-(24, '2025-03-25 19:34:57.637760', '1', 'اساسي', 1, '[{\"added\": {}}]', 58, 1),
-(25, '2025-03-25 19:39:06.775351', '1', 'اساسي', 2, '[{\"changed\": {\"fields\": [\"Features\"]}}]', 58, 1),
-(26, '2025-03-25 19:41:05.608400', '1', 'اساسي', 2, '[{\"changed\": {\"fields\": [\"Is primary\"]}}]', 58, 1),
-(27, '2025-03-25 19:41:51.904355', '2', 'الممتازة', 1, '[{\"added\": {}}]', 58, 1),
-(28, '2025-03-25 19:43:51.573700', '3', 'عادي', 1, '[{\"added\": {}}]', 58, 1);
+(1, '2025-03-31 21:20:37.823640', '1', 'ahmed', 1, '[{\"added\": {}}]', 48, 1),
+(2, '2025-03-31 21:20:58.355396', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0641\\u0646\\u062f\\u0642\"]}}]', 48, 1),
+(3, '2025-03-31 21:24:07.501172', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0641\\u0646\\u062f\\u0642\", \"Discount type\"]}}]', 48, 1),
+(4, '2025-03-31 21:47:29.494761', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"Quantity\", \"Discount\"]}}]', 48, 1),
+(5, '2025-03-31 21:48:14.541848', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"Quantity\", \"Expired date\"]}}]', 48, 1),
+(6, '2025-03-31 21:48:37.615232', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"Quantity\", \"Min purchase amount\", \"Expired date\"]}}]', 48, 1),
+(7, '2025-03-31 21:52:28.018547', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"Min purchase amount\", \"Discount\"]}}]', 48, 1),
+(8, '2025-03-31 22:12:48.467795', '1', 'Booking #1 - room vip 2025 (1 rooms)', 3, '', 13, 1),
+(9, '2025-03-31 22:25:34.520142', '2', 'Booking #2 - room vip 2025 (2 rooms)', 3, '', 13, 1);
 
 -- --------------------------------------------------------
 
@@ -647,7 +631,7 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 CREATE TABLE `django_celery_beat_clockedschedule` (
   `id` int(11) NOT NULL,
   `clocked_time` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -663,7 +647,7 @@ CREATE TABLE `django_celery_beat_crontabschedule` (
   `day_of_month` varchar(124) NOT NULL,
   `month_of_year` varchar(64) NOT NULL,
   `timezone` varchar(63) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -675,7 +659,7 @@ CREATE TABLE `django_celery_beat_intervalschedule` (
   `id` int(11) NOT NULL,
   `every` int(11) NOT NULL,
   `period` varchar(24) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -707,7 +691,7 @@ CREATE TABLE `django_celery_beat_periodictask` (
   `headers` longtext NOT NULL,
   `clocked_id` int(11) DEFAULT NULL,
   `expire_seconds` int(10) UNSIGNED DEFAULT NULL CHECK (`expire_seconds` >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -718,7 +702,7 @@ CREATE TABLE `django_celery_beat_periodictask` (
 CREATE TABLE `django_celery_beat_periodictasks` (
   `ident` smallint(6) NOT NULL,
   `last_update` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -731,7 +715,7 @@ CREATE TABLE `django_celery_beat_solarschedule` (
   `event` varchar(24) NOT NULL,
   `latitude` decimal(9,6) NOT NULL,
   `longitude` decimal(9,6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -743,13 +727,15 @@ CREATE TABLE `django_content_type` (
   `id` int(11) NOT NULL,
   `app_label` varchar(100) NOT NULL,
   `model` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `django_content_type`
 --
 
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
+(60, 'accounts', 'chartofaccounts'),
+(61, 'accounts', 'journalentry'),
 (1, 'admin', 'logentry'),
 (4, 'auth', 'group'),
 (31, 'auth', 'permission'),
@@ -761,35 +747,35 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (13, 'bookings', 'booking'),
 (14, 'bookings', 'bookingdetail'),
 (15, 'bookings', 'extensionmovement'),
-(44, 'bookings', 'guest'),
+(46, 'bookings', 'guest'),
 (32, 'contenttypes', 'contenttype'),
-(50, 'customer', 'favourites'),
-(56, 'django_celery_beat', 'clockedschedule'),
-(51, 'django_celery_beat', 'crontabschedule'),
-(52, 'django_celery_beat', 'intervalschedule'),
-(53, 'django_celery_beat', 'periodictask'),
-(54, 'django_celery_beat', 'periodictasks'),
-(55, 'django_celery_beat', 'solarschedule'),
-(57, 'home', 'contactmessage'),
-(36, 'home', 'heroslider'),
-(37, 'home', 'infobox'),
-(38, 'home', 'partner'),
-(58, 'home', 'pricingplan'),
-(39, 'home', 'roomtypehome'),
-(40, 'home', 'setting'),
-(41, 'home', 'socialmedialink'),
-(42, 'home', 'teammember'),
-(43, 'home', 'testimonial'),
+(53, 'customer', 'favourites'),
+(59, 'django_celery_beat', 'clockedschedule'),
+(54, 'django_celery_beat', 'crontabschedule'),
+(55, 'django_celery_beat', 'intervalschedule'),
+(56, 'django_celery_beat', 'periodictask'),
+(57, 'django_celery_beat', 'periodictasks'),
+(58, 'django_celery_beat', 'solarschedule'),
+(36, 'home', 'contactmessage'),
+(37, 'home', 'heroslider'),
+(38, 'home', 'infobox'),
+(39, 'home', 'partner'),
+(40, 'home', 'pricingplan'),
+(41, 'home', 'roomtypehome'),
+(42, 'home', 'setting'),
+(43, 'home', 'socialmedialink'),
+(44, 'home', 'teammember'),
+(45, 'home', 'testimonial'),
 (21, 'HotelManagement', 'city'),
 (18, 'HotelManagement', 'hotel'),
 (30, 'HotelManagement', 'hotelrequest'),
 (19, 'HotelManagement', 'image'),
 (22, 'HotelManagement', 'location'),
 (20, 'HotelManagement', 'phone'),
-(49, 'notifications', 'notifications'),
+(52, 'notifications', 'notifications'),
 (27, 'payments', 'currency'),
 (29, 'payments', 'hotelpaymentmethod'),
-(45, 'payments', 'payment'),
+(47, 'payments', 'payment'),
 (28, 'payments', 'paymentoption'),
 (17, 'reviews', 'hotelreview'),
 (16, 'reviews', 'roomreview'),
@@ -800,12 +786,13 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (8, 'rooms', 'roomprice'),
 (10, 'rooms', 'roomstatus'),
 (5, 'rooms', 'roomtype'),
+(48, 'services', 'coupon'),
 (12, 'services', 'hotelservice'),
-(46, 'services', 'offer'),
+(49, 'services', 'offer'),
 (11, 'services', 'roomtypeservice'),
 (33, 'sessions', 'session'),
-(47, 'token_blacklist', 'blacklistedtoken'),
-(48, 'token_blacklist', 'outstandingtoken'),
+(50, 'token_blacklist', 'blacklistedtoken'),
+(51, 'token_blacklist', 'outstandingtoken'),
 (34, 'users', 'activitylog'),
 (2, 'users', 'customuser');
 
@@ -820,93 +807,88 @@ CREATE TABLE `django_migrations` (
   `app` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `django_migrations`
 --
 
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
-(1, 'contenttypes', '0001_initial', '2025-03-20 20:51:56.128901'),
-(2, 'contenttypes', '0002_remove_content_type_name', '2025-03-20 20:51:56.230215'),
-(3, 'auth', '0001_initial', '2025-03-20 20:51:56.541606'),
-(4, 'auth', '0002_alter_permission_name_max_length', '2025-03-20 20:51:56.620897'),
-(5, 'auth', '0003_alter_user_email_max_length', '2025-03-20 20:51:56.630362'),
-(6, 'auth', '0004_alter_user_username_opts', '2025-03-20 20:51:56.644960'),
-(7, 'auth', '0005_alter_user_last_login_null', '2025-03-20 20:51:56.656511'),
-(8, 'auth', '0006_require_contenttypes_0002', '2025-03-20 20:51:56.662337'),
-(9, 'auth', '0007_alter_validators_add_error_messages', '2025-03-20 20:51:56.669090'),
-(10, 'auth', '0008_alter_user_username_max_length', '2025-03-20 20:51:56.681429'),
-(11, 'auth', '0009_alter_user_last_name_max_length', '2025-03-20 20:51:56.685955'),
-(12, 'auth', '0010_alter_group_name_max_length', '2025-03-20 20:51:56.707795'),
-(13, 'auth', '0011_update_proxy_permissions', '2025-03-20 20:51:56.720942'),
-(14, 'auth', '0012_alter_user_first_name_max_length', '2025-03-20 20:51:56.731925'),
-(15, 'auth', '0013_alter_permission_options', '2025-03-20 20:51:56.738307'),
-(16, 'auth', '0014_alter_permission_options_alter_user_user_permissions', '2025-03-20 20:51:56.747912'),
-(17, 'auth', '0015_alter_user_user_permissions', '2025-03-20 20:51:56.765888'),
-(18, 'users', '0001_initial', '2025-03-20 20:51:57.415558'),
-(19, 'HotelManagement', '0001_initial', '2025-03-20 20:51:57.556706'),
-(20, 'HotelManagement', '0002_initial', '2025-03-20 20:51:59.540579'),
-(21, 'admin', '0001_initial', '2025-03-20 20:51:59.797353'),
-(22, 'admin', '0002_logentry_remove_auto_add', '2025-03-20 20:51:59.849433'),
-(23, 'admin', '0003_logentry_add_action_flag_choices', '2025-03-20 20:51:59.897550'),
-(24, 'blog', '0001_initial', '2025-03-20 20:52:00.071896'),
-(25, 'blog', '0002_initial', '2025-03-20 20:52:00.963542'),
-(26, 'rooms', '0001_initial', '2025-03-20 20:52:01.160302'),
-(27, 'services', '0001_initial', '2025-03-20 20:52:01.405468'),
-(28, 'services', '0002_initial', '2025-03-20 20:52:02.030219'),
-(29, 'rooms', '0002_initial', '2025-03-20 20:52:05.988602'),
-(30, 'bookings', '0001_initial', '2025-03-20 20:52:06.357139'),
-(31, 'payments', '0001_initial', '2025-03-20 20:52:08.157149'),
-(32, 'bookings', '0002_initial', '2025-03-20 20:52:09.849471'),
-(33, 'customer', '0001_initial', '2025-03-20 20:52:10.031284'),
-(34, 'customer', '0002_initial', '2025-03-20 20:52:10.338999'),
-(35, 'django_celery_beat', '0001_initial', '2025-03-20 20:52:10.598332'),
-(36, 'django_celery_beat', '0002_auto_20161118_0346', '2025-03-20 20:52:10.682559'),
-(37, 'django_celery_beat', '0003_auto_20161209_0049', '2025-03-20 20:52:10.714105'),
-(38, 'django_celery_beat', '0004_auto_20170221_0000', '2025-03-20 20:52:10.719044'),
-(39, 'django_celery_beat', '0005_add_solarschedule_events_choices', '2025-03-20 20:52:10.737118'),
-(40, 'django_celery_beat', '0006_auto_20180322_0932', '2025-03-20 20:52:10.940292'),
-(41, 'django_celery_beat', '0007_auto_20180521_0826', '2025-03-20 20:52:11.006642'),
-(42, 'django_celery_beat', '0008_auto_20180914_1922', '2025-03-20 20:52:11.096719'),
-(43, 'django_celery_beat', '0006_auto_20180210_1226', '2025-03-20 20:52:11.150941'),
-(44, 'django_celery_beat', '0006_periodictask_priority', '2025-03-20 20:52:11.189466'),
-(45, 'django_celery_beat', '0009_periodictask_headers', '2025-03-20 20:52:11.239616'),
-(46, 'django_celery_beat', '0010_auto_20190429_0326', '2025-03-20 20:52:11.579018'),
-(47, 'django_celery_beat', '0011_auto_20190508_0153', '2025-03-20 20:52:11.704304'),
-(48, 'django_celery_beat', '0012_periodictask_expire_seconds', '2025-03-20 20:52:11.737277'),
-(49, 'django_celery_beat', '0013_auto_20200609_0727', '2025-03-20 20:52:11.762942'),
-(50, 'django_celery_beat', '0014_remove_clockedschedule_enabled', '2025-03-20 20:52:11.782067'),
-(51, 'django_celery_beat', '0015_edit_solarschedule_events_choices', '2025-03-20 20:52:11.795686'),
-(52, 'django_celery_beat', '0016_alter_crontabschedule_timezone', '2025-03-20 20:52:11.817282'),
-(53, 'django_celery_beat', '0017_alter_crontabschedule_month_of_year', '2025-03-20 20:52:11.831565'),
-(54, 'django_celery_beat', '0018_improve_crontab_helptext', '2025-03-20 20:52:11.848108'),
-(55, 'django_celery_beat', '0019_alter_periodictasks_options', '2025-03-20 20:52:11.854189'),
-(56, 'home', '0001_initial', '2025-03-20 20:52:12.045844'),
-(57, 'notifications', '0001_initial', '2025-03-20 20:52:12.071500'),
-(58, 'notifications', '0002_initial', '2025-03-20 20:52:12.385183'),
-(59, 'payments', '0002_hotelpaymentmethod_deleted_at_and_more', '2025-03-20 20:52:12.512655'),
-(60, 'payments', '0003_alter_payment_payment_date', '2025-03-20 20:52:12.564416'),
-(61, 'payments', '0004_alter_payment_payment_date', '2025-03-20 20:52:12.633021'),
-(62, 'payments', '0005_hotelpaymentmethod_description_and_more', '2025-03-20 20:52:13.321515'),
-(63, 'reviews', '0001_initial', '2025-03-20 20:52:13.359460'),
-(64, 'reviews', '0002_initial', '2025-03-20 20:52:15.071113'),
-(65, 'sessions', '0001_initial', '2025-03-20 20:52:15.197507'),
-(66, 'token_blacklist', '0001_initial', '2025-03-20 20:52:15.642054'),
-(67, 'token_blacklist', '0002_outstandingtoken_jti_hex', '2025-03-20 20:52:15.764594'),
-(68, 'token_blacklist', '0003_auto_20171017_2007', '2025-03-20 20:52:16.018826'),
-(69, 'token_blacklist', '0004_auto_20171017_2013', '2025-03-20 20:52:16.185956'),
-(70, 'token_blacklist', '0005_remove_outstandingtoken_jti', '2025-03-20 20:52:16.254326'),
-(71, 'token_blacklist', '0006_auto_20171017_2113', '2025-03-20 20:52:16.349510'),
-(72, 'token_blacklist', '0007_auto_20171017_2214', '2025-03-20 20:52:17.466273'),
-(73, 'token_blacklist', '0008_migrate_to_bigautofield', '2025-03-20 20:52:18.138495'),
-(74, 'token_blacklist', '0010_fix_migrate_to_bigautofield', '2025-03-20 20:52:18.241050'),
-(75, 'token_blacklist', '0011_linearizes_history', '2025-03-20 20:52:18.247806'),
-(76, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-03-20 20:52:18.348752'),
-(77, 'home', '0002_contactmessage_pricingplan', '2025-03-24 02:27:19.555929'),
-(78, 'home', '0003_contactmessage_is_read', '2025-03-24 02:29:38.722412'),
-(79, 'payments', '0006_alter_payment_payment_date', '2025-03-25 19:07:12.966560'),
-(80, 'home', '0004_pricingplan_is_primary', '2025-03-25 19:40:51.575223');
+(1, 'contenttypes', '0001_initial', '2025-03-31 20:32:47.646010'),
+(2, 'contenttypes', '0002_remove_content_type_name', '2025-03-31 20:32:47.764795'),
+(3, 'auth', '0001_initial', '2025-03-31 20:32:48.143686'),
+(4, 'auth', '0002_alter_permission_name_max_length', '2025-03-31 20:32:48.214465'),
+(5, 'auth', '0003_alter_user_email_max_length', '2025-03-31 20:32:48.225216'),
+(6, 'auth', '0004_alter_user_username_opts', '2025-03-31 20:32:48.234926'),
+(7, 'auth', '0005_alter_user_last_login_null', '2025-03-31 20:32:48.246487'),
+(8, 'auth', '0006_require_contenttypes_0002', '2025-03-31 20:32:48.250296'),
+(9, 'auth', '0007_alter_validators_add_error_messages', '2025-03-31 20:32:48.256202'),
+(10, 'auth', '0008_alter_user_username_max_length', '2025-03-31 20:32:48.266622'),
+(11, 'auth', '0009_alter_user_last_name_max_length', '2025-03-31 20:32:48.271638'),
+(12, 'auth', '0010_alter_group_name_max_length', '2025-03-31 20:32:48.369517'),
+(13, 'auth', '0011_update_proxy_permissions', '2025-03-31 20:32:48.386300'),
+(14, 'auth', '0012_alter_user_first_name_max_length', '2025-03-31 20:32:48.397077'),
+(15, 'auth', '0013_alter_permission_options', '2025-03-31 20:32:48.402232'),
+(16, 'auth', '0014_alter_permission_options_alter_user_user_permissions', '2025-03-31 20:32:48.420065'),
+(17, 'auth', '0015_alter_user_user_permissions', '2025-03-31 20:32:48.435448'),
+(18, 'users', '0001_initial', '2025-03-31 20:32:49.263991'),
+(19, 'HotelManagement', '0001_initial', '2025-03-31 20:32:49.491288'),
+(20, 'HotelManagement', '0002_initial', '2025-03-31 20:32:51.791335'),
+(21, 'admin', '0001_initial', '2025-03-31 20:32:52.165866'),
+(22, 'admin', '0002_logentry_remove_auto_add', '2025-03-31 20:32:52.214382'),
+(23, 'admin', '0003_logentry_add_action_flag_choices', '2025-03-31 20:32:52.261084'),
+(24, 'blog', '0001_initial', '2025-03-31 20:32:52.423371'),
+(25, 'blog', '0002_initial', '2025-03-31 20:32:53.366020'),
+(26, 'rooms', '0001_initial', '2025-03-31 20:32:53.640688'),
+(27, 'services', '0001_initial', '2025-03-31 20:32:54.073938'),
+(28, 'payments', '0001_initial', '2025-03-31 20:32:54.180799'),
+(29, 'bookings', '0001_initial', '2025-03-31 20:32:54.687090'),
+(30, 'bookings', '0002_initial', '2025-03-31 20:32:55.060726'),
+(31, 'bookings', '0003_initial', '2025-03-31 20:32:56.830993'),
+(32, 'customer', '0001_initial', '2025-03-31 20:32:57.003038'),
+(33, 'customer', '0002_initial', '2025-03-31 20:32:57.232491'),
+(34, 'django_celery_beat', '0001_initial', '2025-03-31 20:32:57.737981'),
+(35, 'django_celery_beat', '0002_auto_20161118_0346', '2025-03-31 20:32:57.920634'),
+(36, 'django_celery_beat', '0003_auto_20161209_0049', '2025-03-31 20:32:57.968692'),
+(37, 'django_celery_beat', '0004_auto_20170221_0000', '2025-03-31 20:32:57.991375'),
+(38, 'django_celery_beat', '0005_add_solarschedule_events_choices', '2025-03-31 20:32:58.013583'),
+(39, 'django_celery_beat', '0006_auto_20180322_0932', '2025-03-31 20:32:58.333214'),
+(40, 'django_celery_beat', '0007_auto_20180521_0826', '2025-03-31 20:32:58.420183'),
+(41, 'django_celery_beat', '0008_auto_20180914_1922', '2025-03-31 20:32:58.535791'),
+(42, 'django_celery_beat', '0006_auto_20180210_1226', '2025-03-31 20:32:58.615318'),
+(43, 'django_celery_beat', '0006_periodictask_priority', '2025-03-31 20:32:58.652418'),
+(44, 'django_celery_beat', '0009_periodictask_headers', '2025-03-31 20:32:58.712568'),
+(45, 'django_celery_beat', '0010_auto_20190429_0326', '2025-03-31 20:32:59.012742'),
+(46, 'django_celery_beat', '0011_auto_20190508_0153', '2025-03-31 20:32:59.148494'),
+(47, 'django_celery_beat', '0012_periodictask_expire_seconds', '2025-03-31 20:32:59.208089'),
+(48, 'django_celery_beat', '0013_auto_20200609_0727', '2025-03-31 20:32:59.241404'),
+(49, 'django_celery_beat', '0014_remove_clockedschedule_enabled', '2025-03-31 20:32:59.267920'),
+(50, 'django_celery_beat', '0015_edit_solarschedule_events_choices', '2025-03-31 20:32:59.284404'),
+(51, 'django_celery_beat', '0016_alter_crontabschedule_timezone', '2025-03-31 20:32:59.317894'),
+(52, 'django_celery_beat', '0017_alter_crontabschedule_month_of_year', '2025-03-31 20:32:59.332992'),
+(53, 'django_celery_beat', '0018_improve_crontab_helptext', '2025-03-31 20:32:59.352661'),
+(54, 'django_celery_beat', '0019_alter_periodictasks_options', '2025-03-31 20:32:59.361273'),
+(55, 'home', '0001_initial', '2025-03-31 20:32:59.569910'),
+(56, 'notifications', '0001_initial', '2025-03-31 20:32:59.607253'),
+(57, 'notifications', '0002_initial', '2025-03-31 20:32:59.954656'),
+(58, 'payments', '0002_initial', '2025-03-31 20:33:02.491161'),
+(59, 'reviews', '0001_initial', '2025-03-31 20:33:02.538633'),
+(60, 'reviews', '0002_initial', '2025-03-31 20:33:04.165768'),
+(61, 'rooms', '0002_initial', '2025-03-31 20:33:09.571639'),
+(62, 'services', '0002_initial', '2025-03-31 20:33:10.349626'),
+(63, 'sessions', '0001_initial', '2025-03-31 20:33:10.415658'),
+(64, 'token_blacklist', '0001_initial', '2025-03-31 20:33:10.850797'),
+(65, 'token_blacklist', '0002_outstandingtoken_jti_hex', '2025-03-31 20:33:10.931276'),
+(66, 'token_blacklist', '0003_auto_20171017_2007', '2025-03-31 20:33:11.066020'),
+(67, 'token_blacklist', '0004_auto_20171017_2013', '2025-03-31 20:33:11.250387'),
+(68, 'token_blacklist', '0005_remove_outstandingtoken_jti', '2025-03-31 20:33:11.383520'),
+(69, 'token_blacklist', '0006_auto_20171017_2113', '2025-03-31 20:33:11.624386'),
+(70, 'token_blacklist', '0007_auto_20171017_2214', '2025-03-31 20:33:14.129557'),
+(71, 'token_blacklist', '0008_migrate_to_bigautofield', '2025-03-31 20:33:14.842013'),
+(72, 'token_blacklist', '0010_fix_migrate_to_bigautofield', '2025-03-31 20:33:14.920272'),
+(73, 'token_blacklist', '0011_linearizes_history', '2025-03-31 20:33:14.927772'),
+(74, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-03-31 20:33:14.991673'),
+(75, 'payments', '0003_payment_payment_discount_code_and_more', '2025-03-31 22:03:42.365497');
 
 -- --------------------------------------------------------
 
@@ -918,18 +900,14 @@ CREATE TABLE `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `django_session`
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('10jc04f8ra0d6msy20iwtbndlyoweki3', '.eJxVjDsOwjAQBe_iGlnx-htKes5g7dprHECOFCcV4u4QKQW0b2beS0Tc1hq3zkucsjgLZcTpdyRMD247yXdst1mmua3LRHJX5EG7vM6Zn5fD_Tuo2Ou3JnA4WDdaU8KovS4DgQblA2d0XgMgUkFCa10BSIWVDsqwJ5d1Rlbi_QH1VDgn:1tw4jt:45N9IRJXslTK8GcDupSgftrKaUUvKyyU63SP5_qgWDw', '2025-04-05 19:42:37.663040'),
-('1wyyijyzy6cub4r19w89mnl7qw8bhuuz', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tveW7:w0_bMaJdKA4cU151I8-SI_4h1xQfVqygPG1DhnuxMjk', '2025-04-04 15:42:39.707201'),
-('f5c6a194qsar3c9gof2hty33maiu2wa4', '.eJxVjEEOwiAQRe_C2hCgMFCX7j0DYZhBqoYmpV0Z765NutDtf-_9l4hpW2vcOi9xInEWRpx-N0z5wW0HdE_tNss8t3WZUO6KPGiX15n4eTncv4Oaev3WjBAADCnIaBCy9xrBsFUAbA2jthhQDQC2pAADFc00FjcW7ZxHm8X7A99IN9s:1tw4oU:Wka2IeeDOP4iibDwf5_38_ZEqLTDHhDKXVP2DbbmKx0', '2025-04-05 19:47:22.375385'),
-('hw3vuw7833jvh4ty3sbc49c0ywq87fd9', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tx9Au:qmsd5K4Li93kHVbc9JTuEUsWdWfRkE6n-BUfwQ0aaOw', '2025-04-08 18:38:56.956502'),
-('sc8fatgy9sgv05mlfjeg70tyb164a4m3', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tvMth:Nr3LU7IJ2W30Mfdv96BdPVQ33YKwfJUr3Lob1qH4ie8', '2025-04-03 20:53:49.131757');
+('lxxhbizr3ouwg7wn4j12gwyfy1vtto76', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tzNa8:rixiY3Qiu3fHIarwmvp5QuuTXHgBWSTOP5caRVXaEDk', '2025-04-14 22:26:12.599255');
 
 -- --------------------------------------------------------
 
@@ -944,7 +922,7 @@ CREATE TABLE `home_contactmessage` (
   `message` longtext NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `is_read` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `home_contactmessage`
@@ -968,7 +946,7 @@ CREATE TABLE `home_heroslider` (
   `title` varchar(255) NOT NULL,
   `description` longtext DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `home_heroslider`
@@ -989,7 +967,7 @@ CREATE TABLE `home_infobox` (
   `title` varchar(255) NOT NULL,
   `description` longtext NOT NULL,
   `show_at_home` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1002,7 +980,7 @@ CREATE TABLE `home_partner` (
   `name` varchar(100) NOT NULL,
   `description` longtext NOT NULL,
   `image` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1018,7 +996,7 @@ CREATE TABLE `home_pricingplan` (
   `features` longtext NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `is_primary` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `home_pricingplan`
@@ -1041,7 +1019,7 @@ CREATE TABLE `home_roomtypehome` (
   `image` varchar(100) NOT NULL,
   `link` varchar(200) DEFAULT NULL,
   `show_at_home` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1067,7 +1045,7 @@ CREATE TABLE `home_setting` (
   `seo_title` varchar(255) NOT NULL,
   `seo_description` longtext NOT NULL,
   `seo_keywords` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `home_setting`
@@ -1088,7 +1066,7 @@ CREATE TABLE `home_socialmedialink` (
   `link` varchar(255) NOT NULL,
   `icon` varchar(100) NOT NULL,
   `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `home_socialmedialink`
@@ -1116,7 +1094,7 @@ CREATE TABLE `home_teammember` (
   `twitter` varchar(200) DEFAULT NULL,
   `instagram` varchar(200) DEFAULT NULL,
   `linkedin` varchar(200) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1130,7 +1108,7 @@ CREATE TABLE `home_testimonial` (
   `position` varchar(100) NOT NULL,
   `content` longtext NOT NULL,
   `image` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1148,7 +1126,7 @@ CREATE TABLE `hotelmanagement_city` (
   `country` varchar(255) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `hotelmanagement_city`
@@ -1180,7 +1158,7 @@ CREATE TABLE `hotelmanagement_hotel` (
   `location_id` bigint(20) NOT NULL,
   `manager_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `hotelmanagement_hotel`
@@ -1220,7 +1198,7 @@ CREATE TABLE `hotelmanagement_hotelrequest` (
   `approved_by_id` bigint(20) DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1238,7 +1216,7 @@ CREATE TABLE `hotelmanagement_image` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1255,7 +1233,7 @@ CREATE TABLE `hotelmanagement_location` (
   `city_id` bigint(20) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `hotelmanagement_location`
@@ -1280,7 +1258,7 @@ CREATE TABLE `hotelmanagement_phone` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1298,15 +1276,7 @@ CREATE TABLE `notifications_notifications` (
   `action_url` varchar(255) DEFAULT NULL,
   `sender_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `notifications_notifications`
---
-
-INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status`, `notification_type`, `is_active`, `action_url`, `sender_id`, `user_id`) VALUES
-(1, 'assd', '2025-03-20 20:54:43.290440', '1', '1', 1, 'as', 1, 1),
-(2, 'ajkhdjkshskadhk', '2025-03-21 17:49:23.691592', '1', '0', 1, '/adsada', 1, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1324,7 +1294,7 @@ CREATE TABLE `payments_currency` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `payments_currency`
@@ -1342,28 +1312,28 @@ INSERT INTO `payments_currency` (`id`, `created_at`, `updated_at`, `deleted_at`,
 
 CREATE TABLE `payments_hotelpaymentmethod` (
   `id` bigint(20) NOT NULL,
-  `account_name` varchar(100) NOT NULL,
-  `account_number` varchar(50) NOT NULL,
-  `is_active` tinyint(1) NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `account_name` varchar(100) NOT NULL,
+  `account_number` varchar(50) NOT NULL,
+  `iban` varchar(50) NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `payment_option_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
-  `iban` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `updated_by_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `payments_hotelpaymentmethod`
 --
 
-INSERT INTO `payments_hotelpaymentmethod` (`id`, `account_name`, `account_number`, `is_active`, `created_at`, `updated_at`, `created_by_id`, `hotel_id`, `payment_option_id`, `updated_by_id`, `deleted_at`, `description`, `iban`) VALUES
-(1, 'ahmed mohamed ahmed', '111111111', 1, '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000', NULL, 1, 1, NULL, NULL, 'asdsa\r\nasdas\r\nasdsac\r\nczczx', '01111111'),
-(2, 'sami saleh', '0006565884', 1, '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000', NULL, 1, 2, NULL, NULL, 'asdasdsa', '00556516'),
-(3, 'ahmed alKuraimi', '53153135', 0, '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000', NULL, 1, 3, NULL, NULL, 'dasd\r\n444asd\r\nsadas5das6d5', '0031561615');
+INSERT INTO `payments_hotelpaymentmethod` (`id`, `created_at`, `updated_at`, `deleted_at`, `account_name`, `account_number`, `iban`, `description`, `is_active`, `created_by_id`, `hotel_id`, `payment_option_id`, `updated_by_id`) VALUES
+(1, '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000', NULL, 'ahmed mohamed ahmed', '111111111', '01111111', 'asdsa\r\nasdas\r\nasdsac\r\nczczx', 1, NULL, 1, 1, NULL),
+(2, '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000', NULL, 'sami saleh', '0006565884', '00556516', 'asdasdsa', 1, NULL, 1, 2, NULL),
+(3, '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000', NULL, 'ahmed alKuraimi', '53153135', '0031561615', 'dasd\r\n444asd\r\nsadas5das6d5', 0, NULL, 1, 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -1388,16 +1358,17 @@ CREATE TABLE `payments_payment` (
   `booking_id` bigint(20) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `payment_method_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `updated_by_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `payment_discount_code` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `payments_payment`
 --
 
-INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, `transfer_image`, `payment_status`, `payment_date`, `payment_subtotal`, `payment_totalamount`, `payment_currency`, `payment_type`, `payment_note`, `payment_discount`, `booking_id`, `created_by_id`, `payment_method_id`, `updated_by_id`) VALUES
-(1, '2025-03-21 14:09:26.998939', '2025-03-22 19:49:17.882527', NULL, 'payments/transfer/transfer_image/hotel_booking_flowchart.png', 1, '2025-03-21 14:09:26.998939', 60.00, 60.00, '$', 'e_pay', 'تم التحويل بواسطة: ahskdjhask - رقم التحويل: 165161616', 0.00, 2, NULL, 1, 1),
-(2, '2025-03-21 15:39:27.237781', '2025-03-21 15:43:05.251886', NULL, 'payments/transfer/transfer_image/IMG-20250319-WA0003.jpg', 1, '2025-03-20 11:11:00.000000', 0.00, 150.00, '$', 'e_pay', 'asjashdk', 0.00, 1, NULL, 1, 1);
+INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, `transfer_image`, `payment_status`, `payment_date`, `payment_subtotal`, `payment_totalamount`, `payment_currency`, `payment_type`, `payment_note`, `payment_discount`, `booking_id`, `created_by_id`, `payment_method_id`, `updated_by_id`, `user_id`, `payment_discount_code`) VALUES
+(3, '2025-03-31 22:26:12.579090', '2025-03-31 22:27:22.827956', NULL, 'payments/transfer/transfer_image/image_picker_input.dart.png', 1, '2025-03-31 22:26:12.579090', 15.00, 3.00, '$', 'e_pay', 'تم التحويل بواسطة: askjdhask - رقم التحويل: 165165165', 12.00, 3, NULL, 1, NULL, 1, 'a1');
 
 -- --------------------------------------------------------
 
@@ -1416,7 +1387,7 @@ CREATE TABLE `payments_paymentoption` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `currency_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `payments_paymentoption`
@@ -1448,7 +1419,7 @@ CREATE TABLE `reviews_hotelreview` (
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1469,7 +1440,7 @@ CREATE TABLE `reviews_roomreview` (
   `room_type_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1490,14 +1461,15 @@ CREATE TABLE `rooms_availability` (
   `room_status_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `rooms_availability`
 --
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
-(14, '2025-03-22 18:36:37.899370', '2025-03-25 18:43:22.979455', NULL, '2025-03-22', 3, 'Updated due to booking #1', NULL, 1, 3, 1, 1);
+(14, '2025-03-22 18:36:37.899370', '2025-03-25 18:43:22.979455', NULL, '2025-03-22', 3, 'Updated due to booking #1', NULL, 1, 3, 1, 1),
+(15, '2025-03-31 22:07:22.650304', '2025-03-31 22:26:12.579090', NULL, '2025-03-31', 11, 'Updated due to booking #3', NULL, 1, 3, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1515,7 +1487,7 @@ CREATE TABLE `rooms_category` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `rooms_category`
@@ -1542,7 +1514,7 @@ CREATE TABLE `rooms_review` (
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1562,7 +1534,7 @@ CREATE TABLE `rooms_roomimage` (
   `hotel_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `rooms_roomimage`
@@ -1611,7 +1583,7 @@ CREATE TABLE `rooms_roomstatus` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `rooms_roomstatus`
@@ -1655,6 +1627,34 @@ INSERT INTO `rooms_roomtype` (`id`, `created_at`, `updated_at`, `deleted_at`, `n
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `services_coupon`
+--
+
+CREATE TABLE `services_coupon` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `code` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `min_purchase_amount` int(11) NOT NULL,
+  `expired_date` date NOT NULL,
+  `discount_type` varchar(10) NOT NULL,
+  `discount` double NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `hotel_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `services_coupon`
+--
+
+INSERT INTO `services_coupon` (`id`, `name`, `code`, `quantity`, `min_purchase_amount`, `expired_date`, `discount_type`, `discount`, `status`, `created_at`, `updated_at`, `hotel_id`) VALUES
+(1, 'ahmed', 'a1', 8, 10, '2025-05-22', 'percent', 80, 1, '2025-03-31 21:20:37.820843', '2025-03-31 21:52:37.380307', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `services_hotelservice`
 --
 
@@ -1665,7 +1665,7 @@ CREATE TABLE `services_hotelservice` (
   `icon` varchar(100) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
   `hotel_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1682,7 +1682,7 @@ CREATE TABLE `services_roomtypeservice` (
   `additional_fee` double NOT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1702,7 +1702,7 @@ CREATE TABLE `service_offers` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1714,7 +1714,7 @@ CREATE TABLE `token_blacklist_blacklistedtoken` (
   `id` bigint(20) NOT NULL,
   `blacklisted_at` datetime(6) NOT NULL,
   `token_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1729,24 +1729,7 @@ CREATE TABLE `token_blacklist_outstandingtoken` (
   `expires_at` datetime(6) NOT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `jti` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `token_blacklist_outstandingtoken`
---
-
-INSERT INTO `token_blacklist_outstandingtoken` (`id`, `token`, `created_at`, `expires_at`, `user_id`, `jti`) VALUES
-(1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE2NjUyMiwiaWF0IjoxNzQyNTYxNzIyLCJqdGkiOiJkZjA3MDExZGFhOTk0NWJkYmQ3Mjk3M2I0ZGYwMThjZCIsInVzZXJfaWQiOjF9.0OpKs7ibQbChl9hyrvB4DRcEzfB31EebygwA8YG9dgU', '2025-03-21 12:55:22.705648', '2025-03-28 12:55:22.000000', 1, 'df07011daa9945bdbd72973b4df018cd'),
-(2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE2NjczMiwiaWF0IjoxNzQyNTYxOTMyLCJqdGkiOiIxYWFlN2VjZWQ1MTQ0NTA4OGE4OGZlMGVhNTE4ZDE2OCIsInVzZXJfaWQiOjF9.9fYi2yGyZ6ppDefu0aYhTAMivC1JkbF3TTv18QwyXu0', '2025-03-21 12:58:52.350755', '2025-03-28 12:58:52.000000', 1, '1aae7eced51445088a88fe0ea518d168'),
-(3, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE2OTU0MiwiaWF0IjoxNzQyNTY0NzQyLCJqdGkiOiIxMzVjMDUxYWVjYzE0NmM0YTA0NWQxNGM3M2ZiMTE0YyIsInVzZXJfaWQiOjJ9.rt-XHkpjCpkhCYkw4VFaQgIzC7oJFWedZZmYfr4qH6w', '2025-03-21 13:45:42.956175', '2025-03-28 13:45:42.000000', 2, '135c051aecc146c4a045d14c73fb114c'),
-(4, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE2OTY1OCwiaWF0IjoxNzQyNTY0ODU4LCJqdGkiOiI3YmZmMDBiNDE3NDA0MWE1OGE4ODVlOTk2ODI5MzU2MSIsInVzZXJfaWQiOjF9.j44KPPJZQ4ZQkIx2x3hl_OLIUsQfGJkWSWWac9Eqywg', '2025-03-21 13:47:38.172532', '2025-03-28 13:47:38.000000', 1, '7bff00b4174041a58a885e9968293561'),
-(5, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE3ODkwMywiaWF0IjoxNzQyNTc0MTAzLCJqdGkiOiJmZWZkMzhjOGNjMTQ0NjQ4OGQ2MTNkZmNhYWRmMmY2ZCIsInVzZXJfaWQiOjF9.ChRCQiL6nrmf5sTP0m7bdXxEbvxaBvAIyYT7rFq-FhQ', '2025-03-21 16:21:43.216762', '2025-03-28 16:21:43.000000', 1, 'fefd38c8cc1446488d613dfcaadf2f6d'),
-(6, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE3OTM5NSwiaWF0IjoxNzQyNTc0NTk1LCJqdGkiOiJjN2JhMjM5MGExNDE0ZDhmODY0YmU2MDkyOWQwODFjOSIsInVzZXJfaWQiOjF9.PnuflhhwZoLWLqbkUt4Uj1m8m4G4r_kwcnM7u39Qvno', '2025-03-21 16:29:55.134207', '2025-03-28 16:29:55.000000', 1, 'c7ba2390a1414d8f864be60929d081c9'),
-(7, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzE4NDIwMSwiaWF0IjoxNzQyNTc5NDAxLCJqdGkiOiI3MmNjY2M2ZDBhYTk0MGFmODkyYmM5NmEwZjRlYTAwMiIsInVzZXJfaWQiOjF9.pfUqfXNSskZA2fCAhd5k68uGTCMM3ej-fDtOfuneyGM', '2025-03-21 17:50:01.580112', '2025-03-28 17:50:01.000000', 1, '72cccc6d0aa940af892bc96a0f4ea002'),
-(8, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzMwMTE5MSwiaWF0IjoxNzQyNjk2MzkxLCJqdGkiOiJhZDlhOGEzN2ZiMmU0ZDY2YTQwMTIzMzNkMTE2Y2M1YyIsInVzZXJfaWQiOjF9.7A4ahENE76JKcDBvOFIKC-kwIxMtj2ZBVozRTVLEMT4', '2025-03-23 02:19:51.251974', '2025-03-30 02:19:51.000000', 1, 'ad9a8a37fb2e4d66a4012333d116cc5c'),
-(9, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzM4NzI4NywiaWF0IjoxNzQyNzgyNDg3LCJqdGkiOiIxY2RhNTc5ZWQ2Njk0MjQ4OTRjMjVjNzIyMzU1ODkyOSIsInVzZXJfaWQiOjF9.nM9qdEVgGphcINcPJtFCpsmJfOJx_Ah49ZtfZfoVzyg', '2025-03-24 02:14:47.726167', '2025-03-31 02:14:47.000000', 1, '1cda579ed669424894c25c7223558929'),
-(10, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzUwNTg1NywiaWF0IjoxNzQyOTAxMDU3LCJqdGkiOiJjMjczY2Q3ZjVjZjA0YTA4ODI4YWY0YTEzNTEyNWI1MSIsInVzZXJfaWQiOjF9.AioQeB7OWBOg0qtQ3HOQEx4muJ1XwXsop2pkZ6qruDc', '2025-03-25 11:10:57.382630', '2025-04-01 11:10:57.000000', 1, 'c273cd7f5cf04a08828af4a135125b51'),
-(11, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0MzUzODQ3NCwiaWF0IjoxNzQyOTMzNjc0LCJqdGkiOiI4NjRiYWY5ODAwZDI0ZTZkODQzMTY3OTg4NTkzNjk3ZiIsInVzZXJfaWQiOjF9.7hH_1GfxSHIpLlj--p9z8pM8zANtdsp3MVMf0HO-GQw', '2025-03-25 20:14:34.699535', '2025-04-01 20:14:34.000000', 1, '864baf9800d24e6d843167988593697f');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1764,7 +1747,7 @@ CREATE TABLE `users_activitylog` (
   `details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`details`)),
   `ip_address` char(39) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1792,14 +1775,14 @@ CREATE TABLE `users_customuser` (
   `birth_date` date DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
   `chield_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `users_customuser`
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `chield_id`) VALUES
-(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-03-25 18:38:56.951621', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
+(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-03-31 21:19:24.668321', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
 (2, 'pbkdf2_sha256$600000$mRv4uTHEeVZ15lsGse5C0D$hF0CKJC3qr2/+yCUM252q7NnSKiBR3C+X1CTuLAv7WI=', '2025-03-22 19:47:22.367954', 0, 'b', '', '', 'b@b.com', 1, '2025-03-21 12:48:09.506849', '2025-03-21 12:48:10.018701', '2025-03-22 19:21:25.333335', 'hotel_manager', '', '', NULL, NULL, 1, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', NULL, NULL, 1, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', NULL, NULL, 1, NULL),
@@ -1824,14 +1807,7 @@ CREATE TABLE `users_customuser_groups` (
   `id` bigint(20) NOT NULL,
   `customuser_id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users_customuser_groups`
---
-
-INSERT INTO `users_customuser_groups` (`id`, `customuser_id`, `group_id`) VALUES
-(1, 14, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1843,7 +1819,7 @@ CREATE TABLE `users_customuser_user_permissions` (
   `id` bigint(20) NOT NULL,
   `customuser_id` bigint(20) NOT NULL,
   `permission_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -2166,9 +2142,9 @@ ALTER TABLE `payments_currency`
 ALTER TABLE `payments_hotelpaymentmethod`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `payments_hotelpaymentmet_hotel_id_payment_option__4cc203b8_uniq` (`hotel_id`,`payment_option_id`),
+  ADD KEY `payments_hotelpaymen_created_by_id_4ddb7640_fk_users_cus` (`created_by_id`),
   ADD KEY `payments_hotelpaymen_payment_option_id_4b539d55_fk_payments_` (`payment_option_id`),
-  ADD KEY `payments_hotelpaymen_updated_by_id_0daaca89_fk_users_cus` (`updated_by_id`),
-  ADD KEY `payments_hotelpaymen_created_by_id_4ddb7640_fk_users_cus` (`created_by_id`);
+  ADD KEY `payments_hotelpaymen_updated_by_id_0daaca89_fk_users_cus` (`updated_by_id`);
 
 --
 -- Indexes for table `payments_payment`
@@ -2178,7 +2154,8 @@ ALTER TABLE `payments_payment`
   ADD KEY `payments_payment_booking_id_2a46974b_fk_bookings_booking_id` (`booking_id`),
   ADD KEY `payments_payment_created_by_id_28f0e284_fk_users_customuser_id` (`created_by_id`),
   ADD KEY `payments_payment_payment_method_id_c909ff25_fk_payments_` (`payment_method_id`),
-  ADD KEY `payments_payment_updated_by_id_379a95eb_fk_users_customuser_id` (`updated_by_id`);
+  ADD KEY `payments_payment_updated_by_id_379a95eb_fk_users_customuser_id` (`updated_by_id`),
+  ADD KEY `payments_payment_user_id_f9db060a_fk_users_customuser_id` (`user_id`);
 
 --
 -- Indexes for table `payments_paymentoption`
@@ -2281,6 +2258,14 @@ ALTER TABLE `rooms_roomtype`
   ADD KEY `rooms_roomtype_updated_by_id_b5be2b42_fk_users_customuser_id` (`updated_by_id`);
 
 --
+-- Indexes for table `services_coupon`
+--
+ALTER TABLE `services_coupon`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`),
+  ADD KEY `services_coupon_hotel_id_27b305f4_fk_HotelManagement_hotel_id` (`hotel_id`);
+
+--
 -- Indexes for table `services_hotelservice`
 --
 ALTER TABLE `services_hotelservice`
@@ -2371,7 +2356,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=231;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=243;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -2407,7 +2392,7 @@ ALTER TABLE `blog_tag`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
@@ -2431,13 +2416,13 @@ ALTER TABLE `bookings_guest`
 -- AUTO_INCREMENT for table `customer_favourites`
 --
 ALTER TABLE `customer_favourites`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
@@ -2473,13 +2458,13 @@ ALTER TABLE `django_celery_beat_solarschedule`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `home_contactmessage`
@@ -2545,7 +2530,7 @@ ALTER TABLE `home_testimonial`
 -- AUTO_INCREMENT for table `hotelmanagement_city`
 --
 ALTER TABLE `hotelmanagement_city`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_hotel`
@@ -2581,7 +2566,7 @@ ALTER TABLE `hotelmanagement_phone`
 -- AUTO_INCREMENT for table `notifications_notifications`
 --
 ALTER TABLE `notifications_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments_currency`
@@ -2599,7 +2584,7 @@ ALTER TABLE `payments_hotelpaymentmethod`
 -- AUTO_INCREMENT for table `payments_payment`
 --
 ALTER TABLE `payments_payment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `payments_paymentoption`
@@ -2623,7 +2608,7 @@ ALTER TABLE `reviews_roomreview`
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
@@ -2662,6 +2647,12 @@ ALTER TABLE `rooms_roomtype`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `services_coupon`
+--
+ALTER TABLE `services_coupon`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `services_hotelservice`
 --
 ALTER TABLE `services_hotelservice`
@@ -2689,7 +2680,7 @@ ALTER TABLE `token_blacklist_blacklistedtoken`
 -- AUTO_INCREMENT for table `token_blacklist_outstandingtoken`
 --
 ALTER TABLE `token_blacklist_outstandingtoken`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users_activitylog`
@@ -2707,7 +2698,7 @@ ALTER TABLE `users_customuser`
 -- AUTO_INCREMENT for table `users_customuser_groups`
 --
 ALTER TABLE `users_customuser_groups`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_user_permissions`
@@ -2890,7 +2881,8 @@ ALTER TABLE `payments_payment`
   ADD CONSTRAINT `payments_payment_booking_id_2a46974b_fk_bookings_booking_id` FOREIGN KEY (`booking_id`) REFERENCES `bookings_booking` (`id`),
   ADD CONSTRAINT `payments_payment_created_by_id_28f0e284_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `payments_payment_payment_method_id_c909ff25_fk_payments_` FOREIGN KEY (`payment_method_id`) REFERENCES `payments_hotelpaymentmethod` (`id`),
-  ADD CONSTRAINT `payments_payment_updated_by_id_379a95eb_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+  ADD CONSTRAINT `payments_payment_updated_by_id_379a95eb_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `payments_payment_user_id_f9db060a_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `payments_paymentoption`
@@ -2981,6 +2973,12 @@ ALTER TABLE `rooms_roomtype`
   ADD CONSTRAINT `rooms_roomtype_created_by_id_42c3bbaa_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `rooms_roomtype_hotel_id_25b4be35_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
   ADD CONSTRAINT `rooms_roomtype_updated_by_id_b5be2b42_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `services_coupon`
+--
+ALTER TABLE `services_coupon`
+  ADD CONSTRAINT `services_coupon_hotel_id_27b305f4_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`);
 
 --
 -- Constraints for table `services_hotelservice`
