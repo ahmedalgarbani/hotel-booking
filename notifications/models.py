@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from HotelManagement.models import BaseModel
 from users.models import CustomUser
 
-class Notifications(models.Model):
+class Notifications(BaseModel):
     sender = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,

@@ -19,16 +19,21 @@ import json
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_("تاريخ الإنشاء")
+        verbose_name=_("تاريخ الإنشاء"),
+                null=True,
+
     )
     updated_at = models.DateTimeField(
         auto_now=True,
-        verbose_name=_("تاريخ التعديل")
+        verbose_name=_("تاريخ التعديل"),
+                null=True,
+
     )
     deleted_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_("تاريخ الحذف")
+        verbose_name=_("تاريخ الحذف"),
+
     )
     created_by = models.ForeignKey(
         get_user_model(),

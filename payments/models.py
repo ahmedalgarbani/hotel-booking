@@ -117,7 +117,7 @@ class Payment(BaseModel):
     )
     payment_date = models.DateTimeField(
         verbose_name=_("تاريخ الدفع"),
-        default=timezone.now()
+        default=timezone.now
     )
     payment_subtotal = models.DecimalField(
         max_digits=10,

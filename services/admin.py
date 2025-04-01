@@ -7,7 +7,6 @@ from api.admin import admin_site
 
 from .models import Coupon
 
-from django.contrib import admin
 from django.utils.timezone import now
 
 class AutoUserTrackMixin:
@@ -41,7 +40,7 @@ class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
         return queryset.none()
 
 
-class HotelServiceAdmin(admin.ModelAdmin):
+class HotelServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ("name", "hotel", "is_active", "icon_display")
     list_filter = ("is_active", "hotel")
     search_fields = ("name", "description")
@@ -52,9 +51,22 @@ class HotelServiceAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="width: 30px; height: 30px;" />', obj.icon.url)
         return "-"
     icon_display.short_description = "Icon"
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
+        return self.readonly_fields
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+        elif request.user.user_type == 'hotel_manager':
+            return queryset.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return queryset.filter(hotel__manager=request.user.chield)
+        return queryset.none()
 
 
-class RoomTypeServiceAdmin(admin.ModelAdmin):
+class RoomTypeServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ("name", "room_type", "hotel", "is_active", "additional_fee", "icon_display")
     list_filter = ("is_active", "room_type", "hotel")
     search_fields = ("name", "description")
@@ -65,9 +77,22 @@ class RoomTypeServiceAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="width: 30px; height: 30px;" />', obj.icon.url)
         return "-"
     icon_display.short_description = "Icon"
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
+        return self.readonly_fields
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+        elif request.user.user_type == 'hotel_manager':
+            return queryset.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return queryset.filter(hotel__manager=request.user.chield)
+        return queryset.none()
 
 
-class OfferAdmin(admin.ModelAdmin):
+class OfferAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ("offer_name", "hotel_name", "offer_start_date", "offer_end_date",)
     list_filter = ("offer_start_date", "offer_end_date", "hotel")
     search_fields = ("offer_name", "offer_description")
@@ -82,6 +107,19 @@ class OfferAdmin(admin.ModelAdmin):
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
+        return self.readonly_fields
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+        elif request.user.user_type == 'hotel_manager':
+            return queryset.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return queryset.filter(hotel__manager=request.user.chield)
+        return queryset.none()    
 
 
 

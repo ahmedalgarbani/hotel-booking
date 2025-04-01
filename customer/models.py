@@ -1,9 +1,10 @@
 from django.db import models
+from HotelManagement.models import BaseModel
 
 from users.models import CustomUser
 
 # Create your models here.
-class Favourites(models.Model):
+class Favourites(BaseModel):
     user = models.ForeignKey( 
         CustomUser,
         on_delete=models.CASCADE,

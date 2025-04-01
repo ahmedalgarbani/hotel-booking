@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from HotelManagement.models import BaseModel,Hotel
 from rooms.models import RoomType
 
-class HotelService(models.Model):
+class HotelService(BaseModel):
     name = models.CharField(
         max_length=255,
         verbose_name=_("اسم الخدمة"),
@@ -43,7 +43,7 @@ class HotelService(models.Model):
 
 
 
-class RoomTypeService(models.Model):
+class RoomTypeService(BaseModel):
     name = models.CharField(
         max_length=255,
         verbose_name=_("اسم الخدمة"),
@@ -163,8 +163,6 @@ class Coupon(BaseModel):
     discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPES)
     discount = models.FloatField()
     status = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
