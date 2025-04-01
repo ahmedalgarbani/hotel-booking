@@ -144,7 +144,7 @@ class Offer(BaseModel):
 
 # ------------------ Coupon --------------------------
 
-class Coupon(models.Model):
+class Coupon(BaseModel):
     DISCOUNT_TYPES = [
         ('percent', 'Percent'),
         ('amount', 'Amount'),

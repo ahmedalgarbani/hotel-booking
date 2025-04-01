@@ -41,18 +41,10 @@ class HotelManagerAdminMixin:
                 kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_image":
                 kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+            elif db_field.name == "":
+                kwargs["queryset"] = RoomImage.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super().get_form(request, obj, **kwargs)
-    #     if not request.user.is_superuser:
-    #         if obj:  # If the object exists (i.e., we are editing it)
-    #             if 'created_by' in form.base_fields:
-    #                 form.base_fields['created_by'].widget.attrs['readonly'] = True
-    #         if 'updated_by' in form.base_fields:
-    #             form.base_fields['updated_by'].widget.attrs['readonly'] = True
-    #             form.base_fields['updated_by'].required = False
-    #     return form
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)

@@ -3,18 +3,42 @@ from django.utils.html import format_html
 
 from bookings.models import Booking
 from .models import HotelService, RoomTypeService, Offer
+from api.admin import admin_site
 
 from .models import Coupon
 
-# Customize the admin interface for the Coupon model
-class CouponAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'hotel', 'quantity', 'min_purchase_amount', 'expired_date', 'discount_type', 'discount', 'status', 'created_at', 'updated_at')
-    search_fields = ('name', 'code', 'hotel__name')  # Search by coupon name, code, and hotel name
-    list_filter = ('status', 'discount_type', 'hotel')  # Filter by status, discount type, and hotel
-    ordering = ('-created_at',)  # Order by created_at descending
+from django.contrib import admin
+from django.utils.timezone import now
 
-# Register the Coupon model with the custom admin interface
-admin.site.register(Coupon, CouponAdmin)
+class AutoUserTrackMixin:
+    
+    def save_model(self, request, obj, form, change):
+        if not obj.pk: 
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
+
+class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
+    list_display = ('name', 'code', 'hotel', 'quantity', 'min_purchase_amount', 'expired_date', 
+                    'discount_type', 'discount', 'status', 'created_at', 'updated_at')
+    search_fields = ('name', 'code', 'hotel__name')  
+    list_filter = ('status', 'discount_type', 'hotel')  
+    ordering = ('-created_at',)
+    # exclude = ('created_by', 'updated_by','deleted_at')
+    # readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
+        return self.readonly_fields
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+        elif request.user.user_type == 'hotel_manager':
+            return queryset.filter(hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return queryset.filter(hotel__manager=request.user.chield)
+        return queryset.none()
 
 
 class HotelServiceAdmin(admin.ModelAdmin):
@@ -60,7 +84,6 @@ class OfferAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-from api.admin import admin_site
 
 
 
