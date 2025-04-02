@@ -4,7 +4,6 @@ from django.db import models,transaction
 from django.urls import reverse
 from HotelManagement.models import BaseModel
 from notifications.models import Notifications
-from payments.models import Payment
 from rooms.models import Availability, RoomStatus
 from django.db import models
 from django.utils import timezone
@@ -13,6 +12,7 @@ from django.conf import settings
 from services.models import RoomTypeService
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 import uuid
 # ------------ Guest ------------
 
@@ -267,7 +267,7 @@ class BookingDetail(BaseModel):
 class ExtensionMovement(models.Model):
     movement_number = models.AutoField(primary_key=True, verbose_name="رقم الحركة")
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE,verbose_name="رقم الحجز")
-    payment_receipt = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True,verbose_name="رقم سند الدفع")
+    payment_receipt = models.ForeignKey('payments.Payment', on_delete=models.SET_NULL, null=True, blank=True,verbose_name="رقم سند الدفع")
     original_departure = models.DateField(verbose_name="تاريخ المغادرة قبل التمديد")
     extension_date = models.DateField(default=timezone.now, verbose_name="تاريخ التمديد")
     new_departure = models.DateField(verbose_name="تاريخ المغادرة الجديد")
@@ -291,3 +291,110 @@ class ExtensionMovement(models.Model):
         return f"حركة #{self.movement_number} - حجز {self.booking.id}"    
     
 
+
+
+
+
+# -------------- HISTORY -----------------
+
+
+class BookingHistory(models.Model):
+    class BookingStatus(models.TextChoices):
+        PENDING = "0", _("قيد الانتظار")
+        CONFIRMED = "1", _("مؤكد")
+        CANCELED = "2", _("ملغي")
+
+    booking = models.ForeignKey(
+        'bookings.Booking',
+        on_delete=models.CASCADE,
+        verbose_name=_("الحجز"),
+        related_name='history_entries'
+    )
+    history_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("تاريخ التعديل")
+    )
+    changed_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("المستخدم الذي قام بالتغيير")
+    )
+    previous_status = models.CharField(
+        max_length=10,
+        choices=Booking.BookingStatus.choices,
+        verbose_name=_("الحالة السابقة"),
+        null=True,
+        blank=True
+    )
+    new_status = models.CharField(
+        max_length=10,
+        choices=Booking.BookingStatus.choices,
+        verbose_name=_("الحالة الجديدة")
+    )
+    hotel = models.ForeignKey(
+        'HotelManagement.Hotel',
+        on_delete=models.CASCADE,
+        verbose_name=_("الفندق"),
+        related_name='+'
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("المستخدم"),
+        related_name='+',
+        null=True,
+        blank=True
+    )
+    room = models.ForeignKey(
+        'rooms.RoomType',
+        on_delete=models.CASCADE,
+        verbose_name=_("نوع الغرفة"),
+        related_name='+'
+    )
+    check_in_date = models.DateTimeField(
+        verbose_name=_("تاريخ تسجيل الدخول"),
+        null=True,
+        blank=True
+    )
+    check_out_date = models.DateTimeField(
+        verbose_name=_("تاريخ تسجيل الخروج"),
+        null=True,
+        blank=True
+    )
+    actual_check_out_date = models.DateTimeField(
+        verbose_name=_("تاريخ المغادرة الفعلي"),
+        null=True,
+        blank=True
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("المبلغ")
+    )
+    account_status = models.BooleanField(
+        verbose_name=_("حالة الحساب")
+    )
+    rooms_booked = models.PositiveIntegerField(
+        verbose_name=_("عدد الغرف المحجوزة"),
+        validators=[MinValueValidator(1)]
+    )
+    parent_booking = models.ForeignKey(
+        Booking,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("الحجز الأصلي"),
+        related_name='+'
+    )
+
+    class Meta:
+        verbose_name = _("سجل الحجز")
+        verbose_name_plural = _("سجلات الحجوزات")
+        ordering = ['-history_date']
+
+    def __str__(self):
+        return f"History entry for Booking #{self.booking.id} at {self.history_date}"
+
+        

@@ -19,7 +19,7 @@ from .forms import ReviewForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger # Import Paginator and exceptions
 import uuid  
 from decimal import Decimal
-from services.models import RoomTypeService
+from services.models import Coupon, RoomTypeService
     
 
 from django.utils import timezone

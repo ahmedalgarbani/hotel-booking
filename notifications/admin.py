@@ -17,6 +17,7 @@ class NotificationsAdmin(AutoUserTrackMixin ,admin.ModelAdmin):
     search_fields = ('sender__username', 'user__username', 'message')
     ordering = ('-send_time',)
     actions = ['mark_as_read', 'mark_as_unread']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 
     def mark_as_read(self, request, queryset):
         queryset.update(status='1')

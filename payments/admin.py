@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.helpers import ActionForm
 from HotelManagement.models import Hotel
-from .models import Currency, HotelPaymentMethod, PaymentOption, Payment
+from .models import Currency, HotelPaymentMethod, PaymentHistory, PaymentOption, Payment
 from django.db.models import Q
 from bookings.models import Booking
 from api.admin import admin_site
@@ -93,6 +93,13 @@ class PaymentAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     search_fields = ('booking__id', 'payment_method__account_name')
     readonly_fields = ('payment_date',)
     actions = ['change_payment_status'] 
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','booking', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+
 
     
     def booking_id_link(self, obj):
@@ -202,7 +209,53 @@ class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
 # Payments -------------
 
 
+
+class AutoUserTrackMixin:
+    
+    def save_model(self, request, obj, form, change):
+        if not obj.pk: 
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
+
+
+
+class PaymentHistoryAdmin(AutoUserTrackMixin,admin.ModelAdmin):
+    list_display = (
+        'payment',
+        'history_date',
+        'changed_by',
+        'previous_payment_status',
+        'new_payment_status'
+    )
+    list_filter = ('new_payment_status', 'history_date')
+    search_fields = (
+        'payment__id',
+        'changed_by__username'
+    )
+    ordering = ('-history_date',)
+    readonly_fields = (
+        'payment',
+        'history_date',
+        'changed_by',
+        'previous_payment_status',
+        'new_payment_status',
+        'previous_payment_totalamount',
+        'new_payment_totalamount',
+        'previous_payment_discount',
+        'new_payment_discount',
+        'previous_payment_discount_code',
+        'new_payment_discount_code',
+        'note',
+    )
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
+
+
+
+
 admin_site.register(Currency,CurrencyAdmin)
+admin_site.register(PaymentHistory,PaymentHistoryAdmin)
 admin_site.register(PaymentOption,PaymentOptionAdmin)
 admin_site.register(HotelPaymentMethod,HotelPaymentMethodAdmin)
 admin_site.register(Payment,PaymentAdmin)

@@ -162,3 +162,89 @@ class Payment(BaseModel):
 
 
   
+# ------ history payment --------------
+
+
+
+class PaymentHistory(BaseModel):
+    payment_choice = [(0, "قيد الانتظار"), (1, "تم الدفع"), (2, "مرفوض")]
+    payment = models.ForeignKey(
+        Payment,
+        on_delete=models.CASCADE,
+        verbose_name=_("الدفعة"),
+        related_name='history_entries'
+    )
+
+    history_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("تاريخ التعديل")
+    )
+    changed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("المستخدم الذي قام بالتغيير")
+    )
+    previous_payment_status = models.IntegerField(
+        choices=Payment.payment_choice,
+        verbose_name=_("حالة الدفع السابقة"),
+        null=True,
+        blank=True
+    )
+    new_payment_status = models.IntegerField(
+        choices=Payment.payment_choice,
+        verbose_name=_("حالة الدفع الجديدة")
+    )
+    previous_payment_totalamount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("المبلغ الإجمالي السابق"),
+        null=True,
+        blank=True
+    )
+    new_payment_totalamount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("المبلغ الإجمالي الجديد")
+    )
+    previous_payment_discount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("قيمة الخصم السابقة"),
+        default=0,
+        null=True,
+        blank=True
+    )
+    new_payment_discount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_("قيمة الخصم الجديدة"),
+        default=0
+    )
+    previous_payment_discount_code = models.CharField(
+       max_length=100,
+        verbose_name=_("كود الخصم السابق"),
+        null=True,
+        blank=True
+    )
+    new_payment_discount_code = models.CharField(
+       max_length=100,
+        verbose_name=_("كود الخصم الجديد"),
+        null=True,
+        blank=True
+    )
+    note = models.TextField(
+        verbose_name=_("ملاحظات"),
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        verbose_name = _("سجل الدفعة")
+        verbose_name_plural = _("سجلات الدفعات")
+        ordering = ['-history_date']
+
+    def __str__(self):
+        return f"History for Payment #{self.payment.id} at {self.history_date}"
+

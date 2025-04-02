@@ -12,7 +12,7 @@ from rooms.models import Availability, Category, RoomImage, RoomPrice, RoomType
 from datetime import datetime
 from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
-from services.models import HotelService
+from services.models import Coupon, HotelService
 from .models import TeamMember, Partner, Testimonial
 from .models import PricingPlan
 
@@ -241,6 +241,8 @@ def hotel_detail(request, slug):
         ),
         slug=slug
     )
+    coupon = Coupon.objects.filter(hotel=hotel).order_by('-created_at').first()
+
     external_hotels = Hotel.objects.exclude(id=hotel.id)[:6]
     reviews = HotelReview.objects.filter(status = True)
 
@@ -282,6 +284,7 @@ def hotel_detail(request, slug):
     hotel_services = HotelService.objects.filter(hotel=hotel, is_active=True)
     ctx = {
         'hotel': hotel,
+        'coupon':coupon,
         'available_room_types': available_room_types,
         'hotel_services': hotel_services, 
         'reviews':reviews ,

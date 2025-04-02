@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2025 at 02:23 AM
+-- Generation Time: Apr 02, 2025 at 02:32 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.12
 
@@ -407,7 +407,15 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (477, 'Can add journal entry', 61, 'add_journalentry'),
 (478, 'Can change journal entry', 61, 'change_journalentry'),
 (479, 'Can delete journal entry', 61, 'delete_journalentry'),
-(480, 'Can view journal entry', 61, 'view_journalentry');
+(480, 'Can view journal entry', 61, 'view_journalentry'),
+(481, 'Can add سجل الحجز', 62, 'add_bookinghistory'),
+(482, 'Can change سجل الحجز', 62, 'change_bookinghistory'),
+(483, 'Can delete سجل الحجز', 62, 'delete_bookinghistory'),
+(484, 'Can view سجل الحجز', 62, 'view_bookinghistory'),
+(485, 'Can add سجل الدفعة', 63, 'add_paymenthistory'),
+(486, 'Can change سجل الدفعة', 63, 'change_paymenthistory'),
+(487, 'Can delete سجل الدفعة', 63, 'delete_paymenthistory'),
+(488, 'Can view سجل الدفعة', 63, 'view_paymenthistory');
 
 -- --------------------------------------------------------
 
@@ -523,6 +531,13 @@ CREATE TABLE `bookings_booking` (
   `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
+--
+-- Dumping data for table `bookings_booking`
+--
+
+INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `status`, `account_status`, `rooms_booked`, `created_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `updated_by_id`, `user_id`) VALUES
+(1, '2025-04-01 22:54:09.479536', '2025-04-01 22:57:41.938487', NULL, '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', '2025-04-01 22:57:41.921859', 193.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 12);
+
 -- --------------------------------------------------------
 
 --
@@ -544,6 +559,40 @@ CREATE TABLE `bookings_bookingdetail` (
   `service_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookings_bookinghistory`
+--
+
+CREATE TABLE `bookings_bookinghistory` (
+  `id` bigint(20) NOT NULL,
+  `history_date` datetime(6) NOT NULL,
+  `previous_status` varchar(10) DEFAULT NULL,
+  `new_status` varchar(10) NOT NULL,
+  `check_in_date` datetime(6) DEFAULT NULL,
+  `check_out_date` datetime(6) DEFAULT NULL,
+  `actual_check_out_date` datetime(6) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `account_status` tinyint(1) NOT NULL,
+  `rooms_booked` int(10) UNSIGNED NOT NULL CHECK (`rooms_booked` >= 0),
+  `booking_id` bigint(20) NOT NULL,
+  `changed_by_id` bigint(20) DEFAULT NULL,
+  `hotel_id` bigint(20) NOT NULL,
+  `parent_booking_id` bigint(20) DEFAULT NULL,
+  `room_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `bookings_bookinghistory`
+--
+
+INSERT INTO `bookings_bookinghistory` (`id`, `history_date`, `previous_status`, `new_status`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `account_status`, `rooms_booked`, `booking_id`, `changed_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `user_id`) VALUES
+(1, '2025-04-01 22:54:33.035731', '0', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
+(2, '2025-04-01 22:57:17.086497', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
+(3, '2025-04-01 22:57:41.949606', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', '2025-04-01 22:57:41.921859', 193.00, 1, 1, 1, 12, 1, NULL, 1, 12);
 
 -- --------------------------------------------------------
 
@@ -599,6 +648,13 @@ CREATE TABLE `customer_favourites` (
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
+--
+-- Dumping data for table `customer_favourites`
+--
+
+INSERT INTO `customer_favourites` (`id`, `created_at`, `updated_at`, `deleted_at`, `created_by_id`, `hotel_id`, `updated_by_id`, `user_id`) VALUES
+(1, '2025-04-01 00:24:39.320663', '2025-04-01 00:24:39.320663', NULL, 1, 1, 1, 14);
+
 -- --------------------------------------------------------
 
 --
@@ -615,6 +671,29 @@ CREATE TABLE `django_admin_log` (
   `content_type_id` int(11) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `django_admin_log`
+--
+
+INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
+(1, '2025-04-01 00:24:39.322998', '1', ' - احمد', 1, '[{\"added\": {}}]', 53, 1),
+(2, '2025-04-01 00:25:20.913442', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"Groups\"]}}]', 2, 1),
+(3, '2025-04-01 00:26:23.956918', '1', 'Hotel Managers', 2, '[{\"changed\": {\"fields\": [\"Permissions\"]}}]', 4, 1),
+(4, '2025-04-01 00:26:59.043384', '1', 'إشعار من a إلى c - 1', 1, '[{\"added\": {}}]', 52, 1),
+(5, '2025-04-01 00:27:14.798855', '2', 'إشعار من a إلى ammar alwan - 2', 1, '[{\"added\": {}}]', 52, 1),
+(6, '2025-04-01 00:28:01.538582', '1', 'Hotel Managers', 2, '[{\"changed\": {\"fields\": [\"Permissions\"]}}]', 4, 1),
+(7, '2025-04-01 00:29:02.883231', '1', 'إشعار من a إلى a - 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u0644\\u0645\"]}}]', 52, 14),
+(8, '2025-04-01 00:29:41.453537', '1', 'إشعار من a إلى c - 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u0644\\u0645\"]}}]', 52, 1),
+(9, '2025-04-01 22:54:09.498035', '1', 'Booking #1 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(10, '2025-04-01 22:57:17.102621', '1', 'Booking #1 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 13, 1),
+(11, '2025-04-01 23:42:01.987544', '1', 'دفعة #1 لحجز 1', 1, '[{\"added\": {}}]', 47, 1),
+(12, '2025-04-01 23:45:09.019906', '2', 'دفعة #2 لحجز 2', 1, '[{\"added\": {}}]', 47, 1),
+(13, '2025-04-01 23:57:21.638032', '1', 'room vip 2025 - 500 (2025-04-01 إلى 2025-04-11)', 1, '[{\"added\": {}}]', 8, 1),
+(14, '2025-04-02 00:00:51.030698', '1', 'ahmed', 1, '[{\"added\": {}}]', 48, 1),
+(15, '2025-04-02 00:01:14.396725', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"Min purchase amount\"]}}]', 48, 1),
+(16, '2025-04-02 00:01:29.128987', '1', 'ahmed', 2, '[]', 48, 1),
+(17, '2025-04-02 00:12:05.657169', '2', 'new ---', 1, '[{\"added\": {}}]', 48, 1);
 
 -- --------------------------------------------------------
 
@@ -740,6 +819,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (26, 'blog', 'tag'),
 (13, 'bookings', 'booking'),
 (14, 'bookings', 'bookingdetail'),
+(62, 'bookings', 'bookinghistory'),
 (15, 'bookings', 'extensionmovement'),
 (46, 'bookings', 'guest'),
 (32, 'contenttypes', 'contenttype'),
@@ -770,6 +850,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (27, 'payments', 'currency'),
 (29, 'payments', 'hotelpaymentmethod'),
 (47, 'payments', 'payment'),
+(63, 'payments', 'paymenthistory'),
 (28, 'payments', 'paymentoption'),
 (17, 'reviews', 'hotelreview'),
 (16, 'reviews', 'roomreview'),
@@ -888,7 +969,12 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (78, 'token_blacklist', '0011_linearizes_history', '2025-04-01 00:08:04.307429'),
 (79, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-04-01 00:08:04.429308'),
 (80, 'notifications', '0003_notifications_created_at_notifications_created_by_and_more', '2025-04-01 00:18:50.671046'),
-(81, 'rooms', '0003_delete_review', '2025-04-01 00:18:50.703948');
+(81, 'rooms', '0003_delete_review', '2025-04-01 00:18:50.703948'),
+(82, 'bookings', '0004_bookinghistory', '2025-04-01 22:31:39.209526'),
+(83, 'payments', '0008_paymenthistory', '2025-04-01 23:37:11.738040'),
+(84, 'payments', '0009_remove_paymenthistory_new_status_and_more', '2025-04-01 23:51:03.963333'),
+(85, 'services', '0003_coupon_description', '2025-04-02 00:03:01.943859'),
+(86, 'services', '0004_alter_coupon_description', '2025-04-02 00:06:15.693092');
 
 -- --------------------------------------------------------
 
@@ -901,6 +987,15 @@ CREATE TABLE `django_session` (
   `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `django_session`
+--
+
+INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('36a5zqbpvthu744luvy0c5wf05bpw2sq', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tzlxv:E8740pbH4c2SDPh1MrvLtFcga4CrMuTtVTzTSg6Kszg', '2025-04-16 00:28:23.262162'),
+('71ooykilqq1jq54i8zps28d5kp9gdv1h', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tzkOK:2xl23VeWFM3A5Nhyfhv4StiS_lR5VS8Syzba_4Z-aQw', '2025-04-15 22:47:32.811100'),
+('jv45xb43mzicwywb7r05tyzrv4jtvn0n', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tzPPv:xQX2Ir4KW2I8JiVl-DDx4EGxDyqojrQQ_60_rDAm7eo', '2025-04-15 00:23:47.372092');
 
 -- --------------------------------------------------------
 
@@ -1235,6 +1330,22 @@ CREATE TABLE `notifications_notifications` (
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
+--
+-- Dumping data for table `notifications_notifications`
+--
+
+INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status`, `notification_type`, `is_active`, `action_url`, `sender_id`, `user_id`, `created_at`, `created_by_id`, `deleted_at`, `updated_at`, `updated_by_id`) VALUES
+(1, 'asdas', '2025-04-01 00:26:59.030918', '0', '1', 1, NULL, 1, 14, '2025-04-01 00:26:59.030918', 1, NULL, '2025-04-01 00:29:41.436217', 1),
+(2, 'asdas', '2025-04-01 00:27:14.787302', '0', '2', 1, NULL, 1, 12, '2025-04-01 00:27:14.787302', 1, NULL, '2025-04-01 00:27:14.787302', 1),
+(3, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:54:33.044065', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:54:33.044065', NULL, NULL, '2025-04-01 22:54:33.044065', NULL),
+(4, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:54:33.046736', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:54:33.046736', NULL, NULL, '2025-04-01 22:54:33.046736', NULL),
+(5, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:56:08.931185', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:56:08.931185', NULL, NULL, '2025-04-01 22:56:08.931185', NULL),
+(6, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:56:08.945825', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:56:08.944828', NULL, NULL, '2025-04-01 22:56:08.944828', NULL),
+(7, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:57:17.091870', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:57:17.091870', NULL, NULL, '2025-04-01 22:57:17.091870', NULL),
+(8, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:57:17.097708', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:57:17.097708', NULL, NULL, '2025-04-01 22:57:17.097708', NULL),
+(9, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:57:41.966067', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:57:41.966067', NULL, NULL, '2025-04-01 22:57:41.966067', NULL),
+(10, 'يرجى إضافة الضيوف لحجزك.', '2025-04-01 22:57:41.984831', '0', '1', 1, '/payments/add_guest/1/', 12, 12, '2025-04-01 22:57:41.983824', NULL, NULL, '2025-04-01 22:57:41.984831', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -1319,6 +1430,48 @@ CREATE TABLE `payments_payment` (
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `payments_payment`
+--
+
+INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, `transfer_image`, `payment_status`, `payment_date`, `payment_subtotal`, `payment_totalamount`, `payment_currency`, `payment_type`, `payment_note`, `payment_discount`, `payment_discount_code`, `booking_id`, `created_by_id`, `payment_method_id`, `updated_by_id`, `user_id`) VALUES
+(1, '2025-04-01 23:42:01.973721', '2025-04-01 23:44:29.519883', NULL, 'payments/transfer/transfer_image/infor.jpg', 2, '2025-04-01 23:41:17.000000', 140.00, 150.00, 'dolar', 'e_pay', 'ajkshdkhas', 10.00, 'aa', 1, 1, 1, 1, 12),
+(2, '2025-04-01 23:45:09.001660', '2025-04-01 23:47:37.149928', NULL, 'payments/transfer/transfer_image/infor_zxe8Yu0.jpg', 1, '2025-04-01 23:44:41.000000', 111.00, 12.00, '$', 'e_pay', 'asjdasjhj', 10.00, '11ass', 1, 1, 2, 1, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments_paymenthistory`
+--
+
+CREATE TABLE `payments_paymenthistory` (
+  `id` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `history_date` datetime(6) NOT NULL,
+  `previous_payment_status` int(11) DEFAULT NULL,
+  `new_payment_status` int(11) NOT NULL,
+  `previous_payment_totalamount` decimal(10,2) DEFAULT NULL,
+  `new_payment_totalamount` decimal(10,2) NOT NULL,
+  `previous_payment_discount` decimal(10,2) DEFAULT NULL,
+  `new_payment_discount` decimal(10,2) NOT NULL,
+  `previous_payment_discount_code` varchar(100) DEFAULT NULL,
+  `new_payment_discount_code` varchar(100) DEFAULT NULL,
+  `note` longtext DEFAULT NULL,
+  `changed_by_id` bigint(20) DEFAULT NULL,
+  `created_by_id` bigint(20) DEFAULT NULL,
+  `payment_id` bigint(20) NOT NULL,
+  `updated_by_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `payments_paymenthistory`
+--
+
+INSERT INTO `payments_paymenthistory` (`id`, `created_at`, `updated_at`, `deleted_at`, `history_date`, `previous_payment_status`, `new_payment_status`, `previous_payment_totalamount`, `new_payment_totalamount`, `previous_payment_discount`, `new_payment_discount`, `previous_payment_discount_code`, `new_payment_discount_code`, `note`, `changed_by_id`, `created_by_id`, `payment_id`, `updated_by_id`) VALUES
+(1, '2025-04-01 23:47:37.159981', '2025-04-01 23:47:37.159981', NULL, '2025-04-01 23:47:37.160510', 0, 1, 12.00, 12.00, 10.00, 10.00, '11ass', '11ass', 'Payment updated on 2025-04-01 23:47:37.157066+00:00', 12, NULL, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -1419,7 +1572,8 @@ CREATE TABLE `rooms_availability` (
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
 (14, '2025-03-22 18:36:37.899370', '2025-03-25 18:43:22.979455', NULL, '2025-03-22', 3, 'Updated due to booking #1', NULL, 1, 3, 1, 1),
-(15, '2025-03-31 22:07:22.650304', '2025-03-31 22:26:12.579090', NULL, '2025-03-31', 11, 'Updated due to booking #3', NULL, 1, 3, 1, NULL);
+(15, '2025-03-31 22:07:22.650304', '2025-03-31 22:26:12.579090', NULL, '2025-03-31', 11, 'Updated due to booking #3', NULL, 1, 3, 1, NULL),
+(16, '2025-04-01 22:54:09.492995', '2025-04-01 22:57:41.974050', NULL, '2025-04-01', 18, 'Updated due to booking #1', NULL, 1, 3, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1494,6 +1648,13 @@ CREATE TABLE `rooms_roomprice` (
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ;
+
+--
+-- Dumping data for table `rooms_roomprice`
+--
+
+INSERT INTO `rooms_roomprice` (`id`, `created_at`, `updated_at`, `deleted_at`, `date_from`, `date_to`, `price`, `is_special_offer`, `created_by_id`, `hotel_id`, `room_type_id`, `updated_by_id`) VALUES
+(1, '2025-04-01 23:57:21.633047', '2025-04-01 23:57:21.633047', NULL, '2025-04-01', '2025-04-11', 500.00, 0, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1575,8 +1736,17 @@ CREATE TABLE `services_coupon` (
   `status` tinyint(1) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
+  `updated_by_id` bigint(20) DEFAULT NULL,
+  `description` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `services_coupon`
+--
+
+INSERT INTO `services_coupon` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `code`, `quantity`, `min_purchase_amount`, `expired_date`, `discount_type`, `discount`, `status`, `created_by_id`, `hotel_id`, `updated_by_id`, `description`) VALUES
+(1, '2025-04-02 00:00:51.028703', '2025-04-02 00:01:29.126328', NULL, 'ahmed', 'a1', 9, 100, '2025-04-15', 'amount', 150, 1, 1, 1, 1, 'sadas'),
+(2, '2025-04-02 00:12:05.651295', '2025-04-02 00:12:05.651295', NULL, 'new ---', 'sms', 10, 30, '2025-04-10', 'amount', 10, 1, 1, 1, 1, '<p><big>عرض جديد بمناسبه العيد بكود خصم <strong><span style=\"color:#e74c3c\">sms&nbsp; </span></strong><img alt=\"heart\" src=\"http://127.0.0.1:8000/static/ckeditor/ckeditor/plugins/smiley/images/heart.png\" style=\"height:23px; width:23px\" title=\"heart\" /><img alt=\"yes\" src=\"http://127.0.0.1:8000/static/ckeditor/ckeditor/plugins/smiley/images/thumbs_up.png\" style=\"height:23px; width:23px\" title=\"yes\" />تنتهي نهايه العام 2025</big></p>');
 
 -- --------------------------------------------------------
 
@@ -1718,11 +1888,11 @@ CREATE TABLE `users_customuser` (
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `chield_id`) VALUES
-(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-03-31 21:19:24.668321', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
+(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-01 22:47:32.800063', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
 (2, 'pbkdf2_sha256$600000$mRv4uTHEeVZ15lsGse5C0D$hF0CKJC3qr2/+yCUM252q7NnSKiBR3C+X1CTuLAv7WI=', '2025-03-22 19:47:22.367954', 0, 'b', '', '', 'b@b.com', 1, '2025-03-21 12:48:09.506849', '2025-03-21 12:48:10.018701', '2025-03-22 19:21:25.333335', 'hotel_manager', '', '', NULL, NULL, 1, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', NULL, NULL, 1, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', NULL, NULL, 1, NULL),
-(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-03-21 14:09:15.507377', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-11 23:11:54.749987', 'customer', '', 'users/2025/03/12/img27.jpg', NULL, NULL, 1, NULL),
+(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-04-01 23:58:15.468421', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-11 23:11:54.749987', 'customer', '', 'users/2025/03/12/img27.jpg', NULL, NULL, 1, NULL),
 (6, 'pbkdf2_sha256$600000$BbNnejHpZOfDP6VnObjVcz$nhsPttz7Xm4OTIK/zOWG0MrrT6q9PAv0jTWQyIffer0=', '2025-03-05 20:13:43.403102', 0, 'mosaa1', '', '', 'mosaa1@mosaa1.com', 0, '2025-03-05 20:13:41.381311', '2025-03-05 20:13:43.386627', '2025-03-05 20:13:43.386627', 'customer', '', '', NULL, NULL, 1, NULL),
 (7, 'pbkdf2_sha256$600000$vUeJuKMqNFAu6egbZVxQ85$uQPUm3C2c/AmXPOaKjFVNqCkRpV44XZB+IcyyRoeX9I=', '2025-03-06 08:09:12.614518', 0, 'asdjsk', '', '', 'asdjsk@asdjsk.com', 0, '2025-03-06 08:09:10.785662', '2025-03-06 08:09:12.595928', '2025-03-06 08:09:12.595928', 'customer', '', '', NULL, NULL, 1, NULL),
 (8, 'pbkdf2_sha256$600000$EWBPrY4FupGVI4TQNhXc0c$34BYeYmfyKXBq+wd4pmTAYBvOg94iuzQIzR0t+6EmlM=', '2025-03-08 23:09:07.660012', 0, 'alslslsl', '', '', 'alslslsl@alslslsl.com', 0, '2025-03-08 23:09:05.884851', '2025-03-08 23:09:07.648169', '2025-03-22 19:39:25.883858', 'hotel_manager', '', '', NULL, NULL, 1, NULL),
@@ -1731,7 +1901,7 @@ INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, 
 (11, 'pbkdf2_sha256$600000$RQcyfOrNwaARSe90TzIKBU$90MYq5xmhjWGc+keDWcELY1dkohhCW05pO8C2RgP+xA=', '2025-03-11 14:11:34.650871', 0, 'asjldhask15', 'ajshdkajs', 'aksljdlas', 'asjldhask15@asd.co', 0, '2025-03-11 14:11:32.868092', '2025-03-11 14:11:34.630556', '2025-03-11 14:11:34.630556', 'customer', '21215151515', 'users/2025/03/11/topdoctors_5NSVJtE.jpg', 'Female', '2025-03-09', 1, NULL),
 (12, 'pbkdf2_sha256$600000$cyoobnnbnn1veqfofkr18v$Q3A3UVNX8rMFNQOeuwLDAxNV9v68C9+85WPeG58gGsQ=', '2025-03-11 15:03:22.973314', 0, 'ammaralwan', 'ammar', 'alwan', 'ammaralwan@ss.com', 0, '2025-03-11 15:03:07.343237', '2025-03-11 15:03:09.211771', '2025-03-11 15:03:09.211771', 'customer', '781717177', 'users/2025/03/11/terms.jpg', 'Female', '1996-04-18', 1, NULL),
 (13, 'pbkdf2_sha256$600000$FqqK1ybDPJVmeLbEpH5xM5$XxlG67Ut3xXs/TN8aC0TcX2qZMHyLlyXteu8KboTH60=', '2025-03-11 15:07:08.449784', 0, 'asdjhasj', 'asjdhjkash', 'asdas', 'sajh@asd.cc', 0, '2025-03-11 15:07:06.624072', '2025-03-11 15:07:08.427732', '2025-03-11 15:07:08.427732', 'customer', '88186541312', 'users/2025/03/11/terms_iJzbCqG.jpg', 'Female', '2003-03-13', 1, NULL),
-(14, 'pbkdf2_sha256$600000$YnIbgLo63DhZI2tNuYeVVW$uG9BZ9YIOFennwzEZmG/A8lTZvE7Ptg0deSs7OWZ8Fw=', '2025-03-22 19:42:37.658149', 0, 'c', '', '', '', 1, '2025-03-22 19:41:27.289430', '2025-03-22 19:41:28.023706', '2025-03-22 19:43:03.157629', 'hotel_manager', '', '', NULL, NULL, 1, NULL);
+(14, 'pbkdf2_sha256$600000$YnIbgLo63DhZI2tNuYeVVW$uG9BZ9YIOFennwzEZmG/A8lTZvE7Ptg0deSs7OWZ8Fw=', '2025-04-01 00:25:41.994904', 0, 'c', '', '', '', 1, '2025-03-22 19:41:27.289430', '2025-03-22 19:41:28.023706', '2025-04-01 00:25:20.895010', 'hotel_manager', '', '', NULL, NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1744,6 +1914,13 @@ CREATE TABLE `users_customuser_groups` (
   `customuser_id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `users_customuser_groups`
+--
+
+INSERT INTO `users_customuser_groups` (`id`, `customuser_id`, `group_id`) VALUES
+(1, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -1851,6 +2028,18 @@ ALTER TABLE `bookings_bookingdetail`
   ADD KEY `bookings_bookingdeta_hotel_id_1dc4dae4_fk_HotelMana` (`hotel_id`),
   ADD KEY `bookings_bookingdeta_service_id_8dc9681c_fk_services_` (`service_id`),
   ADD KEY `bookings_bookingdeta_updated_by_id_263cc972_fk_users_cus` (`updated_by_id`);
+
+--
+-- Indexes for table `bookings_bookinghistory`
+--
+ALTER TABLE `bookings_bookinghistory`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `bookings_bookinghist_booking_id_3d73917f_fk_bookings_` (`booking_id`),
+  ADD KEY `bookings_bookinghist_changed_by_id_7771323e_fk_users_cus` (`changed_by_id`),
+  ADD KEY `bookings_bookinghist_hotel_id_fedbba66_fk_HotelMana` (`hotel_id`),
+  ADD KEY `bookings_bookinghist_parent_booking_id_81c27856_fk_bookings_` (`parent_booking_id`),
+  ADD KEY `bookings_bookinghistory_room_id_2b335d40_fk_rooms_roomtype_id` (`room_id`),
+  ADD KEY `bookings_bookinghistory_user_id_631b8526_fk_users_customuser_id` (`user_id`);
 
 --
 -- Indexes for table `bookings_extensionmovement`
@@ -2106,6 +2295,16 @@ ALTER TABLE `payments_payment`
   ADD KEY `payments_payment_user_id_f9db060a_fk_users_customuser_id` (`user_id`);
 
 --
+-- Indexes for table `payments_paymenthistory`
+--
+ALTER TABLE `payments_paymenthistory`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `payments_paymenthist_changed_by_id_bc229b93_fk_users_cus` (`changed_by_id`),
+  ADD KEY `payments_paymenthist_created_by_id_e1a215ba_fk_users_cus` (`created_by_id`),
+  ADD KEY `payments_paymenthist_payment_id_4b5c9d14_fk_payments_` (`payment_id`),
+  ADD KEY `payments_paymenthist_updated_by_id_f0bf4c7d_fk_users_cus` (`updated_by_id`);
+
+--
 -- Indexes for table `payments_paymentoption`
 --
 ALTER TABLE `payments_paymentoption`
@@ -2293,13 +2492,13 @@ ALTER TABLE `auth_group`
 -- AUTO_INCREMENT for table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=191;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
 
 --
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=481;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=489;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -2335,13 +2534,19 @@ ALTER TABLE `blog_tag`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
 --
 ALTER TABLE `bookings_bookingdetail`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `bookings_bookinghistory`
+--
+ALTER TABLE `bookings_bookinghistory`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `bookings_extensionmovement`
@@ -2359,13 +2564,13 @@ ALTER TABLE `bookings_guest`
 -- AUTO_INCREMENT for table `customer_favourites`
 --
 ALTER TABLE `customer_favourites`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
@@ -2401,13 +2606,13 @@ ALTER TABLE `django_celery_beat_solarschedule`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT for table `home_contactmessage`
@@ -2509,7 +2714,7 @@ ALTER TABLE `hotelmanagement_phone`
 -- AUTO_INCREMENT for table `notifications_notifications`
 --
 ALTER TABLE `notifications_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `payments_currency`
@@ -2527,7 +2732,13 @@ ALTER TABLE `payments_hotelpaymentmethod`
 -- AUTO_INCREMENT for table `payments_payment`
 --
 ALTER TABLE `payments_payment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `payments_paymenthistory`
+--
+ALTER TABLE `payments_paymenthistory`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `payments_paymentoption`
@@ -2551,7 +2762,7 @@ ALTER TABLE `reviews_roomreview`
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
@@ -2587,7 +2798,7 @@ ALTER TABLE `rooms_roomtype`
 -- AUTO_INCREMENT for table `services_coupon`
 --
 ALTER TABLE `services_coupon`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `services_hotelservice`
@@ -2635,7 +2846,7 @@ ALTER TABLE `users_customuser`
 -- AUTO_INCREMENT for table `users_customuser_groups`
 --
 ALTER TABLE `users_customuser_groups`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_user_permissions`
@@ -2719,6 +2930,17 @@ ALTER TABLE `bookings_bookingdetail`
   ADD CONSTRAINT `bookings_bookingdeta_hotel_id_1dc4dae4_fk_HotelMana` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
   ADD CONSTRAINT `bookings_bookingdeta_service_id_8dc9681c_fk_services_` FOREIGN KEY (`service_id`) REFERENCES `services_roomtypeservice` (`id`),
   ADD CONSTRAINT `bookings_bookingdeta_updated_by_id_263cc972_fk_users_cus` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `bookings_bookinghistory`
+--
+ALTER TABLE `bookings_bookinghistory`
+  ADD CONSTRAINT `bookings_bookinghist_booking_id_3d73917f_fk_bookings_` FOREIGN KEY (`booking_id`) REFERENCES `bookings_booking` (`id`),
+  ADD CONSTRAINT `bookings_bookinghist_changed_by_id_7771323e_fk_users_cus` FOREIGN KEY (`changed_by_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `bookings_bookinghist_hotel_id_fedbba66_fk_HotelMana` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
+  ADD CONSTRAINT `bookings_bookinghist_parent_booking_id_81c27856_fk_bookings_` FOREIGN KEY (`parent_booking_id`) REFERENCES `bookings_booking` (`id`),
+  ADD CONSTRAINT `bookings_bookinghistory_room_id_2b335d40_fk_rooms_roomtype_id` FOREIGN KEY (`room_id`) REFERENCES `rooms_roomtype` (`id`),
+  ADD CONSTRAINT `bookings_bookinghistory_user_id_631b8526_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `bookings_extensionmovement`
@@ -2842,6 +3064,15 @@ ALTER TABLE `payments_payment`
   ADD CONSTRAINT `payments_payment_payment_method_id_c909ff25_fk_payments_` FOREIGN KEY (`payment_method_id`) REFERENCES `payments_hotelpaymentmethod` (`id`),
   ADD CONSTRAINT `payments_payment_updated_by_id_379a95eb_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `payments_payment_user_id_f9db060a_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `payments_paymenthistory`
+--
+ALTER TABLE `payments_paymenthistory`
+  ADD CONSTRAINT `payments_paymenthist_changed_by_id_bc229b93_fk_users_cus` FOREIGN KEY (`changed_by_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `payments_paymenthist_created_by_id_e1a215ba_fk_users_cus` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `payments_paymenthist_payment_id_4b5c9d14_fk_payments_` FOREIGN KEY (`payment_id`) REFERENCES `payments_payment` (`id`),
+  ADD CONSTRAINT `payments_paymenthist_updated_by_id_f0bf4c7d_fk_users_cus` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `payments_paymentoption`

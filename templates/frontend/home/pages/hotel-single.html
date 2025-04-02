@@ -35,6 +35,43 @@
     background-color: #d1ecf1;
     border-color: #bee5eb;
 }
+
+
+  .custom-alert.warning {
+    background:rgb(205, 255, 217);
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.alert-icon {
+    width: 24px;
+    height: 24px;
+    color:rgb(7, 255, 32);
+    flex-shrink: 0;
+}
+
+.alert-heading {
+    color: #856404;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.custom-alert p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
 </style>
  {% endblock extra_css %}
 {% block content %}
@@ -182,6 +219,18 @@ START TOUR DETAIL AREA
       </div>
     </div>
   </div>
+  {% if coupon %}
+      <div class="custom-alert warning" style="margin:20px 70px 50px 120px">
+          <div class="alert-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              <div class="message">
+                  <p class="mb-0">{{ coupon.description|safe }}</p>
+              </div>
+          </div>
+      </div>
+      {% endif %}
   <!-- end single-content-navbar-wrap -->
   <div class="single-content-box">
     <div class="container">

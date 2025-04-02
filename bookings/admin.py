@@ -101,6 +101,8 @@ class ChangeStatusForm(ActionForm):
         label="الحالة الجديدة"
     )
 
+
+
 class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     # form = BookingAdminForm
     action_form = ChangeStatusForm  
@@ -112,6 +114,22 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name']
     actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser or request.user.user_type == 'admin':
+            return queryset
+        elif request.user.user_type == 'hotel_manager':
+            return queryset.filter(user=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return queryset.filter(user=request.user.chield)
+        return queryset.none()
+    
 
     def set_checkout_today_toggle(self, obj):
         if obj.actual_check_out_date is not None:
@@ -657,11 +675,54 @@ class ExtensionMovementAdmin(admin.ModelAdmin):
     payment_button.allow_tags = True
 
 
+
+
+
+
+
+
+
+
+from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
+from .models import Booking, BookingHistory
+
+class BookingHistoryInline(admin.TabularInline):
+    model = BookingHistory
+    extra = 0
+    readonly_fields = ('history_date', 'hotel', 'user', 'room', 'check_in_date', 
+                      'check_out_date', 'actual_check_out_date', 'amount', 
+                      'status', 'account_status', 'rooms_booked', 'parent_booking')
+    can_delete = False
+    max_num = 10
+    ordering = ('-history_date',)
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+class BookingHistoryAdmin(admin.ModelAdmin):
+    list_display = (
+        'booking', 
+        'history_date', 
+        'changed_by', 
+        'previous_status', 
+        'new_status'
+    )
+    list_filter = ('new_status', 'history_date', 'hotel')
+    search_fields = (
+        'booking__id', 
+        'hotel__name', 
+        'changed_by__username'
+    )
+    ordering = ('-history_date',)
+
 from api.admin import admin_site
 
 
 # Booking------
 admin_site.register(Booking,BookingAdmin)
+admin_site.register(BookingHistory,BookingHistoryAdmin)
 admin_site.register(Guest,GuestAdmin)
 admin_site.register(BookingDetail,BookingDetailAdmin)
 admin_site.register(ExtensionMovement,ExtensionMovementAdmin)

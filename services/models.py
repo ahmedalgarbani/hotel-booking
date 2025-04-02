@@ -5,6 +5,8 @@ from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from HotelManagement.models import BaseModel,Hotel
 from rooms.models import RoomType
+from ckeditor.fields import RichTextField
+
 
 class HotelService(BaseModel):
     name = models.CharField(
@@ -157,6 +159,7 @@ class Coupon(BaseModel):
     )
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=255, unique=True)
+    description = RichTextField()
     quantity = models.IntegerField()
     min_purchase_amount = models.IntegerField(default=0)
     expired_date = models.DateField()

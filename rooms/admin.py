@@ -82,6 +82,11 @@ class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'hotel', 'description', 'get_room_types_count']
     search_fields = ['name', 'hotel__name']
     list_filter = ['hotel']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     
     def get_room_types_count(self, obj):
         return obj.room_types.count()
@@ -92,6 +97,11 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     search_fields = ['name', 'hotel__name']
     list_filter = ['hotel', 'category', 'is_active']
     list_editable = ['is_active', 'base_price']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     
     def get_available_rooms(self, obj):
         today = timezone.now().date()
@@ -148,6 +158,11 @@ class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'code', 'hotel', 'is_available', 'get_rooms_count']
     search_fields = ['name', 'code', 'hotel__name']
     list_filter = ['hotel', 'is_available']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
 
     def get_rooms_count(self, obj):
         today = timezone.now().date()
@@ -186,6 +201,11 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_filter = ['hotel', 'availability_date', 'room_type', 'room_status']
     list_editable = ['available_rooms']
     date_hierarchy = 'availability_date'
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     
     def bulk_create_button(self, obj):
         """عرض زر الإنشاء الجماعي"""
@@ -310,6 +330,11 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     search_fields = ['room_type__name', 'hotel__name']
     list_filter = ['hotel', 'room_type', 'is_special_offer']
     list_editable = ['price', 'is_special_offer']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     
     def get_days_remaining(self, obj):
         today = timezone.now().date()
@@ -324,6 +349,12 @@ class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     search_fields = ['room_type__name', 'hotel__name', 'caption']
     list_filter = ['hotel', 'room_type', 'is_main']
     list_editable = ['is_main', 'caption']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+
 
     def preview_image(self, obj):
         if obj.image:

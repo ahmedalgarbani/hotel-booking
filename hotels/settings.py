@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'notifications', 
     'customer',
     'django_celery_beat',
-    'accounts'
+    'accounts',
+    'ckeditor'
     
     
 ]
@@ -557,3 +558,4 @@ CELERY_TIMEZONE = 'Asia/Riyadh'
 
 
 
+CKEDITOR_UPLOAD_PATH = "uploads/"
