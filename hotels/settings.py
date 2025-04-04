@@ -566,4 +566,4 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 # --------------- Extirnal Api -----------
-GEMINI_API_KEY = "AIzaSyD79MidheeWkfY"
+GEMINI_API_KEY = "AIzaSyWNsgWkfY"
