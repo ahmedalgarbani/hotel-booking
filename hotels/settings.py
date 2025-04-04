@@ -563,3 +563,7 @@ CELERY_TIMEZONE = 'Asia/Riyadh'
 
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
+# --------------- Extirnal Api -----------
+GEMINI_API_KEY = "AIzaSyD79MidheeWkfY"

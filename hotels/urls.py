@@ -32,7 +32,7 @@ urlpatterns = [
     path('reviews/', include('reviews.urls')),
     path('services/', include('services.urls', namespace='services')),
     path('blog/', include('blog.urls')),
-    path('api/', include('api.urls')),
+    path('api/', include('api.urls', namespace='api')),
     path('customer/', include('customer.urls')),
 
     path('notifications/', include('notifications.urls',namespace='notifications')),

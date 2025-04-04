@@ -105,8 +105,6 @@
     padding: 4px 7px;
     display: none; 
 }
-
-    }
 </style>
 <header class="header-area">
   <div class="header-top-bar padding-right-100px padding-left-100px">
@@ -119,6 +117,7 @@
                 <li>
                   <a href="#"><i class="la la-phone me-1"></i>{{setting.phone_number}}</a>
                 </li>
+              
                 <li>
                   <a href="#"><i class="la la-envelope me-1"></i>{{setting.email}}</a>
                 </li>
@@ -188,6 +187,7 @@
                                                         </li>
                                                         {% endif %}
                                                     {% endfor %}
+                                                   
                                                 </ul>
                                             </div>
                                         </div>
@@ -211,6 +211,7 @@
                       {% endif %}
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}"><i class="la la-sign-out me-2"></i>تسجيل خروج</a></li>
+                   
                     </ul>
                   </div>
                 </div>

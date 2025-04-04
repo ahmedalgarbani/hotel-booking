@@ -223,6 +223,8 @@ import json
 
 
 def add_to_favorites(request):
+    if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'plz login first'})
     try:
         data = json.loads(request.body)  
         hotel_id = data.get('hotel_id')  

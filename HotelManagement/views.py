@@ -136,13 +136,18 @@ def notifications_context(request):
 from datetime import datetime
 from django.db.models import Case, When, BooleanField
 
+
 def hotel_search(request):
     hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
     today = datetime.now().date()
     hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number)
 
+    favorite_hotel_ids = []
+
     if request.user.is_authenticated:
-        favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
+        favorite_hotel_ids = list(
+            Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
+        )
         hotels_query = hotels_query.annotate(
             is_favorite=Case(
                 When(id__in=favorite_hotel_ids, then=True),
@@ -150,8 +155,8 @@ def hotel_search(request):
                 output_field=BooleanField()
             )
         )
-    else:
-        hotels_query = hotels_query.annotate(is_favorite=False)
+ 
+
     for hotel in hotels_query:
         hotel.is_favorite = hotel.id in favorite_hotel_ids
 

@@ -16,6 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
       rel="stylesheet"
     />
+    {% comment %} <script src="{% static 'assets/css/chat.css' %}"></script> {% endcomment %}
 
     <!-- Template CSS Files -->
     <link rel="stylesheet" href="{% static 'css/bootstrap-rtl.min.css' %}" />
@@ -116,21 +117,27 @@
       </div>
     </div>
     {% endcomment %}
+     {% include "frontend/helpers/chat_assiestant.html" %}
     <!-- end cssload-loader -->
 
     {% include "frontend/layout/menu.html" %}
-
+    
     <!-- Page Content -->
     {% block content %} {% endblock content %}
     <!-- /Page Content -->
 
     {% include "frontend/layout/footer.html" %}
 
+
+
+  
+
     <!-- start back-to-top -->
     <div id="back-to-top">
       <i class="la la-angle-up" title="Go top"></i>
     </div>
     <!-- end back-to-top -->
+
 
     <!-- end modal-shared -->
     <div class="modal-popup">
@@ -419,6 +426,7 @@
 
     <!-- Initialize Scripts -->
     <script src="{% static 'js/main-rtl.js' %}"></script>
+    {% comment %} <script src="{% static 'assets/js/chat.js' %}"></script> {% endcomment %}
 
     {% block extra_js %} {% endblock extra_js %}
     <script>

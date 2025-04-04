@@ -325,17 +325,28 @@ class BulkAvailabilityAdminForm(forms.Form):
             self.fields['room_status'].queryset = RoomStatus.objects.filter(hotel__manager=user)
             self.fields['room_type'].queryset = RoomType.objects.filter(hotel__manager=user)
 
+
+class RoomPriceAdminForm(forms.ModelForm):
+    class Meta:
+        model = RoomPrice
+        fields = '__all__'
+
+
+
+
 class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
+    form = RoomPriceAdminForm
     list_display = ['room_type', 'hotel', 'price', 'date_from', 'date_to', 'is_special_offer', 'get_days_remaining']
     search_fields = ['room_type__name', 'hotel__name']
     list_filter = ['hotel', 'room_type', 'is_special_offer']
     list_editable = ['price', 'is_special_offer']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def get_days_remaining(self, obj):
         today = timezone.now().date()
         if obj.date_to >= today:
@@ -343,6 +354,9 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             return _("متبقي {} يوم").format(days)
         return _("منتهي")
     get_days_remaining.short_description = _("المدة المتبقية")
+    
+    
+
 
 class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['room_type', 'hotel', 'preview_image', 'is_main', 'caption']

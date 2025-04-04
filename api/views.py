@@ -4,6 +4,7 @@ from httpx import request
 from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets
 from HotelManagement.services import get_hotels_query, get_query_params
+from api.api_services import call_gemini_api
 from bookings.models import Booking
 from customer.models import Favourites
 from notifications.models import Notifications
@@ -392,7 +393,14 @@ class HotelAvailabilityViewSet(APIView):
 
 
 
-
+@api_view(['POST'])
+def call_gemini_api_test(request):
+    prompt = request.data.get('prompt')
+    message = call_gemini_api(prompt=prompt)
+    if message:
+        return Response({"message": message}, status=200)
+    else:
+        return Response({"message": "Failed to get response from Gemini API."}, status=500)
 
 
 
