@@ -1,7 +1,52 @@
 {% extends "frontend/layout/master.html" %}
 
 {% block extra_css %}
-<Style>
+
+<style>
+
+  /* Default button styling */
+.add-to-wishlist {
+  color: #6c757d; /* grey by default */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.add-to-wishlist .la-heart-o {
+  color: #6c757d; /* grey heart */
+}
+
+.add-to-wishlist .la-heart {
+  color:red; /* white heart when selected */
+  
+}
+
+/* Blue button when added to wishlist */
+.btn-blue {
+  background-color: #007bff; /* blue background */
+  color: block; /* white text */
+}
+
+.btn-blue .la-heart {
+  color: red; /* white heart icon when selected */
+  
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.custom-checkbox input[type="checkbox"] {
+    margin-left: 8px;
+}
+.sidebar-review .ratings {
+    margin-right: 0;
+}
+.sidebar-category .custom-checkbox {
+    margin-bottom: 8px;
+}
 
   .custom-alert.warning {
     background: #fff3cd;
@@ -169,14 +214,20 @@ START CARD AREA
                   <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
                 </a>
                  {% endif %}
-                  <div
-                    class="add-to-wishlist icon-element"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    title="المرجعية"
-                  >
-                    <i class="la la-heart-o"></i>
-                  </div>
+                 <div
+                 class="add-to-wishlist icon-element {% if hotel.is_favorite %}btn-blue{% endif %}"
+                 data-bs-toggle="tooltip"
+                 data-placement="top"
+                 data-hotel-id="{{ hotel.id }}"
+                 title="المرجعية"
+               >
+                 {% if hotel.is_favorite %}
+                   <i class="la la-heart"></i>
+                 {% else %}
+                   <i class="la la-heart-o"></i>
+                 {% endif %}
+               </div>
+               
                 </div>
                 <div class="card-body">
                   <h3 class="card-title">
@@ -219,14 +270,13 @@ START CARD AREA
         </div>
         <!-- end row -->
       </div>
-      <!-- end col-lg-8 -->
       <div class="col-lg-4">
         <div class="sidebar mb-0">
           <div class="sidebar-widget">
             <h3 class="title stroke-shape">البحث عن الفنادق</h3>
             <div class="sidebar-widget-item">
               <div class="contact-form-action">
-                <form action="#">
+                <form action="{% url 'home:hotels' %}" method="get">
                   <div class="input-box">
                     <label class="label-text">الوجهة / اسم الفندق</label>
                     <div class="form-group">
@@ -234,290 +284,153 @@ START CARD AREA
                       <input
                         class="form-control"
                         type="text"
-                        name="text"
+                        name="search"
+                        value="{{ search_query }}"
                         placeholder="الوجهة ، اسم الفندق"
                       />
                     </div>
                   </div>
-                  <div class="input-box">
-                    <label class="label-text">تسجيل دخول تسجيل خروج</label>
-                    <div class="form-group">
-                      <span class="la la-calendar form-icon"></span>
-                      <input
-                        class="date-picker-multiple form-control"
-                        type="text"
-                        name="date"
-                        readonly
-                      />
+                  <div class="sidebar-widget-item">
+                    <div
+                      class="qty-box mb-2 d-flex align-items-center justify-content-between"
+                    >
+                      <label class="font-size-16">غرف</label>
+                      <div class="roomBtn d-flex align-items-center">
+                        <div class="qtyDec" data-input="rooms"><i class="la la-minus"></i></div>
+                        <input type="text" name="rooms" value="{{ rooms|default:'' }}" readonly />
+                        <div class="qtyInc" data-input="rooms"><i class="la la-plus"></i></div>
+                      </div>
                     </div>
+                    <!-- end qty-box -->
+                    <div
+                      class="qty-box mb-2 d-flex align-items-center justify-content-between"
+                    >
+                      <label class="font-size-16">الاشخاص</label>
+                      <div class="qtyBtn d-flex align-items-center">
+                        <div class="qtyDec" data-input="persons"><i class="la la-minus"></i></div>
+                        <input type="text" name="persons" value="{{ persons|default:'' }}" readonly />
+                        <div class="qtyInc" data-input="persons"><i class="la la-plus"></i></div>
+                      </div>
+                    </div>
+                    <!-- end qty-box -->
+                    <div
+                      class="qty-box mb-2 d-flex align-items-center justify-content-between"
+                    >
+                      <label class="font-size-16"
+                        >الحد الافصى للاشخاص</label
+                      >
+                      <div class="qtyBtn d-flex align-items-center">
+                        <div class="qtyDec" data-input="max_persons"><i class="la la-minus"></i></div>
+                        <input type="text" name="max_persons" value="{{ max_persons|default:'' }}" readonly />
+                        <div class="qtyInc" data-input="max_persons"><i class="la la-plus"></i></div>
+                      </div>
+                    </div>
+                    <!-- end qty-box -->
+                  </div>
+                  <!-- Price Range Section -->
+                  <div class="sidebar-widget">
+                    <h3 class="title stroke-shape">تصفية حسب السعر</h3>
+                    <div class="sidebar-price-range">
+                      <div class="main-search-input-item">
+                        <div class="price-slider-amount padding-bottom-20px">
+                          <label for="amount2" class="filter__label">السعر:</label>
+                          <input type="text" id="amount2" class="amounts" readonly />
+                          <input type="hidden" name="min_price" id="min_price" value="{{ min_price|default:0 }}" />
+                          <input type="hidden" name="max_price" id="max_price" value="{{ max_price|default:1000 }}" />
+                        </div>
+                        <div id="slider-range2"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Price Range Section -->
+                  <!-- Rating Filter Section -->
+                    <div class="sidebar-widget">
+                      <h3 class="title stroke-shape">تصفية حسب التصنيف</h3>
+                      <div class="sidebar-review">
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating5" name="rating" value="5" {% if '5' in ratings %}checked{% endif %} />
+                          <label for="rating5" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating4" name="rating" value="4" {% if '4' in ratings %}checked{% endif %} />
+                          <label for="rating4" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating3" name="rating" value="3" {% if '3' in ratings %}checked{% endif %} />
+                          <label for="rating3" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating2" name="rating" value="2" {% if '2' in ratings %}checked{% endif %} />
+                          <label for="rating2" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating1" name="rating" value="1" {% if '1' in ratings %}checked{% endif %} />
+                          <label for="rating1" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Rating Filter Section -->
+                    <!-- Hotel Services Filter Section -->
+                    <div class="sidebar-widget">
+                      <h3 class="title stroke-shape">مرافق</h3>
+                      <div class="sidebar-category">
+                        <input type="hidden" name="hotels" value="_" readonly />
+
+                        {% for service in all_services %}
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="service_{{ service.id }}" name="services" value="{{ service.id }}" 
+                            {% if service.id|stringformat:"i" in selected_services %}checked{% endif %} />
+                          <label for="service_{{ service.id }}">
+                            {{ service.name }}
+                          </label>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <!-- End Hotel Services Filter Section -->
+                  <div class="btn-box pt-2">
+                    <button type="submit" class="theme-btn">
+                      <i class="la la-refresh me-1"></i>ابحث الآن
+                    </button>
                   </div>
                 </form>
               </div>
             </div>
-            <!-- end sidebar-widget-item -->
-            <div class="sidebar-widget-item">
-              <div
-                class="qty-box mb-2 d-flex align-items-center justify-content-between"
-              >
-                <label class="font-size-16">غرف</label>
-                <div class="roomBtn d-flex align-items-center">
-                  <div class="qtyDec"><i class="la la-minus"></i></div>
-                  <input type="text" name="qtyInput" value="0" />
-                  <div class="qtyInc"><i class="la la-plus"></i></div>
-                </div>
-              </div>
-              <!-- end qty-box -->
-              <div
-                class="qty-box mb-2 d-flex align-items-center justify-content-between"
-              >
-                <label class="font-size-16">الكبار <span>18+</span></label>
-                <div class="qtyBtn d-flex align-items-center">
-                  <div class="qtyDec"><i class="la la-minus"></i></div>
-                  <input type="text" name="qtyInput" value="0" />
-                  <div class="qtyInc"><i class="la la-plus"></i></div>
-                </div>
-              </div>
-              <!-- end qty-box -->
-              <div
-                class="qty-box mb-2 d-flex align-items-center justify-content-between"
-              >
-                <label class="font-size-16"
-                  >الأطفال <span>2-12 سنة</span></label
-                >
-                <div class="qtyBtn d-flex align-items-center">
-                  <div class="qtyDec"><i class="la la-minus"></i></div>
-                  <input type="text" name="qtyInput" value="0" />
-                  <div class="qtyInc"><i class="la la-plus"></i></div>
-                </div>
-              </div>
-              <!-- end qty-box -->
-            </div>
-            <!-- end sidebar-widget-item -->
-            <div class="btn-box pt-2">
-              <a href="hotel-search-result.html" class="theme-btn"
-                >ابحث الآن</a
-              >
-            </div>
           </div>
           <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">تصفية حسب السعر</h3>
-            <div class="sidebar-price-range">
-              <div class="main-search-input-item">
-                <div class="price-slider-amount padding-bottom-20px">
-                  <label for="amount2" class="filter__label">السعر:</label>
-                  <input type="text" id="amount2" class="amounts" />
-                </div>
-                <!-- end price-slider-amount -->
-                <div id="slider-range2"></div>
-                <!-- end slider-range -->
-              </div>
-              <!-- end main-search-input-item -->
-              <div class="btn-box pt-4">
-                <button
-                  class="theme-btn theme-btn-small theme-btn-transparent"
-                  type="button"
-                >
-                  تطبيق
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">مراجعة النتيجة</h3>
-            <div class="sidebar-category">
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="r6" />
-                <label for="r6">ممتاز</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="r7" />
-                <label for="r7">جيد جدا</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="r8" />
-                <label for="r8">معدل</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="r9" />
-                <label for="r9">فقير</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="r10" />
-                <label for="r10">رهيب</label>
-              </div>
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">تصفية حسب التصنيف</h3>
-            <div class="sidebar-review">
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="s1" />
-                <label for="s1">
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <span class="color-text-3 font-size-13 ms-1"
-                      >(55.590)</span
-                    >
-                  </span>
-                </label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="s2" />
-                <label for="s2">
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star-o"></i>
-                    <span class="color-text-3 font-size-13 ms-1"
-                      >(40.590)</span
-                    >
-                  </span>
-                </label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="s3" />
-                <label for="s3">
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star-o"></i>
-                    <i class="la la-star-o"></i>
-                    <span class="color-text-3 font-size-13 ms-1"
-                      >(23.590)</span
-                    >
-                  </span>
-                </label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="s4" />
-                <label for="s4">
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star-o"></i>
-                    <i class="la la-star-o"></i>
-                    <i class="la la-star-o"></i>
-                    <span class="color-text-3 font-size-13 ms-1"
-                      >(12.590)</span
-                    >
-                  </span>
-                </label>
-              </div>
-              <div class="custom-checkbox mb-0">
-                <input type="checkbox" class="form-check-input" id="s5" />
-                <label for="s5">
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star-o"></i>
-                    <i class="la la-star-o"></i>
-                    <i class="la la-star-o"></i>
-                    <i class="la la-star-o"></i>
-                    <span class="color-text-3 font-size-13 ms-1"
-                      >(590)</span
-                    >
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-          <!-- end sidebar-widget -->
-          <div class="sidebar-widget">
-            <h3 class="title stroke-shape">مرافق</h3>
-            <div class="sidebar-category">
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="f1" />
-                <label for="f1">تكييف</label>
-              </div>
-              <div class="custom-checkbox">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="chb12"
-                />
-                <label for="chb12">نقل المطار</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="f2" />
-                <label for="f2">مركز اللياقة البدنية</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="f3" />
-                <label for="f3">تلفزيون مسطح</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="f4" />
-                <label for="f4">سخان</label>
-              </div>
-              <div class="custom-checkbox">
-                <input type="checkbox" class="form-check-input" id="f5" />
-                <label for="f5">إنترنت WIFI</label>
-              </div>
-              <div class="collapse" id="facilitiesMenu">
-                <div class="custom-checkbox">
-                  <input type="checkbox" class="form-check-input" id="f6" />
-                  <label for="f6">موقف سيارات</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input type="checkbox" class="form-check-input" id="f7" />
-                  <label for="f7">حوض السباحة</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input type="checkbox" class="form-check-input" id="f8" />
-                  <label for="f8">مطعم</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input type="checkbox" class="form-check-input" id="f9" />
-                  <label for="f9">غرفة التدخين</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="f10"
-                  />
-                  <label for="f10">سبا و ساونا</label>
-                </div>
-                <div class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="f11"
-                  />
-                  <label for="f11">غسالة & أمبير ؛ مجفف</label>
-                </div>
-              </div>
-              <a
-                class="btn-text"
-                data-bs-toggle="collapse"
-                href="#facilitiesMenu"
-                role="button"
-                aria-expanded="false"
-                aria-controls="facilitiesMenu"
-              >
-                <span class="show-more"
-                  >أظهر المزيد <i class="la la-angle-down"></i
-                ></span>
-                <span class="show-less"
-                  >عرض أقل <i class="la la-angle-up"></i
-                ></span>
-              </a>
-            </div>
-          </div>
-         
         </div>
         <!-- end sidebar -->
       </div>
-      <!-- end col-lg-4 -->
     </div>
     <!-- end row -->
     <div class="row">
@@ -543,66 +456,91 @@ END CARD AREA
 
 <div class="section-block"></div>
 
-<!-- ================================
-START INFO AREA
-================================= -->
-<section class="info-area info-bg padding-top-90px padding-bottom-70px">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-4 responsive-column">
-        <a href="#" class="icon-box icon-layout-2 d-flex">
-          <div class="info-icon flex-shrink-0 bg-rgb text-color-2">
-            <i class="la la-phone"></i>
-          </div>
-          <!-- end info-icon-->
-          <div class="info-content">
-            <h4 class="info__title">تحتاج مساعدة؟ اتصل بنا</h4>
-            <p class="info__desc">جزر لوريم إيبسوم ، حسومات معززة</p>
-          </div>
-          <!-- end info-content -->
-        </a>
-        <!-- end icon-box -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <a href="#" class="icon-box icon-layout-2 d-flex">
-          <div class="info-icon flex-shrink-0 bg-rgb-2 text-color-3">
-            <i class="la la-money"></i>
-          </div>
-          <!-- end info-icon-->
-          <div class="info-content">
-            <h4 class="info__title">المدفوعات</h4>
-            <p class="info__desc">جزر لوريم إيبسوم ، حسومات معززة</p>
-          </div>
-          <!-- end info-content -->
-        </a>
-        <!-- end icon-box -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 responsive-column">
-        <a href="#" class="icon-box icon-layout-2 d-flex">
-          <div class="info-icon flex-shrink-0 bg-rgb-3 text-color-4">
-            <i class="la la-times"></i>
-          </div>
-          <!-- end info-icon-->
-          <div class="info-content">
-            <h4 class="info__title">سياسة الإلغاء</h4>
-            <p class="info__desc">جزر لوريم إيبسوم ، حسومات معززة</p>
-          </div>
-          <!-- end info-content -->
-        </a>
-        <!-- end icon-box -->
-      </div>
-      <!-- end col-lg-4 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
-<!-- end info-area -->
-<!-- ================================
-END INFO AREA
-================================= -->
 
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const handleQuantityChange = (input, isIncrement) => {
+          const currentValue = parseInt(input.value) || 0;
+          const newValue = isIncrement ? currentValue + 1 : Math.max(0, currentValue - 1);
+          input.value = newValue;
+      };
+  
+      document.querySelectorAll('.qtyInc, .qtyDec').forEach(button => {
+          button.addEventListener('click', function() {
+              const inputName = this.getAttribute('data-input');
+              const input = document.querySelector(`input[name="${inputName}"]`);
+              if (input) {
+                  handleQuantityChange(input, this.classList.contains('qtyInc'));
+              }
+          });
+      });
+  
+      if ($.fn.slider) {
+          $("#slider-range2").slider({
+              range: true,
+              min: 0,
+              max: 1000,
+              values: [
+                  parseInt($("#min_price").val()) || 0,
+                  parseInt($("#max_price").val()) || 1000
+              ],
+              slide: function(event, ui) {
+                  $("#amount2").val(ui.values[0] + " - " + ui.values[1] + " ريال");
+                  $("#min_price").val(ui.values[0]);
+                  $("#max_price").val(ui.values[1]);
+              }
+          });
+          
+          $("#amount2").val(
+              $("#slider-range2").slider("values", 0) +
+              " - " +
+              $("#slider-range2").slider("values", 1) +
+              " ريال"
+          );
+      }
+  });
+  </script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
+          button.addEventListener('click', function() {
+            var hotelId = this.getAttribute('data-hotel-id');
+            var icon = this.querySelector('i');
+            
+            fetch("{% url 'customer:add_to_favorites' %}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+              },
+              body: JSON.stringify({
+                'hotel_id': hotelId,
+              }),
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                // Toggle icon & class
+                if (this.classList.contains('btn-blue')) {
+                  this.classList.remove('btn-blue');
+                  icon.classList.remove('la-heart');
+                  icon.classList.add('la-heart-o');
+                } else {
+                  this.classList.add('btn-blue');
+                  icon.classList.remove('la-heart-o');
+                  icon.classList.add('la-heart');
+                }
+              } else {
+                alert(data.message || 'Something went wrong');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+          });
+        });
+      });
+    
+          </script>
 {% endblock content %}

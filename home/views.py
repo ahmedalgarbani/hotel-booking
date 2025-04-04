@@ -2,6 +2,7 @@ from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
 from blog.models import Post
+from customer.models import Favourites
 from home.forms import ContactForm
 from home.models import *
 from payments.models import HotelPaymentMethod
@@ -136,32 +137,31 @@ def pricing(request):
 
 
 
+from django.db.models import Count, Q, Case, When, BooleanField
+
 def hotels(request):
     # Get search parameters
     search_query = request.GET.get('search', '')
+    isHotelsPage = request.GET.get('hotels', 'False')
     rooms = request.GET.get('rooms', '')
     persons = request.GET.get('persons', '')
     max_persons = request.GET.get('max_persons', '')
     min_price = request.GET.get('min_price', '')
     max_price = request.GET.get('max_price', '')
-    ratings = request.GET.getlist('rating')  # Get all selected ratings
-    services = request.GET.getlist('services')  # Get all selected services
+    ratings = request.GET.getlist('rating')  
+    services = request.GET.getlist('services')  
     
-    # Get all active services for the template
     all_services = HotelService.objects.filter(is_active=True).values('id', 'name').distinct().order_by('name')
-    # Convert QuerySet to list to remove any potential duplicates based on name
     all_services = list({service['name']: service for service in all_services}.values())
-    
-    # Start with all verified hotels
+
     hotels = Hotel.objects.filter(is_verified=True)
-    
-    # Filter by room availability and capacity only if values are provided
+
+    # Filter hotels based on rooms and capacity
     if rooms and persons and max_persons:
         try:
             rooms = int(rooms)
             persons = int(persons)
             max_persons = int(max_persons)
-            
             hotels = hotels.filter(
                 room_types__is_active=True,
                 room_types__rooms_count__gte=rooms,
@@ -169,9 +169,9 @@ def hotels(request):
                 room_types__max_capacity__gte=max_persons
             ).distinct()
         except ValueError:
-            pass  # If conversion fails, ignore the filter
-    
-    # Apply price filter if values are provided
+            pass  
+
+    # Filter by price range
     if min_price or max_price:  
         try:
             if min_price:
@@ -182,38 +182,46 @@ def hotels(request):
                 hotels = hotels.filter(room_types__base_price__lte=max_price)
             hotels = hotels.distinct()
         except ValueError:
-            pass  # If conversion fails, ignore the filter
-    
-    # Apply rating filter if any ratings are selected
+            pass  
+
+    # Filter by ratings
     if ratings:
         try:
             ratings = [int(r) for r in ratings]
-            # Filter hotels by service rating only
             hotels = hotels.filter(hotel_reviews__rating_service__in=ratings).distinct()
         except ValueError:
-            pass  # If conversion fails, ignore the filter
+            pass
             
-    # Apply services filter if any services are selected
+    # Filter by services
     if services:
         try:
             services = [int(s) for s in services]
-            # Filter hotels that have the selected service
             hotels = hotels.filter(hotel_services__id__in=services).distinct()
-            # Annotate hotels with their services for display
             hotels = hotels.annotate(
                 matched_services=Count('hotel_services', filter=Q(hotel_services__id__in=services))
             )
         except ValueError:
-            pass  # If conversion fails, ignore the filter
-    
-    # Apply search filters if search query exists
+            pass 
+
     if search_query:
         hotels = hotels.filter(
             Q(name__icontains=search_query) |
             Q(location__address__icontains=search_query) |
             Q(location__city__state__icontains=search_query)
         )
-    
+
+    if request.user.is_authenticated:
+        favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
+        hotels = hotels.annotate(
+            is_favorite=Case(
+                When(id__in=favorite_hotel_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+    else:
+        hotels = hotels.annotate(is_favorite=False)
+  
     ctx = {
         'hotels': hotels,
         'search_query': search_query,
@@ -222,13 +230,18 @@ def hotels(request):
         'max_persons': max_persons,
         'min_price': min_price,
         'max_price': max_price,
-        'ratings': ratings or [],  # Pass selected ratings back to template
-        'all_services': all_services,  # All available services
-        'selected_services': services or [],  # Currently selected services
+        'ratings': ratings or [],  
+        'all_services': all_services,  
+        'selected_services': services or [],  
     }
-    return render(request,'frontend/home/pages/hotel-sidebar.html',ctx)
+
+    if isHotelsPage == '_':
+        return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
+    return render(request, 'frontend/home/pages/hotel-sidebar.html', ctx)
 
 
+
+from django.db.models import Count, Avg, Q, F, Subquery, OuterRef
 
 def hotel_detail(request, slug):
     hotel = get_object_or_404(
@@ -244,7 +257,7 @@ def hotel_detail(request, slug):
     coupon = Coupon.objects.filter(hotel=hotel).order_by('-created_at').first()
 
     external_hotels = Hotel.objects.exclude(id=hotel.id)[:6]
-    reviews = HotelReview.objects.filter(status = True)
+    reviews = HotelReview.objects.filter(status=True)
 
     today = datetime.now().date()
 
@@ -277,21 +290,35 @@ def hotel_detail(request, slug):
         available_room.services = available_room.room_type.room_services.filter(is_active=True).order_by('id')[:4]
 
         if room_price:
-            available_room.price = room_price.price 
+            available_room.price = room_price.price
         else:
             available_room.price = available_room.room_type.base_price  
 
     hotel_services = HotelService.objects.filter(hotel=hotel, is_active=True)
+
+    if request.user.is_authenticated:
+        favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
+        external_hotels = external_hotels.annotate(
+            is_favorite=Case(
+                When(id__in=favorite_hotel_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+    else:
+        external_hotels = external_hotels.annotate(is_favorite=False)
+
     ctx = {
         'hotel': hotel,
-        'coupon':coupon,
+        'coupon': coupon,
         'available_room_types': available_room_types,
-        'hotel_services': hotel_services, 
-        'reviews':reviews ,
-        'external_hotels':external_hotels
+        'hotel_services': hotel_services,
+        'reviews': reviews,
+        'external_hotels': external_hotels,  
     }
 
     return render(request, 'frontend/home/pages/hotel-single.html', ctx)
+
 
 
 
@@ -363,3 +390,30 @@ def contact(request):
 
 def thank_you(request):
     return render(request, 'frontend/home/pages/thank_you.html')
+
+
+
+def privacy_policy(request):
+    privacyPolicy = PrivacyPolicy.objects.first()
+
+    ctx = {
+        'privacyPolicy': privacyPolicy
+    }
+    return render(request, 'frontend/home/pages/privacy-policy.html', ctx)
+
+
+def payment_policy(request):
+    paymentPolicy = PaymenPolicy.objects.first()
+
+    ctx = {
+        'paymentPolicy': paymentPolicy
+    }
+    return render(request, 'frontend/home/pages/payment-policy.html', ctx)
+
+def terms_condition(request):
+    termsCondition = TermsConditions.objects.first()
+
+    ctx = {
+        'termsCondition': termsCondition
+    }
+    return render(request, 'frontend/home/pages/term-condition.html', ctx)

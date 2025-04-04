@@ -11,6 +11,9 @@ urlpatterns = [
     path('contact/',views.contact,name='contact'),
     path('service/',views.service,name='service'),
     path('hotels',views.hotels,name='hotels'),
+    path('privacy-policy',views.privacy_policy,name='privacy_policy'),
+    path('payment-policy',views.payment_policy,name='payment_policy'),
+    path('terms-condition',views.terms_condition,name='terms_condition'),
     path('hotel/<slug:slug>/', views.hotel_detail, name='hotel_detail'),
     # Rooms
     path('contact/thank-you/', views.thank_you, name='thank_you'),

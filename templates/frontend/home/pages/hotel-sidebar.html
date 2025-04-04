@@ -232,7 +232,7 @@ START CARD AREA
                       <label class="font-size-16">غرف</label>
                       <div class="roomBtn d-flex align-items-center">
                         <div class="qtyDec" data-input="rooms"><i class="la la-minus"></i></div>
-                        <input type="text" name="rooms" value="{{ rooms|default:'' }}" readonly />
+                        <input type="text" name="rooms" value="{{ rooms|default:'' }}" readonly />                       
                         <div class="qtyInc" data-input="rooms"><i class="la la-plus"></i></div>
                       </div>
                     </div>
@@ -440,18 +440,16 @@ document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
                 var icon = button.querySelector('i');
                 
                 if (!button.classList.contains('btn-blue')) {
-                    // Add blue color and change icon to filled heart
                     button.classList.add('btn-blue');
                     icon.classList.remove('la-heart-o');
                     icon.classList.add('la-heart');
                 } else {
-                    // Remove blue color and revert icon to outline heart
                     button.classList.remove('btn-blue');
                     icon.classList.remove('la-heart');
                     icon.classList.add('la-heart-o');
                 }
             } else {
-                // Handle failure case (you can add a message or revert changes if needed)
+
             }
 						})
 						.catch(error => {

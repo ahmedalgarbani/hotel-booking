@@ -489,48 +489,52 @@ NAV_MENU_TOP = [
         "name": "الرئيسي",
         "url": "/",  
     },
-    {
-        "name": "عنا",
-        "url": "about/",  
-    },
+    
     {
         "name": "الفنادق",
         "url": "/hotels",
-        # "submenu": [
-        #     {
-        #         "name": "Profile",
-        #         "url": "/account/profile",
-        #     },
-        #     {
-        #         "name": "Account Balance",
-        #         "url": "/account/balance",
-        #     },
-        #     {
-        #         "name": "Account Secrets",
-        #         "url": "/account/secrets",
-        #     }
-        # ],
+      
     },
     {
         "name": "الغرف",
         "url": "/rooms",  
     },
-    {
-        "name": "الاسعار",
-        "url": "/price",  
+    
+     {
+        "name": "المزيد",
+        "url": "/",
+        
+        "submenu": [
+           {
+        "name": "عنا",
+        "url": "about/",  
     },
-    {
+            {
         "name": "تواصل معنا",
         "url": "/contact",  
+    },
+            {
+                "name": "الشروط والاحكام",
+                "url": "/terms-condition",
+
+            },
+            {
+                "name": "سياسات الخصوصيه",
+                "url": "/privacy-policy",
+
+            },
+             {
+        "name": "الاسعار",
+        "url": "/price",  
     },
     {
         "name": "خدماتنا",
         "url": "/service",  
     },
-    {
-        "name": "اشترك معنا",
-        "url": "/users/register/",  
+        ],
     },
+   
+    
     {
         "name": "المقالات",
         "url": "/blog/",  

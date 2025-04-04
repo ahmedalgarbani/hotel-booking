@@ -14,7 +14,20 @@ class Notifications(BaseModel):
         CustomUser,
         on_delete=models.CASCADE,
         related_name='received_notifications',
-        verbose_name=_("المستلم")
+        verbose_name=_("المستلم"),
+        null=True,
+        blank=True
+    )
+    recipient_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('all_customers', _("كل العملاء")),
+            ('all_hotel_managers', _("كل مديري الفنادق")),
+            ('booked_customers', _("العملاء الحاليين")),
+            ('single_user', _("مستخدم واحد")),
+        ],
+        default='single_user',
+        verbose_name=_("نوع المستلم")
     )
     message = models.TextField(verbose_name=_("الرسالة"))
     send_time = models.DateTimeField(
@@ -57,7 +70,9 @@ class Notifications(BaseModel):
         ordering = ['-send_time']
 
     def __str__(self):
-        return f"إشعار من {self.sender} إلى {self.user} - {self.notification_type}"
+        if self.user:
+            return f"إشعار من {self.sender} إلى {self.user} - {self.notification_type}"
+        return f"إشعار من {self.sender} إلى {self.get_recipient_type_display()} - {self.notification_type}"
 
     def mark_as_read(self):
         """تحديث الإشعار إلى مقروء"""

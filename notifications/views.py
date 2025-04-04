@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 
+from notifications.forms import AdminNotificationForm
 from users.models import CustomUser
 from .models import Notifications
 from django.views.decorators.csrf import csrf_exempt
@@ -38,3 +39,5 @@ def handle_notification(request, notification_id):
         return redirect('customer:user_dashboard_index')
     else:
         return redirect(notification.action_url)
+
+

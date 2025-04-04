@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
 
 from HotelManagement.services import get_hotels_query, get_query_params
+from customer.models import Favourites
 from .models import HotelRequest, Hotel, City, Image
 from .forms import HotelRequestForm
 import json
@@ -132,11 +133,28 @@ def notifications_context(request):
 
 
  
+from datetime import datetime
+from django.db.models import Case, When, BooleanField
+
 def hotel_search(request):
     hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
     today = datetime.now().date()
     hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number)
-    
+
+    if request.user.is_authenticated:
+        favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
+        hotels_query = hotels_query.annotate(
+            is_favorite=Case(
+                When(id__in=favorite_hotel_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+    else:
+        hotels_query = hotels_query.annotate(is_favorite=False)
+    for hotel in hotels_query:
+        hotel.is_favorite = hotel.id in favorite_hotel_ids
+
     ctx = {
         'adult_number': adult_number,
         'check_in_start': check_in.strftime('%m/%d/%Y') if check_in else '',
@@ -146,3 +164,4 @@ def hotel_search(request):
     }
 
     return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
+

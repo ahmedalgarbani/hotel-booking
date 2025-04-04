@@ -4,6 +4,7 @@ from django.db.models import Sum,Count
 from django.db.models.functions import TruncMonth
 from HotelManagement.models import *
 from bookings.models import *
+from payments.models import Payment
 from rooms.models import RoomImage, RoomPrice, RoomStatus, RoomType, Availability
 from users.models import *
 from services.models import *

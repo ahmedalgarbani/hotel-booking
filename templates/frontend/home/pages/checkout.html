@@ -164,7 +164,8 @@
                         <div class="checkbox-wrapper">
                           <label for="agreechb-{{ method.id }}" class="checkbox-label">
                             بالموافقة، فإنك توافق على
-                            <a href="#" class="terms-link">البنود والشروط</a>.
+                            <a href="{% url 'home:terms_condition' %}" class="terms-link">البنود والشروط</a>.
+                            <a href="{% url 'home:payment_policy' %}" class="terms-link">سياسه الدفع</a>.
                           </label>
                           <input
                             type="checkbox"

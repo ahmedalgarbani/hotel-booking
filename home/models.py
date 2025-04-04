@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from HotelManagement.models import BaseModel
+
 # Create your models here.
 
 
@@ -184,3 +186,33 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+
+
+
+
+from ckeditor.fields import RichTextField
+
+
+
+class PrivacyPolicy(BaseModel):
+    name = models.CharField(default='privacypolicy', max_length=150)
+    content = RichTextField()
+    def __str__(self):
+        return f"privacy_policy {self.name}" 
+    
+
+
+class PaymenPolicy(BaseModel):
+    name = models.CharField(default='paymentpolicy', max_length=150)
+    content = RichTextField()
+    def __str__(self):
+        return f"Paymen_policy {self.name}" 
+    
+           
+class TermsConditions(BaseModel):
+    name = models.CharField(default='terms and conditions', max_length=150)
+    content = RichTextField()
+    def __str__(self):
+        return f"terms_conditions {self.name}"         

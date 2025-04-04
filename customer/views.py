@@ -228,7 +228,7 @@ def add_to_favorites(request):
         hotel_id = data.get('hotel_id')  
 
         if not hotel_id:
-            return JsonResponse({'status': 'error', 'message': 'No doctor ID provided'})
+            return JsonResponse({'status': 'error', 'message': 'No hotel ID provided'})
 
         hotel = get_object_or_404(Hotel, id=hotel_id)
 
@@ -236,10 +236,10 @@ def add_to_favorites(request):
 
         if favorite_entry:
             favorite_entry.delete()
-            return JsonResponse({'status': 'success', 'message': 'Doctor removed from favorites'})
+            return JsonResponse({'status': 'success', 'message': 'hotel removed from favorites'})
         else:
             Favourites.objects.create(user=request.user, hotel=hotel)
-            return JsonResponse({'status': 'success', 'message': 'Doctor added to favorites'})
+            return JsonResponse({'status': 'success', 'message': 'hotel added to favorites'})
 
     except json.JSONDecodeError:
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
