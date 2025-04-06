@@ -46,7 +46,7 @@
   <div class="full-width-slider carousel-action">
     {% for image in image %}
     <div class="full-width-slide-item">
-      <img src="{{ image.image.url }}" alt="{{ room.name }}" />
+      <img src="{{ image.image.url }}" height=210 alt="{{ room.name }}" />
     </div>
     {% endfor %}
   </div>
@@ -262,13 +262,15 @@ START TOUR DETAIL AREA
                   <ul class="list-items">
                     {% for review in reviews %}
                     <li class="comment">
+                      {% if review.user.image %}
                       <div class="comment-avatar">
                         <img
-                          class="avatar__img"
-                          alt="صورة المستخدم"
-                          src="{{review.user.image.url}}" 
+                        class="avatar__img"
+                        alt="صورة المستخدم"
+                        src="{{review.user.image.url}}" 
                         />
                       </div>
+                      {% endif %}
                       <div class="comment-body">
                         <div class="meta-data">
                           <h3 class="comment__author">{{ review.user.get_full_name }}</h3>

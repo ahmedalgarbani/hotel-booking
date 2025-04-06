@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
+from api.views import get_best_hotels_by_gemini
 from blog.models import Post
 from customer.models import Favourites
 from home.forms import ContactForm
@@ -216,8 +217,7 @@ def hotels(request):
                 output_field=BooleanField()
             )
         )
-    else:
-        hotels = hotels.annotate(is_favorite=False)
+
   
     ctx = {
         'hotels': hotels,

@@ -87,7 +87,10 @@ def process_booking(request, room_id):
                     "name": service.name,
                     "price": service_price
                 })
-
+        print(extra_services_total)
+        print(extra_services_total)
+        print(extra_services_total)
+        print(extra_services_total)
         # Calculate grand total
         grand_total = total_price + extra_services_total
 
@@ -99,7 +102,7 @@ def process_booking(request, room_id):
             "check_out": check_out,
             "room_number": room_number,
             "adult_number": adult_number,
-            "total_price": total_price,
+            "total_price": grand_total,
             "extra_services": extra_services_details,
             "extra_services_total": extra_services_total,
             "grand_total": grand_total,
@@ -176,7 +179,6 @@ def checkout(request, room_id):
         check_in_date = timezone.now()
         check_out_date = timezone.now() + timedelta(days=1)
 
-    
 
     booking_data = request.session.get("booking_data", {})    
     context = {

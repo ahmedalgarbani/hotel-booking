@@ -3,7 +3,7 @@ from django.views import View
 from rest_framework.routers import DefaultRouter
 
 from customer.models import Favourites
-from .views import HotelAvailabilityViewSet, NotificationsViewSet,BookingViewSet, PaymentViewSet, HotelPaymentMethodViewSet, HotelsViewSet, RoomsViewSet, LoginView, RegisterView,LogoutView,FavouritesViewSet, call_gemini_api_test, usage
+from .views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -35,6 +35,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),  
     path('logout/', LogoutView.as_view(), name='logout'),  
     path('usage/', usage, name='usage'),  
-    path('chat_assestant/', call_gemini_api_test, name='chat_assestant'),  
+    path('chat_assestant/', call_gemini_chat_bot, name='chat_assestant'),  
+    path('get_best_hotels_by_gemini/', get_best_hotels_by_gemini, name='get_best_hotels_by_gemini'),  
 ]
 

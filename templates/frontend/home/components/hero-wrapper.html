@@ -5,102 +5,131 @@
   <div class="hero-box pb-0">
     <div id="fullscreen-slide-contain">
       <ul class="slides-container">
-        <li><img src="{{heroSlider.image1.url}}" alt="" /></li>
-        <li><img src="{{heroSlider.image2.url}}" alt="" /></li>
-        <li><img src="{{heroSlider.image3.url}}" alt="" /></li>
+        <li><img src="{{ heroSlider.image1.url }}" alt="" /></li>
+        <li><img src="{{ heroSlider.image2.url }}" alt="" /></li>
+        <li><img src="{{ heroSlider.image3.url }}" alt="" /></li>
       </ul>
     </div>
-    <!-- End background slider -->
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
+    <div class="col-lg-10 mx-auto responsive--column-l">
+      <div class="hero-content pb-5">
+        <div class="section-heading">
           <div class="hero-content pb-5">
             <div class="section-heading">
-              <p class="sec__desc pb-2">{{heroSlider.title}}</p>
+              <p class="sec__desc pb-2">{{ heroSlider.title }}</p>
               <h2 class="sec__title">
-                {{heroSlider.description}}
+                {{ heroSlider.description }}
               </h2>
             </div>
           </div>
-          <!-- end hero-co ntent -->
-          <div class="search-fields-container">
-            <div class="contact-form-action">
-              <form action="{% url 'HotelManagement:hotel_search' %}" method="get" class="row">
-                <div class="col-lg-3 pe-0">
-                  <div class="input-box">
-                    <label class="label-text">الوجهة / اسم الفندق</label>
-                    <div class="form-group">
-                      <span class="la la-map-marker form-icon"></span>
-                      <input class="form-control" type="text" name="hotel_name" placeholder="Enter City or property" />
-                    </div>
+        </div>
+      </div>
+      <!-- end hero-content -->
+      <div class="section-tab text-center ps-4">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link d-flex align-items-center" id="flight-tab" data-bs-toggle="tab" href="#flight" role="tab" aria-controls="flight" aria-selected="false" tabindex="-1">
+              <i class="la la-laptop me-1"></i>search with Ai 
+            </a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link d-flex align-items-center active" id="hotel-tab" data-bs-toggle="tab" href="#hotel" role="tab" aria-controls="hotel" aria-selected="true">
+              <i class="la la-hotel me-1"></i>الفنادق
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- Ai search tab -->
+      <div class="tab-content search-fields-container" id="myTabContent">
+        <div class="tab-pane fade" id="flight" role="tabpanel" aria-labelledby="flight-tab">
+          <div class="contact-form-action">
+            <!-- AI Search Input -->
+            <div class="form-group">
+              <input type="text" id="aiPrompt" class="form-control" placeholder="Enter your prompt for AI search" />
+            </div>
+            <div class="row align-items-center mt-3">
+              <div class="col-lg-3">
+                <a href="javascript:void(0);" class="theme-btn" id="getHotelsBtn">ابحث الآن</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Hotel search tab -->
+        <div class="tab-pane fade active show" id="hotel" role="tabpanel" aria-labelledby="hotel-tab">
+          <div class="contact-form-action">
+            <form action="{% url 'HotelManagement:hotel_search' %}" method="get" class="row">
+              <div class="col-lg-3 pe-0">
+                <div class="input-box">
+                  <label class="label-text">الوجهة / اسم الفندق</label>
+                  <div class="form-group">
+                    <span class="la la-map-marker form-icon"></span>
+                    <input class="form-control" type="text" name="hotel_name" placeholder="Enter City or property" />
                   </div>
                 </div>
-                <!-- end col-lg-3 -->
+              </div>
+              <!-- end col-lg-3 -->
 
-                <div class="col-lg-3 pe-0">
-                  <div class="input-box">
-                    <label class="label-text">تواريخ الدخول والخروج</label>
-                    <div class="form-group d-flex">
-                      <span class="la la-calendar form-icon"></span>
-                      <input class="date-picker-multiple form-control" type="text" name="check_date" placeholder="تاريخ الدخول" readonly />
-                    </div>
+              <div class="col-lg-3 pe-0">
+                <div class="input-box">
+                  <label class="label-text">تواريخ الدخول والخروج</label>
+                  <div class="form-group d-flex">
+                    <span class="la la-calendar form-icon"></span>
+                    <input class="date-picker-multiple form-control" type="text" name="check_date" placeholder="تاريخ الدخول" readonly />
                   </div>
                 </div>
-                
-                <!-- end col-lg-3 -->
+              </div>
+              
+              <!-- end col-lg-3 -->
 
-                {% if categories.count > 0 %}
-                <div class="col-lg-3 pe-0">
-                  <div class="input-box">
-                    <label class="label-text">نوع الغرفة</label>
-                    <div class="form-group">
-                      <select class="select-contain-select" name="category_type">
-                        <option value="">اختر صنف</option>
-                        {% for categories in categories %}
-                        <option value="{{ categories.id }}">{{ categories.name }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
+              {% if categories.count > 0 %}
+              <div class="col-lg-3 pe-0">
+                <div class="input-box">
+                  <label class="label-text">نوع الغرفة</label>
+                  <div class="form-group">
+                    <select class="select-contain-select" name="category_type">
+                      <option value="">اختر صنف</option>
+                      {% for cat in categories %}
+                      <option value="{{ cat.id }}">{{ cat.name }}</option>
+                      {% endfor %}
+                    </select>
                   </div>
                 </div>
-                {% endif %}
-                <!-- end col-lg-3 -->
+              </div>
+              {% endif %}
+              <!-- end col-lg-3 -->
 
-                <div class="col-lg-3">
-                  <div class="input-box">
-                    <label class="label-text">ضيوف</label>
-                    <div class="form-group">
-                      <div class="dropdown dropdown-contain gty-container">
-                        <a class="dropdown-toggle dropdown-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                          <span class="default_capacity" data-text="عدد الاشخاص" data-text-multi="عدد الاشخاص">0 عدد الاشخاص</span> -
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-wrap">
-                          
-                          <div class="dropdown-item">
-                            <div class="qty-box d-flex align-items-center justify-content-between">
-                              <label>عدد الاشخاص</label>
-                              <div class="qtyBtn d-flex align-items-center">
-                                <div class="qtyDec">
-                                  <i class="la la-minus"></i>
-                                </div>
-                                <input type="text" name="adult_number" value="0" />
-                                <div class="qtyInc">
-                                  <i class="la la-plus"></i>
-                                </div>
+              <div class="col-lg-3">
+                <div class="input-box">
+                  <label class="label-text">ضيوف</label>
+                  <div class="form-group">
+                    <div class="dropdown dropdown-contain gty-container">
+                      <a class="dropdown-toggle dropdown-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        <span class="default_capacity" data-text="عدد الاشخاص" data-text-multi="عدد الاشخاص">0 عدد الاشخاص</span> -
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-wrap">
+                        <div class="dropdown-item">
+                          <div class="qty-box d-flex align-items-center justify-content-between">
+                            <label>عدد الاشخاص</label>
+                            <div class="qtyBtn d-flex align-items-center">
+                              <div class="qtyDec">
+                                <i class="la la-minus"></i>
+                              </div>
+                              <input type="text" name="adult_number" value="0" />
+                              <div class="qtyInc">
+                                <i class="la la-plus"></i>
                               </div>
                             </div>
                           </div>
-                          <div class="dropdown-item">
-                            <div class="qty-box d-flex align-items-center justify-content-between">
-                              <label>غرف</label>
-                              <div class="qtyBtn d-flex align-items-center">
-                                <div class="qtyDec">
-                                  <i class="la la-minus"></i>
-                                </div>
-                                <input type="text" name="room_number" value="0" class="qty-input" />
-                                <div class="qtyInc">
-                                  <i class="la la-plus"></i>
-                                </div>
+                        </div>
+                        <div class="dropdown-item">
+                          <div class="qty-box d-flex align-items-center justify-content-between">
+                            <label>غرف</label>
+                            <div class="qtyBtn d-flex align-items-center">
+                              <div class="qtyDec">
+                                <i class="la la-minus"></i>
+                              </div>
+                              <input type="text" name="room_number" value="0" class="qty-input" />
+                              <div class="qtyInc">
+                                <i class="la la-plus"></i>
                               </div>
                             </div>
                           </div>
@@ -109,14 +138,25 @@
                     </div>
                   </div>
                 </div>
-                <!-- end col-lg-3 -->
+              </div>
+              <!-- end col-lg-3 -->
 
-                <div class="btn-box pt-2">
-                  <button type="submit" class="theme-btn">ابحث الآن</button>
-                </div>
-              </form>
-            </div>
+              <div class="btn-box pt-2">
+                <button type="submit" class="theme-btn">ابحث الآن</button>
+              </div>
+            </form>
           </div>
+          {% comment %} <div class="btn-box">
+            <a href="hotel-search-result.html" class="theme-btn">ابحث الآن</a>
+          </div> {% endcomment %}
+        </div>
+      </div>
+    </div>
+    <!-- End background slider -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- Additional content if needed -->
         </div>
         <!-- end col-lg-12 -->
       </div>
@@ -125,5 +165,31 @@
     <!-- end container -->
   </div>
 </section>
+
+<script>
+  document.getElementById('getHotelsBtn').addEventListener('click', function () {
+    var promptValue = document.getElementById('aiPrompt').value;
+    
+    fetch("{% url 'api:get_best_hotels_by_gemini' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+      body: JSON.stringify({ prompt: promptValue })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      if (data.result) {
+        window.location.href = "{% url 'HotelManagement:hotel_search' %}?result_list=" + encodeURIComponent(JSON.stringify(data.result));
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to fetch hotels');
+    });
+  });
+</script>
 
 {% endif %}

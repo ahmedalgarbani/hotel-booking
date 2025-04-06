@@ -1,9 +1,10 @@
 import re
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from httpx import request
 from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets
 from HotelManagement.services import get_hotels_query, get_query_params
+from HotelManagement.views import hotel_search
 from api.api_services import call_gemini_api
 from bookings.models import Booking
 from customer.models import Favourites
@@ -404,14 +405,121 @@ class HotelAvailabilityViewSet(APIView):
 
 
 @api_view(['POST'])
-def call_gemini_api_test(request):
+def call_gemini_chat_bot(request):
     prompt = request.data.get('prompt')
+    
+    if not prompt:
+        return Response({"message": "Prompt is required."}, status=400)
+    
     message = call_gemini_api(prompt=prompt)
+
+
     if message:
-        return Response({"message": message}, status=200)
+        return Response({
+            "message": message,
+        }, status=200)
     else:
         return Response({"message": "Failed to get response from Gemini API."}, status=500)
 
+
+
+from django.db.models import Prefetch
+@api_view(['POST'])
+def get_best_hotels_by_gemini(request):
+    prompt = request.data.get('prompt', "اريد منك عرض كل الفنادق")
+    hotels = Hotel.objects.filter(is_verified=True).prefetch_related(
+        'hotel_services',
+        Prefetch('images'),
+        Prefetch('room_types__room_services'),
+        Prefetch('payment_methods__payment_option__currency')
+    ).select_related('location')
+
+    hotel_list = []
+
+    for hotel in hotels:
+        hotel_data = {
+            "id": hotel.id,
+            "name": hotel.name,
+            "profile_picture": request.build_absolute_uri(hotel.profile_picture.url) if hotel.profile_picture else None,
+            "description": hotel.description,
+            "location": hotel.location.address if hotel.location else None,
+            "services": [
+                {
+                    "id": service.id,
+                    "name": service.name,
+                }
+                for service in hotel.hotel_services.all()
+            ],
+            "rooms": [],
+            "paymentOption": [],
+        }
+
+        for room in hotel.room_types.all():
+            room_data = {
+                "id": room.id,
+                "images": [
+                    {
+                        "id": img.id,
+                        "image_url": request.build_absolute_uri(img.image.url) if img.image else None,
+                        "is_main": img.is_main,
+                        "caption": img.caption,
+                    }
+                    for img in room.images.all()
+                ],
+                "services": [
+                    {
+                        "id": srv.id,
+                        "name": srv.name,
+                        "description": srv.description,
+                        "icon": request.build_absolute_uri(srv.icon.url) if srv.icon else None,
+                        "additional_fee": srv.additional_fee,
+                    }
+                    for srv in room.room_services.all()
+                ],
+
+                "name": room.name,
+                "description": room.description,
+                "default_capacity": room.default_capacity,
+                "max_capacity": room.max_capacity,
+                "beds_count": room.beds_count,
+                "rooms_count": room.rooms_count,
+                "base_price": str(room.base_price),          
+                "hotel": hotel.id,
+                "category": room.category.id if room.category else None,
+            }
+            hotel_data["rooms"].append(room_data)
+
+        for payment in hotel.payment_methods.all():
+            payment_data = {
+                "id": payment.id,
+                "payment_option": {
+                    "id": payment.payment_option.id,
+                    "method_name": payment.payment_option.method_name,
+                    "logo": request.build_absolute_uri(payment.payment_option.logo.url) if payment.payment_option.logo else None,
+                    "currency": {
+                        "id": payment.payment_option.currency.id,
+                        "currency_name": payment.payment_option.currency.currency_name,
+                        "currency_symbol": payment.payment_option.currency.currency_symbol,
+                    },
+                },
+
+                "account_name": payment.account_name,
+                "account_number": payment.account_number,
+                "iban": payment.iban,
+                "description": payment.description,
+                "hotel": hotel.id,
+            }
+            hotel_data["paymentOption"].append(payment_data)
+
+        hotel_list.append(hotel_data)
+    result = call_gemini_api(prompt=prompt,text=hotel_list)
+
+    if result:
+        return Response({
+            "result": result,
+        }, status=200)
+    else:
+        return Response({"message": "Failed to get response from Gemini API."}, status=500)
 
 
 
@@ -426,3 +534,4 @@ def call_gemini_api_test(request):
 #         "amount": "1500",
 #         "rooms_booked" : 4
 # }
+

@@ -358,6 +358,8 @@ START TOUR DETAIL AREA
                 <!-- end contact-form-action -->
                 <h3 class="title font-size-20">الغرف المتاحة</h3>
                 {% for availability in available_room_types %}
+                
+
                 <!-- start cabin-type -->
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
@@ -375,10 +377,10 @@ START TOUR DETAIL AREA
                 
                     <div class="cabin-type-detail">
                       <a  href="{% url 'rooms:room_detail' availability.room_type.id %}" class="title">{{availability.room_type.name}}</a>
-                     {% if availability.room_type.services %}
+                      {% if availability.services %}
                       
                       <div class="row padding-top-20px">
-                        {% for service in availability.room_type.services %}
+                        {% for service in availability.services %}
                         <div class="col-lg-6 responsive-column">
                           <div class="single-tour-feature d-flex align-items-center mb-3">
                             <div
