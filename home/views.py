@@ -16,12 +16,9 @@ from django.shortcuts import get_object_or_404, render
 from services.models import Coupon, HotelService
 from .models import TeamMember, Partner, Testimonial
 from .models import PricingPlan
-
-
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger 
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
-
 from .models import ContactMessage
 
 # Create your views here.
@@ -305,8 +302,7 @@ def hotel_detail(request, slug):
                 output_field=BooleanField()
             )
         )
-    else:
-        external_hotels = external_hotels.annotate(is_favorite=False)
+    
 
     ctx = {
         'hotel': hotel,

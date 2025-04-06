@@ -179,7 +179,10 @@ class HotelAvabilitySerializer(serializers.ModelSerializer):
 
 
 
-
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['id','username','join_date','notes', 'profile_picture','address','mobile_number','gender', 'birth_date','email', 'first_name', 'last_name', 'phone', 'image', 'user_type']
 
 # ------------test------------------
 # {

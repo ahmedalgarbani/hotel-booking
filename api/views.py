@@ -388,6 +388,16 @@ class HotelAvailabilityViewSet(APIView):
 
 
 
+
+# class UserProfileView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         serializer = UserSerializer(request.user)
+#         return Response(serializer.data)
+
+
+
 # http://127.0.0.1:8000/api/hotel_availability/?hotel_name=hotel_name&check_in=2025-03-25 00:00:00&check_out=2025-03-28 00:00:00&adult_number=1&room_number=1&category_type=1
 
 
