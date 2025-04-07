@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from HotelManagement.models import Hotel
-from bookings.models import Booking
+from bookings.models import Booking,BookingDetail,Guest
 from customer.models import Favourites
+from hotels import settings
 from notifications.models import Notifications
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
 from rooms.models import RoomType,RoomImage
@@ -72,13 +73,63 @@ class PaymentSerializer(serializers.ModelSerializer):
             'transfer_image': {'required': False, 'allow_null': True}
         }
 
+
+
+
+class BookingDetailSerializer(serializers.ModelSerializer):
+    hotel_name = serializers.CharField(source='hotel.name', read_only=True)
+    service_name = serializers.CharField(source='service.name', read_only=True)
+
+    class Meta:
+        model = BookingDetail
+        fields = [
+            'id',
+            'booking', 
+            'hotel', 'hotel_name',
+            'service', 'service_name',
+            'quantity',
+            'price',
+            'total',
+            'notes',
+        ]
+
+class BookingGuestSerializer(serializers.ModelSerializer):
+    # hotel 
+    # booking 
+
+    
+
+    class Meta:
+        model = Guest
+        fields = ['name', 'phone_number', 'id_card_image', 'gender', 'birthday_date', 'check_in_date', 'check_out_date']
+
+
+
 class BookingSerializer(serializers.ModelSerializer):
+    hotel_name = serializers.SerializerMethodField()
+    user_name = serializers.SerializerMethodField()
+    room_name = serializers.SerializerMethodField()
+    details = BookingDetailSerializer(many=True, read_only=True)
+    guests = BookingGuestSerializer(many=True, read_only=True)
+
     class Meta:
         model = Booking
         fields = [
-           'id', 'hotel', 'user', 'room', 'check_in_date', 'check_out_date', 
-            'amount', 'status',  'rooms_booked'
+            'id', 'hotel', 'hotel_name', 'details','guests',
+            'user', 'user_name', 'room', 'room_name',
+            'check_in_date', 'check_out_date',
+            'amount', 'status', 'rooms_booked'
         ]
+
+    def get_hotel_name(self, obj):
+        return obj.hotel.name
+
+    def get_user_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"
+
+    def get_room_name(self, obj):
+        return obj.room.name
+
 
     def validate(self, data):
         if data.get('check_in_date') and data.get('check_out_date'):
@@ -89,10 +140,15 @@ class BookingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Amount must be greater than 0.')
 
         return data
-        
+
+
+
+
+
 class RoomsSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
+    
 
     class Meta:
         model = RoomType

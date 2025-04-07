@@ -1,0 +1,143 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.git
+# Python
+*.py[cod]
+__pycache__/
+*.so
+*.pyc
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+**/static/
+doctors_appointment/static/
+/static/
+/staticfiles/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+
+# IDE - PyCharm
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+
+rest_framework/
+local_settings.py
+production_settings.py
+
+# Temporary files
+*.bak
+*.swp
+*.swo
+*~
+.~*
+*.tmp
+
+# Coverage and test
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Environments
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Django Migrations
+*/migrations/*.py
+!*/migrations/__init__.py
+
+media/hotels/images/
+media/hotel_requests/documents/
+media/hotel_requests/profile_pictures/
+media/images/
+media/hotel_documents/
+media/hotel/images/
+media/guests/
+media/guests
+media/payment_logos
+media/payment_logos/
+media/payments
+media/payments/
+media/room_images
+media/room_images/
+media/users
+media/users/
+media/
