@@ -3,48 +3,58 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import get_user_model
 from HotelManagement.notifications import Notification
-from .models import Booking
 from notifications.models import Notifications
 import logging
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
-@shared_task
-def send_booking_end_reminders():
-    """
-    Send reminders for bookings ending within the next 5 hours.
-    Creates in-app notifications and triggers email reminders.
-    """
-    try:
-        now = timezone.now()
-        target_time = now + timedelta(hours=5)
-        
-        bookings = Booking.objects.filter(
-            check_out_date__lte=target_time,
-            check_out_date__gt=now,
-            status=Booking.BookingStatus.CONFIRMED,
-            # reminder_sent=False  
-        ).select_related('user', 'room__hotel')
 
-        for booking in bookings:
+
+
+@shared_task
+def send_booking_end_reminders(booking_id):
+    """
+    Send a reminder for a specific booking ending within the next 5 hours.
+    """
+    from .models import Booking
+    from django.utils import timezone
+    from datetime import timedelta
+
+    try:
+        booking = Booking.objects.select_related('user', 'room__hotel').get(id=booking_id)
+
+        now = timezone.now()
+
+        if booking.status == Booking.BookingStatus.CONFIRMED and booking.check_out_date > now:
             Notifications.objects.create(
-                user=booking.user,
+                sender=booking.room.hotel.manager,  
+                user=booking.user,  
+                recipient_type="single_user", 
                 title="تذكير بانتهاء الحجز",
-                message=f"سينتهي حجزك في الغرفة {booking.room} في تمام الساعة {booking.check_out_date.astimezone(booking.user.timezone).strftime('%Y-%m-%d %H:%M')}. هل تريد التمديد؟",
-                notification_type="reminder"
+                message=f"سينتهي حجزك في الغرفة {booking.room} في تمام الساعة {booking.check_out_date}. هل تريد التمديد؟",
+                notification_type="0",  
+                is_active=True,
+                action_url="/",  
             )
 
             send_reminder_email.delay(booking.id)
 
             booking.reminder_sent = True
             booking.save()
-        logger.info("Task executed successfully")
-        return f"تم إرسال {bookings.count()} إشعاراً وإيميلات للمستخدمين حول انتهاء حجوزاتهم."
 
+            logger.info(f"Reminder sent for Booking #{booking.id}")
+            return f"Reminder sent for Booking #{booking.id}"
+
+        else:
+            logger.info(f"No reminder needed for Booking #{booking.id}")
+            return f"No reminder needed for Booking #{booking.id}"
+
+    except Booking.DoesNotExist:
+        logger.error(f"Booking with ID {booking_id} does not exist.")
+        return f"Booking with ID {booking_id} does not exist."
     except Exception as e:
         logger.error(f"Error in send_booking_end_reminders: {e}")
-        logger.error(f"Task failed: {e}")
         raise
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 3})
@@ -53,13 +63,15 @@ def send_reminder_email(self, booking_id):
     Send email reminder for a specific booking with retry logic
     """
     try:
+        from .models import Booking
+
         booking = Booking.objects.select_related('user', 'room__hotel').get(id=booking_id)
         user = booking.user
         
         email_sent = Notification.send_end_booking_notification(
             user=user,
             hotel_name=booking.room.hotel.name,  
-            check_out_time=booking.check_out_date.astimezone(user.timezone)
+            check_out_date=booking.check_out_date.astimezone()
         )
 
         if email_sent:

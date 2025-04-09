@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+# This will make sure the tasks are registered when Celery starts
+from .celery import app as celery_app
+
+__all__ = ('celery_app',)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -561,8 +566,7 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_TIMEZONE = 'Asia/Riyadh'
-
+CELERY_TIMEZONE = 'UTC'
 
 
 
@@ -570,4 +574,19 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 # --------------- Extirnal Api -----------
-GEMINI_API_KEY = "AIzaSyD7ZWNsgWkfY"
+GEMINI_API_KEY = "AIzaSyD79Midhee6UFyg44UVZ40ZsMZWNsgWkfY"
+
+
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/1',  
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
+CELERY_IMPORTS = [
+    'bookings.tasks',
+]

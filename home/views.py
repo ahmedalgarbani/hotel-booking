@@ -3,6 +3,7 @@ from HotelManagement.models import Hotel
 from django.shortcuts import render, get_object_or_404
 from api.views import get_best_hotels_by_gemini
 from blog.models import Post
+from bookings.models import Booking
 from customer.models import Favourites
 from home.forms import ContactForm
 from home.models import *
@@ -21,16 +22,17 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from .models import ContactMessage
-
+from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 
-def index(request):
+
+
+
+def index(request):    
     for key in list(request.session.keys()):
         if not key.startswith("_"): 
             del request.session[key]
-        
-
-    
     roomTypes = RoomType.objects.filter(is_active=True)
     blogs = Post.objects.filter(is_published=True)[:3]
     infoBox = InfoBox.objects.filter(show_at_home=True)[:4]

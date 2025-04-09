@@ -75,6 +75,7 @@ class NotificationsAdmin(AutoUserTrackMixin, admin.ModelAdmin):
                         Notifications.objects.create(
                             sender=request.user,
                             user = customer,
+                            title=obj.title,
                             recipient_type='all_customers',
                             message=obj.message,
                             notification_type=obj.notification_type,
@@ -90,6 +91,7 @@ class NotificationsAdmin(AutoUserTrackMixin, admin.ModelAdmin):
                             sender=request.user,
                             recipient_type='all_hotel_managers',
                             user = manager,
+                            title = obj.title,
                             message=obj.message,
                             notification_type=obj.notification_type,
                             action_url=obj.action_url
@@ -105,6 +107,8 @@ class NotificationsAdmin(AutoUserTrackMixin, admin.ModelAdmin):
                         Notifications.objects.create(
                             sender=request.user,
                             user=customer,
+                                                        title = obj.title,
+
                             recipient_type='booked_customers',
                             message=obj.message,
                             notification_type=obj.notification_type,

@@ -29,6 +29,7 @@ class Notifications(BaseModel):
         default='single_user',
         verbose_name=_("نوع المستلم")
     )
+    title = models.CharField(verbose_name=_("العنوان"),max_length=255)
     message = models.TextField(verbose_name=_("الرسالة"))
     send_time = models.DateTimeField(
         auto_now_add=True,

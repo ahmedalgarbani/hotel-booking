@@ -1,8 +1,8 @@
 from django.db import models
-
+from HotelManagement.models import BaseModel
 # Create your models here.
 
-class ChartOfAccounts(models.Model):
+class ChartOfAccounts(BaseModel):
     account_number = models.CharField(max_length=100)
     account_name = models.CharField(max_length=100)
     account_type = models.CharField(max_length=100)
@@ -10,9 +10,8 @@ class ChartOfAccounts(models.Model):
     account_parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     account_description = models.TextField()
     account_status = models.BooleanField(max_length=100,default=True)
-    account_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    account_created_at = models.DateTimeField(auto_now_add=True)
-    account_updated_at = models.DateTimeField(auto_now=True)
+    account_amount = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+
 
     def __str__(self):
         return self.account_name
@@ -20,7 +19,7 @@ class ChartOfAccounts(models.Model):
 
 
 
-class JournalEntry(models.Model):
+class JournalEntry(BaseModel):
     journal_entry_number = models.CharField(max_length=100)
     journal_entry_date = models.DateField()
     journal_entry_description = models.TextField()

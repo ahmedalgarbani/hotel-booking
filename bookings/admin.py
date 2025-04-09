@@ -141,7 +141,7 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     
 
     def set_checkout_today_toggle(self, obj):
-        if obj.actual_check_out_date is not None:
+        if obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
             return format_html('<span style="color:green; font-weight:bold;">✔ تم تسجيل خروج المستخدم</span>')
         url = reverse('bookings:set_actual_check_out_date', args=[obj.pk])        
         return format_html(
@@ -152,7 +152,7 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     def extend_booking_button(self, obj):
         current_date = timezone.now()  
 
-        if current_date > obj.check_out_date or obj.actual_check_out_date is not None:
+        if current_date > obj.check_out_date or obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
             return format_html('<span style="color:red; font-weight:bold;">✔ غير قابل للتمديد</span>')
 
         url = reverse('admin:booking-extend', args=[obj.pk])

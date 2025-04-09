@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models,transaction
 from django.urls import reverse
 from HotelManagement.models import BaseModel
+from bookings.tasks import send_booking_end_reminders
 from notifications.models import Notifications
 from rooms.models import Availability, RoomStatus
 from django.db import models
@@ -15,7 +16,6 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 import uuid
 # ------------ Guest ------------
-
 class Guest(models.Model):
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
@@ -146,6 +146,7 @@ class Booking(BaseModel):
     def save(self, *args, **kwargs):
         is_new_booking = self._state.adding  
         previous_status = None
+        is_new = self.pk is None
 
         if not is_new_booking:
             previous_booking = Booking.objects.get(pk=self.pk)
@@ -176,7 +177,12 @@ class Booking(BaseModel):
             self.update_availability(self.rooms_booked, today)
 
         if self.status == "1": 
-            self.send_notification() 
+            if is_new and self.check_out_date:
+                send_booking_end_reminders.apply_async(
+                    args=[self.id],
+                    eta=self.check_out_date - timezone.timedelta(hours=5)
+                )
+                
 
 
 
@@ -187,6 +193,7 @@ class Booking(BaseModel):
         Notifications.objects.create(
             sender=self.user, 
             user=self.user,
+            title="اشعار اتمام الحجز",
             message=message,
             notification_type='1', 
             action_url=action_url,

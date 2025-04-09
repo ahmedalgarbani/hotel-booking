@@ -8,7 +8,7 @@ class ChartOfAccountsAdmin(admin.ModelAdmin):
     list_display = ('account_number', 'account_name', 'account_type', 'account_parent')
     search_fields = ('account_number', 'account_name')
     list_filter = ('account_type', 'account_parent')
-    readonly_fields = ('account_created_at', 'account_updated_at')
+    readonly_fields = ('created_at', 'updated_at')
     def save_model(self, request, obj, form, change):
         if not obj.pk:
             obj.account_created_at = timezone.now()
