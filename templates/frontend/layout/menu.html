@@ -82,8 +82,10 @@
                                                   {% endif %}
                                               {% endfor %}
                                           </div>
+                                          {% if request.user.is_authenticated %}
                                           <a href="{% url 'notifications:all_notifications' user.id %}" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
-                                      </div>
+                                          {% endif %}
+                                        </div>
                                     </li>
                                 </div>
                                 <!-- /Notifications -->
