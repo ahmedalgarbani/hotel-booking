@@ -21,4 +21,8 @@ urlpatterns = [
     
     # المسار الخاص بحذف المفضلة
     path('remove_favourite/<int:favourite_id>/', views.remove_favourite, name='remove_favourite'),
+    path('cancel-payment/<int:payment_id>/', views.cancel_payment, name='cancel_payment'),
+
+    path('notifications/mark-all-as-read/', views.mark_all_notifications_as_read, name='mark_all_notifications_as_read'),
+
 ]

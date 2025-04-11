@@ -7,27 +7,71 @@ from bookings.models import Booking
 from customer.models import Favourites  
 from notifications.models import Notifications
 from reviews.models import HotelReview, RoomReview
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from users.models import CustomUser
 from .forms import UserProfileForm
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from payments.models import Payment
+from django.db.models import Sum
+
+
 
 
 @login_required(login_url='/users/login')
 def user_dashboard_index(request):
     user = request.user  
 
-    notifications = Notifications.objects.filter(user=user, is_active=True).order_by('-send_time')[:5] 
+    # الإشعارات
+    notifications = Notifications.objects.filter(
+        user=user, 
+        is_active=True, 
+        status='0'
+    ).order_by('-send_time')[:10]
     
-    unread_notifications_count = Notifications.objects.filter(user=user, status='0', is_active=True).count()
+    # الحجوزات الحديثة (أحدث 5 حجوزات)
+    recent_bookings = Booking.objects.filter(
+        user=user
+    ).select_related('hotel').order_by('-created_at')[:5]
+    
+    # الدفعات الحديثة (أحدث 5 دفعات)
+    recent_payments = Payment.objects.filter(
+        user=user
+    ).select_related('booking').order_by('-payment_date')[:5]
+    
+    unread_notifications_count = notifications.count()
+    booking_count = Booking.objects.filter(user=user).count()
+    wishlist_count = Favourites.objects.filter(user=user).count()
+    total_payments = Payment.objects.filter(
+        user=user, 
+        payment_status=1
+    ).aggregate(total=Sum('payment_totalamount'))['total'] or 0
+    
+    reviews_count = HotelReview.objects.filter(user=user).count() + RoomReview.objects.filter(user=user).count()
+
+    user_orders = Payment.objects.filter(user=user).select_related('booking').order_by('-payment_date')[:5]
+
 
     return render(request, 'admin/user_dashboard/index.html', {
         'user': user,
         'notifications': notifications,
-        'unread_notifications_count': unread_notifications_count
+        'recent_bookings': recent_bookings,
+        'recent_payments': recent_payments,
+        'unread_notifications_count': unread_notifications_count,
+        'booking_count': booking_count,
+        'wishlist_count': wishlist_count,
+        'total_payments': total_payments,
+        'reviews_count': reviews_count,
+        'user_orders': user_orders,
     })
+
+
+@require_POST
+@login_required
+def mark_all_notifications_as_read(request):
+    Notifications.objects.filter(user=request.user, status='0', is_active=True).update(status='1')
+    return JsonResponse({'success': True})
 
 
 @login_required(login_url='/users/login')
@@ -64,20 +108,6 @@ def user_dashboard_bookings(request):
         'bookings_with_location': bookings_with_location,
         'page_obj': page_obj
     })
-
-
-
-@login_required(login_url='/users/login')
-def cancel_booking(request, booking_id):
-    try:
-        booking = Booking.objects.get(id=booking_id, user=request.user)
-
-        booking.delete()
-
-        return redirect('customer:user_bookings')
-    except Booking.DoesNotExist:
-
-        return redirect('customer:user_bookings')
 
 
 
@@ -186,11 +216,15 @@ def user_dashboard_settings_email(request):
 
 @login_required(login_url='/users/login')
 def user_dashboard_wishlist(request):
-    
+    # جلب الفنادق المفضلة للمستخدم
+    favourites = Favourites.objects.filter(user=request.user).select_related('hotel')
+
+    # تمرير البيانات إلى القالب
     ctx = {
-        'favourites': Favourites.objects.filter(user=request.user)
+        'favourites': favourites
     }
-    return render(request,'admin/user_dashboard/pages/user-dashboard-wishlist.html',ctx)
+    return render(request, 'admin/user_dashboard/pages/user-dashboard-wishlist.html', ctx)
+
 
 
 @login_required(login_url='/users/login')
@@ -267,3 +301,43 @@ def remove_favourite(request, favourite_id):
         return JsonResponse({'success': True})
     else:
         return redirect(request.META.get('HTTP_REFERER'))  # العودة إلى نفس الصفحة
+
+
+
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+
+    if booking.status in ['0', '1']:
+        if booking.check_in_date:
+            time_diff = booking.check_in_date - timezone.now()
+            if time_diff.total_seconds() > 86400: 
+                booking.status = '2' 
+                booking.save()  
+                messages.success(request, "تم إلغاء الحجز بنجاح.")
+            else:
+                messages.warning(request, "لا يمكن إلغاء الحجز قبل أقل من 24 ساعة من تاريخ الدخول.")
+        else:
+            messages.warning(request, "تاريخ تسجيل الدخول غير متوفر لهذا الحجز.")
+    else:
+        messages.warning(request, "لا يمكن إلغاء هذا الحجز.")  
+
+    return redirect('customer:user_dashboard_bookings') 
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from payments.models import Payment
+
+@login_required
+def cancel_payment(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id, user=request.user)
+
+    if payment.payment_status == 0:  # إذا كانت قيد الانتظار
+        payment.payment_status = 2   # 2 = ملغاة
+        payment.save()
+        messages.success(request, "تم إلغاء الدفع بنجاح.")
+    else:
+        messages.warning(request, "لا يمكن إلغاء هذا الدفع.")
+
+    return redirect('customer:user_dashboard_index')  # أو أي صفحة مناسبة

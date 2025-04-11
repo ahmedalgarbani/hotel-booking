@@ -225,6 +225,24 @@ class Booking(BaseModel):
         return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
 
 
+    @property
+    def get_status_class(self):
+        status_map = {
+            '0': 'info',
+            '1': 'success',
+            '2': 'danger'
+        }
+        return status_map.get(self.status, 'info')
+    
+    @property
+    def get_status_icon(self):
+        icon_map = {
+            '0': 'clock',
+            '1': 'check',
+            '2': 'times'
+        }
+        return icon_map.get(self.status, 'clock')
+
 
 # ------------ Booking Detail -------------
 class BookingDetail(BaseModel):
