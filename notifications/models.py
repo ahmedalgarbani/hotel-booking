@@ -86,3 +86,23 @@ class Notifications(BaseModel):
         if self.status != '0':
             self.status = '0'
             self.save()
+
+    @property
+    def get_notification_type_class(self):
+        type_map = {
+            '0': 'info',
+            '1': 'warning',
+            '2': 'success',
+            '3': 'danger'
+        }
+        return type_map.get(self.notification_type, 'info')
+    
+    @property
+    def get_icon_class(self):
+        icon_map = {
+            '0': 'info-circle',
+            '1': 'exclamation-triangle',
+            '2': 'check',
+            '3': 'times'
+        }
+        return icon_map.get(self.notification_type, 'info-circle')

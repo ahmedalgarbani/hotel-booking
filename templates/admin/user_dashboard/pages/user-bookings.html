@@ -1,5 +1,6 @@
 {% extends "admin/user_dashboard/index.html" %}
 {% load static %}
+{% load tz %}
 {% block section_title %} الحجوزات الخاصة بي {% endblock section_title %}
 {% block path_title %} الحجوزات {% endblock path_title %}
 {% block content %}
@@ -41,7 +42,7 @@
                   {% for item in bookings_with_location %}
                     <tr>
                       <th scope="row">
-                        <i class="la la-hotel me-1 font-size-18"></i>{{ item.booking.room }}
+                        <i class="la la-hotel me-1 font-size-18"></i>{{ item.booking.hotel.name }}
                       </th>
                       <td>
                         <div class="table-content">
@@ -54,26 +55,34 @@
                       <td>{{ item.booking.amount }}</td>
                       <td>
                         {% if item.booking.status == '0' %}
-                        <span class="badge text-bg-warning py-1 px-2">
-                         قيد الانتظار
-                        </span>
+                          <span class="badge text-bg-warning py-1 px-2">
+                            قيد الانتظار
+                          </span>
                         {% elif item.booking.status == '1' %}
-                        <span class="badge text-bg-info py-1 px-2">
-                          مؤكد
-                        </span>
-                        
+                          <span class="badge text-bg-info py-1 px-2">
+                            مؤكد
+                          </span>
                         {% else %}
-                        <span class="badge text-bg-danger py-1 px-2">
-                          ملغي
-                        </span>
-
+                          <span class="badge text-bg-danger py-1 px-2">
+                            ملغي
+                          </span>
                         {% endif %}
                       </td>
                       <td>
-                        <div class="table-content">
-                          <a href="{% url 'customer:cancel_booking' item.booking.id %}" class="theme-btn theme-btn-small">إلغاء</a>
-                        </div>
+                        {% if item.booking.status != '2' and item.booking.check_in_date %}
+                          <div class="table-content">
+                            <a 
+                              href="{% url 'customer:cancel_booking' item.booking.id %}" 
+                              class="theme-btn theme-btn-small cancel-btn"
+                              data-checkin="{{ item.booking.check_in_date|date:'Y-m-d\\TH:i:s' }}"
+                              data-booking-id="{{ item.booking.id }}"  <!-- إضافة السمة data-booking-id -->
+                            >
+                              إلغاء
+                            </a>
+                          </div>
+                        {% endif %}
                       </td>
+                      
                     </tr>
                   {% empty %}
                     <tr>
@@ -119,4 +128,43 @@
     </div>
   </div>
 </div>
+
+<!-- ✅ JavaScript لعرض نافذة التأكيد قبل الإلغاء -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const cancelButtons = document.querySelectorAll('.cancel-btn');
+    const now = new Date();
+
+    cancelButtons.forEach(function (btn) {
+      const checkInDateStr = btn.dataset.checkin;
+      if (!checkInDateStr) return;
+
+      const checkInDate = new Date(checkInDateStr);
+      const timeDiff = checkInDate - now;
+      const hoursDiff = timeDiff / (1000 * 60 * 60);
+
+      // إذا كانت الساعة المتبقية أقل من 48 ساعة، نخفي الزر
+      if (hoursDiff <= 48) {
+        btn.style.display = "none";
+      }
+
+      // إضافة وظيفة التأكيد قبل الإلغاء
+      btn.addEventListener('click', function (event) {
+        event.preventDefault(); // منع الانتقال الفوري للرابط
+        
+        const bookingId = btn.getAttribute('data-booking-id');
+        
+        // التأكد من أن المستخدم يريد الإلغاء
+        const confirmation = confirm("هل أنت متأكد أنك تريد إلغاء هذا الحجز؟");
+        if (confirmation) {
+          // إذا وافق المستخدم، يتم توجيه الطلب لإلغاء الحجز
+          window.location.href = "{% url 'customer:cancel_booking' 0 %}".replace('0', bookingId);
+        }
+      });
+    });
+  });
+</script>
+
+
+
 {% endblock content %}

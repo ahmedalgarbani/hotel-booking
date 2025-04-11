@@ -153,15 +153,14 @@ START CARD AREA
                   <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
                 </a>
                  {% endif %}
-                  <a
-                    class="add-to-wishlist icon-element"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    data-hotel-id={{hotel.id}}
-                    title="المرجعية"
-                  >
-                    <i class="la la-heart-o"></i>
-                  </a>
+                 <a class="add-to-wishlist icon-element {% if hotel.is_favorite %}btn-blue{% endif %}"
+                 data-bs-toggle="tooltip"
+                 data-placement="top"
+                 data-hotel-id={{hotel.id}}
+                 title="المرجعية">
+                 <i class="la la-heart{% if hotel.is_favorite %} {% else %}-o{% endif %}"></i>
+              </a>
+              
                 </div>
                 <div class="card-body">
                   <h3 class="card-title">
@@ -420,42 +419,41 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script>
 document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
-					button.addEventListener('click', function() {
-          
-						var hotelId = this.getAttribute('data-hotel-id');
-						
-						fetch("{% url 'customer:add_to_favorites' %}", {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',  
-								'X-CSRFToken': '{{ csrf_token }}', 
-							},
-							body: JSON.stringify({
-								'hotel_id': hotelId,
-							}),
-						})
-						.then(response => response.json())  
-						.then(data => {
-							if (data.status === 'success') {
-                var icon = button.querySelector('i');
-                
-                if (!button.classList.contains('btn-blue')) {
-                    button.classList.add('btn-blue');
-                    icon.classList.remove('la-heart-o');
-                    icon.classList.add('la-heart');
-                } else {
-                    button.classList.remove('btn-blue');
-                    icon.classList.remove('la-heart');
-                    icon.classList.add('la-heart-o');
-                }
-            } else {
+   button.addEventListener('click', function() {
+       var hotelId = this.getAttribute('data-hotel-id');
+       
+       fetch("{% url 'customer:add_to_favorites' %}", {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',  
+               'X-CSRFToken': '{{ csrf_token }}', 
+           },
+           body: JSON.stringify({
+               'hotel_id': hotelId,
+           }),
+       })
+       .then(response => response.json())  
+       .then(data => {
+           if (data.status === 'success') {
+               var icon = button.querySelector('i');
+               
+               // تحقق من وجود الكلاس btn-blue
+               if (!button.classList.contains('btn-blue')) {
+                   button.classList.add('btn-blue');
+                   icon.classList.remove('la-heart-o');
+                   icon.classList.add('la-heart');
+               } else {
+                   button.classList.remove('btn-blue');
+                   icon.classList.remove('la-heart');
+                   icon.classList.add('la-heart-o');
+               }
+           }
+       })
+       .catch(error => {
+           console.error('Error:', error);
+       });
+   });
+});
 
-            }
-						})
-						.catch(error => {
-							console.error('Error:', error);
-						});
-					});
-				});
 			</script>
 {% endblock content %}

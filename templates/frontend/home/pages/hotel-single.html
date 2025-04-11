@@ -358,69 +358,61 @@ START TOUR DETAIL AREA
                 <!-- end contact-form-action -->
                 <h3 class="title font-size-20">الغرف المتاحة</h3>
                 {% for availability in available_room_types %}
-                
-
                 <!-- start cabin-type -->
                 <div class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
-                    <div class="cabin-type-img flex-shrink-0">
-                      <!-- Dynamically render the main room image -->
-                      {% if availability.room_type.images.all|length > 0 %}
-                      <img
-                        src="{{ availability.room_type.images.all.0.image.url }}"
-                        alt="{{ availability.room_type.name }}"
-                      />
-                      {% else %}
-                      <img src="{% static 'images/placeholder.png' %}" alt="No Image Available" />
-                      {% endif %}
-                    </div>
-                
-                    <div class="cabin-type-detail">
-                      <a  href="{% url 'rooms:room_detail' availability.room_type.id %}" class="title">{{availability.room_type.name}}</a>
-                      {% if availability.services %}
+                    
+                    <!-- Wrap the whole div with a link -->
+                    <a href="{% url 'rooms:room_detail' availability.room_type.id %}" class="d-flex">
+                    
+                      <div class="cabin-type-img flex-shrink-0">
+                        <!-- Dynamically render the main room image -->
+                        {% if availability.room_type.images.all|length > 0 %}
+                          <img
+                            src="{{ availability.room_type.images.all.0.image.url }}"
+                            alt="{{ availability.room_type.name }}"
+                          />
+                        {% else %}
+                          <img src="{% static 'images/placeholder.png' %}" alt="No Image Available" />
+                        {% endif %}
+                      </div>
                       
-                      <div class="row padding-top-20px">
-                        {% for service in availability.services %}
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la {{service.icon}}"></i>
-                            </div>
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">{{service}}  </h3>
-                            </div>
+                      <div class="cabin-type-detail">
+                        <a href="{% url 'rooms:room_detail' availability.room_type.id %}" class="title">{{availability.room_type.name}}</a>
+                        
+                        {% if availability.services %}
+                          <div class="row padding-top-20px">
+                            {% for service in availability.services %}
+                              <div class="col-lg-6 responsive-column">
+                                <div class="single-tour-feature d-flex align-items-center mb-3">
+                                  <div class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2">
+                                    <i class="la {{service.icon}}"></i>
+                                  </div>
+                                  <div class="single-feature-titles">
+                                    <h3 class="title font-size-15 font-weight-medium">{{service}}</h3>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
                           </div>
-                        </div>
-                        <!-- end col-lg-6 -->
-                        {% endfor %}
+                        {% endif %}
                       </div>
-                      <!-- end row -->
-                      {% endif %}
-                    </div>
-                    <div class="cabin-price">
-                      <p class="text-uppercase font-size-14">
-                        لليلة الواحدة
-                        <strong
-                          class="mt-n1 text-black font-size-18 font-weight-black d-block"
-                          >${{ availability.price }}</strong
-                        >
-                      </p>
-                      <div class="custom-checkbox mb-0">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="selectChb{{ forloop.counter }}"
-                        />
-                       
+                      
+                      <div class="cabin-price">
+                        <p class="text-uppercase font-size-14">
+                          لليلة الواحدة
+                          <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
+                            ${{ availability.price }}
+                          </strong>
+                        </p>
                       </div>
-                    </div>
+                    </a> <!-- End of the link wrapping the whole content -->
+              
                   </div>
-                  <!-- end cabin-type-item -->
                 </div>
                 <!-- end cabin-type -->
-                {% endfor %}
+              {% endfor %}
+              
                 
               </div>
               <!-- end single-content-item -->
