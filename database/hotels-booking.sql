@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2025 at 10:56 PM
+-- Generation Time: Apr 11, 2025 at 02:40 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,122 @@ SET time_zone = "+00:00";
 --
 -- Database: `hotels-booking`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accounts_chartofaccounts`
+--
+
+CREATE TABLE `accounts_chartofaccounts` (
+  `id` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `account_number` varchar(100) NOT NULL,
+  `account_name` varchar(100) NOT NULL,
+  `account_type` varchar(100) NOT NULL,
+  `account_balance` decimal(10,2) NOT NULL,
+  `account_description` longtext NOT NULL,
+  `account_status` tinyint(1) NOT NULL,
+  `account_amount` decimal(10,2) DEFAULT NULL,
+  `account_parent_id` bigint(20) DEFAULT NULL,
+  `created_by_id` bigint(20) DEFAULT NULL,
+  `updated_by_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `accounts_chartofaccounts`
+--
+
+INSERT INTO `accounts_chartofaccounts` (`id`, `created_at`, `updated_at`, `deleted_at`, `account_number`, `account_name`, `account_type`, `account_balance`, `account_description`, `account_status`, `account_amount`, `account_parent_id`, `created_by_id`, `updated_by_id`) VALUES
+(1, NULL, NULL, NULL, '1000', 'الأصول', 'Assets', 0.00, 'جميع الأصول التي تملكها الشركة', 1, NULL, NULL, NULL, NULL),
+(2, NULL, NULL, NULL, '2000', 'الخصوم', 'Liabilities', 0.00, 'الخصوم', 1, NULL, NULL, NULL, NULL),
+(3, NULL, NULL, NULL, '3000', 'حقوق الملكية', 'Equity', 0.00, 'تمثل حقوق الملاك أو حقوق المساهمين في الشركة', 1, NULL, NULL, NULL, NULL),
+(4, NULL, NULL, NULL, '4000', 'الإيرادات', 'Revenue', 0.00, 'تمثل الدخل الناتج عن عمليات البيع وتقديم الخدمات', 1, NULL, NULL, NULL, NULL),
+(6, NULL, NULL, NULL, '5000', 'المصاريف', 'Expenses', 0.00, 'تمثل جميع النفقات التشغيلية وغير التشغيلية للشركة', 1, NULL, NULL, NULL, NULL),
+(7, NULL, NULL, NULL, '1100', 'الأصول المتداولة', 'Assets', 0.00, 'الأصول التي يتم تحويلها إلى نقد خلال عام', 1, NULL, 1, NULL, NULL),
+(8, NULL, NULL, NULL, '1200', 'الأصول الثابتة', 'Assets', 0.00, 'الأصول التي تملكها الشركة على المدى الطويل', 1, NULL, 1, NULL, NULL),
+(9, NULL, NULL, NULL, '1101', 'النقد وما يعادله', 'Assets', 0.00, 'النقدية وما يعادلها من أصول سائلة', 0, NULL, 8, NULL, NULL),
+(10, NULL, NULL, NULL, '1102', 'النقدية في الصندوق', 'Assets', 0.00, 'النقدية المتوفرة في صندوق الشركة', 0, NULL, 8, NULL, NULL),
+(11, NULL, NULL, NULL, '1103', 'البنك الأهلي - الحساب الجاري', 'Assets', 0.00, 'الحساب الجاري في البنك الأهلي', 0, NULL, 8, NULL, NULL),
+(12, NULL, NULL, NULL, '1104', 'المدينون والعملاء', 'Assets', 0.00, 'ذمم العملاء والمدينون', 0, NULL, 8, NULL, NULL),
+(13, NULL, NULL, NULL, '1105', 'عملاء محليون', 'Assets', 0.00, 'ذمم العملاء المحليين', 0, NULL, 8, NULL, NULL),
+(14, NULL, NULL, NULL, '1106', 'عملاء دوليون', 'Assets', 0.00, 'ذمم العملاء الدوليين', 0, NULL, 8, NULL, NULL),
+(15, NULL, NULL, NULL, '1107', 'المخزون', 'Assets', 0.00, 'مخزون المواد والبضائع', 0, NULL, 8, NULL, NULL),
+(16, NULL, NULL, NULL, '1108', 'مخزون المواد الخام', 'Assets', 0.00, 'مواد خام غير مصنعة', 0, NULL, 8, NULL, NULL),
+(17, NULL, NULL, NULL, '1109', 'مخزون البضاعة التامة', 'Assets', 0.00, 'بضاعة جاهزة للبيع', 0, NULL, 8, NULL, NULL),
+(18, NULL, NULL, NULL, '1110', 'المباني والآلات', 'Assets', 0.00, 'المباني والآلات والمعدات', 0, NULL, 8, NULL, NULL),
+(19, NULL, NULL, NULL, '1111', 'الأراضي', 'Assets', 0.00, 'أراضي مملوكة للشركة', 0, NULL, 8, NULL, NULL),
+(20, NULL, NULL, NULL, '1112', 'المباني', 'Assets', 0.00, 'مباني مملوكة للشركة', 0, NULL, 8, NULL, NULL),
+(21, NULL, NULL, NULL, '1120', 'المركبات', 'Assets', 0.00, 'مركبات الشركة', 0, NULL, 8, NULL, NULL),
+(22, NULL, NULL, NULL, '1130', 'مجمع الإهلاك', 'Assets', 0.00, 'مجمع إهلاك الأصول الثابتة', 0, NULL, 8, NULL, NULL),
+(23, NULL, NULL, NULL, '1201', 'الأصول غير الملموسة', 'Assets', 0.00, 'براءات الاختراع والعلامات التجارية', 0, NULL, 7, NULL, NULL),
+(24, NULL, NULL, NULL, '1202', 'استثمارات طويلة الأجل', 'Assets', 0.00, 'استثمارات لأكثر من سنة', 0, NULL, 7, NULL, NULL),
+(25, NULL, NULL, NULL, '2100', 'الخصوم المتداولة', 'Liabilities', 0.00, 'الخصوم المتداولة قصيرة الأجل', 0, NULL, 2, NULL, NULL),
+(26, NULL, NULL, NULL, '2200', 'الخصوم غير المتداولة', 'Liabilities', 0.00, 'الخصوم طويلة الأجل', 0, NULL, 2, NULL, NULL),
+(27, NULL, NULL, NULL, '2101', 'الحسابات الدائنة', 'Liabilities', 0.00, 'المبالغ المستحقة على الشركة للموردين', 0, NULL, 25, NULL, NULL),
+(28, NULL, NULL, NULL, '2102', 'القروض قصيرة الأجل', 'Liabilities', 0.00, 'القروض التي يجب سدادها خلال عام', 0, NULL, 25, NULL, NULL),
+(29, NULL, NULL, NULL, '2103', 'المصروفات المستحقة', 'Liabilities', 0.00, 'المصروفات التي تم تكبدها ولم تسدد بعد', 0, NULL, 25, NULL, NULL),
+(30, NULL, NULL, NULL, '2201', 'القروض طويلة الأجل', 'Liabilities', 0.00, 'القروض التي يجب سدادها بعد أكثر من عام', 0, NULL, 26, NULL, NULL),
+(31, NULL, NULL, NULL, '2202', 'الذمم المدينة طويلة الأجل', 'Liabilities', 0.00, 'المبالغ المستحقة على الشركة التي سيتم تسديدها بعد أكثر من عام', 0, NULL, 26, NULL, NULL),
+(32, NULL, NULL, NULL, '2203', 'الالتزامات الضريبية طويلة الأجل', 'Liabilities', 0.00, 'الضرائب المستحقة التي سيتم دفعها بعد أكثر من عام', 0, NULL, 26, NULL, NULL),
+(33, NULL, NULL, NULL, '3100', 'الأسهم العادية', 'Equity', 0.00, 'رأس المال الذي استثمره الملاك أو المساهمون', 0, NULL, 3, NULL, NULL),
+(34, NULL, NULL, NULL, '3200', 'الأرباح المحتجزة', 'Equity', 0.00, 'الأرباح أو الخسائر المتراكمة التي لم يتم توزيعها', 0, NULL, 3, NULL, NULL),
+(35, NULL, NULL, NULL, '3300', 'رأس المال المدفوع الإضافي', 'Equity', 0.00, 'المبالغ المدفوعة من المساهمين بما يتجاوز القيمة الاسمية للأسهم', 0, NULL, 3, NULL, NULL),
+(36, NULL, NULL, NULL, '3400', 'الأسهم المستعادة', 'Equity', 0.00, 'الأسهم التي تم شراؤها مرة أخرى من السوق المفتوحة', 0, NULL, 3, NULL, NULL),
+(37, NULL, NULL, NULL, '3500', 'احتياطي الطوارئ', 'Equity', 0.00, 'الاحتياطي المخصص للتعامل مع الحالات الطارئة', 0, NULL, 3, NULL, NULL),
+(38, NULL, NULL, NULL, '3600', 'الاحتياطي القانوني', 'Equity', 0.00, 'الاحتياطي المخصص لتلبية المتطلبات القانونية', 0, NULL, 3, NULL, NULL),
+(39, NULL, NULL, NULL, '3700', 'الاحتياطي العام', 'Equity', 0.00, 'الاحتياطي العام لتعزيز رأس المال', 0, NULL, 3, NULL, NULL),
+(40, NULL, NULL, NULL, '4100', 'إيرادات المبيعات', 'Revenue', 0.00, 'الإيرادات الناتجة عن مبيعات المنتجات', 0, NULL, 4, NULL, NULL),
+(41, NULL, NULL, NULL, '4200', 'إيرادات الخدمات', 'Revenue', 0.00, 'الإيرادات الناتجة عن تقديم الخدمات', 0, NULL, 4, NULL, NULL),
+(42, NULL, NULL, NULL, '4300', 'إيرادات أخرى', 'Revenue', 0.00, 'إيرادات غير رئيسية مثل الفوائد أو الإيجارات', 0, NULL, 4, NULL, NULL),
+(43, NULL, NULL, NULL, '4400', 'إيرادات الاستثمار', 'Revenue', 0.00, 'الإيرادات الناتجة عن الاستثمارات والعوائد المالية', 0, NULL, 4, NULL, NULL),
+(44, NULL, NULL, NULL, '4500', 'إيرادات الخصومات', 'Revenue', 0.00, 'الإيرادات الناتجة عن الخصومات المقدمة للعملاء', 0, NULL, 4, NULL, NULL),
+(45, NULL, NULL, NULL, '5100', 'تكلفة البضائع المباعة', 'Expenses', 0.00, 'التكاليف المباشرة المرتبطة بإنتاج السلع المباعة', 0, NULL, 6, NULL, NULL),
+(46, NULL, NULL, NULL, '5200', 'المصاريف التشغيلية', 'Expenses', 0.00, 'النفقات المتعلقة بتشغيل الشركة اليومية', 0, NULL, 6, NULL, NULL),
+(47, NULL, NULL, NULL, '5300', 'مصاريف الرواتب والأجور', 'Expenses', 0.00, 'تكاليف دفع الرواتب والأجور للموظفين', 0, NULL, 6, NULL, NULL),
+(48, NULL, NULL, NULL, '5400', 'مصاريف الإيجار', 'Expenses', 0.00, 'تكاليف استئجار المكاتب أو المنشآت', 0, NULL, 6, NULL, NULL),
+(49, NULL, NULL, NULL, '5500', 'مصاريف المرافق', 'Expenses', 0.00, 'تكاليف فواتير المرافق مثل الكهرباء والمياه والإنترنت', 0, NULL, 6, NULL, NULL),
+(50, NULL, NULL, NULL, '5600', 'مصاريف التسويق والإعلان', 'Expenses', 0.00, 'تكاليف الحملات التسويقية والإعلانية', 0, NULL, 6, NULL, NULL),
+(51, NULL, NULL, NULL, '5700', 'مصاريف أخرى', 'Expenses', 0.00, 'مصاريف أخرى غير مصنفة', 0, NULL, 6, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accounts_journalentry`
+--
+
+CREATE TABLE `accounts_journalentry` (
+  `id` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `journal_entry_number` varchar(100) NOT NULL,
+  `journal_entry_date` date NOT NULL,
+  `journal_entry_description` longtext NOT NULL,
+  `journal_entry_in_amount` decimal(10,2) NOT NULL,
+  `journal_entry_out_amount` decimal(10,2) NOT NULL,
+  `journal_entry_notes` longtext NOT NULL,
+  `journal_entry_currency` varchar(100) NOT NULL,
+  `journal_entry_exchange_rate` decimal(10,2) NOT NULL,
+  `journal_entry_tax` decimal(10,2) NOT NULL,
+  `created_by_id` bigint(20) DEFAULT NULL,
+  `journal_entry_account_id` bigint(20) NOT NULL,
+  `updated_by_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `authtoken_token`
+--
+
+CREATE TABLE `authtoken_token` (
+  `key` varchar(40) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `user_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
 -- --------------------------------------------------------
 
@@ -427,7 +543,59 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (497, 'Can add paymen policy', 66, 'add_paymenpolicy'),
 (498, 'Can change paymen policy', 66, 'change_paymenpolicy'),
 (499, 'Can delete paymen policy', 66, 'delete_paymenpolicy'),
-(500, 'Can view paymen policy', 66, 'view_paymenpolicy');
+(500, 'Can view paymen policy', 66, 'view_paymenpolicy'),
+(501, 'Can add Token', 67, 'add_token'),
+(502, 'Can change Token', 67, 'change_token'),
+(503, 'Can delete Token', 67, 'delete_token'),
+(504, 'Can view Token', 67, 'view_token'),
+(505, 'Can add Token', 68, 'add_tokenproxy'),
+(506, 'Can change Token', 68, 'change_tokenproxy'),
+(507, 'Can delete Token', 68, 'delete_tokenproxy'),
+(508, 'Can view Token', 68, 'view_tokenproxy'),
+(509, 'Can add association', 69, 'add_association'),
+(510, 'Can change association', 69, 'change_association'),
+(511, 'Can delete association', 69, 'delete_association'),
+(512, 'Can view association', 69, 'view_association'),
+(513, 'Can add code', 70, 'add_code'),
+(514, 'Can change code', 70, 'change_code'),
+(515, 'Can delete code', 70, 'delete_code'),
+(516, 'Can view code', 70, 'view_code'),
+(517, 'Can add nonce', 71, 'add_nonce'),
+(518, 'Can change nonce', 71, 'change_nonce'),
+(519, 'Can delete nonce', 71, 'delete_nonce'),
+(520, 'Can view nonce', 71, 'view_nonce'),
+(521, 'Can add user social auth', 72, 'add_usersocialauth'),
+(522, 'Can change user social auth', 72, 'change_usersocialauth'),
+(523, 'Can delete user social auth', 72, 'delete_usersocialauth'),
+(524, 'Can view user social auth', 72, 'view_usersocialauth'),
+(525, 'Can add partial', 73, 'add_partial'),
+(526, 'Can change partial', 73, 'change_partial'),
+(527, 'Can delete partial', 73, 'delete_partial'),
+(528, 'Can view partial', 73, 'view_partial'),
+(529, 'Can add site', 74, 'add_site'),
+(530, 'Can change site', 74, 'change_site'),
+(531, 'Can delete site', 74, 'delete_site'),
+(532, 'Can view site', 74, 'view_site'),
+(533, 'Can add application', 75, 'add_application'),
+(534, 'Can change application', 75, 'change_application'),
+(535, 'Can delete application', 75, 'delete_application'),
+(536, 'Can view application', 75, 'view_application'),
+(537, 'Can add access token', 76, 'add_accesstoken'),
+(538, 'Can change access token', 76, 'change_accesstoken'),
+(539, 'Can delete access token', 76, 'delete_accesstoken'),
+(540, 'Can view access token', 76, 'view_accesstoken'),
+(541, 'Can add grant', 77, 'add_grant'),
+(542, 'Can change grant', 77, 'change_grant'),
+(543, 'Can delete grant', 77, 'delete_grant'),
+(544, 'Can view grant', 77, 'view_grant'),
+(545, 'Can add refresh token', 78, 'add_refreshtoken'),
+(546, 'Can change refresh token', 78, 'change_refreshtoken'),
+(547, 'Can delete refresh token', 78, 'delete_refreshtoken'),
+(548, 'Can view refresh token', 78, 'view_refreshtoken'),
+(549, 'Can add id token', 79, 'add_idtoken'),
+(550, 'Can change id token', 79, 'change_idtoken'),
+(551, 'Can delete id token', 79, 'delete_idtoken'),
+(552, 'Can view id token', 79, 'view_idtoken');
 
 -- --------------------------------------------------------
 
@@ -548,8 +716,15 @@ CREATE TABLE `bookings_booking` (
 --
 
 INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `status`, `account_status`, `rooms_booked`, `created_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-04-01 22:54:09.479536', '2025-04-01 22:57:41.938487', NULL, '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', '2025-04-01 22:57:41.921859', 193.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 12),
-(2, '2025-04-06 10:18:14.846826', '2025-04-06 10:18:14.846826', NULL, '2025-04-06 00:00:00.000000', '2025-04-07 00:00:00.000000', NULL, 500.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 1);
+(1, '2025-04-01 22:54:09.479536', '2025-04-09 09:57:45.224056', NULL, '2025-04-01 22:53:52.000000', '2025-04-09 11:25:57.000000', NULL, 193.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 12),
+(2, '2025-04-06 10:18:14.846826', '2025-04-09 09:57:35.164748', NULL, '2025-04-07 08:52:23.000000', '2025-04-09 13:50:27.000000', NULL, 500.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(3, '2025-04-09 09:54:08.148171', '2025-04-09 10:20:59.911062', NULL, '2025-04-08 09:53:00.000000', '2025-04-09 14:55:05.000000', NULL, 111.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(5, '2025-04-09 10:17:54.329465', '2025-04-09 10:21:09.576864', NULL, '2025-04-07 10:17:31.000000', '2025-04-09 10:18:33.000000', NULL, 99.00, '0', 1, 2, NULL, 1, NULL, 1, NULL, 5),
+(7, '2025-04-09 10:26:55.856738', '2025-04-09 10:45:30.176573', NULL, '2025-04-07 10:26:29.000000', '2025-04-09 15:30:37.000000', NULL, 99.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(9, '2025-04-09 10:56:59.805559', '2025-04-09 11:05:33.291198', NULL, '2025-04-07 10:56:42.000000', '2025-04-09 10:58:45.000000', NULL, 66.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(10, '2025-04-09 11:06:47.520593', '2025-04-09 11:17:30.353369', NULL, '2025-04-07 11:06:22.000000', '2025-04-09 16:08:27.000000', NULL, 15.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(12, '2025-04-09 11:22:11.969607', '2025-04-09 11:23:10.125066', NULL, '2025-04-09 11:21:48.000000', '2025-04-09 16:23:10.000000', NULL, 66.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(13, '2025-04-09 11:26:33.564688', '2025-04-09 11:26:51.257373', NULL, '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', NULL, 94.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -613,7 +788,17 @@ CREATE TABLE `bookings_bookinghistory` (
 INSERT INTO `bookings_bookinghistory` (`id`, `history_date`, `previous_status`, `new_status`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `account_status`, `rooms_booked`, `booking_id`, `changed_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `user_id`) VALUES
 (1, '2025-04-01 22:54:33.035731', '0', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
 (2, '2025-04-01 22:57:17.086497', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
-(3, '2025-04-01 22:57:41.949606', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', '2025-04-01 22:57:41.921859', 193.00, 1, 1, 1, 12, 1, NULL, 1, 12);
+(3, '2025-04-01 22:57:41.949606', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', '2025-04-01 22:57:41.921859', 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
+(5, '2025-04-09 09:01:22.869681', '0', '1', '2025-04-07 08:52:23.000000', '2025-04-09 13:50:27.000000', NULL, 500.00, 1, 1, 2, 1, 1, NULL, 1, 1),
+(6, '2025-04-09 09:26:07.495135', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-09 11:25:57.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
+(7, '2025-04-09 09:57:35.170888', '1', '0', '2025-04-07 08:52:23.000000', '2025-04-09 13:50:27.000000', NULL, 500.00, 1, 1, 2, 5, 1, NULL, 1, 5),
+(8, '2025-04-09 09:57:45.237350', '1', '2', '2025-04-01 22:53:52.000000', '2025-04-09 11:25:57.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
+(9, '2025-04-09 10:20:59.918941', '1', '0', '2025-04-08 09:53:00.000000', '2025-04-09 14:55:05.000000', NULL, 111.00, 1, 1, 3, 5, 1, NULL, 1, 5),
+(10, '2025-04-09 10:21:09.582567', '1', '0', '2025-04-07 10:17:31.000000', '2025-04-09 10:18:33.000000', NULL, 99.00, 1, 2, 5, 5, 1, NULL, 1, 5),
+(11, '2025-04-09 10:45:30.176573', '1', '0', '2025-04-07 10:26:29.000000', '2025-04-09 15:30:37.000000', NULL, 99.00, 1, 1, 7, 5, 1, NULL, 1, 5),
+(13, '2025-04-09 11:05:33.304119', '1', '2', '2025-04-07 10:56:42.000000', '2025-04-09 10:58:45.000000', NULL, 66.00, 1, 1, 9, 5, 1, NULL, 1, 5),
+(14, '2025-04-09 11:17:30.360238', '1', '2', '2025-04-07 11:06:22.000000', '2025-04-09 16:08:27.000000', NULL, 15.00, 1, 1, 10, 5, 1, NULL, 1, 5),
+(15, '2025-04-09 11:26:51.269644', '0', '1', '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', NULL, 94.00, 1, 1, 13, 5, 1, NULL, 1, 5);
 
 -- --------------------------------------------------------
 
@@ -760,7 +945,130 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (51, '2025-04-06 10:02:22.066808', '2', 'good view', 1, '[{\"added\": {}}]', 11, 1),
 (52, '2025-04-07 20:42:08.700645', '1', 'free message - 1', 1, '[{\"added\": {}}]', 14, 1),
 (53, '2025-04-07 20:42:28.092074', '2', 'free message - 2', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 14, 1),
-(54, '2025-04-07 20:51:07.451852', '1', 'ahmed mohamed - 1', 1, '[{\"added\": {}}]', 46, 1);
+(54, '2025-04-07 20:51:07.451852', '1', 'ahmed mohamed - 1', 1, '[{\"added\": {}}]', 46, 1),
+(55, '2025-04-09 07:49:55.118717', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\"]}}]', 13, 1),
+(56, '2025-04-09 08:04:27.685412', '30', 'إشعار من a إلى mosa mohamed - 2', 3, '', 52, 1),
+(57, '2025-04-09 08:04:27.685412', '29', 'إشعار من a إلى mosaa1 - 2', 3, '', 52, 1),
+(58, '2025-04-09 08:04:27.685412', '28', 'إشعار من a إلى asdjsk - 2', 3, '', 52, 1),
+(59, '2025-04-09 08:04:27.695460', '27', 'إشعار من a إلى ahmed mohamed - 2', 3, '', 52, 1),
+(60, '2025-04-09 08:04:27.695460', '26', 'إشعار من a إلى askja kksskks - 2', 3, '', 52, 1),
+(61, '2025-04-09 08:04:27.695460', '25', 'إشعار من a إلى ajshdkajs aksljdlas - 2', 3, '', 52, 1),
+(62, '2025-04-09 08:04:27.695460', '24', 'إشعار من a إلى ammar alwan - 2', 3, '', 52, 1),
+(63, '2025-04-09 08:04:27.695460', '23', 'إشعار من a إلى asjdhjkash asdas - 2', 3, '', 52, 1),
+(64, '2025-04-09 08:04:27.695460', '22', 'إشعار من a إلى mosa mohamed - 1', 3, '', 52, 1),
+(65, '2025-04-09 08:52:44.705109', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062f\\u062e\\u0648\\u0644\", \"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\"]}}]', 13, 1),
+(66, '2025-04-09 09:01:22.877869', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(67, '2025-04-09 09:26:07.518414', '1', 'Booking #1 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\", \"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 13, 1),
+(68, '2025-04-09 09:26:38.883711', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 13, 1),
+(69, '2025-04-09 09:27:06.179024', '5', 'mosa mohamed', 2, '[{\"changed\": {\"fields\": [\"Email address\"]}}]', 2, 1),
+(70, '2025-04-09 09:54:08.191304', '3', 'Booking #3 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(71, '2025-04-09 09:57:35.210050', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(72, '2025-04-09 09:57:45.268034', '1', 'Booking #1 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(73, '2025-04-09 10:14:44.198052', '69', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(74, '2025-04-09 10:14:44.204804', '68', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(75, '2025-04-09 10:14:44.209514', '67', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(76, '2025-04-09 10:14:44.212572', '66', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(77, '2025-04-09 10:14:44.212572', '65', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(78, '2025-04-09 10:14:44.220374', '64', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(79, '2025-04-09 10:14:44.230207', '63', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
+(80, '2025-04-09 10:14:44.230207', '62', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(81, '2025-04-09 10:14:44.239221', '61', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(82, '2025-04-09 10:14:44.244050', '60', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(83, '2025-04-09 10:14:44.245049', '59', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(84, '2025-04-09 10:14:44.251491', '58', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(85, '2025-04-09 10:14:44.255879', '57', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
+(86, '2025-04-09 10:14:44.260478', '56', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(87, '2025-04-09 10:14:44.264050', '55', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(88, '2025-04-09 10:14:44.267721', '54', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(89, '2025-04-09 10:14:44.271546', '53', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(90, '2025-04-09 10:14:44.276423', '52', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(91, '2025-04-09 10:14:44.277647', '51', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
+(92, '2025-04-09 10:14:44.277647', '50', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(93, '2025-04-09 10:14:44.288121', '49', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(94, '2025-04-09 10:14:44.292597', '48', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(95, '2025-04-09 10:14:44.297523', '47', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(96, '2025-04-09 10:14:44.300796', '46', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(97, '2025-04-09 10:14:44.304703', '45', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
+(98, '2025-04-09 10:14:44.308727', '44', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(99, '2025-04-09 10:14:44.312860', '43', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(100, '2025-04-09 10:14:44.313906', '42', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(101, '2025-04-09 10:14:44.321339', '41', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(102, '2025-04-09 10:14:44.327082', '40', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(103, '2025-04-09 10:14:44.334173', '39', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(104, '2025-04-09 10:14:44.338464', '38', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
+(105, '2025-04-09 10:14:44.342645', '37', 'إشعار من a إلى a - 1', 3, '', 52, 1),
+(106, '2025-04-09 10:14:44.347044', '36', 'إشعار من a إلى a - 1', 3, '', 52, 1),
+(107, '2025-04-09 10:14:44.348098', '35', 'إشعار من b إلى a - 0', 3, '', 52, 1),
+(108, '2025-04-09 10:14:44.354767', '34', 'إشعار من a إلى a - 1', 3, '', 52, 1),
+(109, '2025-04-09 10:14:44.358703', '33', 'إشعار من a إلى a - 1', 3, '', 52, 1),
+(110, '2025-04-09 10:17:55.024989', '5', 'Booking #5 - room vip 2025 (2 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(111, '2025-04-09 10:20:59.962588', '3', 'Booking #3 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(112, '2025-04-09 10:21:09.615616', '5', 'Booking #5 - room vip 2025 (2 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(113, '2025-04-09 10:22:00.219062', '71', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(114, '2025-04-09 10:22:00.231431', '70', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(115, '2025-04-09 10:22:53.838744', '6', 'Booking #6 - room vip 2025 (2 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(116, '2025-04-09 10:26:15.537470', '6', 'Booking #6 - room vip 2025 (2 rooms)', 3, '', 13, 1),
+(117, '2025-04-09 10:26:56.117647', '7', 'Booking #7 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(118, '2025-04-09 10:45:19.714691', '8', 'Booking #8 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(119, '2025-04-09 10:45:30.176573', '7', 'Booking #7 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(120, '2025-04-09 10:54:44.907922', '8', 'Booking #8 - room vip 2025 (1 rooms)', 3, '', 13, 1),
+(121, '2025-04-09 10:56:24.149195', '18', 'room vip 2025 - 6 rooms available on 2025-04-09', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 9, 1),
+(122, '2025-04-09 10:57:00.259936', '9', 'Booking #9 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(123, '2025-04-09 11:06:48.182575', '10', 'Booking #10 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(124, '2025-04-09 11:07:55.400751', '97', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(125, '2025-04-09 11:07:55.406054', '96', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(126, '2025-04-09 11:07:55.409852', '95', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(127, '2025-04-09 11:07:55.412969', '94', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(128, '2025-04-09 11:07:55.417522', '93', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(129, '2025-04-09 11:07:55.422161', '92', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(130, '2025-04-09 11:07:55.426608', '91', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(131, '2025-04-09 11:07:55.429668', '90', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(132, '2025-04-09 11:07:55.433380', '89', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(133, '2025-04-09 11:07:55.438368', '88', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(134, '2025-04-09 11:07:55.442159', '87', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(135, '2025-04-09 11:07:55.446005', '86', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(136, '2025-04-09 11:07:55.449941', '85', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(137, '2025-04-09 11:07:55.453947', '84', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(138, '2025-04-09 11:07:55.458091', '83', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(139, '2025-04-09 11:07:55.462074', '82', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(140, '2025-04-09 11:07:55.469156', '81', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(141, '2025-04-09 11:07:55.474381', '80', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(142, '2025-04-09 11:07:55.478343', '79', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(143, '2025-04-09 11:07:55.479661', '78', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(144, '2025-04-09 11:07:55.485447', '77', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(145, '2025-04-09 11:07:55.489440', '76', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(146, '2025-04-09 11:07:55.493552', '75', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(147, '2025-04-09 11:07:55.496625', '74', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(148, '2025-04-09 11:07:55.501353', '73', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(149, '2025-04-09 11:07:55.505443', '72', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(150, '2025-04-09 11:17:07.468263', '113', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(151, '2025-04-09 11:17:07.478876', '112', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(152, '2025-04-09 11:17:07.481958', '111', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(153, '2025-04-09 11:17:07.486869', '110', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(154, '2025-04-09 11:17:07.490868', '109', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(155, '2025-04-09 11:17:07.493868', '108', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(156, '2025-04-09 11:17:07.497297', '107', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(157, '2025-04-09 11:17:07.506872', '106', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(158, '2025-04-09 11:17:07.510868', '105', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(159, '2025-04-09 11:17:07.513942', '104', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(160, '2025-04-09 11:17:07.519079', '103', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(161, '2025-04-09 11:17:07.522867', '102', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(162, '2025-04-09 11:17:07.526870', '101', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(163, '2025-04-09 11:17:07.529868', '100', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(164, '2025-04-09 11:17:07.534882', '99', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(165, '2025-04-09 11:17:07.539162', '98', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(166, '2025-04-09 11:17:17.632078', '117', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(167, '2025-04-09 11:17:17.638067', '116', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(168, '2025-04-09 11:17:17.642110', '115', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
+(169, '2025-04-09 11:17:17.647286', '114', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
+(170, '2025-04-09 11:18:10.728028', '11', 'Booking #11 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(171, '2025-04-09 11:21:32.264820', '11', 'Booking #11 - room vip 2025 (1 rooms)', 3, '', 13, 1),
+(172, '2025-04-09 11:22:12.100255', '12', 'Booking #12 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(173, '2025-04-09 11:26:33.586655', '13', 'Booking #13 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
+(174, '2025-04-11 12:29:06.785198', '16', 'joker Games', 3, '', 2, 1),
+(175, '2025-04-11 12:29:06.796346', '15', 'صديق الطالب', 3, '', 2, 1),
+(176, '2025-04-11 12:38:40.120556', '18', 'مارس - Mars', 3, '', 2, 1),
+(177, '2025-04-11 12:38:40.135510', '17', 'سكاي تو - SKY 2', 3, '', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -880,6 +1188,8 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (4, 'auth', 'group'),
 (31, 'auth', 'permission'),
 (3, 'auth', 'user'),
+(67, 'authtoken', 'token'),
+(68, 'authtoken', 'tokenproxy'),
 (25, 'blog', 'category'),
 (24, 'blog', 'comment'),
 (23, 'blog', 'post'),
@@ -917,6 +1227,11 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (22, 'HotelManagement', 'location'),
 (20, 'HotelManagement', 'phone'),
 (52, 'notifications', 'notifications'),
+(76, 'oauth2_provider', 'accesstoken'),
+(75, 'oauth2_provider', 'application'),
+(77, 'oauth2_provider', 'grant'),
+(79, 'oauth2_provider', 'idtoken'),
+(78, 'oauth2_provider', 'refreshtoken'),
 (27, 'payments', 'currency'),
 (29, 'payments', 'hotelpaymentmethod'),
 (47, 'payments', 'payment'),
@@ -936,6 +1251,12 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (49, 'services', 'offer'),
 (11, 'services', 'roomtypeservice'),
 (33, 'sessions', 'session'),
+(74, 'sites', 'site'),
+(69, 'social_django', 'association'),
+(70, 'social_django', 'code'),
+(71, 'social_django', 'nonce'),
+(73, 'social_django', 'partial'),
+(72, 'social_django', 'usersocialauth'),
 (50, 'token_blacklist', 'blacklistedtoken'),
 (51, 'token_blacklist', 'outstandingtoken'),
 (34, 'users', 'activitylog'),
@@ -1048,7 +1369,53 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (87, 'notifications', '0004_notifications_recipient_type_and_more', '2025-04-03 17:44:07.963114'),
 (88, 'home', '0002_termsconditions_privacypolicy', '2025-04-03 18:06:27.445755'),
 (89, 'home', '0003_paymenpolicy', '2025-04-03 20:17:38.995453'),
-(90, 'services', '0005_alter_coupon_description', '2025-04-07 20:24:20.035224');
+(90, 'services', '0005_alter_coupon_description', '2025-04-07 20:24:20.035224'),
+(91, 'notifications', '0005_notifications_title', '2025-04-09 09:16:23.410067'),
+(92, 'accounts', '0001_initial', '2025-04-09 11:33:35.922237'),
+(93, 'authtoken', '0001_initial', '2025-04-11 11:07:00.742230'),
+(94, 'authtoken', '0002_auto_20160226_1747', '2025-04-11 11:07:01.115131'),
+(95, 'authtoken', '0003_tokenproxy', '2025-04-11 11:07:01.137317'),
+(96, 'authtoken', '0004_alter_tokenproxy_options', '2025-04-11 11:07:01.161416'),
+(97, 'sites', '0001_initial', '2025-04-11 11:07:01.216041'),
+(98, 'sites', '0002_alter_domain_unique', '2025-04-11 11:07:01.298298'),
+(99, 'default', '0001_initial', '2025-04-11 11:07:01.971729'),
+(100, 'social_auth', '0001_initial', '2025-04-11 11:07:01.983673'),
+(101, 'default', '0002_add_related_name', '2025-04-11 11:07:02.152691'),
+(102, 'social_auth', '0002_add_related_name', '2025-04-11 11:07:02.165946'),
+(103, 'default', '0003_alter_email_max_length', '2025-04-11 11:07:02.197261'),
+(104, 'social_auth', '0003_alter_email_max_length', '2025-04-11 11:07:02.208838'),
+(105, 'default', '0004_auto_20160423_0400', '2025-04-11 11:07:02.338848'),
+(106, 'social_auth', '0004_auto_20160423_0400', '2025-04-11 11:07:02.344743'),
+(107, 'social_auth', '0005_auto_20160727_2333', '2025-04-11 11:07:02.370068'),
+(108, 'social_django', '0006_partial', '2025-04-11 11:07:02.407870'),
+(109, 'social_django', '0007_code_timestamp', '2025-04-11 11:07:02.451184'),
+(110, 'social_django', '0008_partial_timestamp', '2025-04-11 11:07:02.491302'),
+(111, 'social_django', '0009_auto_20191118_0520', '2025-04-11 11:07:02.665777'),
+(112, 'social_django', '0010_uid_db_index', '2025-04-11 11:07:02.782702'),
+(113, 'social_django', '0011_alter_id_fields', '2025-04-11 11:07:03.303320'),
+(114, 'social_django', '0012_usersocialauth_extra_data_new', '2025-04-11 11:07:03.414750'),
+(115, 'social_django', '0013_migrate_extra_data', '2025-04-11 11:07:03.664046'),
+(116, 'social_django', '0014_remove_usersocialauth_extra_data', '2025-04-11 11:07:03.880040'),
+(117, 'social_django', '0015_rename_extra_data_new_usersocialauth_extra_data', '2025-04-11 11:07:04.346780'),
+(118, 'social_django', '0016_alter_usersocialauth_extra_data', '2025-04-11 11:07:04.425381'),
+(119, 'social_django', '0003_alter_email_max_length', '2025-04-11 11:07:04.438929'),
+(120, 'social_django', '0002_add_related_name', '2025-04-11 11:07:04.446880'),
+(121, 'social_django', '0004_auto_20160423_0400', '2025-04-11 11:07:04.454728'),
+(122, 'social_django', '0001_initial', '2025-04-11 11:07:04.461080'),
+(123, 'social_django', '0005_auto_20160727_2333', '2025-04-11 11:07:04.465061'),
+(124, 'oauth2_provider', '0001_initial', '2025-04-11 11:11:47.759803'),
+(125, 'oauth2_provider', '0002_auto_20190406_1805', '2025-04-11 11:11:48.054406'),
+(126, 'oauth2_provider', '0003_auto_20201211_1314', '2025-04-11 11:11:48.332423'),
+(127, 'oauth2_provider', '0004_auto_20200902_2022', '2025-04-11 11:11:49.574251'),
+(128, 'oauth2_provider', '0005_auto_20211222_2352', '2025-04-11 11:11:50.042241'),
+(129, 'oauth2_provider', '0006_alter_application_client_secret', '2025-04-11 11:11:50.354662'),
+(130, 'oauth2_provider', '0007_application_post_logout_redirect_uris', '2025-04-11 11:11:50.485986'),
+(131, 'oauth2_provider', '0008_alter_accesstoken_token', '2025-04-11 11:11:50.602633'),
+(132, 'oauth2_provider', '0009_add_hash_client_secret', '2025-04-11 11:11:50.845928'),
+(133, 'oauth2_provider', '0010_application_allowed_origins', '2025-04-11 11:11:50.947445'),
+(134, 'oauth2_provider', '0011_refreshtoken_token_family', '2025-04-11 11:11:51.096203'),
+(135, 'oauth2_provider', '0012_add_token_checksum', '2025-04-11 11:11:58.098357'),
+(136, 'accounts', '0002_remove_journalentry_journal_entry_created_at_and_more', '2025-04-11 12:25:43.844075');
 
 -- --------------------------------------------------------
 
@@ -1070,12 +1437,33 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('0yl931fcaoku6bj97llo093n65ytagii', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0pEu:p0tPXMJ-0aU94H6G8gQssRGU0PA-O6PBufjO-g6P0X8', '2025-04-18 22:10:16.094012'),
 ('36a5zqbpvthu744luvy0c5wf05bpw2sq', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tzlxv:E8740pbH4c2SDPh1MrvLtFcga4CrMuTtVTzTSg6Kszg', '2025-04-16 00:28:23.262162'),
 ('4qwidslc5rv5bwnnn9vojw17lac024x2', '.eJxVjEsOwiAUAO_C2hB-9bVduvcMBN4Dixow0CYa490NSRe6nZnMm1m3rYvdWqg2EZuZZIdf5h3eQu6Cri5fCseS15o87wnfbePnQuF-2tu_weLa0reCVJQKh2iOMELUMOoRUGryUpkpBiAEmkBGBUaSEJGMhAGFVoQeVZ-20Foq2YbnI9UXm8XnC2gTPq0:1u1Qis:2IExrJIyDL02aZFFhIG1ebU90iA7VXyoH31wv3f9jvs', '2025-04-20 14:11:42.423432'),
-('eda0q1wiv2dye91a0kf2qlpcqwtlhms0', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u1N4w:l-gKgl--tYp0UHMXN8M_xIjj8PWk67lFDCNL2zarzGI', '2025-04-20 10:18:14.986991'),
+('9gbgf7ayr4f7hqr52htplmecg9e65d5x', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u2SSk:DTRMdhRPYKDJ5lRlRKTuiuLteuMx-Cd8rdyB1r6LpGE', '2025-04-23 10:15:18.561767'),
+('el6ii8jchincovzke5oa29c9cww3ot6m', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u3Ddb:ySNQ71ifyf35VWgkRvf7Iu8tcCMkAEEc5TQd0kyPFuw', '2025-04-25 12:37:39.613958'),
 ('jv45xb43mzicwywb7r05tyzrv4jtvn0n', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tzPPv:xQX2Ir4KW2I8JiVl-DDx4EGxDyqojrQQ_60_rDAm7eo', '2025-04-15 00:23:47.372092'),
 ('mgrmv5gfbspwnr9mt07o8wit9i8col80', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0STl:6_0JM_-2J4eq3DJZpuP3LL9VOyCbIoCjx-T4xwEO8VQ', '2025-04-17 21:52:05.094323'),
 ('vh5jd1dq55mqytjnhcmwd43mlo75wrfi', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u0Ofx:wf5WQCnxzxcv203VOMrkmi-9aX5j9zVWv9dWX_ViC5k', '2025-04-17 17:48:25.276072'),
 ('w64itva0ea4mhf9b42xyqdiiifrgpo05', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u1Ldm:sdSGsrBa8G7PrrjxJakSGFK4THg-yQ6j3OQdFmqwMrk', '2025-04-20 08:46:06.802097'),
-('wtvilv2rep1vicsotb4as8ywisw6iwb6', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0ou8:gImGXUz9OMti1QvvoSMavgZJa4itx4rtIymywuzpikM', '2025-04-18 21:48:48.642060');
+('wtvilv2rep1vicsotb4as8ywisw6iwb6', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0ou8:gImGXUz9OMti1QvvoSMavgZJa4itx4rtIymywuzpikM', '2025-04-18 21:48:48.642060'),
+('yginkza1urshcwvas0ishc08cta7f1g0', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u2S6q:y80qUqZwUVdWHnjB5uVazMo5mBPS2z6lfv_R8W_LYno', '2025-04-23 09:52:40.489327');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `django_site`
+--
+
+CREATE TABLE `django_site` (
+  `id` int(11) NOT NULL,
+  `domain` varchar(100) NOT NULL,
+  `name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+--
+-- Dumping data for table `django_site`
+--
+
+INSERT INTO `django_site` (`id`, `domain`, `name`) VALUES
+(1, 'example.com', 'example.com');
 
 -- --------------------------------------------------------
 
@@ -1466,23 +1854,121 @@ CREATE TABLE `notifications_notifications` (
   `deleted_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
-  `recipient_type` varchar(50) NOT NULL
+  `recipient_type` varchar(50) NOT NULL,
+  `title` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
 --
 -- Dumping data for table `notifications_notifications`
 --
 
-INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status`, `notification_type`, `is_active`, `action_url`, `sender_id`, `user_id`, `created_at`, `created_by_id`, `deleted_at`, `updated_at`, `updated_by_id`, `recipient_type`) VALUES
-(22, 'hell', '2025-04-03 17:56:07.252200', '1', '1', 1, NULL, 1, 5, '2025-04-03 17:56:07.252200', 1, NULL, '2025-04-03 17:56:44.621984', 1, 'single_user'),
-(23, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.011128', '0', '2', 1, NULL, 1, 13, '2025-04-03 17:56:36.011128', NULL, NULL, '2025-04-03 17:56:36.011128', NULL, 'all_customers'),
-(24, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.015313', '0', '2', 1, NULL, 1, 12, '2025-04-03 17:56:36.015030', NULL, NULL, '2025-04-03 17:56:36.015313', NULL, 'all_customers'),
-(25, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.022162', '0', '2', 1, NULL, 1, 11, '2025-04-03 17:56:36.022162', NULL, NULL, '2025-04-03 17:56:36.022162', NULL, 'all_customers'),
-(26, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.023578', '0', '2', 1, NULL, 1, 10, '2025-04-03 17:56:36.023578', NULL, NULL, '2025-04-03 17:56:36.023578', NULL, 'all_customers'),
-(27, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.025229', '0', '2', 1, NULL, 1, 9, '2025-04-03 17:56:36.025229', NULL, NULL, '2025-04-03 17:56:36.025229', NULL, 'all_customers'),
-(28, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.027686', '0', '2', 1, NULL, 1, 7, '2025-04-03 17:56:36.027686', NULL, NULL, '2025-04-03 17:56:36.027686', NULL, 'all_customers'),
-(29, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.030319', '0', '2', 1, NULL, 1, 6, '2025-04-03 17:56:36.030319', NULL, NULL, '2025-04-03 17:56:36.030319', NULL, 'all_customers'),
-(30, 'مرحبا بكم اصدقائي', '2025-04-03 17:56:36.035056', '1', '2', 1, NULL, 1, 5, '2025-04-03 17:56:36.034060', NULL, NULL, '2025-04-03 17:56:47.241106', NULL, 'all_customers');
+INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status`, `notification_type`, `is_active`, `action_url`, `sender_id`, `user_id`, `created_at`, `created_by_id`, `deleted_at`, `updated_at`, `updated_by_id`, `recipient_type`, `title`) VALUES
+(118, 'سينتهي حجزك في الغرفة room vip 2025 (احمد) في تمام الساعة 2025-04-09 16:19:50+00:00. هل تريد التمديد؟', '2025-04-09 11:19:50.017815', '0', '0', 1, '/', 2, 9, '2025-04-09 11:19:50.017815', NULL, NULL, '2025-04-09 11:19:50.017815', NULL, 'single_user', 'تذكير بانتهاء الحجز'),
+(119, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:19:50.059276', '0', '1', 1, '/payments/add_guest/1/', 9, 9, '2025-04-09 11:19:50.059276', NULL, NULL, '2025-04-09 11:19:50.059276', NULL, 'single_user', 'اشعار اتمام الحجز'),
+(120, 'سينتهي حجزك في الغرفة room vip 2025 (احمد) في تمام الساعة 2025-04-09 16:23:10+00:00. هل تريد التمديد؟', '2025-04-09 11:23:10.020955', '1', '0', 1, '/', 2, 5, '2025-04-09 11:23:10.020955', NULL, NULL, '2025-04-09 11:23:10.020955', NULL, 'single_user', 'تذكير بانتهاء الحجز'),
+(121, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:23:10.287891', '1', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-09 11:23:10.287891', NULL, NULL, '2025-04-09 11:23:10.287891', NULL, 'single_user', 'اشعار اتمام الحجز'),
+(122, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:26:51.275733', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-09 11:26:51.275085', NULL, NULL, '2025-04-09 11:26:51.275733', NULL, 'single_user', 'اشعار اتمام الحجز');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth2_provider_accesstoken`
+--
+
+CREATE TABLE `oauth2_provider_accesstoken` (
+  `id` bigint(20) NOT NULL,
+  `token` longtext NOT NULL,
+  `expires` datetime(6) NOT NULL,
+  `scope` longtext NOT NULL,
+  `application_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `source_refresh_token_id` bigint(20) DEFAULT NULL,
+  `id_token_id` bigint(20) DEFAULT NULL,
+  `token_checksum` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth2_provider_application`
+--
+
+CREATE TABLE `oauth2_provider_application` (
+  `id` bigint(20) NOT NULL,
+  `client_id` varchar(100) NOT NULL,
+  `redirect_uris` longtext NOT NULL,
+  `client_type` varchar(32) NOT NULL,
+  `authorization_grant_type` varchar(32) NOT NULL,
+  `client_secret` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `skip_authorization` tinyint(1) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `algorithm` varchar(5) NOT NULL,
+  `post_logout_redirect_uris` longtext NOT NULL,
+  `hash_client_secret` tinyint(1) NOT NULL,
+  `allowed_origins` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth2_provider_grant`
+--
+
+CREATE TABLE `oauth2_provider_grant` (
+  `id` bigint(20) NOT NULL,
+  `code` varchar(255) NOT NULL,
+  `expires` datetime(6) NOT NULL,
+  `redirect_uri` longtext NOT NULL,
+  `scope` longtext NOT NULL,
+  `application_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `code_challenge` varchar(128) NOT NULL,
+  `code_challenge_method` varchar(10) NOT NULL,
+  `nonce` varchar(255) NOT NULL,
+  `claims` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth2_provider_idtoken`
+--
+
+CREATE TABLE `oauth2_provider_idtoken` (
+  `id` bigint(20) NOT NULL,
+  `jti` char(32) NOT NULL,
+  `expires` datetime(6) NOT NULL,
+  `scope` longtext NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `application_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth2_provider_refreshtoken`
+--
+
+CREATE TABLE `oauth2_provider_refreshtoken` (
+  `id` bigint(20) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `access_token_id` bigint(20) DEFAULT NULL,
+  `application_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `updated` datetime(6) NOT NULL,
+  `revoked` datetime(6) DEFAULT NULL,
+  `token_family` char(32) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1727,7 +2213,8 @@ INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`
 (14, '2025-03-22 18:36:37.899370', '2025-03-25 18:43:22.979455', NULL, '2025-03-22', 3, 'Updated due to booking #1', NULL, 1, 3, 1, 1),
 (15, '2025-03-31 22:07:22.650304', '2025-03-31 22:26:12.579090', NULL, '2025-03-31', 11, 'Updated due to booking #3', NULL, 1, 3, 1, NULL),
 (16, '2025-04-01 22:54:09.492995', '2025-04-01 22:57:41.974050', NULL, '2025-04-01', 18, 'Updated due to booking #1', NULL, 1, 3, 1, NULL),
-(17, '2025-04-06 10:18:14.923213', '2025-04-06 10:18:14.923213', NULL, '2025-04-06', 14, 'Updated due to booking #2', NULL, 1, 3, 1, NULL);
+(17, '2025-04-06 10:18:14.923213', '2025-04-06 10:18:14.923213', NULL, '2025-04-06', 14, 'Updated due to booking #2', NULL, 1, 3, 1, NULL),
+(18, '2025-04-09 09:54:08.180545', '2025-04-09 11:26:33.582597', NULL, '2025-04-09', 5, 'Updated due to booking #13', NULL, 1, 3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1984,6 +2471,80 @@ CREATE TABLE `service_offers` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `social_auth_association`
+--
+
+CREATE TABLE `social_auth_association` (
+  `id` bigint(20) NOT NULL,
+  `server_url` varchar(255) NOT NULL,
+  `handle` varchar(255) NOT NULL,
+  `secret` varchar(255) NOT NULL,
+  `issued` int(11) NOT NULL,
+  `lifetime` int(11) NOT NULL,
+  `assoc_type` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `social_auth_code`
+--
+
+CREATE TABLE `social_auth_code` (
+  `id` bigint(20) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `code` varchar(32) NOT NULL,
+  `verified` tinyint(1) NOT NULL,
+  `timestamp` datetime(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `social_auth_nonce`
+--
+
+CREATE TABLE `social_auth_nonce` (
+  `id` bigint(20) NOT NULL,
+  `server_url` varchar(255) NOT NULL,
+  `timestamp` int(11) NOT NULL,
+  `salt` varchar(65) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `social_auth_partial`
+--
+
+CREATE TABLE `social_auth_partial` (
+  `id` bigint(20) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `next_step` smallint(5) UNSIGNED NOT NULL CHECK (`next_step` >= 0),
+  `backend` varchar(32) NOT NULL,
+  `timestamp` datetime(6) NOT NULL,
+  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `social_auth_usersocialauth`
+--
+
+CREATE TABLE `social_auth_usersocialauth` (
+  `id` bigint(20) NOT NULL,
+  `provider` varchar(32) NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `modified` datetime(6) NOT NULL,
+  `extra_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`extra_data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `token_blacklist_blacklistedtoken`
 --
 
@@ -2067,11 +2628,11 @@ CREATE TABLE `users_customuser` (
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `chield_id`) VALUES
-(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-06 14:11:42.414401', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
+(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-11 12:37:39.608446', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL),
 (2, 'pbkdf2_sha256$600000$mRv4uTHEeVZ15lsGse5C0D$hF0CKJC3qr2/+yCUM252q7NnSKiBR3C+X1CTuLAv7WI=', '2025-03-22 19:47:22.367954', 0, 'b', '', '', 'b@b.com', 1, '2025-03-21 12:48:09.506849', '2025-03-21 12:48:10.018701', '2025-03-22 19:21:25.333335', 'hotel_manager', '', '', NULL, NULL, 1, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', NULL, NULL, 1, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', NULL, NULL, 1, NULL),
-(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-04-06 08:46:06.797718', 0, 'mosaa', 'mosa', 'mohamed', 'mosaa@mosaa.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-03-11 23:11:54.749987', 'customer', '', 'users/2025/03/12/img27.jpg', NULL, NULL, 1, NULL),
+(5, 'pbkdf2_sha256$600000$wp2FpScP9Phmy67xyNNudv$l8vyvhwQ4ldfSqQMUJueUTXRfzu479WTOV8Nx7qEoNQ=', '2025-04-11 12:17:19.976535', 0, 'mosaa', 'mosa', 'mohamed', '773081924k@gmail.com', 0, '2025-03-05 20:10:14.486479', '2025-03-05 20:10:16.220927', '2025-04-09 09:27:06.163091', 'customer', '', 'users/2025/03/12/img27.jpg', NULL, NULL, 1, NULL),
 (6, 'pbkdf2_sha256$600000$BbNnejHpZOfDP6VnObjVcz$nhsPttz7Xm4OTIK/zOWG0MrrT6q9PAv0jTWQyIffer0=', '2025-03-05 20:13:43.403102', 0, 'mosaa1', '', '', 'mosaa1@mosaa1.com', 0, '2025-03-05 20:13:41.381311', '2025-03-05 20:13:43.386627', '2025-03-05 20:13:43.386627', 'customer', '', '', NULL, NULL, 1, NULL),
 (7, 'pbkdf2_sha256$600000$vUeJuKMqNFAu6egbZVxQ85$uQPUm3C2c/AmXPOaKjFVNqCkRpV44XZB+IcyyRoeX9I=', '2025-03-06 08:09:12.614518', 0, 'asdjsk', '', '', 'asdjsk@asdjsk.com', 0, '2025-03-06 08:09:10.785662', '2025-03-06 08:09:12.595928', '2025-03-06 08:09:12.595928', 'customer', '', '', NULL, NULL, 1, NULL),
 (8, 'pbkdf2_sha256$600000$EWBPrY4FupGVI4TQNhXc0c$34BYeYmfyKXBq+wd4pmTAYBvOg94iuzQIzR0t+6EmlM=', '2025-03-08 23:09:07.660012', 0, 'alslslsl', '', '', 'alslslsl@alslslsl.com', 0, '2025-03-08 23:09:05.884851', '2025-03-08 23:09:07.648169', '2025-03-22 19:39:25.883858', 'hotel_manager', '', '', NULL, NULL, 1, NULL),
@@ -2116,6 +2677,31 @@ CREATE TABLE `users_customuser_user_permissions` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `accounts_chartofaccounts`
+--
+ALTER TABLE `accounts_chartofaccounts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `accounts_chartofacco_account_parent_id_aab27f60_fk_accounts_` (`account_parent_id`),
+  ADD KEY `accounts_chartofacco_created_by_id_f216d28f_fk_users_cus` (`created_by_id`),
+  ADD KEY `accounts_chartofacco_updated_by_id_aa33c263_fk_users_cus` (`updated_by_id`);
+
+--
+-- Indexes for table `accounts_journalentry`
+--
+ALTER TABLE `accounts_journalentry`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `accounts_journalentr_created_by_id_c9c8bf66_fk_users_cus` (`created_by_id`),
+  ADD KEY `accounts_journalentr_journal_entry_accoun_31c22020_fk_accounts_` (`journal_entry_account_id`),
+  ADD KEY `accounts_journalentr_updated_by_id_83723a94_fk_users_cus` (`updated_by_id`);
+
+--
+-- Indexes for table `authtoken_token`
+--
+ALTER TABLE `authtoken_token`
+  ADD PRIMARY KEY (`key`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `auth_group`
@@ -2317,6 +2903,13 @@ ALTER TABLE `django_session`
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
+-- Indexes for table `django_site`
+--
+ALTER TABLE `django_site`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `django_site_domain_a2e37b91_uniq` (`domain`);
+
+--
 -- Indexes for table `home_contactmessage`
 --
 ALTER TABLE `home_contactmessage`
@@ -2466,6 +3059,54 @@ ALTER TABLE `notifications_notifications`
   ADD KEY `notifications_notifi_created_by_id_17bcaf8b_fk_users_cus` (`created_by_id`),
   ADD KEY `notifications_notifi_updated_by_id_cb05afb1_fk_users_cus` (`updated_by_id`),
   ADD KEY `notifications_notifi_user_id_429b0a5e_fk_users_cus` (`user_id`);
+
+--
+-- Indexes for table `oauth2_provider_accesstoken`
+--
+ALTER TABLE `oauth2_provider_accesstoken`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `oauth2_provider_accesstoken_token_checksum_85319a26_uniq` (`token_checksum`),
+  ADD UNIQUE KEY `source_refresh_token_id` (`source_refresh_token_id`),
+  ADD UNIQUE KEY `id_token_id` (`id_token_id`),
+  ADD KEY `oauth2_provider_acce_application_id_b22886e1_fk_oauth2_pr` (`application_id`),
+  ADD KEY `oauth2_provider_acce_user_id_6e4c9a65_fk_users_cus` (`user_id`);
+
+--
+-- Indexes for table `oauth2_provider_application`
+--
+ALTER TABLE `oauth2_provider_application`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `client_id` (`client_id`),
+  ADD KEY `oauth2_provider_appl_user_id_79829054_fk_users_cus` (`user_id`),
+  ADD KEY `oauth2_provider_application_client_secret_53133678` (`client_secret`);
+
+--
+-- Indexes for table `oauth2_provider_grant`
+--
+ALTER TABLE `oauth2_provider_grant`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`),
+  ADD KEY `oauth2_provider_gran_application_id_81923564_fk_oauth2_pr` (`application_id`),
+  ADD KEY `oauth2_provider_grant_user_id_e8f62af8_fk_users_customuser_id` (`user_id`);
+
+--
+-- Indexes for table `oauth2_provider_idtoken`
+--
+ALTER TABLE `oauth2_provider_idtoken`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `jti` (`jti`),
+  ADD KEY `oauth2_provider_idto_application_id_08c5ff4f_fk_oauth2_pr` (`application_id`),
+  ADD KEY `oauth2_provider_idtoken_user_id_dd512b59_fk_users_customuser_id` (`user_id`);
+
+--
+-- Indexes for table `oauth2_provider_refreshtoken`
+--
+ALTER TABLE `oauth2_provider_refreshtoken`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `access_token_id` (`access_token_id`),
+  ADD UNIQUE KEY `oauth2_provider_refreshtoken_token_revoked_af8a5134_uniq` (`token`,`revoked`),
+  ADD KEY `oauth2_provider_refr_application_id_2d1c311b_fk_oauth2_pr` (`application_id`),
+  ADD KEY `oauth2_provider_refr_user_id_da837fce_fk_users_cus` (`user_id`);
 
 --
 -- Indexes for table `payments_currency`
@@ -2635,6 +3276,46 @@ ALTER TABLE `service_offers`
   ADD KEY `service_offers_updated_by_id_42cd54e5_fk_users_customuser_id` (`updated_by_id`);
 
 --
+-- Indexes for table `social_auth_association`
+--
+ALTER TABLE `social_auth_association`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `social_auth_association_server_url_handle_078befa2_uniq` (`server_url`,`handle`);
+
+--
+-- Indexes for table `social_auth_code`
+--
+ALTER TABLE `social_auth_code`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `social_auth_code_email_code_801b2d02_uniq` (`email`,`code`),
+  ADD KEY `social_auth_code_code_a2393167` (`code`),
+  ADD KEY `social_auth_code_timestamp_176b341f` (`timestamp`);
+
+--
+-- Indexes for table `social_auth_nonce`
+--
+ALTER TABLE `social_auth_nonce`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `social_auth_nonce_server_url_timestamp_salt_f6284463_uniq` (`server_url`,`timestamp`,`salt`);
+
+--
+-- Indexes for table `social_auth_partial`
+--
+ALTER TABLE `social_auth_partial`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `social_auth_partial_token_3017fea3` (`token`),
+  ADD KEY `social_auth_partial_timestamp_50f2119f` (`timestamp`);
+
+--
+-- Indexes for table `social_auth_usersocialauth`
+--
+ALTER TABLE `social_auth_usersocialauth`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `social_auth_usersocialauth_provider_uid_e6b5e668_uniq` (`provider`,`uid`),
+  ADD KEY `social_auth_usersoci_user_id_17d28448_fk_users_cus` (`user_id`),
+  ADD KEY `social_auth_usersocialauth_uid_796e51dc` (`uid`);
+
+--
 -- Indexes for table `token_blacklist_blacklistedtoken`
 --
 ALTER TABLE `token_blacklist_blacklistedtoken`
@@ -2686,6 +3367,18 @@ ALTER TABLE `users_customuser_user_permissions`
 --
 
 --
+-- AUTO_INCREMENT for table `accounts_chartofaccounts`
+--
+ALTER TABLE `accounts_chartofaccounts`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+
+--
+-- AUTO_INCREMENT for table `accounts_journalentry`
+--
+ALTER TABLE `accounts_journalentry`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `auth_group`
 --
 ALTER TABLE `auth_group`
@@ -2701,7 +3394,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=553;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -2737,7 +3430,7 @@ ALTER TABLE `blog_tag`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
@@ -2749,7 +3442,7 @@ ALTER TABLE `bookings_bookingdetail`
 -- AUTO_INCREMENT for table `bookings_bookinghistory`
 --
 ALTER TABLE `bookings_bookinghistory`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `bookings_extensionmovement`
@@ -2773,7 +3466,7 @@ ALTER TABLE `customer_favourites`
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
@@ -2809,13 +3502,19 @@ ALTER TABLE `django_celery_beat_solarschedule`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+
+--
+-- AUTO_INCREMENT for table `django_site`
+--
+ALTER TABLE `django_site`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `home_contactmessage`
@@ -2935,7 +3634,37 @@ ALTER TABLE `hotelmanagement_phone`
 -- AUTO_INCREMENT for table `notifications_notifications`
 --
 ALTER TABLE `notifications_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+
+--
+-- AUTO_INCREMENT for table `oauth2_provider_accesstoken`
+--
+ALTER TABLE `oauth2_provider_accesstoken`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `oauth2_provider_application`
+--
+ALTER TABLE `oauth2_provider_application`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `oauth2_provider_grant`
+--
+ALTER TABLE `oauth2_provider_grant`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `oauth2_provider_idtoken`
+--
+ALTER TABLE `oauth2_provider_idtoken`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `oauth2_provider_refreshtoken`
+--
+ALTER TABLE `oauth2_provider_refreshtoken`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments_currency`
@@ -2983,7 +3712,7 @@ ALTER TABLE `reviews_roomreview`
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
@@ -3040,6 +3769,36 @@ ALTER TABLE `service_offers`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `social_auth_association`
+--
+ALTER TABLE `social_auth_association`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `social_auth_code`
+--
+ALTER TABLE `social_auth_code`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `social_auth_nonce`
+--
+ALTER TABLE `social_auth_nonce`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `social_auth_partial`
+--
+ALTER TABLE `social_auth_partial`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `social_auth_usersocialauth`
+--
+ALTER TABLE `social_auth_usersocialauth`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `token_blacklist_blacklistedtoken`
 --
 ALTER TABLE `token_blacklist_blacklistedtoken`
@@ -3061,7 +3820,7 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
@@ -3078,6 +3837,28 @@ ALTER TABLE `users_customuser_user_permissions`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `accounts_chartofaccounts`
+--
+ALTER TABLE `accounts_chartofaccounts`
+  ADD CONSTRAINT `accounts_chartofacco_account_parent_id_aab27f60_fk_accounts_` FOREIGN KEY (`account_parent_id`) REFERENCES `accounts_chartofaccounts` (`id`),
+  ADD CONSTRAINT `accounts_chartofacco_created_by_id_f216d28f_fk_users_cus` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `accounts_chartofacco_updated_by_id_aa33c263_fk_users_cus` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `accounts_journalentry`
+--
+ALTER TABLE `accounts_journalentry`
+  ADD CONSTRAINT `accounts_journalentr_created_by_id_c9c8bf66_fk_users_cus` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
+  ADD CONSTRAINT `accounts_journalentr_journal_entry_accoun_31c22020_fk_accounts_` FOREIGN KEY (`journal_entry_account_id`) REFERENCES `accounts_chartofaccounts` (`id`),
+  ADD CONSTRAINT `accounts_journalentr_updated_by_id_83723a94_fk_users_cus` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `authtoken_token`
+--
+ALTER TABLE `authtoken_token`
+  ADD CONSTRAINT `authtoken_token_user_id_35299eff_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `auth_group_permissions`
@@ -3281,6 +4062,43 @@ ALTER TABLE `notifications_notifications`
   ADD CONSTRAINT `notifications_notifi_user_id_429b0a5e_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
+-- Constraints for table `oauth2_provider_accesstoken`
+--
+ALTER TABLE `oauth2_provider_accesstoken`
+  ADD CONSTRAINT `oauth2_provider_acce_application_id_b22886e1_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
+  ADD CONSTRAINT `oauth2_provider_acce_id_token_id_85db651b_fk_oauth2_pr` FOREIGN KEY (`id_token_id`) REFERENCES `oauth2_provider_idtoken` (`id`),
+  ADD CONSTRAINT `oauth2_provider_acce_source_refresh_token_e66fbc72_fk_oauth2_pr` FOREIGN KEY (`source_refresh_token_id`) REFERENCES `oauth2_provider_refreshtoken` (`id`),
+  ADD CONSTRAINT `oauth2_provider_acce_user_id_6e4c9a65_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `oauth2_provider_application`
+--
+ALTER TABLE `oauth2_provider_application`
+  ADD CONSTRAINT `oauth2_provider_appl_user_id_79829054_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `oauth2_provider_grant`
+--
+ALTER TABLE `oauth2_provider_grant`
+  ADD CONSTRAINT `oauth2_provider_gran_application_id_81923564_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
+  ADD CONSTRAINT `oauth2_provider_grant_user_id_e8f62af8_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `oauth2_provider_idtoken`
+--
+ALTER TABLE `oauth2_provider_idtoken`
+  ADD CONSTRAINT `oauth2_provider_idto_application_id_08c5ff4f_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
+  ADD CONSTRAINT `oauth2_provider_idtoken_user_id_dd512b59_fk_users_customuser_id` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `oauth2_provider_refreshtoken`
+--
+ALTER TABLE `oauth2_provider_refreshtoken`
+  ADD CONSTRAINT `oauth2_provider_refr_access_token_id_775e84e8_fk_oauth2_pr` FOREIGN KEY (`access_token_id`) REFERENCES `oauth2_provider_accesstoken` (`id`),
+  ADD CONSTRAINT `oauth2_provider_refr_application_id_2d1c311b_fk_oauth2_pr` FOREIGN KEY (`application_id`) REFERENCES `oauth2_provider_application` (`id`),
+  ADD CONSTRAINT `oauth2_provider_refr_user_id_da837fce_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
+
+--
 -- Constraints for table `payments_currency`
 --
 ALTER TABLE `payments_currency`
@@ -3428,6 +4246,12 @@ ALTER TABLE `service_offers`
   ADD CONSTRAINT `service_offers_created_by_id_8ca73e25_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `service_offers_hotel_id_d29c1d1e_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
   ADD CONSTRAINT `service_offers_updated_by_id_42cd54e5_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
+
+--
+-- Constraints for table `social_auth_usersocialauth`
+--
+ALTER TABLE `social_auth_usersocialauth`
+  ADD CONSTRAINT `social_auth_usersoci_user_id_17d28448_fk_users_cus` FOREIGN KEY (`user_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `token_blacklist_blacklistedtoken`

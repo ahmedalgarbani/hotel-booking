@@ -64,9 +64,11 @@
                     <div class="row">
                         <div class="form-content">
                             <div class="user-profile-action d-flex align-items-center pb-4">
+                              {% if user.image %}
                                 <div class="user-pro-img">
                                     <img id="profile-image" src="{{ user.image.url }}" alt="User Image">
                                 </div>
+                                {% endif %}
                                 <div class="upload-btn-box">
                                     <p class="pb-2 font-size-15 line-height-24">
                                         الحد الأقصى لحجم الملف هو 5 ميجا بايت ، والحد الأدنى للأبعاد: 150 × 150 والملفات المناسبة هي .jpg &amp; .بي إن جي

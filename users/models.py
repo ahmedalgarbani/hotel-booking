@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(
         max_length=20,
         choices=USER_TYPE_CHOICES,
+        default='customer',
         verbose_name=_('نوع المستخدم'),
         help_text=_('نوع حساب المستخدم في النظام')
     )

@@ -26,8 +26,6 @@ class JournalEntry(BaseModel):
     journal_entry_account = models.ForeignKey(ChartOfAccounts, on_delete=models.CASCADE)
     journal_entry_in_amount = models.DecimalField(max_digits=10, decimal_places=2)
     journal_entry_out_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    journal_entry_created_at = models.DateTimeField(auto_now_add=True)
-    journal_entry_updated_at = models.DateTimeField(auto_now=True)
     journal_entry_notes = models.TextField()
     journal_entry_currency = models.CharField(max_length=100)
     journal_entry_exchange_rate = models.DecimalField(max_digits=10, decimal_places=2)

@@ -71,7 +71,6 @@ The JSON format must be exactly:
         response = requests.post(url, headers=headers, json=data)
         if response.status_code == 200:
             json_data = response.json()
-            print(json_data)
             
             if 'candidates' in json_data and json_data['candidates']:
                 message = json_data['candidates'][0].get('content', {}).get('parts', [{}])[0].get('text', '')
@@ -90,7 +89,6 @@ The JSON format must be exactly:
                     try:
                         result_json = json.loads(message)
                         matching_hotels = result_json.get('matching_hotels', [])
-                        print(matching_hotels)
                         return matching_hotels
                     except json.JSONDecodeError as e:
                         print(f"Error decoding JSON: {e}\nMessage content: {message}")

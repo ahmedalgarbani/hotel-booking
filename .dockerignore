@@ -54,7 +54,7 @@ doctors_appointment/static/
 *.iml
 *.iws
 .idea_modules/
-
+.env
 # Virtual Environment
 venv/
 ENV/
