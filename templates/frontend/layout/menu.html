@@ -22,101 +22,94 @@
         </div>
         <div class="col-lg-6">
           <div class="header-top-content">
-            <div class="header-right d-flex align-items-center justify-content-end">
-              <div class="header-right-action m-2">
-                <h6 >{{setting.default_language}}</h6>
-               
-              </div>
-
+            <div class="header-right d-flex align-items-center justify-content-end gap-3">
               <div class="header-right-action">
-                <div class="select-contain select--contain w-auto">
-                  
-                    <h6 >{{setting.default_currency}}</h6>
-                    
+                <h6>{{setting.default_language}}</h6>
+              </div>
+              <div class="header-right-action">
+                <h6>{{setting.default_currency}}</h6>
+              </div>
+              <!-- Notifications -->
+              <div class="header-right-action position-relative">
+                <li class="nav-item dropdown noti-nav list-unstyled">
+                  <a href="#" class="nav-link p-0 position-relative" data-bs-toggle="dropdown" aria-expanded="false" id="notification-button">
+                    <i class="fa-solid fa-bell fs-5"></i>
+                    {% if unread_notifications_count > 0 %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-count">
+                      {{ unread_notifications_count }}
+                    </span>
+                    {% endif %}
+                  </a>
+                  <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-end mt-2">
+                    <div class="dropdown-header drop-reveal-header">
+                      <h6 class="title">
+                        لديك <strong class="text-black">{{ unread_notifications_count }}</strong> إشعارات غير مقروءة
+                      </h6>
+                    </div>
+                    <div class="list-group drop-reveal-list" id="notification-list">
+                      {% for notification in notifications %}
+                        {% if notification.status == '0' %}
+                        <a href="{% url 'notifications:handle_notification' notification.id %}" class="list-group-item list-group-item-action unread" data-id="{{ notification.id }}">
+                          <div class="msg-body d-flex align-items-center">
+                            <div class="icon-element flex-shrink-0 me-3 ms-0">
+                              <i class="la la-bell"></i>
+                            </div>
+                            <div class="msg-content w-100">
+                              <h3 class="title pb-1">{{ notification.message }}</h3>
+                              <p class="msg-text">من: {{ notification.sender.get_full_name }}</p>
+                              <p class="msg-text">{{ notification.send_time|timesince }} مضت</p>
+                              <p class="msg-type">
+                                {% if notification.notification_type == '0' %}
+                                  <span class="badge bg-info">معلومة</span>
+                                {% elif notification.notification_type == '1' %}
+                                  <span class="badge bg-warning">تحذير</span>
+                                {% elif notification.notification_type == '2' %}
+                                  <span class="badge bg-success">نجاح</span>
+                                {% elif notification.notification_type == '3' %}
+                                  <span class="badge bg-danger">خطأ</span>
+                                {% endif %}
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'notifications:all_notifications' user.id %}" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
+                    {% endif %}
+                  </div>
+                </li>
+              </div>
+              <!-- /Notifications -->
+              {% comment %} <a href="{% url 'payments:add_guest' 1 %}" class="">add guest</a> {% endcomment %}
+              {% if request.user.is_authenticated %}
+              <div class="header-right-action">
+                <div class="dropdown">
+                  <button class="theme-btn theme-btn-small dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="la la-user me-1"></i> {{ request.user.username }}
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                    {% if request.user.is_customer %}
+                    <li><a class="dropdown-item" href="{% url 'customer:user_dashboard_index' %}"><i class="la la-user-circle me-2"></i>الملف الشخصي</a></li>
+                    {% endif %}
+                    <li><a class="dropdown-item" href="{% url 'customer:user_dashboard_bookings' %}"><i class="la la-hotel me-2"></i>حجوزاتي</a></li>
+                    {% if request.user.is_staff %}
+                    <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="la la-cog me-2"></i>لوحة التحكم</a></li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}"><i class="la la-sign-out me-2"></i>تسجيل خروج</a></li>
+                   
+                  </ul>
                 </div>
               </div>
-                                  <!-- Notifications -->
-                                  <div class="notification-container">
-                                    <li class="nav-item dropdown noti-nav me-3 pe-0">
-                                        <a href="#" class="dropdown-toggle nav-link p-0" data-bs-toggle="dropdown" aria-expanded="false" id="notification-button">
-                                            <i class="fa-solid fa-bell"></i>
-                                            {% if unread_notifications_count > 0 %}
-                                            <span class="badge bg-danger" id="notification-count">{{ unread_notifications_count }}</span>
-                                            {% endif %}
-                                        </a>
-                                        <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
-                                          <div class="dropdown-header drop-reveal-header">
-                                              <h6 class="title">
-                                                  لديك
-                                                  <strong class="text-black">{{ unread_notifications_count }}</strong> إشعارات غير مقروءة
-                                              </h6>
-                                          </div>
-                                          <div class="list-group drop-reveal-list">
-                                              {% for notification in notifications %}
-                                                  {% if notification.status == '0' %}  <!-- عرض فقط الإشعارات غير المقروءة -->
-                                                  <a href="{% url 'notifications:handle_notification' notification.id %}" class="list-group-item list-group-item-action unread">
-                                                      <div class="msg-body d-flex align-items-center">
-                                                          <div class="icon-element flex-shrink-0 me-3 ms-0">
-                                                              <i class="la la-bell"></i>
-                                                          </div>
-                                                          <div class="msg-content w-100">
-                                                              <h3 class="title pb-1">{{ notification.message }}</h3>
-                                                              <p class="msg-text">من: {{ notification.sender.get_full_name }}</p>  <!-- عرض اسم المرسل -->
-                                                              <p class="msg-text">{{ notification.send_time|timesince }} مضت</p>
-                              
-                                                              <!-- تحديد نوع الإشعار وعرضه -->
-                                                              <p class="msg-type">
-                                                                  {% if notification.notification_type == '0' %}
-                                                                      <span class="badge bg-info">معلومة</span>
-                                                                  {% elif notification.notification_type == '1' %}
-                                                                      <span class="badge bg-warning">تحذير</span>
-                                                                  {% elif notification.notification_type == '2' %}
-                                                                      <span class="badge bg-success">نجاح</span>
-                                                                  {% elif notification.notification_type == '3' %}
-                                                                      <span class="badge bg-danger">خطأ</span>
-                                                                  {% endif %}
-                                                              </p>
-                                                          </div>
-                                                      </div>
-                                                  </a>
-                                                  {% endif %}
-                                              {% endfor %}
-                                          </div>
-                                          {% if request.user.is_authenticated %}
-                                          <a href="{% url 'notifications:all_notifications' user.id %}" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
-                                          {% endif %}
-                                        </div>
-                                    </li>
-                                </div>
-                                <!-- /Notifications -->
-                                {% comment %} <a href="{% url 'payments:add_guest' 1 %}" class="">add guest</a> {% endcomment %}
-                {% if request.user.is_authenticated %}
-                <div class="header-right-action">
-                  <div class="dropdown">
-                    <button class="theme-btn theme-btn-small dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="la la-user me-1"></i> {{ request.user.username }}
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                      {% if request.user.is_customer %}
-                      <li><a class="dropdown-item" href="{% url 'customer:user_dashboard_index' %}"><i class="la la-user-circle me-2"></i>الملف الشخصي</a></li>
-                      {% endif %}
-                      <li><a class="dropdown-item" href="{% url 'customer:user_dashboard_bookings' %}"><i class="la la-hotel me-2"></i>حجوزاتي</a></li>
-                      {% if request.user.is_staff %}
-                      <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="la la-cog me-2"></i>لوحة التحكم</a></li>
-                      {% endif %}
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}"><i class="la la-sign-out me-2"></i>تسجيل خروج</a></li>
-                   
-                    </ul>
-                  </div>
-                </div>
               {% else %}
-                <div class="header-right-action">
+              <div class="header-right-action">
                   {% comment %} <a href="#" class="theme-btn theme-btn-small theme-btn-transparent me-1" data-bs-toggle="modal" data-bs-target="#signupPopupForm">سجل</a> {% endcomment %}
-                  <a href="{% url 'users:register' %}" class="theme-btn theme-btn-small theme-btn-transparent me-1">سجل</a>
-                  <a href="{% url 'users:login' %}" class="theme-btn theme-btn-small">تسجيل الدخول</a>
+                <a href="{% url 'users:register' %}" class="theme-btn theme-btn-small theme-btn-transparent me-1">سجل</a>
+                <a href="{% url 'users:login' %}" class="theme-btn theme-btn-small">تسجيل الدخول</a>
                   {% comment %} <a href="#" class="theme-btn theme-btn-small" data-bs-toggle="modal" data-bs-target="#loginPopupForm">تسجيل الدخول</a> {% endcomment %}
-                </div>
+              </div>
               {% endif %}
             </div>
           </div>
@@ -124,7 +117,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="header-menu-wrapper padding-right-100px padding-left-100px">
     <div class="container-fluid">
       <div class="row">
@@ -147,16 +140,12 @@
                   <li>
                     <a href="{{ item.url }}" class="px-2">
                       {{ item.name }}
-                      {% if item.submenu %}
-                      <i class="la la-angle-down"></i>
-                      {% endif %}
+                      {% if item.submenu %}<i class="la la-angle-down"></i>{% endif %}
                     </a>
                     {% if item.submenu %}
                     <ul class="dropdown-menu-item">
                       {% for menu in item.submenu %}
-                      <li>
-                        <a href="{{ menu.url }}">{{ menu.name }}</a>
-                      </li>
+                      <li><a href="{{ menu.url }}">{{ menu.name }}</a></li>
                       {% endfor %}
                     </ul>
                     {% endif %}
@@ -178,40 +167,39 @@
     </div>
   </div>
 </header>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-      var notificationButton = document.getElementById("notification-button");
-      var notificationList = document.getElementById("notification-list");
-      var notificationBadge = document.getElementById("notification-count");
-  
-      notificationButton.addEventListener("click", function () {
-          // Toggle the display of the notification list
-          notificationList.style.display = (notificationList.style.display === "block") ? "none" : "block";
-      });
-  
-      // إضافة حدث للنقر على كل إشعار
-      notificationList.addEventListener("click", function (event) {
-          if (event.target.closest("li")) {
-              var notificationItem = event.target.closest("li");
-              // إرسال طلب Ajax لجعل الإشعار مقروء
-              fetch("{% url 'notifications:mark_notifications_read' %}", {
-                  method: "POST",
-                  headers: {
-                      "X-CSRFToken": "{{ csrf_token }}",
-                      "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({ notification_id: notificationItem.dataset.id })  // إرسال ID الإشعار
-              })
-              .then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                      notificationItem.style.display = "none"; // إخفاء الإشعار بعد قراءته
-                      // تحديث العداد
-                      var count = parseInt(notificationBadge.textContent) - 1;
-                      notificationBadge.textContent = count > 0 ? count : '';
-                  }
-              });
+    var notificationButton = document.getElementById("notification-button");
+    var notificationList = document.getElementById("notification-list");
+    var notificationBadge = document.getElementById("notification-count");
+
+    notificationButton.addEventListener("click", function () {
+        // Toggle the display of the notification list
+        notificationList.style.display = (notificationList.style.display === "block") ? "none" : "block";
+    });
+
+    // إضافة حدث للنقر على كل إشعار
+    notificationList.addEventListener("click", function (event) {
+      if (event.target.closest("a")) {
+        var notificationItem = event.target.closest("a");
+        fetch("{% url 'notifications:mark_notifications_read' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ notification_id: notificationItem.dataset.id })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            notificationItem.remove();
+            var count = parseInt(notificationBadge.textContent) - 1;
+            notificationBadge.textContent = count > 0 ? count : '';
           }
-      });
+        });
+      }
+    });
   });
-  </script>
+</script>

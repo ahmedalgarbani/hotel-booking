@@ -85,17 +85,29 @@
                 <div class="input-box">
                   <label class="label-text">نوع الغرفة</label>
                   <div class="form-group">
-                    <select class="select-contain-select" name="category_type">
-                      <option value="">اختر صنف</option>
-                      {% for cat in categories %}
-                      <option value="{{ cat.id }}">{{ cat.name }}</option>
-                      {% endfor %}
-                    </select>
+                    <div class="dropdown dropdown-contain gty-container">
+                      <a class="dropdown-toggle dropdown-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="roomTypeText" class="default_capacity" data-text="نوع الغرفة" data-text-multi="نوع الغرفة">
+                          اختر نوع الغرفة
+                        </span> -
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-wrap">
+                        <div class="dropdown-item">
+                          {% for cat in categories %}
+                            <div class="form-check mb-1">
+                              <input class="form-check-input" type="radio" name="category_type" id="cat{{ cat.id }}" value="{{ cat.id }}" onchange="updateRoomTypeLabel('{{ cat.name }}')">
+                              <label class="form-check-label" for="cat{{ cat.id }}">
+                                {{ cat.name }}
+                              </label>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               {% endif %}
-              <!-- end col-lg-3 -->
 
               <div class="col-lg-3">
                 <div class="input-box">
@@ -190,6 +202,12 @@
       alert('Failed to fetch hotels');
     });
   });
+
+  function updateRoomTypeLabel(name) {
+    const label = document.getElementById("roomTypeText");
+    label.textContent = name;
+  }
+  
 </script>
 
 {% endif %}
