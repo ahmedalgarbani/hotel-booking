@@ -56,6 +56,19 @@
                             {% endfor %}
                         </div>
                         {% endif %}
+                                            <!-- زر تسجيل الدخول بجوجل -->
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">
+                            <img src="https://www.google.com/favicon.ico" alt="Google" class="me-2" width="20">
+                            <span>تسجيل دخول باستخدام جوجل</span>
+                        </a>
+                    </div>
+
+                    <!-- فاصل بين جوجل والتسجيل عبر الإيميل -->
+                    <div class="text-center my-4 position-relative">
+                        <hr class="w-100">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">أو سجل دخولك عبر الإيميل</span>
+                    </div>
                         <form id="registrationForm" action='{% url "users:register" %}' method='POST' enctype="multipart/form-data"  novalidate>
                            {% csrf_token %}
                             <div class="row g-3">

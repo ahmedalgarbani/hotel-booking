@@ -65,10 +65,9 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'accounts',
     'ckeditor',
-
-        'rest_framework.authtoken', 
-        'social_django',
-        'oauth2_provider',
+    'rest_framework.authtoken', 
+    'social_django',
+    'oauth2_provider',
 
     
     

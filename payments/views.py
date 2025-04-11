@@ -35,7 +35,6 @@ def process_booking(request, room_id):
         adult_number = int(request.POST.get("adult_number", 1))
         extra_services = request.POST.getlist("extra_services")
 
-        # Validate inputs
         if not check_in or not check_out:
             messages.error(request, "يرجى تحديد تاريخ الدخول والخروج.")
             return redirect('rooms:room_detail', room_id=room_id)
@@ -64,16 +63,13 @@ def process_booking(request, room_id):
             messages.error(request, f"السعة القصوى لهذا النوع من الغرف هي {room.max_capacity} أشخاص.")
             return redirect('rooms:room_detail', room_id=room_id)
 
-        # Check room availability
         is_available, message = check_room_availability(room, room.hotel, room_number)
         if not is_available:
             messages.error(request, message)
             return redirect('rooms:room_detail', room_id=room_id)
 
-        # Calculate the total cost
-        total_price = calculate_total_cost(room, check_in_date, check_out_date, room_number)
+        total_price,room_price= calculate_total_cost(room, check_in_date, check_out_date, room_number)
 
-        # Calculate extra services cost
         extra_services_details = []
         extra_services_total = 0.0
 
@@ -82,31 +78,31 @@ def process_booking(request, room_id):
             if service:
                 service_price = float(service.additional_fee)
                 extra_services_total += service_price
+                extra_services_total *= room_number
                 extra_services_details.append({
                     "id": service.id,
                     "name": service.name,
                     "price": service_price
                 })
-        print(extra_services_total)
-        print(extra_services_total)
-        print(extra_services_total)
-        print(extra_services_total)
-        # Calculate grand total
+      
         grand_total = total_price + extra_services_total
 
-        # Save booking data in session
+        from decimal import Decimal
+
         request.session["booking_data"] = {
             "hotel_id": room.hotel.id,
             "room_id": room_id,
             "check_in": check_in,
             "check_out": check_out,
+            "room_price": float(room_price) if isinstance(room_price, Decimal) else room_price,
             "room_number": room_number,
             "adult_number": adult_number,
-            "total_price": grand_total,
+            "total_price": float(grand_total) if isinstance(grand_total, Decimal) else grand_total,
             "extra_services": extra_services_details,
-            "extra_services_total": extra_services_total,
-            "grand_total": grand_total,
+            "extra_services_total": float(extra_services_total) if isinstance(extra_services_total, Decimal) else extra_services_total,
+            "grand_total": float(grand_total) if isinstance(grand_total, Decimal) else grand_total,
         }
+
 
         return redirect(reverse("payments:checkout", args=[room_id]))
 

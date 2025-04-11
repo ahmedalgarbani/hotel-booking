@@ -361,7 +361,7 @@ START TOUR DETAIL AREA
                 
 
                 <!-- start cabin-type -->
-                <div class="cabin-type padding-top-30px">
+                <div onClick="window.location.href='{% url 'rooms:room_detail' availability.room_type.id %}';" class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
                     <div class="cabin-type-img flex-shrink-0">
                       <!-- Dynamically render the main room image -->

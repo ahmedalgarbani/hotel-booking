@@ -37,8 +37,6 @@ def create_payment_history_on_change(sender, instance, created, **kwargs):
         PaymentHistory.objects.create(
             payment=instance,
             changed_by=instance.user,
-            previous_status=str(pre_instance.payment_status),
-            new_status=str(instance.payment_status),
             previous_payment_status=pre_instance.payment_status,
             new_payment_status=instance.payment_status,
             previous_payment_totalamount=pre_instance.payment_totalamount,

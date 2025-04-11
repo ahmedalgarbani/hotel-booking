@@ -18,39 +18,29 @@ from datetime import timedelta
 from django.db.models import Q
 
 def calculate_total_cost(room, check_in_date, check_out_date, room_number):
-    """
-    Calculate the total cost for a booking based on room prices and room type base price.
-    
-    Args:
-        room (RoomType): The room type being booked.
-        check_in_date (date): The check-in date.
-        check_out_date (date): The check-out date.
-        room_number (int): The number of rooms being booked.
-    
-    Returns:
-        float: The total cost for the booking.
-    """
     total_cost = 0.0
+    last_room_price = None  # Track last room price
 
     delta = check_out_date - check_in_date
     num_days = delta.days
 
     for i in range(num_days):
         current_date = check_in_date + timedelta(days=i)
-
         room_price = RoomPrice.objects.filter(
             room_type=room,
             date_from__lte=current_date,
             date_to__gte=current_date
         ).first()
-
+        
         if room_price:
-            total_cost += float(room_price.price) *room_number
+            total_cost += float(room_price.price) * room_number
+            last_room_price = room_price.price  # Store last price
         else:
-            total_cost += float(room.base_price) *room_number
+            total_cost += float(room.base_price) * room_number
+            last_room_price = room.base_price  # Default to base price
 
+    return total_cost, last_room_price  # Ensure second value is not None
 
-    return total_cost
 
 def get_room_price(room):
     """
