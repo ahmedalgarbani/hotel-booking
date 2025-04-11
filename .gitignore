@@ -41,18 +41,20 @@ doctors_appointment/static/
 !.vscode/extensions.json
 *.code-workspace
 .history/
-
+*.vscode
+.idea
 # IDE - PyCharm
 .idea/
 *.iml
 *.iws
 .idea_modules/
-
+*.
 # Virtual Environment
 venv/
 ENV/
 env/
 .env
+.env/
 .venv
 env.bak/
 venv.bak/

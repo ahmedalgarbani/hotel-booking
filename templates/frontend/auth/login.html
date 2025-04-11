@@ -38,78 +38,102 @@
 </style>
  {% endblock extra_css %}
 {% block content %}
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-5">
-                <div class="card shadow-lg">
-                    <div class="card-body p-5">
-                        <div class="text-center mb-4">
-                            <h2 class="fw-bold">مرحبا بعودتك</h2>
-                            <p class="text-muted">قم بتسجيل الدخول لحسابك</p>
-                        </div>
-                        
-                        <form id="loginForm" novalidate method='POST' action='{% url "users:login" %}'>
-                            {% csrf_token %}
-                            {% if messages %}
-                            <div class="messages">
-                                {% for message in messages %}
-                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                                    {{ message }}
-                                </div>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                            <div class="mb-4">
-                                <div class="form-floating">
-                                    <input type="username" class="form-control" id="username" name="username" required>
-                                    <input type="hidden" name="next" value='{{next}}' required>
-                                    <label for="username"> اسم المستخدم</label>
-                                    <div class="invalid-feedback">رجاء ادخل اسم مستخدم صالح.</div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="form-floating password-container">
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                                    <label for="password">كلمه السر</label>
-                                    <button type="button" class="btn btn-link password-toggle" aria-label="Toggle password visibility">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <div class="invalid-feedback">رجاء ادخل كلمه السر </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
-                                    <label class="form-check-label text-muted" for="rememberMe">
-                                        تذكرني
-                                    </label>
-                                </div>
-                                <a href="#" class="text-primary text-decoration-none">هل نسيت كلمه السر ؟</a>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 py-3">تسجيل دخول</button>
-
-                            <div class="text-center mt-4">
-                                <p class="text-muted mb-0">لاتمتلك حساب؟
-                                    <a href="{% url 'users:register' %}" class="text-primary text-decoration-none">انشاء حساب جديد</a>
-                                </p>
-                            </div>
-                        </form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">مرحبًا بعودتك</h2>
+                        <p class="text-muted">قم بتسجيل الدخول لحسابك</p>
                     </div>
-                </div>
 
-                <div class="text-center mt-4">
-                    <p class="text-muted small mb-0">
-                        بمجرد تسجيل دخولك فانت توافق على
-                        <a href="#" class="text-decoration-none">Terms</a> and 
-                        <a href="#" class="text-decoration-none">Privacy Policy</a>
-                    </p>
+                    <!-- زر تسجيل الدخول بجوجل -->
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">
+                            <img src="https://www.google.com/favicon.ico" alt="Google" class="me-2" width="20">
+                            <span>تسجيل دخول باستخدام جوجل</span>
+                        </a>
+                    </div>
+
+                    <!-- فاصل بين جوجل والتسجيل عبر الإيميل -->
+                    <div class="text-center my-4 position-relative">
+                        <hr class="w-100">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">أو سجل دخولك عبر الإيميل</span>
+                    </div>
+
+                    <form id="loginForm" novalidate method="POST" action="{% url 'users:login' %}">
+                        {% csrf_token %}
+
+                        <!-- رسائل الخطأ والتنبيهات -->
+                        {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- حقل اسم المستخدم -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">اسم المستخدم</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="invalid-feedback">رجاءً أدخل اسم مستخدم صالح.</div>
+                        </div>
+
+                        <!-- حقل كلمة المرور -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">كلمة المرور</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">رجاءً أدخل كلمة المرور.</div>
+                        </div>
+
+                        <!-- خيارات إضافية -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+                                <label class="form-check-label text-muted" for="rememberMe">تذكرني</label>
+                            </div>
+                            <a href="#" class="text-decoration-none">هل نسيت كلمة المرور؟</a>
+                        </div>
+
+                        <!-- زر تسجيل الدخول -->
+                        <button type="submit" class="btn btn-primary w-100 py-2">تسجيل دخول</button>
+
+                        <!-- تسجيل حساب جديد -->
+                        <div class="text-center mt-3">
+                            <p class="text-muted mb-0">لا تمتلك حسابًا؟ 
+                                <a href="{% url 'users:register' %}" class="text-primary text-decoration-none">إنشاء حساب جديد</a>
+                            </p>
+                        </div>
+                    </form>
                 </div>
+            </div>
+
+            <!-- شروط الاستخدام -->
+            <div class="text-center mt-3">
+                <p class="text-muted small mb-0">
+                    بمجرد تسجيل دخولك فأنت توافق على
+                    <a href="{% url 'home:terms_condition' %}" class="text-decoration-none">الشروط</a> و
+                    <a href="{% url 'home:privacy_policy' %}" class="text-decoration-none">سياسة الخصوصية</a>.
+                </p>
             </div>
         </div>
     </div>
+</div>
+
+
 
     <style>
         body {
@@ -261,23 +285,19 @@
             const passwordInput = document.getElementById('password');
             const passwordToggle = document.querySelector('.password-toggle');
         
-            // Toggle password visibility
             passwordToggle.addEventListener('click', function() {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 
-                // Toggle eye icon
                 const icon = this.querySelector('i');
                 icon.classList.toggle('bi-eye');
                 icon.classList.toggle('bi-eye-slash');
             });
         
-            // Form validation and submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 
-                // Password confirmation check
                 const password = document.getElementById('password').value;
                 
             
@@ -287,11 +307,9 @@
                     return;
                 }
             
-                // Submit the form normally if all validations pass
                 form.submit();
             });
         
-            // Support for RTL
             function setDirection(dir) {
                 document.documentElement.setAttribute('dir', dir);
             }

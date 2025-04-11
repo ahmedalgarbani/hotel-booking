@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv  
 
 # This will make sure the tasks are registered when Celery starts
 from .celery import app as celery_app
@@ -32,6 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34"] 
 
+# Load environment variables from .env file
+load_dotenv()
 
 # Application definition
 
@@ -61,7 +64,12 @@ INSTALLED_APPS = [
     'customer',
     'django_celery_beat',
     'accounts',
-    'ckeditor'
+    'ckeditor',
+
+        'rest_framework.authtoken', 
+        'social_django',
+        'oauth2_provider',
+
     
     
 ]
@@ -96,7 +104,53 @@ REST_FRAMEWORK = {
 
 }
  
- 
+#  -------------------------------------
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',  
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+LOGIN = 'users/login/'
+LOGOUT = 'users/logout/'
+LOGIN_URL = 'users/login/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'users/login/'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET  = os.getenv('GOOGLE_CLIENT_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI =("http://127.0.0.1:8000/auth/complete/google-oauth2/")
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8000",
+#     "http://127.0.0.1:8000",
+# ]
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:8000",
+#     "http://127.0.0.1:8000",
+# ]
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
+}
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+#  -------------------------------------
  
  
     #'EXCEPTION_HANDLER': '/api/handle.py'
@@ -191,6 +245,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'HotelManagement.context_processors.notifications_context',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -574,19 +630,10 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 # --------------- Extirnal Api -----------
-GEMINI_API_KEY = "AIzaSyD79Midhee6UFyg44UVZ40ZsMZWNsgWkfY"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': 'redis://127.0.0.1:6379/1',  
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
 CELERY_IMPORTS = [
     'bookings.tasks',
 ]

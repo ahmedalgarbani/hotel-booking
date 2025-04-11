@@ -38,6 +38,9 @@ urlpatterns = [
 
     path('notifications/', include('notifications.urls',namespace='notifications')),
 
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('auth/', include('social_django.urls', namespace='social')),
+
 ]
 
 if settings.DEBUG:

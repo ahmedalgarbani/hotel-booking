@@ -18,9 +18,11 @@
                         <div class="comments-list">
                             {% for review in hotel_reviews %}
                             <div class="comment">
+                                {% if user.image %}
                                 <div class="comment-avatar">
                                     <img class="avatar__img" alt="" src="{{ user.image.url }}" />
                                 </div>
+                                {% endif %}
                                 <div class="comment-body">
                                     <div class="meta-data">
                                         <h3 class="comment__author">{{ review.hotel.name }}</h3>
@@ -56,9 +58,11 @@
                         <div class="comments-list">
                             {% for review in room_reviews %}
                             <div class="comment">
+                                {% if user.image %}
                                 <div class="comment-avatar">
                                     <img class="avatar__img" alt="" src="{{ user.image.url }}" />
                                 </div>
+                                {% endif %}
                                 <div class="comment-body">
                                     <div class="meta-data">
                                         <h3 class="comment__author">{{ review.hotel.name }} :{{ review.room_type.name }}</h3>

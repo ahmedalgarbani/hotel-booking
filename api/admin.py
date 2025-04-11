@@ -107,8 +107,3 @@ class CustomAdminSite(admin.AdminSite):
 
 admin_site = CustomAdminSite(name='custom_admin')
 
-admin_site.register(IntervalSchedule)
-admin_site.register(CrontabSchedule)
-admin_site.register(SolarSchedule)
-admin_site.register(ClockedSchedule)
-admin_site.register(PeriodicTask)
