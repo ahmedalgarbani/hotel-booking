@@ -96,24 +96,23 @@ def login_view(request):
                 request.session.set_expiry(1209600) 
             else:
                 request.session.set_expiry(0) 
-
-            messages.success(request, 'تم تسجيل الدخول بنجاح!')
-
+            
             if next_url:
                 return redirect(next_url)
+            messages.success(request, 'تم تسجيل الدخول بنجاح!')
             return redirect('home:index')
         else:
             messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة')
             return redirect('home:index')
     else:
         next_url = request.GET.get('next', '')
+  
         return render(request, 'frontend/auth/login.html', {'next': next_url})
 
 
 
 
 def password_reset_view(request):
-    print("hello -----------------")
     if request.method == 'POST':
 
         messages.info(request, 'سيتم تنفيذ هذه الميزة قريباً')

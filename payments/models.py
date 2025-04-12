@@ -64,9 +64,9 @@ class HotelPaymentMethod(BaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("طريقة الدفع")
     )
-    account_name = models.CharField(max_length=100, verbose_name=_("اسم الحساب"))
-    account_number = models.CharField(max_length=50, verbose_name=_("رقم الحساب"))
-    iban = models.CharField(max_length=50, verbose_name=_("رقم الآيبان"))
+    account_name = models.CharField(max_length=100, verbose_name=_("اسم الحساب"),null=True, blank=True)
+    account_number = models.CharField(max_length=50, verbose_name=_("رقم الحساب"),null=True, blank=True)
+    iban = models.CharField(max_length=50, verbose_name=_("رقم الآيبان"),null=True, blank=True)
     description = models.TextField(verbose_name=_("تعليمات الدفع"), blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name=_("نشط"))
 

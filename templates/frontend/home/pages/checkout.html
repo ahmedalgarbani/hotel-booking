@@ -77,12 +77,17 @@
                     <!-- Payment Account Details -->
                     <div class="account-details">
                       <div class="details-grid">
+                       
+                        {% if method.account_number %}
                         <div class="details-column">
                           <p class="detail-item"><span class="detail-label">اسم الحساب:</span> {{ method.account_name }}</p>
                           <p class="detail-item"><span class="detail-label">رقم الحساب:</span> {{ method.account_number }}</p>
                         </div>
+                        {% endif %}
                         <div class="details-column">
+                          {% if method.account_number %}
                           <p class="detail-item"><span class="detail-label">رقم الآيبان:</span> {{ method.iban }}</p>
+                          {% endif %}
                           <p class="detail-item"><span class="detail-label">تعليمات الدفع:</span> {{ method.description }}</p>
                         </div>
                       </div>
@@ -96,46 +101,9 @@
                       <input type="hidden" name="check_out_date" value="{{ check_out }}">
                       
                       <div class="form-grid">
-                        <!-- Transfer Owner Name -->
-                        <div class="form-group">
-                          <label class="form-label">إسم صاحب التحويل</label>
-                          <div class="input-with-icon">
-                            <div class="input-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                              </svg>
-                            </div>
-                            <input
-                              class="form-input"
-                              type="text"
-                              name="transfer_owner_name"
-                              placeholder="إسم صاحب التحويل"
-                              required
-                            />
-                          </div>
-                        </div>
-                        
-                        <!-- Transfer Number -->
-                        <div class="form-group">
-                          <label class="form-label">رقم الحواله</label>
-                          <div class="input-with-icon">
-                            <div class="input-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                              </svg>
-                            </div>
-                            <input
-                              class="form-input"
-                              type="text"
-                              name="transfer_number"
-                              placeholder="رقم الحواله"
-                              required
-                            />
-                          </div>
-                        </div>
                       
+                       
+                      {% if method.account_number %}
                         <!-- Transfer Image -->
                         <div class="form-group">
                           <label class="form-label">صورة التحويل</label>
@@ -157,6 +125,7 @@
                           </div>
                           <small>قم برفع صورة واضحة لإيصال التحويل.</small>
                         </div>
+                        {% endif %}
                       </div>
                       
                       <!-- Terms Agreement -->
@@ -191,8 +160,9 @@
                 {% endfor %}
               </div>
             {% else %}
+          
               <!-- No Payment Methods Available -->
-              <div class="alert alert-warning">
+               <div class="alert alert-warning">
                 <div class="alert-content">
                   <div class="alert-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -205,7 +175,7 @@
                     <p>لا توجد طرق دفع متاحة لهذا الفندق.</p>
                   </div>
                 </div>
-              </div>
+              </div> 
             {% endif %}
           </div>
         </div>
@@ -329,7 +299,7 @@
                       <span class="price-label">السعر قبل الخصم:</span>
                     </div>
                     <div class="price-row">
-                      <span class="price-value" id="discount">${{ booking_data.extra_services_total }}</span>
+                      <span class="price-value" id="discount">$0</span>
                       <span class="price-label">قيمه الخصم:</span>
                     </div>
                     <div class="price-divider"></div>

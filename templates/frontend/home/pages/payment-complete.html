@@ -43,13 +43,10 @@
           <!-- Booking Details -->
           <div class="booking-details">
             <ul class="details-list">
-              <li class="detail-item">
-                <span class="detail-label">رقم الحوالة:</span>
-                <span class="detail-value">#{{ transfer_number }}</span>
-              </li>
+             
               <li class="detail-item">
                 <span class="detail-label">اسم صاحب التحويل:</span>
-                <span class="detail-value">{{ transfer_owner_name }}</span>
+                <span class="detail-value">{{ request.user.get_full_name }}</span>
               </li>
               <li class="detail-item">
                 <span class="detail-label">طريقة الدفع:</span>

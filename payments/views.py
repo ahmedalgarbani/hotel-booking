@@ -163,7 +163,7 @@ class DecimalEncoder(DjangoJSONEncoder):
 def checkout(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
     hotel = room.hotel
-    payment_methods = HotelPaymentMethod.objects.filter(hotel=hotel)
+    payment_methods = HotelPaymentMethod.objects.filter(hotel=hotel,is_active=True)
 
     check_in = request.GET.get('check_in_date')
     check_out = request.GET.get('check_out_date')
@@ -228,12 +228,15 @@ def hotel_confirm_payment(request):
                 messages.error(request, "لم يتم العثور على بيانات الحجز. يرجى إعادة المحاولة.")
                 return redirect("home:index")
 
-            transfer_owner_name = request.POST.get("transfer_owner_name", "").strip()
-            transfer_number = request.POST.get("transfer_number", "").strip()
+      
             payment_method_id = request.POST.get("payment_method")
             transfer_image = request.FILES.get("transfer_image")
 
             payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
+            print(payment_method.payment_option.method_name)
+            print(payment_method.payment_option.method_name)
+            print(payment_method.payment_option.method_name)
+            print(payment_method.payment_option.method_name)
             pending_status = Booking.BookingStatus.PENDING
 
             coupon_data = request.session.get("coupon", {})
@@ -263,8 +266,8 @@ def hotel_confirm_payment(request):
                 payment_totalamount=amount_to_pay,
                 payment_currency=payment_method.payment_option.currency.currency_symbol,
                 booking=booking,
-                payment_type='e_pay' if payment_method.payment_option.method_name != 'نقدي' else 'cash',
-                payment_note=f"تم التحويل بواسطة: {transfer_owner_name} - رقم التحويل: {transfer_number}",
+                payment_type='e_pay' if payment_method.payment_option.method_name != 'كاش' else 'cash',
+                payment_note=f"تم التحويل بواسطة: {request.user.get_full_name()} - ",
                 transfer_image=transfer_image
             )
 
@@ -276,8 +279,7 @@ def hotel_confirm_payment(request):
             return render(request, 'frontend/home/pages/payment-complete.html', {
                 'payment': payment,
                 'booking': booking,
-                'transfer_number': transfer_number,
-                'transfer_owner_name': transfer_owner_name,
+               
             })
 
     except Exception as e:
