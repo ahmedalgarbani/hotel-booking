@@ -16,7 +16,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 import uuid
 # ------------ Guest ------------
-class Guest(models.Model):
+class Guest(BaseModel):
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,

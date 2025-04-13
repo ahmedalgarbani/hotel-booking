@@ -547,6 +547,7 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
                         hotel=original_booking.hotel,
                         room_type=original_booking.room,
                         availability_date=today,
+                        room_status = RoomStatus.objects.get(id=3),
                         defaults={
                             "available_rooms": max(0, current_available + original_booking.rooms_booked),
                             "notes": f"تم التحديث بسبب تمديد الحجز #{new_extension.movement_number}",

@@ -247,7 +247,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def make_payment(self, request):
-       
         booking_id = request.data.get('booking_id')
         payment_method_id = request.data.get('payment_method_id')
         payment_subtotal = request.data.get('payment_subtotal')
@@ -257,7 +256,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
         transfer_image = request.FILES.get('transfer_image') 
         payment_note = request.data.get('payment_note', '')
         payment_discount = request.data.get('payment_discount', 0)
-
         if not all([booking_id, payment_method_id, payment_subtotal, payment_totalamount, payment_currency, payment_type]):
             return Response(
                 {'error': 'All fields except payment_note are required.'},
