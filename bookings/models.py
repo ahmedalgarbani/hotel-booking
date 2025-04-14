@@ -209,7 +209,7 @@ class Booking(BaseModel):
                 room_type=self.room,
                 availability_date=today, 
                 defaults={
-                    "room_status": RoomStatus.objects.get(id=3),  
+                    "room_status": RoomStatus.objects.get(id=1),  
                     "available_rooms": max(0, self.room.rooms_count + change),  
                     "notes": f"Updated due to booking #{self.id}",
                 }

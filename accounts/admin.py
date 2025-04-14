@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.contrib import admin
-from sympy import Q
+from django.db.models import Q
+
 from .models import ChartOfAccounts, JournalEntry
 from api.admin import admin_site
 # Register your models here.
