@@ -6,6 +6,9 @@ from django.db.models import Q
 from bookings.models import Booking
 from api.admin import admin_site
 from django import forms
+
+# Import the new PaymentAdmin class
+from .admin_classes.payment_admin import PaymentAdmin
 from django.db import transaction
 from django.utils.html import format_html
 
@@ -76,121 +79,13 @@ class ChangePaymentStatusForm(ActionForm):
         choices=[('', '-- اختر الحالة --')] + list(Payment.payment_choice),
         required=False,
         label="الحالة الجديدة"
-    )
+    ) # Added closing parenthesis
+
+# The original PaymentAdmin class definition is removed.
+# The registration at the end of the file will now use the imported PaymentAdmin.
 
 
-class PaymentAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
-    action_form = ChangePaymentStatusForm  
-    list_display = (
-          'formatted_booking',
-        'get_payment_method_name',
-        'colored_payment_status',
-        'formatted_payment_date',
-        'formatted_total_amount',
-        
-        )
-    list_filter = ('payment_status', 'payment_date', 'booking__hotel')
-    search_fields = ('booking__id', 'payment_method__account_name')
-    readonly_fields = ('payment_date',)
-    actions = ['change_payment_status'] 
-    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
-
-    def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','booking', 'created_by', 'updated_by','deleted_at')
-        return self.readonly_fields
-
-
-    
-    def booking_id_link(self, obj):
-        return format_html(
-            '<strong><a href="{}">{}</a></strong>',
-            f'/admin/payments/payment/{obj.id}/change/',
-            obj.booking_id
-        )
-    booking_id_link.short_description = 'Booking ID'
-
-    @admin.display(description='الحجز', ordering='booking__id')
-    def formatted_booking(self, obj):
-        return format_html(
-            '<b>#{} {}</b>',
-            obj.booking.id,
-            obj.booking.hotel.name if obj.booking.hotel else ''
-        )
-
-    @admin.display(description='طريقة الدفع', ordering='payment_method__account_name')
-    def get_payment_method_name(self, obj):
-        if not obj.payment_method:
-            return 'N/A'
-        
-        icons = {
-            'e_pay': '💳',
-            'cash': '💰',
-            # 'transfer': '🏦'
-        }
-        
-        icon = icons.get(obj.payment_type, '')
-        display_name = obj.payment_type 
-        
-        return f'{icon} {display_name}'
-
-
-    @admin.display(description='تاريخ الدفع', ordering='payment_date')
-    def formatted_payment_date(self, obj):
-        return obj.payment_date.strftime('%d %b %Y - %H:%M') if obj.payment_date else 'N/A'
-
-    @admin.display(description='المبلغ الإجمالي', ordering='payment_totalamount')
-    def formatted_total_amount(self, obj):
-        return format_html(
-            '<div style="direction: ltr; text-align: right; font-family: monospace; '
-            'font-weight: 500; color: #1976d2;">{amount} {currency}</div>',
-            amount=f"{obj.payment_totalamount:,.2f}",
-            currency=obj.payment_currency
-        )
-
-
-
-    @admin.display(description='حالة الدفع', ordering='payment_status')
-    def colored_payment_status(self, obj):
-        status_colors = {
-            0: '#FFA500',  
-            1: '#008000', 
-            2: '#FF0000',   
-        }
-        
-        status_label = obj.get_payment_status_display()  
-        color = status_colors.get(obj.payment_status, '#808080')  
-        
-        return format_html(
-            '<span style="color: {color}; font-weight: 500; padding: 2px 5px; border-radius: 3px; background-color: {bg_color}">{label}</span>',
-            color=color,
-            bg_color=f'{color}25',  
-            label=status_label
-        )
-    @admin.action(description='تغيير حالة الدفعات المحددة')
-    def change_payment_status(self, request, queryset):
-        new_status = request.POST.get('new_status')
-        if new_status == '':
-            self.message_user(request, "لم يتم اختيار حالة جديدة.", level='warning')
-            return
-        
-        if new_status:
-            try:
-                with transaction.atomic():
-                    for payment in queryset:
-                        previous_status = payment.payment_status
-                        payment.payment_status = int(new_status)
-                        payment.save()
-
-                    status_label = dict(Payment.payment_choice).get(int(new_status))
-                    success_message = f"تم تغيير حالة {queryset.count()} دفعة(ات) إلى '{status_label}'"
-                    self.message_user(request, success_message)
-
-            except Exception as e:
-                self.message_user(request, f"حدث خطأ أثناء تحديث الدفعات: {str(e)}", level='error')
-
-
-class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
+class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Added newline before class
     list_display = ('hotel', 'payment_option', 'account_name', 'is_active')
     list_filter = ('is_active', 'hotel', 'payment_option')
     search_fields = ('hotel__name', 'account_name')

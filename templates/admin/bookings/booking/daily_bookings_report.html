@@ -1,0 +1,143 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    <style>
+        .report-table th, .report-table td {
+            padding: 8px;
+            text-align: right; /* Align text to right for Arabic */
+            border: 1px solid #ddd;
+        }
+        .report-table th {
+            background-color: #f2f2f2;
+        }
+        .date-filter-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .date-filter-form label {
+            margin-left: 10px; /* Add space after label */
+        }
+        .date-filter-form input[type="date"] {
+            margin-left: 5px; /* Add space after input */
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .date-filter-form button {
+            padding: 6px 12px;
+            background-color: #79aec8;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .date-filter-form button:hover {
+            background-color: #609ab6;
+        }
+        .daily-summary {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            background-color: #eef;
+            padding: 5px;
+            border-radius: 3px;
+        }
+    </style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+{% block content_title %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% if not has_view_permission %}
+            <p class="errornote">
+                {% blocktrans %}You do not have permission to view this report.{% endblocktrans %}
+            </p>
+        {% else %}
+            {# Date Filter Form #}
+            <div class="date-filter-form">
+                <form method="get" action="">
+                    <label for="start_date">{% trans "من تاريخ:" %}</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+                    <label for="end_date">{% trans "إلى تاريخ:" %}</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+                    <label for="customer_id" style="margin-right: 10px;">{% trans "العميل:" %}</label>
+                    <select id="customer_id" name="customer_id" style="margin-left: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 3px;">
+                        <option value="">{% trans "الكل" %}</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.id }}" {% if selected_customer_id == customer.id|stringformat:"s" %}selected{% endif %}>
+                                {{ customer.get_full_name|default:customer.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">{% trans "تصفية" %}</button>
+
+                    {# Add Export PDF button/link #}
+                    <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}&customer_id={{ selected_customer_id }}" class="button" style="margin-right: 10px; background-color: #4CAF50; color: white;">
+                        {% trans "تصدير PDF" %}
+                    </a>
+                </form>
+            </div>
+
+            {# Display Bookings Grouped by Day (using the dictionary passed from view) #}
+            {% if bookings_by_day %}
+                {% for day, day_bookings in bookings_by_day.items %}
+                    <div class="daily-summary">
+                        {% blocktrans with date=day|date:"Y-m-d" count=day_bookings|length %}
+                        تاريخ: {{ date }} - عدد الحجوزات: {{ count }}
+                        {% endblocktrans %}
+                    </div>
+                    <div class="results">
+                        <table class="report-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "رقم الحجز" %}</th>
+                                    <th>{% trans "الفندق" %}</th>
+                                    <th>{% trans "العميل" %}</th>
+                                    <th>{% trans "الغرفة" %}</th>
+                                    <th>{% trans "تاريخ الوصول" %}</th>
+                                    <th>{% trans "تاريخ المغادرة" %}</th>
+                                    <th>{% trans "إجمالي المدفوعات" %}</th> {# Changed Header #}
+                                    <th>{% trans "حالة الحجز" %}</th> {# Changed Header #}
+                                    <th>{% trans "حالة الدفع" %}</th> {# New Header #}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in day_bookings %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.hotel.name }}</td>
+                                        <td>{{ booking.user.get_full_name|default:booking.user.username }}</td>
+                                        <td>{{ booking.room.name }}</td>
+                                        <td>{{ booking.check_in_date|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ booking.check_out_date|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ booking.total_paid|floatformat:2 }}</td> {# Changed Data #}
+                                        <td>{{ booking.get_status_display }}</td>
+                                        <td>{{ booking.latest_payment_status_display }}</td> {# New Data #}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>{% trans "لا توجد حجوزات للعرض في الفترة المحددة." %}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

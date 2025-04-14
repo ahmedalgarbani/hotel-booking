@@ -1,0 +1,184 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    {# More refined styles #}
+    <style>
+        .report-container { /* Added a container for better structure */
+            padding: 20px;
+        }
+        .report-summary {
+            background-color: #eef4f8; /* Lighter blue background */
+            border: 1px solid #b4cde0; /* Blue border */
+            color: #2c3e50; /* Darker text color */
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .report-summary h2 {
+            margin-top: 0;
+            color: #1a5276; /* Darker blue for heading */
+            border-bottom: 1px solid #b4cde0;
+            padding-bottom: 10px;
+            font-size: 1.4em;
+        }
+        .report-summary p {
+            font-size: 1.3em; /* Slightly larger font */
+            margin-bottom: 5px;
+        }
+        .report-summary strong {
+            color: #1a5276;
+            font-weight: 600; /* Bolder */
+        }
+        .date-filter-form {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #ffffff; /* White background */
+            border: 1px solid #e0e0e0; /* Lighter border */
+            border-radius: 5px;
+            display: flex; /* Use flexbox for alignment */
+            align-items: center;
+            gap: 15px; /* Space between elements */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .date-filter-form label {
+            /* margin-right: 5px; */ /* Removed margin, using gap now */
+            font-weight: 500; /* Normal weight */
+            color: #555;
+        }
+        .date-filter-form input[type="date"] {
+            padding: 8px 10px; /* More padding */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .date-filter-form button {
+            padding: 8px 15px; /* More padding */
+            background-color: #3498db; /* Blue button */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .date-filter-form button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+        .results-section h2 { /* Style for the table heading */
+             color: #1a5276;
+             margin-top: 0;
+             margin-bottom: 15px;
+             font-size: 1.4em;
+             border-bottom: 1px solid #e0e0e0;
+             padding-bottom: 8px;
+        }
+        #result_list {
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0; /* Add border to table */
+            border-collapse: collapse; /* Collapse borders */
+            width: 100%; /* Make table full width */
+        }
+        #result_list th {
+            background-color: #f2f2f2; /* Light grey header */
+            color: #333;
+            padding: 12px 15px; /* More padding */
+            text-align: left;
+            border-bottom: 2px solid #ddd; /* Stronger bottom border */
+        }
+         #result_list td {
+            padding: 10px 15px; /* Consistent padding */
+            border-bottom: 1px solid #eee; /* Lighter row separator */
+            vertical-align: middle; /* Align text vertically */
+        }
+        #result_list tr:last-child td {
+             border-bottom: none; /* No border for the last row */
+        }
+         #result_list tr:nth-child(even) {
+             background-color: #f9f9f9; /* Subtle striping for even rows */
+         }
+    </style>
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %} {# Added report-container class #}
+
+{% block content_title %}
+    {# Title is now inside the summary box or handled by report-summary h2 #}
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {# Add back object-tools to include the export button #}
+        {% block object-tools %}
+            <ul class="object-tools">
+                {% block object-tools-items %}
+                    {# Add link to export PDF #}
+                    {% if pdf_export_url %}
+                    <li>
+                        {# Pass current date filters to the export URL #}
+                        <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}" class="addlink">
+                            {% trans "Export as PDF" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        {% endblock %}
+
+        <div class="module" id="changelist">
+
+            {# Date Filter Form - Now styled better #}
+            <div class="date-filter-form">
+                <form method="get" action="">
+                    <label for="start_date">{% trans "From Date:" %}</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+                    <label for="end_date">{% trans "To Date:" %}</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+                    <button type="submit" class="button">{% trans "Filter" %}</button>
+                </form>
+            </div>
+
+            {# Revenue Summary Section - Now styled better #}
+            <div class="report-summary">
+                <h2>{% trans title %}</h2> {# Moved title here #}
+                <p>{% trans "Period:" %} {{ start_date }} - {{ end_date }}</p>
+                <p>{% trans "Total Confirmed Revenue:" %} <strong>{{ total_revenue|floatformat:2 }}</strong></p>
+            </div>
+
+            {# Revenue by Payment Method Table - Now styled better #}
+            {% if revenue_by_method %}
+                <div class="results results-section"> {# Added results-section class #}
+                    <h2>{% trans "Revenue by Payment Method" %}</h2>
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                <th scope="col">{% trans "Payment Method" %}</th>
+                                <th scope="col">{% trans "Number of Payments" %}</th>
+                                <th scope="col">{% trans "Total Revenue" %}</th>
+                                <th scope="col">{% trans "Currency" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for method_data in revenue_by_method %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <td>{{ method_data.payment_method__payment_option__method_name }}</td>
+                                    <td>{{ method_data.method_count }}</td>
+                                    <td style="direction: ltr; text-align: right;">{{ method_data.method_total|floatformat:2 }}</td> {# Added styling for consistency #}
+                                    <td>{{ method_data.payment_method__payment_option__currency__currency_symbol }}</td> {# Correct variable is already used, ensure data is passed correctly #}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>{% trans "No confirmed payments found for the selected period." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
