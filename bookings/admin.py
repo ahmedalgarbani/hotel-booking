@@ -1,12 +1,13 @@
 from datetime import datetime, timedelta
 from pyexpat.errors import messages
 from django.contrib import admin
-from django.db.models import Count
+from django.db.models import Count, Q, Sum
+from django.db.models.functions import TruncDay, TruncHour # Added TruncDay
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import path,reverse
+from django.urls import path, reverse
 from django.utils import timezone
-from django.db.models.functions import TruncHour
+from datetime import date, timedelta # Added date, timedelta
 import arabic_reshaper
 from bidi.algorithm import get_display
 from django.utils.translation import gettext_lazy as _
@@ -29,6 +30,7 @@ from django import forms
 from django.contrib.admin.helpers import ActionForm
 from django.utils.html import format_html
 from django.db import transaction
+from django.template.response import TemplateResponse # Added TemplateResponse
 
 
 
@@ -224,6 +226,8 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['status_choices'] = Booking.BookingStatus.choices
+        # Add the report URL to the context
+        extra_context['daily_report_url'] = reverse('admin:booking-daily-report')
         return super().changelist_view(request, extra_context=extra_context)
 
 
@@ -481,7 +485,8 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
     export_peak_times.short_description = "تصدير تقرير أوقات الذروة"
 
     change_form_template = 'admin/bookings/booking.html'
-    
+    change_list_template = 'admin/bookings/booking/change_list.html' # Added custom change list template
+
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
@@ -490,8 +495,60 @@ class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
                 self.admin_site.admin_view(self.extend_booking),
                 name='booking-extend',
             ),
+            path( # Corrected indentation and placement within the list
+                'daily-report/',
+                self.admin_site.admin_view(self.daily_report_view),
+                name='booking-daily-report',
+            ),
         ]
         return custom_urls + urls
+
+    def daily_report_view(self, request):
+        # Default date range (today)
+        today = date.today()
+        start_date_str = request.GET.get('start_date', today.strftime('%Y-%m-%d'))
+        end_date_str = request.GET.get('end_date', today.strftime('%Y-%m-%d'))
+
+        try:
+            start_date = date.fromisoformat(start_date_str)
+            # Add one day to end_date to include the whole day in the filter
+            end_date = date.fromisoformat(end_date_str) + timedelta(days=1)
+        except ValueError:
+            # Handle invalid date format, default to today
+            start_date = today
+            end_date = today + timedelta(days=1)
+            start_date_str = start_date.strftime('%Y-%m-%d')
+            end_date_str = (end_date - timedelta(days=1)).strftime('%Y-%m-%d') # Adjust back for display
+
+        # Base queryset filtered by user type (using existing logic)
+        queryset = self.get_queryset(request)
+
+        # Filter by date range (using check_in_date)
+        filtered_bookings = queryset.filter(
+            check_in_date__gte=start_date,
+            check_in_date__lt=end_date
+        ).select_related('hotel', 'user', 'room') # Optimize query
+
+        # Group by day and count bookings
+        daily_counts = filtered_bookings.annotate(
+            day=TruncDay('check_in_date')
+        ).values('day').annotate(
+            count=Count('id')
+        ).order_by('day')
+
+        # Prepare context
+        context = self.admin_site.each_context(request)
+        context.update({
+            'title': _('تقرير الحجوزات اليومي'),
+            'daily_counts': list(daily_counts), # Convert to list for template
+            'bookings': filtered_bookings,
+            'start_date': start_date_str,
+            'end_date': end_date_str,
+            'opts': self.model._meta, # Needed for admin template context
+            'has_view_permission': self.has_view_permission(request), # Check permissions
+        })
+
+        return TemplateResponse(request, 'admin/bookings/booking/daily_bookings_report.html', context)
 
 
 
