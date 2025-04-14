@@ -197,7 +197,7 @@ def generate_pdf_report(title, headers, data, col_widths=None):
     if formatted_data and col_widths: # Ensure there's data and widths
         table = Table(formatted_data, colWidths=col_widths, repeatRows=1)
         table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#444')),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
