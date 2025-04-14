@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رمز التحقق لمرة واحدة (OTP)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #287dfa;
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .otp-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #287dfa;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>رمز التحقق الخاص بك</h1>
+        </div>
+        
+        <div class="content">
+            <p>مرحباً {{ user.get_full_name }}،</p>
+            <p>لقد طلبت رمز تحقق لتأكيد هويتك. يرجى استخدام الرمز أدناه لإتمام العملية:</p>
+
+            <div class="otp-box">
+                {{ otp_code }}
+            </div>
+
+            <p>صلاحية الرمز مؤقتة وسيتم انتهاء صلاحيته خلال {{ otp_expiry_minutes }} دقيقة.</p>
+
+            <p>إذا لم تطلب هذا الرمز، يمكنك تجاهل هذه الرسالة بأمان.</p>
+
+            <p>مع تحيات،<br>فريق إدارة الفنادق</p>
+        </div>
+
+        <div class="footer">
+            <p>إذا واجهت أي مشكلة، لا تتردد في التواصل مع الدعم الفني لدينا.</p>
+        </div>
+    </div>
+</body>
+</html>
