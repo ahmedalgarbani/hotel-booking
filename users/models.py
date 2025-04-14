@@ -64,6 +64,17 @@ class CustomUser(AbstractUser):
         related_name='employees',
         help_text=_('الموظف المعين من قبل مدير الفندق')
     )
+    chart = models.ForeignKey(
+        'accounts.ChartOfAccounts',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('الحساب المرتبط'),
+        related_name='charts',
+        help_text=_('الحساب المرتبط')
+    )
+    otp_code = models.CharField(max_length=6, blank=True, null=True)
+    otp_created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         verbose_name = _('مستخدم')
@@ -80,7 +91,7 @@ class CustomUser(AbstractUser):
     @property
     def is_customer(self):
         return self.user_type == 'customer'
-
+    
 class ActivityLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('تاريخ الإنشاء'), help_text=_('تاريخ إنشاء السجل'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('تاريخ التحديث'), help_text=_('تاريخ آخر تحديث للسجل'))

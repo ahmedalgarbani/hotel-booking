@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django.contrib import admin
 from sympy import Q
 from .models import ChartOfAccounts, JournalEntry
