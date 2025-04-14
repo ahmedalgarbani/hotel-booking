@@ -37,9 +37,11 @@ class HotelManagerAdminMixin:
         if user.is_superuser or user.user_type == 'admin':
              return qs
         elif user.user_type == 'hotel_manager':
-             if hasattr(user, 'hotel_set') and user.hotel_set.exists():
-                 return qs.filter(hotel=user.hotel_set.first())
+             # Check if the user is linked to a hotel via the OneToOneField reverse relation ('hotel')
+             if hasattr(user, 'hotel') and user.hotel:
+                 return qs.filter(hotel=user.hotel)
              else:
+                 # If the manager is not linked to any hotel, show no bookings
                  return qs.none()
         elif user.user_type == 'hotel_staff':
              # Adjust logic based on how staff are linked to hotels
