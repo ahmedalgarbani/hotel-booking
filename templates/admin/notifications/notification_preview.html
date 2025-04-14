@@ -1,0 +1,164 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static django_tables2 %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'django_tables2/themes/bootstrap5.css' %}">
+  <style>
+    .export-buttons a {
+      margin-left: 10px;
+      padding: 8px 15px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      display: inline-block; /* Ensure buttons are inline */
+      margin-bottom: 10px; /* Add some space below buttons */
+    }
+    .export-csv { background-color: #28a745; }
+    .export-excel { background-color: #1f744d; }
+    .export-pdf { background-color: #dc3545; }
+    .preview-table-container { margin-top: 20px; }
+    .stats-section {
+        background-color: #f8f9fa;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+    }
+    .stats-section h2 {
+        color: #495057;
+        margin-top: 0;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 1.4em;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px; /* Space before user stats */
+    }
+    .stat-item {
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .stat-item .label {
+        display: block;
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    .stat-item .value {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #343a40;
+    }
+    .stat-item .value.read { color: #28a745; }
+    .stat-item .value.unread { color: #fd7e14; }
+
+    .user-stats ul {
+        list-style: none;
+        padding: 0;
+        max-height: 200px; /* Add scroll if list is long */
+        overflow-y: auto; /* Enable vertical scroll */
+        border: 1px solid #dee2e6; /* Add border around the list */
+        border-radius: 5px; /* Rounded corners */
+        padding: 10px; /* Inner padding */
+        background-color: #ffffff; /* White background */
+    }
+    .user-stats li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f1f1;
+        display: flex;
+        justify-content: space-between;
+    }
+    .user-stats li:last-child {
+        border-bottom: none;
+    }
+    .user-stats .username {
+        font-weight: 500;
+        color: #495057;
+    }
+    .user-stats .count {
+        font-weight: bold;
+        color: #007bff;
+        background-color: #e7f3ff; /* Light blue background for count */
+        padding: 2px 6px; /* Padding around count */
+        border-radius: 4px; /* Rounded corners for count */
+        font-size: 0.9em;
+    }
+  </style>
+{% endblock %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> ›
+    <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a> ›
+    <a href="{% url 'admin:'|add:opts.app_label|lower|add:'_'|add:opts.model_name|lower|add:'_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a> ›
+    {{ title }}
+  </div>
+{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  {# --- قسم الإحصائيات --- #}
+  <div class="stats-section">
+    <h2>{% trans "ملخص الإحصائيات" %}</h2>
+
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="label">{% trans "إجمالي الإشعارات المحددة" %}</span>
+        <span class="value">{{ total_count }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">{% trans "مقروءة" %}</span>
+        <span class="value read">{{ read_count }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">{% trans "غير مقروءة" %}</span>
+        <span class="value unread">{{ unread_count }}</span>
+      </div>
+      {% for type_name, count in type_counts.items %}
+        <div class="stat-item">
+            <span class="label">{{ type_name }}</span>
+            <span class="value">{{ count }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if user_counts %}
+      <div class="user-stats">
+        <h3>{% trans "عدد الإشعارات لكل مستلم" %}</h3>
+        <ul>
+          {% for user_stat in user_counts %}
+            <li>
+              <span class="username">{{ user_stat.user__username }}</span>
+              <span class="count">{{ user_stat.count }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+  {# --- نهاية قسم الإحصائيات --- #}
+
+
+  <p>{% trans "اختر صيغة التصدير:" %}</p>
+  <div class="export-buttons">
+    <a href="?ids={{ selected_ids }}&format=csv" class="export-csv">{% trans "تصدير CSV" %}</a>
+    {# أضف أزرار لصيغ أخرى هنا إذا قمت بتنفيذها في العرض #}
+    {# <a href="?ids={{ selected_ids }}&format=excel" class="export-excel">{% trans "تصدير Excel" %}</a> #}
+    {# <a href="?ids={{ selected_ids }}&format=pdf" class="export-pdf">{% trans "تصدير PDF" %}</a> #}
+  </div>
+
+  <div class="preview-table-container">
+    <h2>{% trans "معاينة البيانات" %}</h2>
+    {% render_table table %} {# <-- عرض الجدول باستخدام django-tables2 #}
+  </div>
+{% endblock %}
