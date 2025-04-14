@@ -346,8 +346,8 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         # Create Table
         table = Table(formatted_data, colWidths=col_widths, repeatRows=1) # Repeat header row
         table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#444')), # Darker header
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white), # Darker header
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#043')),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'), # Center align all cells initially
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # Middle vertical align
             ('FONTNAME', (0, 0), (-1, -1), base_font_name), # Apply font to all
