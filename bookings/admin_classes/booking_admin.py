@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 # Import models and forms
 from bookings.models import Booking, ExtensionMovement
 from bookings.forms import BookingAdminForm, BookingExtensionForm
+from rooms.models import Availability
 from rooms.services import get_room_price
 
 # Import shared components
@@ -142,68 +143,115 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         return custom_urls + urls
 
     # --- Other Custom Views ---
+
+
+
     def extend_booking(self, request, object_id):
         original_booking = get_object_or_404(Booking, pk=object_id)
+        
         if request.method == 'POST':
             form = BookingExtensionForm(request.POST, booking=original_booking)
             if form.is_valid():
                 try:
+                    from datetime import datetime  
+
                     new_check_out = form.cleaned_data['new_check_out']
-                    latest_extension = ExtensionMovement.objects.filter(booking=original_booking).order_by('-extension_date').first()
-                    original_departure = latest_extension.new_departure if latest_extension else original_booking.check_out_date.date()
+
+                    if isinstance(new_check_out, datetime):
+                        new_check_out = new_check_out.date()
+
+                    latest_extension = ExtensionMovement.objects.filter(
+                        booking=original_booking
+                    ).order_by('-extension_date').first()
+
+                    if latest_extension:
+                        original_departure = latest_extension.new_departure  
+                    else:
+                        original_departure = original_booking.check_out_date.date() 
+
+                    if isinstance(original_departure, datetime):
+                        original_departure = original_departure.date()
+
                     additional_nights = (new_check_out - original_departure).days
-                    if additional_nights <= 0: raise forms.ValidationError(_("تاريخ المغادرة الجديد يجب أن يكون بعد تاريخ المغادرة الحالي."))
+                    additional_price = additional_nights * get_room_price(original_booking.room)
+                    new_total = original_booking.amount + additional_price  
 
-                    additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
-                    # Decide how to handle amount update - maybe add to a separate field or payment record?
-                    # new_total = original_booking.amount + additional_price
+                    new_extension = ExtensionMovement(
+                        booking=original_booking,
+                        original_departure=original_departure,
+                        new_departure=new_check_out,
+                        duration=additional_nights,
+                        reason=form.cleaned_data['reason']
+                    )
+                    new_extension.save()
 
-                    with transaction.atomic():
-                        ExtensionMovement.objects.create(
-                            booking=original_booking, original_departure=original_departure,
-                            new_departure=new_check_out, duration=additional_nights,
-                            reason=form.cleaned_data['reason']
-                        )
-                        # Update booking's checkout date
-                        # Combine date with original time if available, otherwise use midnight
-                        original_time = original_booking.check_out_date.time() if original_booking.check_out_date else datetime.min.time()
-                        original_booking.check_out_date = datetime.combine(new_check_out, original_time)
-                        original_booking.save()
-                        # Consider creating a new Payment record for the extension cost here
+                    today = timezone.now().date()
+                    latest_availability = Availability.objects.filter(
+                        hotel=original_booking.hotel,
+                        room_type=original_booking.room
+                    ).order_by('-created_at').first()
 
-                    return JsonResponse({'success': True, 'message': _('تم التمديد بنجاح!'), 'redirect_url': reverse('admin:bookings_booking_changelist')})
-                except forms.ValidationError as ve:
-                     return JsonResponse({'success': False, 'message': ', '.join(ve.messages)})
+                    current_available = latest_availability.available_rooms if latest_availability else original_booking.room.rooms_count
+
+                    availability, created = Availability.objects.update_or_create(
+                        hotel=original_booking.hotel,
+                        room_type=original_booking.room,
+                        availability_date=today,
+                        defaults={
+                            "available_rooms": max(0, current_available + original_booking.rooms_booked),
+                            "notes": f"تم التحديث بسبب تمديد الحجز #{new_extension.movement_number}",
+                        }
+                    )
+
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'تم التمديد بنجاح!',
+                        'additional_nights': additional_nights,
+                        'additional_price': additional_price,
+                        'new_total': new_total,
+                        'redirect_url': '/admin/'  
+                    })
+
                 except Exception as e:
-                    # Log the exception e for debugging
-                    print(f"Error during booking extension: {e}")
-                    return JsonResponse({'success': False, 'message': _('حدث خطأ أثناء التمديد.')})
+                    return JsonResponse({'success': False, 'message': f'حدث خطأ: {str(e)}'})
+
             else:
-                 errors = form.errors.as_json()
-                 return JsonResponse({'success': False, 'message': _('بيانات التمديد غير صالحة.'), 'errors': errors})
-        else: # GET request
-             latest_extension = ExtensionMovement.objects.filter(booking=original_booking).order_by('-extension_date').first()
-             current_checkout_date = latest_extension.new_departure if latest_extension else original_booking.check_out_date.date()
-             initial_new_check_out = current_checkout_date + timedelta(days=1)
+                return JsonResponse({'success': False, 'message': 'التمديد غير صالح، يرجى التحقق من البيانات المدخلة.'})
 
-             form = BookingExtensionForm(initial={'new_check_out': initial_new_check_out}, booking=original_booking)
+        else:
+            latest_extension = ExtensionMovement.objects.filter(
+                booking=original_booking
+            ).order_by('-extension_date').first()
 
-             # Calculate preview values
-             additional_nights = 1
-             room_price = get_room_price(original_booking.room)
-             additional_price = additional_nights * room_price * original_booking.rooms_booked
-             # new_total = original_booking.amount + additional_price # Preview only
+            if latest_extension:
+                initial_new_check_out = latest_extension.new_departure + timedelta(days=1)
+            else:
+                initial_new_check_out = original_booking.check_out_date + timedelta(days=1)
 
-             context = self.admin_site.each_context(request)
-             context.update({
-                 'form': form, 'original': original_booking,
-                 'check_out': initial_new_check_out,
-                 'additional_nights': additional_nights, 'additional_price': additional_price,
-                 # 'new_total': new_total,
-                 'opts': self.model._meta, 'room_price': room_price,
-                 'is_popup': True, # Important for admin popups
-             })
-             return render(request, 'admin/bookings/booking_extension.html', context)
+            form = BookingExtensionForm(initial={
+                'new_check_out': initial_new_check_out,
+            }, booking=original_booking)
+
+        additional_nights = 1 
+        additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
+        print(original_booking.rooms_booked)
+        new_total = original_booking.amount + additional_price 
+        print(additional_price)
+
+        context = self.admin_site.each_context(request)
+        room_price = get_room_price(original_booking.room)  
+        context.update({
+            'form': form,
+            'original': original_booking,
+            'check_out':initial_new_check_out,
+            'additional_nights': additional_nights,
+            'additional_price': additional_price,
+            'new_total': new_total,
+            'opts': self.model._meta,
+            'room_price': room_price
+        })
+
+        return render(request, 'admin/bookings/booking_extension.html', context)
 
     def set_actual_check_out_date_view(self, request, pk):
          booking = get_object_or_404(Booking, pk=pk)

@@ -20,11 +20,11 @@ class ExtensionMovementAdmin(admin.ModelAdmin): # Removed HotelManagerAdminMixin
     date_hierarchy = 'extension_date'
 
     # Optional: Add fieldsets if desired for better form organization
-    # fieldsets = (
-    #     (_("معلومات التمديد"), {'fields': ('booking', 'original_departure', 'new_departure', 'reason')}),
-    #     (_("تفاصيل الدفع"), {'fields': ('payment_receipt',)}),
-    #     (_("معلومات النظام"), {'fields': ('movement_number', 'extension_date', 'duration', 'extension_year'), 'classes': ('collapse',)}),
-    # )
+    fieldsets = (
+        (_("معلومات التمديد"), {'fields': ('booking', 'original_departure', 'new_departure', 'reason')}),
+        (_("تفاصيل الدفع"), {'fields': ('payment_receipt',)}),
+        (_("معلومات النظام"), {'fields': ('movement_number', 'extension_date', 'duration', 'extension_year'), 'classes': ('collapse',)}),
+    )
 
     def payment_button(self, obj):
         if obj.booking.actual_check_out_date is not None:
