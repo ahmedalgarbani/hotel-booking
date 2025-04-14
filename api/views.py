@@ -26,6 +26,8 @@ from django.core.exceptions import ValidationError
 from rest_framework.decorators import api_view
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Sum
+from datetime import datetime, timedelta
 
  
 User = get_user_model()
@@ -36,7 +38,6 @@ class CustomPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 50
 
-from django.db.models import Sum
 class HotelsViewSet(viewsets.ModelViewSet):
     queryset = Hotel.objects.filter(is_verified=True)
     serializer_class = HotelSerializer
@@ -45,20 +46,29 @@ class HotelsViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'description', 'location__address']
     ordering_fields = ['name', 'created_at']
 
-
     @action(detail=False, methods=['get'])
     def search(self, request):
-        hotel_name = request.query_params.get('name', '')
-        location = request.query_params.get('location', '')
-        adult_number = request.query_params.get('adult_number', '')
+        hotel_name = request.query_params.get('name', '').strip()
+        location = request.query_params.get('location', '').strip()
+        adult_number = request.query_params.get('adult_number', '').strip()
+        check_in = request.query_params.get('check_in', '').strip()
+        check_out = request.query_params.get('check_out', '').strip()
+        room_number = request.query_params.get('room_number', '').strip()
+        category_type = request.query_params.get('category_type', '').strip()
 
-        if not hotel_name and not location and not adult_number:
+        if not any([hotel_name, location, adult_number, room_number, category_type]):
             return Response({'error': 'Provide at least one search parameter'}, status=status.HTTP_400_BAD_REQUEST)
 
-        queryset = Hotel.objects.filter(
-            name__icontains=hotel_name,
-            location__address__icontains=location
-        )
+        queryset = Hotel.objects.all()
+
+        if hotel_name:
+            queryset = queryset.filter(name__icontains=hotel_name)
+
+        if location:
+            queryset = queryset.filter(location__address__icontains=location)
+
+        if category_type:
+            queryset = queryset.filter(room_types__category__name__icontains=category_type)
 
         if adult_number:
             try:
@@ -69,10 +79,66 @@ class HotelsViewSet(viewsets.ModelViewSet):
             except ValueError:
                 return Response({'error': 'Invalid adult number format'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+        # if room_number and check_in and check_out:
+        #     try:
+        #         room_number = int(room_number)
+        #         check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
+        #         check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
+
+
+        #         valid_room_type_ids = set()
+
+        #         for room_type in RoomType.objects.all():
+        #             availabilities = room_type.availabilities.filter(
+        #                 availability_date__gte=check_in_date,
+        #                 availability_date__lt=check_out_date
+        #             )
+
+        #             dates_needed = (check_out_date - check_in_date).days
+        #             if availabilities.count() == dates_needed and all(a.available_rooms >= room_number for a in availabilities):
+        #                 valid_room_type_ids.add(room_type.id)
+
+        #         queryset = queryset.filter(room_types__id__in=valid_room_type_ids)
+
+        #     except ValueError:
+        #         return Response({'error': 'Invalid date format or room number'}, status=status.HTTP_400_BAD_REQUEST)
+      
+
+        if room_number and check_in and check_out:
+            try:
+                room_number = int(room_number)
+                check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
+                check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
+                date_range = [check_in_date + timedelta(days=i) for i in range((check_out_date - check_in_date).days)]
+
+                valid_room_type_ids = set()
+
+                for room_type in RoomType.objects.all():
+                    has_enough_availability = True
+                    for date in date_range:
+                        latest_availability = room_type.availabilities.filter(
+                            availability_date=date
+                        ).order_by('-created_at').first()
+
+                        if not latest_availability or latest_availability.available_rooms < room_number:
+                            has_enough_availability = False
+                            break
+
+                    if has_enough_availability:
+                        valid_room_type_ids.add(room_type.id)
+
+                queryset = queryset.filter(room_types__id__in=valid_room_type_ids).distinct()
+
+            except ValueError:
+                return Response({'error': 'Invalid room number or date format'}, status=status.HTTP_400_BAD_REQUEST)
+
         paginated_queryset = self.paginate_queryset(queryset)
         serializer = HotelSerializer(paginated_queryset, many=True, context={'request': request})
         
         return self.get_paginated_response(serializer.data)
+
+
 
 class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination

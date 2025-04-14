@@ -132,54 +132,54 @@ class RoomReview(BaseModel):
 
 
 
-class RoomReview(BaseModel):
-    hotel = models.ForeignKey(
-        Hotel,
-        on_delete=models.CASCADE,
-        verbose_name=_("الفندق"),
-        related_name='rooms_reviews'
-    )
+# class RoomReview(BaseModel):
+#     hotel = models.ForeignKey(
+#         Hotel,
+#         on_delete=models.CASCADE,
+#         verbose_name=_("الفندق"),
+#         related_name='rooms_reviews'
+#     )
 
-    room_type = models.ForeignKey(
-        RoomType,
-        on_delete=models.SET_NULL,
-        verbose_name=_("نوع الغرفة"),
-        related_name='room_reviews',
-        null=True,
-        blank=True
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("صاحب المراجعة"),
-        on_delete=models.CASCADE,
-        related_name='room_reviews'
-    )
-    rating = models.PositiveSmallIntegerField(
-        verbose_name=_("تقييم الغرفة"),
-        choices=[(i, f"{i} نجوم" if i > 1 else "نجمة واحدة") for i in range(1, 6)],
-        default=5,
-    )
-    review = models.TextField(
-        verbose_name=_("التعليق"),
-        help_text=_("اكتب رأيك عن الغرفة")
-    )
-    status = models.BooleanField(
-        verbose_name=_("نشط"),
-        default=True,
-        help_text=_("هل المراجعة مرئية للجميع؟")
-    )
+#     room_type = models.ForeignKey(
+#         RoomType,
+#         on_delete=models.SET_NULL,
+#         verbose_name=_("نوع الغرفة"),
+#         related_name='room_reviews',
+#         null=True,
+#         blank=True
+#     )
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         verbose_name=_("صاحب المراجعة"),
+#         on_delete=models.CASCADE,
+#         related_name='room_reviews'
+#     )
+#     rating = models.PositiveSmallIntegerField(
+#         verbose_name=_("تقييم الغرفة"),
+#         choices=[(i, f"{i} نجوم" if i > 1 else "نجمة واحدة") for i in range(1, 6)],
+#         default=5,
+#     )
+#     review = models.TextField(
+#         verbose_name=_("التعليق"),
+#         help_text=_("اكتب رأيك عن الغرفة")
+#     )
+#     status = models.BooleanField(
+#         verbose_name=_("نشط"),
+#         default=True,
+#         help_text=_("هل المراجعة مرئية للجميع؟")
+#     )
 
-    class Meta:
-        verbose_name = _("مراجعة غرفة")
-        verbose_name_plural = _("مراجعات الغرف")
-        ordering = ['-created_at']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['hotel', 'room_type', 'user'],
-                name='unique_room_user_review'
-            )
-        ]
+#     class Meta:
+#         verbose_name = _("مراجعة غرفة")
+#         verbose_name_plural = _("مراجعات الغرف")
+#         ordering = ['-created_at']
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['hotel', 'room_type', 'user'],
+#                 name='unique_room_user_review'
+#             )
+#         ]
 
   
-    def __str__(self):
-        return f"{self.user.get_full_name()} - {self.room_type.name if self.room_type else 'No Room'} ({self.rating} نجوم)"
+#     def __str__(self):
+#         return f"{self.user.get_full_name()} - {self.room_type.name if self.room_type else 'No Room'} ({self.rating} نجوم)"
