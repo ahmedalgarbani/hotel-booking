@@ -13,7 +13,7 @@ from payments.models import HotelPaymentMethod, Payment
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
-from .serializers import BookingSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer
+from .serializers import BookingSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserSerializer
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -240,8 +240,12 @@ class RegisterView(APIView):
             except Exception as e:
                 return Response({'error': 'Server error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
+    
 class LoginView(APIView):
+    serializer_class = UserSerializer
+
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -254,15 +258,20 @@ class LoginView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        user = authenticate(request, username=user.username, password=password) 
+        user = authenticate(request, username=user.username, password=password)
         if user is not None:
             refresh = RefreshToken.for_user(user)
+            serializer = self.serializer_class(user, context={'request': request})
             return Response({
-                'user': {'id': user.id, 'username': user.username, 'email': user.email},
-                'tokens': {'refresh': str(refresh), 'access': str(refresh.access_token)}
+                'user': serializer.data,
+                'tokens': {
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                }
             }, status=status.HTTP_200_OK)
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
