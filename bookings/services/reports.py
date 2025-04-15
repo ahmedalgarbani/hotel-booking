@@ -17,10 +17,10 @@ User = get_user_model()
 def get_filtered_daily_bookings(request):
     """
     Get filtered booking data for daily report.
-    
+
     Args:
         request: The HTTP request object
-        
+
     Returns:
         tuple: (filtered_bookings, start_date_str, end_date_str, customer_id)
     """
@@ -70,72 +70,76 @@ def get_filtered_daily_bookings(request):
         booking.latest_payment_status_display = latest_payment.get_payment_status_display() if latest_payment else _("لا توجد دفعات")
         booking.total_paid = booking.total_paid or 0.00
         processed_bookings.append(booking)
-    
+
     return processed_bookings, start_date_str, end_date_str, customer_id
 
 
 def daily_report_view(request):
     """
     Display the daily bookings report view.
-    
+
     Args:
         request: The HTTP request object
-        
+
     Returns:
         TemplateResponse: The rendered template response
     """
     filtered_bookings, start_date_str, end_date_str, customer_id = get_filtered_daily_bookings(request)
     customers = User.objects.filter(user_type='customer').order_by('username')
-    
+
     bookings_by_day = {}
     for booking in filtered_bookings:
         # Ensure check_in_date is not None before accessing .date()
         if booking.check_in_date:
             day = booking.check_in_date.date()
-            if day not in bookings_by_day: 
+            if day not in bookings_by_day:
                 bookings_by_day[day] = []
             bookings_by_day[day].append(booking)
 
-    # Get admin site context
-    if hasattr(request, 'admin_site'):
-        admin_site = request.admin_site
-    else:
-        from django.contrib import admin
-        admin_site = admin.site
-
-    context = admin_site.each_context(request)
+    # Create context without using admin_site.each_context to avoid NoReverseMatch error
+    from django.contrib import admin
+    context = {
+        'site_title': admin.site.site_title,
+        'site_header': admin.site.site_header,
+        'site_url': admin.site.site_url,
+        'has_permission': True,
+        'available_apps': [],
+        'is_popup': False,
+        'is_nav_sidebar_enabled': True,
+        'app_list': []  # Empty app_list to avoid NoReverseMatch error
+    }
     context.update({
         'title': _('تقرير الحجوزات اليومي'),
         'bookings_by_day': bookings_by_day,
-        'start_date': start_date_str, 
+        'start_date': start_date_str,
         'end_date': end_date_str,
-        'customers': customers, 
+        'customers': customers,
         'selected_customer_id': customer_id,
-        'opts': Booking._meta, 
+        'opts': Booking._meta,
         'has_view_permission': True,  # This will be checked at the URL level
         'pdf_export_url': reverse('bookings:daily-report-export-pdf')
     })
-    
+
     return TemplateResponse(request, 'admin/bookings/booking/daily_bookings_report.html', context)
 
 
 def export_daily_report_pdf(request):
     """
     Export the daily bookings report as a PDF.
-    
+
     Args:
         request: The HTTP request object
-        
+
     Returns:
         HttpResponse: The PDF response
     """
     filtered_bookings, start_date_str, end_date_str, customer_id = get_filtered_daily_bookings(request)
-    
+
     headers = [
         _("رقم الحجز"), _("الفندق"), _("العميل"), _("الغرفة"), _("تاريخ الوصول"),
         _("تاريخ المغادرة"), _("إجمالي المدفوعات"), _("حالة الحجز"), _("حالة الدفع")
     ]
-    
+
     data = [[
         b.id, b.hotel.name, b.user.get_full_name() or b.user.username, b.room.name,
         b.check_in_date.strftime('%Y-%m-%d %H:%M') if b.check_in_date else '',
@@ -144,16 +148,16 @@ def export_daily_report_pdf(request):
     ] for b in filtered_bookings]
 
     report_title = _('تقرير الحجوزات اليومي')
-    if start_date_str == end_date_str: 
+    if start_date_str == end_date_str:
         report_title += f" - {start_date_str}"
-    else: 
+    else:
         report_title += f" ({start_date_str} - {end_date_str})"
-    
+
     if customer_id:
-        try: 
+        try:
             customer = User.objects.get(id=int(customer_id))
             report_title += f" - {_('العميل')}: {customer.get_full_name() or customer.username}"
-        except (User.DoesNotExist, ValueError): 
+        except (User.DoesNotExist, ValueError):
             pass
 
     available_width = landscape(A4)[0] - 60
@@ -162,17 +166,17 @@ def export_daily_report_pdf(request):
         available_width * 0.12, available_width * 0.12, available_width * 0.10, available_width * 0.08,
         available_width * 0.08
     ]
-    
+
     return generate_pdf_report(report_title, headers, data, col_widths=col_widths)
 
 
 def export_bookings_report(queryset):
     """
     Generate a PDF report for selected bookings.
-    
+
     Args:
         queryset: QuerySet of Booking objects
-        
+
     Returns:
         HttpResponse: The PDF response
     """
@@ -180,18 +184,18 @@ def export_bookings_report(queryset):
         _("اسم الضيف"), _("الفندق"), _("الغرفة"), _("تاريخ الدخول"),
         _("تاريخ الخروج"), _("المبلغ"), _("الحالة")
     ]
-    
+
     data = []
     for booking in queryset.select_related('hotel', 'room').prefetch_related('guests'):
         guest = booking.guests.first()
         data.append([
-            guest.name if guest else "-", 
-            booking.hotel.name, 
+            guest.name if guest else "-",
+            booking.hotel.name,
             booking.room.name,
             booking.check_in_date.strftime('%Y-%m-%d %H:%M') if booking.check_in_date else '',
             booking.check_out_date.strftime('%Y-%m-%d %H:%M') if booking.check_out_date else '',
-            f"{booking.amount:.2f}", 
+            f"{booking.amount:.2f}",
             booking.get_status_display()
         ])
-    
+
     return generate_pdf_report(_('تقرير_الحجوزات_المحدد'), headers, data)

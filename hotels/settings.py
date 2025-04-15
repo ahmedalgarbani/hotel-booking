@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
-from dotenv import load_dotenv  
+from dotenv import load_dotenv
 
 # This will make sure the tasks are registered when Celery starts
 from .celery import app as celery_app
@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-$&gp2^!(w4%x2zo)1ohk&xk@$10kcw=3w15(t_q(x6$!6gec(p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34"] 
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34"]
 
 # Load environment variables from .env file
 load_dotenv()
@@ -59,18 +59,18 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'api',
     'rest_framework_simplejwt.token_blacklist',
-    'blog', 
-    'notifications', 
+    'blog',
+    'notifications',
     'customer',
     'django_celery_beat',
     'accounts',
     'ckeditor',
-    'rest_framework.authtoken', 
+    'rest_framework.authtoken',
     'social_django',
     'oauth2_provider',
 
-    
-    
+
+
 ]
 
 # python manage.py makemigrations users HotelManagement rooms home bookings payments reviews services blog notifications customer
@@ -82,31 +82,31 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
     ),
-    
-   
+
+
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/minute',  
-        'user': '100/minute' 
+        'anon': '10/minute',
+        'user': '100/minute'
     },
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, 
-    
+    'PAGE_SIZE': 10,
 
-    
+
+
 
 }
- 
+
 #  -------------------------------------
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.google.GoogleOAuth2',  
+    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -150,8 +150,8 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 #  -------------------------------------
- 
- 
+
+
     #'EXCEPTION_HANDLER': '/api/handle.py'
 
 
@@ -159,14 +159,14 @@ SOCIAL_AUTH_PIPELINE = (
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),  
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  
-    "ROTATE_REFRESH_TOKENS": True,  
-    "BLACKLIST_AFTER_ROTATION": True,  
-    "UPDATE_LAST_LOGIN": True, 
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
 
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY, 
+    "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": "",
     "AUDIENCE": None,
     "ISSUER": None,
@@ -222,7 +222,7 @@ LOGGING = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -264,7 +264,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '54322',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
@@ -331,15 +331,15 @@ JAZZMIN_SETTINGS = {
     # الترحيب وحقوق النشر
     "welcome_sign": "مرحباً بك في نظام إدارة الفنادق",
     "copyright": "جميع الحقوق محفوظة 2024",
-    
-    # البحث والمستخدم
-    "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
-    "user_avatar": None,
+
+    # # البحث والمستخدم
+    # "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
+    # "user_avatar": None,
 
     # القوائم
     "topmenu_links": [
         {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
-        
+
         {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
@@ -403,7 +403,7 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
-    
+
     # الأيقونات
     "icons": {
         "auth": "fas fa-users-cog",
@@ -412,7 +412,7 @@ JAZZMIN_SETTINGS = {
         "users.GuestProfile": "fas fa-address-card",
         "users.GuestPreference": "fas fa-heart",
         "auth.Group": "fas fa-users",
-        
+
         "locations.Region": "fas fa-map-marked",
         "HotelManagement.City": "fas fa-city",
         "HotelManagement.Location": "fas fa-map-marker-alt",
@@ -445,35 +445,48 @@ JAZZMIN_SETTINGS = {
         "bookings.Booking": "fas fa-calendar-check",
         "bookings.BookingStatus": "fas fa-clock",
         "bookings.BookingDetail": "fas fa-receipt",
-        "bookings.BookingGuest": "fas fa-users",
-        "bookings.BookingExtra": "fas fa-plus-circle",
-        "bookings.BookingNote": "fas fa-sticky-note",
-        "bookings.BookingCancellation": "fas fa-ban",
-        "bookings.Payment": "fas fa-credit-card",
-        "bookings.PaymentStatus": "fas fa-money-check-alt",
-        "bookings.PaymentMethod": "fas fa-money-bill-wave",
-        "bookings.Invoice": "fas fa-file-invoice-dollar",
-        "reviews.Review": "fas fa-star",
-        "reviews.Rating": "fas fa-star-half-alt",
-        "services.Service": "fas fa-concierge-bell",
+        "bookings.Guest": "fas fa-users",
+        "bookings.ExtensionMovement": "fas fa-plus-circle",
+        "bookings.BookingHistory": "fas fa-sticky-note",
+        "bookings.BookingHistory": "fas fa-ban",
+        "payments.Payment": "fas fa-credit-card",
+        "payments.PaymentOption": "fas fa-money-check-alt",
+        "payments.PaymentHistory": "fas fa-sticky-note",
+        "payments.PaymentMethod": "fas fa-money-bill-wave",
+        "payments.Currency": "fas fa-file-invoice-dollar",
+        "payments.HotelPaymentMethod": "fas fa-money-bill-alt",
+        "reviews.HotelReview": "fas fa-star",
+        "reviews.RoomReview": "fas fa-star-half-alt",
+        "services.HotelService": "fas fa-concierge-bell",
         "services.ServiceCategory": "fas fa-th-list",
-        "services.ServiceBooking": "fas fa-calendar-plus",
-        "media.Image": "fas fa-image",
-        "media.Gallery": "fas fa-images",
-        "media.Document": "fas fa-file-alt",
-        "media.Video": "fas fa-video",
+        "services.RoomTypeService": "fas fa-calendar-plus",
+        "services.Offer": "fas fa-gift",
+        "services.Coupon": "fas fa-ticket-alt",
+        "HotelManagement.Image": "fas fa-image",
+        "rooms.RoomImage": "fas fa-images",
+
         "blog.Post": "fas fa-blog",
         "blog.Category": "fas fa-folder",
         "blog.Comment": "fas fa-comments",
         "blog.Tag": "fas fa-tags",
-        "home.Slider": "fas fa-images",
+        "home.HeroSlider": "fas fa-images",
         "home.Testimonial": "fas fa-quote-right",
         "home.Partner": "fas fa-handshake",
-        "home.Contact": "fas fa-envelope",
-        "home.About": "fas fa-info-circle",
-        "home.FAQ": "fas fa-question-circle",
-        "home.Newsletter": "fas fa-newspaper",
-        "home.SocialMedia": "fas fa-share-alt"
+        "home.ContactMessage": "fas fa-envelope",
+        "home.InfoBox": "fas fa-info-circle",
+        "home.RoomTypeHome": "fas fa-bed",
+        "home.Setting": "fas fa-cog",
+        "home.SocialMediaLink": "fas fa-share-alt",
+        "home.TeamMember": "fas fa-users",
+        "home.PricingPlan": "fas fa-dollar-sign",
+        "home.PrivacyPolicy": "fas fa-shield-alt",
+        "home.PaymenPolicy": "fas fa-money-check",
+        "home.TermsConditions": "fas fa-file-contract",
+
+        "notifications.Notifications": "fas fa-bell",
+
+        "accounts.ChartOfAccounts": "fas fa-chart-pie",
+        "accounts.JournalEntry": "fas fa-book"
     },
     # تخصيص الواجهة
     "custom_css": "",
@@ -482,20 +495,20 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
     "language_chooser": True,
-    
+
     # الألوان والتنسيق
     "dark_mode_theme": "darkly",
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
-    
+
     # Modal Settings
     "related_modal_active": True,
-    
+
     # Custom Links
     "custom_links": {
         "users": [{
-            "name": "إحصائيات المستخدمين", 
-            "url": "admin:users_customuser_changelist", 
+            "name": "إحصائيات المستخدمين",
+            "url": "admin:users_customuser_changelist",
             "icon": "fas fa-chart-line"
         }],
         "hotels": [{
@@ -551,36 +564,36 @@ JAZZMIN_UI_TWEAKS = {
 NAV_MENU_TOP = [
     {
         "name": "الرئيسي",
-        "url": "/",  
+        "url": "/",
     },
-    
+
     {
         "name": "الفنادق",
         "url": "/hotels",
-      
+
     },
     {
         "name": "الغرف",
-        "url": "/rooms",  
+        "url": "/rooms",
     },
-    
+
     {
         "name": "المقالات",
-        "url": "/blog/",  
+        "url": "/blog/",
     },
-     
+
     {
         "name": "المزيد",
         "url": "/",
-        
+
         "submenu": [
            {
         "name": "عنا",
-        "url": "about/",  
+        "url": "about/",
     },
             {
         "name": "تواصل معنا",
-        "url": "/contact",  
+        "url": "/contact",
     },
             {
                 "name": "الشروط والاحكام",
@@ -594,15 +607,15 @@ NAV_MENU_TOP = [
             },
              {
         "name": "الاسعار",
-        "url": "/price",  
+        "url": "/price",
     },
     {
         "name": "خدماتنا",
-        "url": "/service",  
+        "url": "/service",
     },
         ],
     },
-   
+
 ]
 
 # إعدادات البريد الإلكتروني

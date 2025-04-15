@@ -118,14 +118,18 @@ def revenue_summary_view(request):
     """
     total_revenue, revenue_by_method, start_date_str, end_date_str = get_filtered_revenue_data(request)
 
-    if hasattr(request, 'admin_site'):
-        admin_site = request.admin_site
-    else:
-        from django.contrib import admin
-        admin_site = admin.site
-
-    # --- Context ---
-    context = admin_site.each_context(request)
+    # Create context without using admin_site.each_context to avoid NoReverseMatch error
+    from django.contrib import admin
+    context = {
+        'site_title': admin.site.site_title,
+        'site_header': admin.site.site_header,
+        'site_url': admin.site.site_url,
+        'has_permission': True,
+        'available_apps': [],
+        'is_popup': False,
+        'is_nav_sidebar_enabled': True,
+        'app_list': []  # Empty app_list to avoid NoReverseMatch error
+    }
     context.update({
         'title': _('ملخص الإيرادات'),
         'total_revenue': total_revenue,
