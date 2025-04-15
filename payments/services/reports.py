@@ -116,10 +116,8 @@ def revenue_summary_view(request):
     Returns:
         TemplateResponse: The rendered template response
     """
-    # Use the refactored helper method to get data and display dates
     total_revenue, revenue_by_method, start_date_str, end_date_str = get_filtered_revenue_data(request)
 
-    # Get admin site context
     if hasattr(request, 'admin_site'):
         admin_site = request.admin_site
     else:
