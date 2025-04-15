@@ -17,11 +17,11 @@ def get_competitor_prices(room_type, date_range=None):
     """
     Simulate competitor prices for similar room types.
     In a real application, this would fetch data from external APIs or a competitor price database.
-    
+
     Args:
         room_type: The RoomType object to compare
         date_range: Optional date range for price comparison
-        
+
     Returns:
         dict: Competitor pricing data
     """
@@ -29,18 +29,18 @@ def get_competitor_prices(room_type, date_range=None):
     hotel_location = room_type.hotel.location
     if not hotel_location or not hotel_location.city:
         return []
-    
+
     city = hotel_location.city
-    
+
     # Find similar room types in the same city but different hotels
     similar_room_types = RoomType.objects.filter(
         hotel__location__city=city,
         category=room_type.category,
         default_capacity=room_type.default_capacity
     ).exclude(hotel=room_type.hotel)
-    
+
     competitor_data = []
-    
+
     # If we have real competitors, use their actual prices
     if similar_room_types.exists():
         for comp_room in similar_room_types:
@@ -51,9 +51,9 @@ def get_competitor_prices(room_type, date_range=None):
                 date_from__lte=today,
                 date_to__gte=today
             ).order_by('-date_from').first()
-            
+
             current_price = price_obj.price if price_obj else comp_room.base_price
-            
+
             competitor_data.append({
                 'hotel_name': comp_room.hotel.name,
                 'room_type_name': comp_room.name,
@@ -66,7 +66,7 @@ def get_competitor_prices(room_type, date_range=None):
                     if current_price else 0
                 )
             })
-    
+
     # If we don't have enough real competitors, generate some simulated ones
     if len(competitor_data) < 5:
         # Get the average price for this category and capacity across all hotels
@@ -74,13 +74,13 @@ def get_competitor_prices(room_type, date_range=None):
             category=room_type.category,
             default_capacity=room_type.default_capacity
         ).aggregate(avg_price=Avg('base_price'))['avg_price'] or room_type.base_price
-        
+
         # Generate simulated competitors
         for i in range(5 - len(competitor_data)):
             # Simulate prices within ±20% of the average
             variation = random.uniform(-0.2, 0.2)
             simulated_price = avg_price * (1 + variation)
-            
+
             competitor_data.append({
                 'hotel_name': f"منافس {i+1}",
                 'room_type_name': f"{room_type.category.name} - {room_type.default_capacity} أشخاص",
@@ -94,34 +94,34 @@ def get_competitor_prices(room_type, date_range=None):
                 ),
                 'simulated': True  # Flag to indicate this is simulated data
             })
-    
+
     return competitor_data
 
 def get_price_history(room_type, days=90):
     """
     Get historical price data for a room type.
-    
+
     Args:
         room_type: The RoomType object
         days: Number of days to look back
-        
+
     Returns:
         list: Historical price data
     """
     today = timezone.now().date()
     start_date = today - timedelta(days=days)
-    
+
     # Get all price records for this room type in the date range
     price_records = RoomPrice.objects.filter(
         room_type=room_type,
         date_from__gte=start_date,
         date_to__lte=today
     ).order_by('date_from')
-    
+
     # Create a list of dates and prices
     price_history = []
     current_date = start_date
-    
+
     while current_date <= today:
         # Find a price record that covers this date
         price_obj = RoomPrice.objects.filter(
@@ -129,17 +129,17 @@ def get_price_history(room_type, days=90):
             date_from__lte=current_date,
             date_to__gte=current_date
         ).order_by('-date_from').first()
-        
+
         price = price_obj.price if price_obj else room_type.base_price
-        
+
         price_history.append({
             'date': current_date.strftime('%Y-%m-%d'),
             'price': float(price),
             'is_special': bool(price_obj and price_obj.is_special_offer) if price_obj else False
         })
-        
+
         current_date += timedelta(days=1)
-    
+
     return price_history
 
 def get_price_analysis_data(request):
@@ -150,28 +150,28 @@ def get_price_analysis_data(request):
     hotel_id = request.GET.get('hotel_id')
     category_id = request.GET.get('category_id')
     period = request.GET.get('period', '90')  # Default to 90 days
-    
+
     try:
         period_days = int(period)
     except (ValueError, TypeError):
         period_days = 90
-    
+
     # Get all hotels for the filter dropdown
     hotels = Hotel.objects.all()
-    
+
     # Get all room categories for the filter dropdown
     categories = Category.objects.all()
-    
+
     # Base queryset for room types
     room_types_qs = RoomType.objects.all()
-    
+
     # Apply filters
     if hotel_id and hotel_id.isdigit():
         room_types_qs = room_types_qs.filter(hotel_id=int(hotel_id))
-    
+
     if category_id and category_id.isdigit():
         room_types_qs = room_types_qs.filter(category_id=int(category_id))
-    
+
     # Get the specific room type if provided
     selected_room_type = None
     if room_type_id and room_type_id.isdigit():
@@ -179,37 +179,37 @@ def get_price_analysis_data(request):
             selected_room_type = RoomType.objects.get(id=int(room_type_id))
         except RoomType.DoesNotExist:
             selected_room_type = None
-    
+
     # If no specific room type is selected, use the first one from the filtered queryset
     if not selected_room_type and room_types_qs.exists():
         selected_room_type = room_types_qs.first()
-    
+
     # Prepare data for the report
     competitor_data = []
     price_history = []
     price_statistics = {}
-    
+
     if selected_room_type:
         # Get competitor prices
         competitor_data = get_competitor_prices(selected_room_type)
-        
+
         # Get price history
         price_history = get_price_history(selected_room_type, days=period_days)
-        
+
         # Calculate price statistics
         today = timezone.now().date()
         start_date = today - timedelta(days=period_days)
-        
+
         # Get all prices for this room type in the period
         prices = RoomPrice.objects.filter(
             room_type=selected_room_type,
             date_from__gte=start_date,
             date_to__lte=today
         ).values_list('price', flat=True)
-        
+
         # Include the base price
         all_prices = list(prices) + [selected_room_type.base_price]
-        
+
         if all_prices:
             price_statistics = {
                 'min_price': min(all_prices),
@@ -224,14 +224,14 @@ def get_price_analysis_data(request):
                 'avg_price': selected_room_type.base_price,
                 'current_price': selected_room_type.base_price
             }
-        
+
         # Calculate market position
         if competitor_data:
             all_competitor_prices = [c['price'] for c in competitor_data]
             market_min = min(all_competitor_prices)
             market_max = max(all_competitor_prices)
             market_avg = sum(all_competitor_prices) / len(all_competitor_prices)
-            
+
             price_statistics.update({
                 'market_min': market_min,
                 'market_max': market_max,
@@ -241,14 +241,14 @@ def get_price_analysis_data(request):
                     if market_max > market_min else 50
                 )
             })
-    
+
     # Prepare data for charts
     history_dates = [item['date'] for item in price_history]
     history_prices = [item['price'] for item in price_history]
-    
+
     competitor_names = [item['hotel_name'] for item in competitor_data]
     competitor_prices = [float(item['price']) for item in competitor_data]
-    
+
     return {
         'room_types': room_types_qs,
         'selected_room_type': selected_room_type,
@@ -271,7 +271,7 @@ def price_analysis_report_view(request):
     Display the price analysis report view.
     """
     data = get_price_analysis_data(request)
-    
+
     # Create context without using admin_site.each_context to avoid NoReverseMatch error
     from django.contrib import admin
     context = {
@@ -284,7 +284,7 @@ def price_analysis_report_view(request):
         'is_nav_sidebar_enabled': True,
         'app_list': []  # Empty app_list to avoid NoReverseMatch error
     }
-    
+
     context.update({
         'title': _('تقرير تحليل الأسعار'),
         'room_types': data['room_types'],
@@ -305,16 +305,16 @@ def price_analysis_report_view(request):
         'has_view_permission': True,
         'pdf_export_url': reverse('rooms:price-analysis-report-export-pdf')
     })
-    
+
     return TemplateResponse(request, 'admin/rooms/room/price_analysis_report.html', context)
 
 def export_price_analysis_pdf(request):
     """
     Export the price analysis report as a PDF.
-    
+
     Args:
         request: The HTTP request object
-        
+
     Returns:
         HttpResponse: The PDF response
     """
@@ -323,7 +323,7 @@ def export_price_analysis_pdf(request):
     competitor_data = data['competitor_data']
     price_statistics = data['price_statistics']
     period = data['period']
-    
+
     if not selected_room_type:
         # Return an empty PDF if no room type is selected
         return generate_pdf_report(
@@ -332,7 +332,7 @@ def export_price_analysis_pdf(request):
             [],
             []
         )
-    
+
     # Define headers for the PDF table
     headers = [
         _('الفندق'),
@@ -341,10 +341,10 @@ def export_price_analysis_pdf(request):
         _('الفرق'),
         _('نسبة الفرق %')
     ]
-    
+
     # Prepare data rows
     data_rows = []
-    
+
     # Add the selected room type as the first row
     data_rows.append([
         selected_room_type.hotel.name,
@@ -353,12 +353,12 @@ def export_price_analysis_pdf(request):
         "0.00",
         "0.00%"
     ])
-    
+
     # Add competitor data
     for comp in competitor_data:
         price_diff = comp['price_difference']
         price_diff_percent = comp['price_difference_percent']
-        
+
         data_rows.append([
             comp['hotel_name'],
             comp['room_type_name'],
@@ -366,23 +366,23 @@ def export_price_analysis_pdf(request):
             f"{price_diff:.2f}",
             f"{price_diff_percent:.2f}%"
         ])
-    
+
     # Create report title
     report_title = _('تقرير تحليل الأسعار')
-    
+
     # Add room type info to title
     report_title += f" - {selected_room_type.hotel.name} - {selected_room_type.name}"
-    
+
     # Add period to title
     report_title += f" ({_('آخر')} {period} {_('يوم')})"
-    
+
     # Add summary statistics
     if price_statistics:
         report_title += f"\n{_('السعر الحالي')}: {price_statistics.get('current_price', 0):.2f} | "
         report_title += f"{_('متوسط السوق')}: {price_statistics.get('market_avg', 0):.2f} | "
         report_title += f"{_('الحد الأدنى للسوق')}: {price_statistics.get('market_min', 0):.2f} | "
         report_title += f"{_('الحد الأقصى للسوق')}: {price_statistics.get('market_max', 0):.2f}"
-    
+
     # Define column widths
     available_width = landscape(A4)[0] - 60  # A4 landscape width minus margins
     col_widths = [
@@ -392,6 +392,6 @@ def export_price_analysis_pdf(request):
         available_width * 0.15,  # الفرق
         available_width * 0.20   # نسبة الفرق %
     ]
-    
+
     # Generate and return the PDF report
     return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths)

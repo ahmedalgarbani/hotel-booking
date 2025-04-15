@@ -332,9 +332,9 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "مرحباً بك في نظام إدارة الفنادق",
     "copyright": "جميع الحقوق محفوظة 2024",
 
-    # البحث والمستخدم
-    "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
-    "user_avatar": None,
+    # # البحث والمستخدم
+    # "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
+    # "user_avatar": None,
 
     # القوائم
     "topmenu_links": [
