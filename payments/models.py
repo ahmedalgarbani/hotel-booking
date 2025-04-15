@@ -52,6 +52,8 @@ class PaymentOption(BaseModel):
         verbose_name_plural = _("طرق الدفع")
 
 # ------------HotelPaymentMethod-------------
+
+
 class HotelPaymentMethod(BaseModel):
     hotel = models.ForeignKey(
         Hotel,

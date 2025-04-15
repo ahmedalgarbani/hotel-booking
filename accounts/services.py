@@ -23,7 +23,7 @@ def create_journal_entry(**kwargs):
 
     journal_entry = JournalEntry.objects.create(
         journal_entry_number=kwargs["journal_entry_number"],
-        journal_entry_date=datetime.now,
+        journal_entry_date=datetime.now(),
         journal_entry_description=kwargs.get("journal_entry_description",""),
         journal_entry_account=kwargs["journal_entry_account"],
         journal_entry_in_amount=kwargs["journal_entry_in_amount"],

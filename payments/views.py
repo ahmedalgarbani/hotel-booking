@@ -233,10 +233,6 @@ def hotel_confirm_payment(request):
             transfer_image = request.FILES.get("transfer_image")
 
             payment_method = get_object_or_404(HotelPaymentMethod, id=payment_method_id)
-            print(payment_method.payment_option.method_name)
-            print(payment_method.payment_option.method_name)
-            print(payment_method.payment_option.method_name)
-            print(payment_method.payment_option.method_name)
             pending_status = Booking.BookingStatus.PENDING
 
             coupon_data = request.session.get("coupon", {})

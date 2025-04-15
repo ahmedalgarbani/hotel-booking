@@ -1,125 +1,123 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
-{% block extra_css %}
-   
-    <style>
-      /* Default button styling */
+
+{% block content %}
+
+<style>
+  /* Default button styling */
 .add-to-wishlist {
-  color: #6c757d; /* grey by default */
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+color: #6c757d; /* grey by default */
+background-color: transparent;
+border: none;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
 }
 
 .add-to-wishlist .la-heart-o {
-  color: #6c757d; /* grey heart */
+color: #6c757d; /* grey heart */
 }
 
 .add-to-wishlist .la-heart {
-  color:red; /* white heart when selected */
-  
+color:red; /* white heart when selected */
+
 }
 
 /* Blue button when added to wishlist */
 .btn-blue {
-  background-color: #007bff; /* blue background */
-  color: block; /* white text */
+background-color: #007bff; /* blue background */
+color: block; /* white text */
 }
 
 .btn-blue .la-heart {
-  color: red; /* white heart icon when selected */
-  
+color: red; /* white heart icon when selected */
+
 }
 
 .custom-checkbox {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
+display: flex;
+align-items: center;
+margin-bottom: 8px;
 }
 .custom-checkbox input[type="checkbox"] {
-    margin-left: 8px;
+margin-left: 8px;
 }
 .sidebar-review .ratings {
-    margin-right: 0;
+margin-right: 0;
 }
 .sidebar-category .custom-checkbox {
-    margin-bottom: 8px;
+margin-bottom: 8px;
 }
 
-    .messages .alert {
-    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
-    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
-    border: 2px solid; /* إضافة حدود سميكة */
-    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
-    font-weight: bold; /* جعل النص أكثر جرأة */
+.messages .alert {
+padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+border: 2px solid; /* إضافة حدود سميكة */
+border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+font-weight: bold; /* جعل النص أكثر جرأة */
 }
 
 .messages .alert-success {
-    color: #155724; /* لون نص النجاح (أخضر داكن) */
-    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
-    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+color: #155724; /* لون نص النجاح (أخضر داكن) */
+background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
 }
 
 .messages .alert-error {
-    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
-    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
-    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
 }
 
 /* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
 .messages .alert-warning {
-    color: #85640a;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
+color: #85640a;
+background-color: #fff3cd;
+border-color: #ffeeba;
 }
 
 .messages .alert-info {
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
+color: #0c5460;
+background-color: #d1ecf1;
+border-color: #bee5eb;
 }
 
 
-  .custom-alert.warning {
-    background:rgb(205, 255, 217);
-    border: 1px solid #ffeeba;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1.5rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.custom-alert.warning {
+background:rgb(205, 255, 217);
+border: 1px solid #ffeeba;
+border-radius: 8px;
+padding: 1rem;
+margin: 1.5rem 0;
+box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .alert-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
+display: flex;
+align-items: flex-start;
+gap: 1rem;
 }
 
 .alert-icon {
-    width: 24px;
-    height: 24px;
-    color:rgb(7, 255, 32);
-    flex-shrink: 0;
+width: 24px;
+height: 24px;
+color:rgb(7, 255, 32);
+flex-shrink: 0;
 }
 
 .alert-heading {
-    color: #856404;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+color: #856404;
+margin: 0 0 0.5rem 0;
+font-size: 1.1rem;
+font-weight: 600;
 }
 
 .custom-alert p {
-    color: #856404;
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.5;
+color: #856404;
+margin: 0;
+font-size: 0.95rem;
+line-height: 1.5;
 }
 </style>
- {% endblock extra_css %}
-{% block content %}
-
     <!-- ================================
     START BREADCRUMB TOP BAR
 ================================= -->
@@ -744,11 +742,12 @@ START TOUR DETAIL AREA
                 <ul class="list-items">
                   <li>
                     <i class="la la-phone icon-element me-2"></i
-                    ><a href="#">+ 61 23 8093 3400</a>
+                    ><a href="#">{{setting.phone}}</a>
+                
                   </li>
                   <li>
                     <i class="la la-envelope icon-element me-2"></i
-                    ><a href="mailto:info@trizen.com">info@trizen.com</a>
+                    ><a href="mailto:info@trizen.com">{{setting.email}}</a>
                   </li>
                 </ul>
               </div>
@@ -794,6 +793,7 @@ START RELATE TOUR AREA
     <!-- end row -->
     <div class="row padding-top-50px">
       {% for hotels in external_hotels %}
+
       <!-- end col-lg-4 -->
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
@@ -801,19 +801,17 @@ START RELATE TOUR AREA
             <a href="{{hotels.get_absolute_url}}" class="d-block">
               <img src="{{hotels.profile_picture.url}}" alt="hotel-img" />
             </a>
-            {% comment %} <span class="badge">متميز</span> {% endcomment %}
-   
-            <div
-            class="add-to-wishlist icon-element {% if hotels.is_favorite %}btn-blue{% endif %}"
-            data-bs-toggle="tooltip"
-            data-placement="top"
-            data-hotel-id="{{ hotels.id }}"
-            title="المرجعية"
-          >
-            <i class="{% if hotels.is_favorite %}la la-heart{% else %}la la-heart-o{% endif %}"></i>
-          </div>
-          
-            </div>
+                        {% comment %} <span class="badge">متميز</span> {% endcomment %}
+
+                        <div
+                        class="add-to-wishlist icon-element {% if hotels.is_favorite %}btn-blue{% endif %}"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        data-hotel-id="{{ hotels.id }}"
+                        title="المرجعية"
+                      >
+                        <i class="{% if hotels.is_favorite %}la la-heart{% else %}la la-heart-o{% endif %}"></i>
+                      </div>
           </div>
           <div class="card-body">
             <h3 class="card-title">
@@ -821,29 +819,30 @@ START RELATE TOUR AREA
             </h3>
             <p class="card-meta">{{hotel.location.city.state}} , {{hotels.location.address}}</p>
             <div class="card-rating">
-              <span class="badge text-white">4.4/5</span>
+              {% if average_rating > 0 %}
+              
+              <span class="badge text-white">{{average_rating}}/5</span>
+              
+              {% else %}
+              <span class="badge text-white">0.0/5</span>
+
+              {% endif %}
               <span class="review__text">معدل</span>
-              <span class="rating__text">(30 التعليقات)</span>
+              <span class="rating__text">({{review_count}} التعليقات)</span>
             </div>
-            <div
-              class="card-price d-flex align-items-center justify-content-between"
-            >
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$88.00</span>
-                <span class="price__text">لليلة الواحدة</span>
-              </p>
+            <div class="card-price d-flex align-items-center justify-content-between">
+              
               <a href="{{hotels.get_absolute_url}}" class="btn-text"
-                >انظر التفاصيل<i class="la la-angle-right"></i
-              ></a>
-            </div>
+              >انظر التفاصيل<i class="la la-angle-right"></i
+            ></a>            </div>
           </div>
         </div>
         <!-- end card-item -->
       </div>
-      <!-- end col-lg-4 -->
       {% endfor %}
+
     </div>
+   
     <!-- end row -->
   </div>
   <!-- end container -->

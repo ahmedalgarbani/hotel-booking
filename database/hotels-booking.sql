@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2025 at 09:37 PM
+-- Generation Time: Apr 15, 2025 at 08:41 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `accounts_chartofaccounts` (
   `account_parent_id` bigint(20) DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `accounts_chartofaccounts`
@@ -58,7 +58,7 @@ INSERT INTO `accounts_chartofaccounts` (`id`, `created_at`, `updated_at`, `delet
 (8, NULL, NULL, NULL, '1200', 'الأصول الثابتة', 'Assets', 0.00, 'الأصول التي تملكها الشركة على المدى الطويل', 1, NULL, 1, NULL, NULL),
 (9, NULL, '2025-04-14 08:46:20.498937', NULL, '1101', 'النقد وما يعادله', 'Assets', 0.00, 'النقدية وما يعادلها من أصول سائلة', 1, 0.00, 7, NULL, NULL),
 (10, NULL, NULL, NULL, '1102', 'النقدية في الصندوق', 'Assets', 0.00, 'النقدية المتوفرة في صندوق الشركة', 0, NULL, 7, NULL, NULL),
-(11, NULL, NULL, NULL, '1103', 'البنك الأهلي - الحساب الجاري', 'Assets', 0.00, 'الحساب الجاري في البنك الأهلي', 0, NULL, 7, NULL, NULL),
+(11, NULL, '2025-04-15 11:35:57.478644', NULL, '1103', 'البنوك والتحويلات- الحساب الجاري', 'Assets', 0.00, 'الحساب الجاري في البنك الأهلي', 1, 0.00, 7, NULL, NULL),
 (12, NULL, NULL, NULL, '1104', 'المدينون والعملاء', 'Assets', 0.00, 'ذمم العملاء والمدينون', 0, NULL, 7, NULL, NULL),
 (13, NULL, NULL, NULL, '1105', 'عملاء محليون', 'Assets', 0.00, 'ذمم العملاء المحليين', 0, NULL, 7, NULL, NULL),
 (14, NULL, NULL, NULL, '1106', 'عملاء دوليون', 'Assets', 0.00, 'ذمم العملاء الدوليين', 0, NULL, 7, NULL, NULL),
@@ -125,7 +125,15 @@ CREATE TABLE `accounts_journalentry` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `journal_entry_account_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `accounts_journalentry`
+--
+
+INSERT INTO `accounts_journalentry` (`id`, `created_at`, `updated_at`, `deleted_at`, `journal_entry_number`, `journal_entry_date`, `journal_entry_description`, `journal_entry_in_amount`, `journal_entry_out_amount`, `journal_entry_notes`, `journal_entry_currency`, `journal_entry_exchange_rate`, `journal_entry_tax`, `created_by_id`, `journal_entry_account_id`, `updated_by_id`) VALUES
+(1, '2025-04-15 11:46:33.713778', '2025-04-15 11:46:33.713778', NULL, 'ENT-6731', '2025-04-15', '', 0.00, 0.00, 'مقابل دفع حجز', 'RY', 1.00, 0.00, NULL, 53, NULL),
+(2, '2025-04-15 11:46:33.715710', '2025-04-15 11:46:33.715710', NULL, 'ENT-6731', '2025-04-15', '', 0.00, 0.00, 'مقابل دفع حواله', 'RY', 1.00, 0.00, NULL, 11, NULL);
 
 -- --------------------------------------------------------
 
@@ -137,7 +145,7 @@ CREATE TABLE `authtoken_token` (
   `key` varchar(40) NOT NULL,
   `created` datetime(6) NOT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -148,7 +156,7 @@ CREATE TABLE `authtoken_token` (
 CREATE TABLE `auth_group` (
   `id` int(11) NOT NULL,
   `name` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_group`
@@ -167,7 +175,7 @@ CREATE TABLE `auth_group_permissions` (
   `id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL,
   `permission_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_group_permissions`
@@ -281,7 +289,7 @@ CREATE TABLE `auth_permission` (
   `name` varchar(255) NOT NULL,
   `content_type_id` int(11) NOT NULL,
   `codename` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_permission`
@@ -614,7 +622,7 @@ CREATE TABLE `blog_category` (
   `description` longtext NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -633,7 +641,7 @@ CREATE TABLE `blog_comment` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `post_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -657,7 +665,7 @@ CREATE TABLE `blog_post` (
   `category_id` bigint(20) DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -669,7 +677,7 @@ CREATE TABLE `blog_post_tags` (
   `id` bigint(20) NOT NULL,
   `post_id` bigint(20) NOT NULL,
   `tag_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -685,7 +693,7 @@ CREATE TABLE `blog_tag` (
   `name` varchar(50) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -711,7 +719,7 @@ CREATE TABLE `bookings_booking` (
   `room_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings_booking`
@@ -728,8 +736,8 @@ INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, 
 (12, '2025-04-09 11:22:11.969607', '2025-04-09 11:23:10.125066', NULL, '2025-04-09 11:21:48.000000', '2025-04-09 16:23:10.000000', NULL, 66.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
 (13, '2025-04-09 11:26:33.564688', '2025-04-09 11:26:51.257373', NULL, '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', NULL, 94.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
 (14, '2025-04-11 18:56:33.354568', '2025-04-11 18:57:34.015704', NULL, '2025-04-11 00:00:00.000000', '2025-04-12 00:00:00.000000', NULL, 2550.00, '2', 1, 5, NULL, 1, NULL, 1, NULL, 1),
-(15, '2025-04-12 21:49:48.854959', '2025-04-12 21:49:48.854959', NULL, '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 15.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(16, '2025-04-12 21:52:57.100321', '2025-04-13 21:28:32.325093', NULL, '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(15, '2025-04-12 21:49:48.854959', '2025-04-15 11:16:52.447612', NULL, '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 15.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
+(16, '2025-04-12 21:52:57.100321', '2025-04-15 11:46:33.727327', NULL, '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 24),
 (17, '2025-04-14 11:53:59.218695', '2025-04-14 16:29:12.018475', NULL, '2025-11-02 00:00:00.000000', '2025-11-06 00:00:00.000000', NULL, 160.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 1);
 
 -- --------------------------------------------------------
@@ -752,7 +760,7 @@ CREATE TABLE `bookings_bookingdetail` (
   `hotel_id` bigint(20) NOT NULL,
   `service_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings_bookingdetail`
@@ -785,7 +793,7 @@ CREATE TABLE `bookings_bookinghistory` (
   `parent_booking_id` bigint(20) DEFAULT NULL,
   `room_id` bigint(20) NOT NULL,
   `user_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings_bookinghistory`
@@ -807,7 +815,10 @@ INSERT INTO `bookings_bookinghistory` (`id`, `history_date`, `previous_status`, 
 (15, '2025-04-09 11:26:51.269644', '0', '1', '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', NULL, 94.00, 1, 1, 13, 5, 1, NULL, 1, 5),
 (16, '2025-04-11 18:57:34.020618', '0', '2', '2025-04-11 00:00:00.000000', '2025-04-12 00:00:00.000000', NULL, 2550.00, 1, 5, 14, 1, 1, NULL, 1, 1),
 (17, '2025-04-13 21:28:32.329757', '0', '1', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, 1, 1, 16, 5, 1, NULL, 1, 5),
-(18, '2025-04-14 16:29:12.031055', '0', '2', '2025-11-02 00:00:00.000000', '2025-11-06 00:00:00.000000', NULL, 160.00, 1, 1, 17, 1, 1, NULL, 1, 1);
+(18, '2025-04-14 16:29:12.031055', '0', '2', '2025-11-02 00:00:00.000000', '2025-11-06 00:00:00.000000', NULL, 160.00, 1, 1, 17, 1, 1, NULL, 1, 1),
+(19, '2025-04-15 11:16:52.447612', '0', '1', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 15.00, 1, 1, 15, 5, 1, NULL, 1, 5),
+(21, '2025-04-15 11:38:57.939328', '1', '0', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, 1, 1, 16, 5, 1, NULL, 1, 5),
+(22, '2025-04-15 11:39:30.099669', '0', '1', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, 1, 1, 16, 5, 1, NULL, 1, 5);
 
 -- --------------------------------------------------------
 
@@ -825,7 +836,7 @@ CREATE TABLE `bookings_extensionmovement` (
   `duration` int(10) UNSIGNED NOT NULL CHECK (`duration` >= 0),
   `booking_id` bigint(20) NOT NULL,
   `payment_receipt_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings_extensionmovement`
@@ -861,7 +872,7 @@ CREATE TABLE `bookings_guest` (
   `deleted_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings_guest`
@@ -886,7 +897,7 @@ CREATE TABLE `customer_favourites` (
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_favourites`
@@ -895,7 +906,8 @@ CREATE TABLE `customer_favourites` (
 INSERT INTO `customer_favourites` (`id`, `created_at`, `updated_at`, `deleted_at`, `created_by_id`, `hotel_id`, `updated_by_id`, `user_id`) VALUES
 (1, '2025-04-01 00:24:39.320663', '2025-04-01 00:24:39.320663', NULL, 1, 1, 1, 14),
 (57, '2025-04-04 21:45:45.521085', '2025-04-04 21:45:45.521085', NULL, NULL, 2, NULL, 5),
-(61, '2025-04-11 20:11:32.685861', '2025-04-11 20:11:32.685861', NULL, NULL, 1, NULL, 1);
+(61, '2025-04-11 20:11:32.685861', '2025-04-11 20:11:32.685861', NULL, NULL, 1, NULL, 1),
+(62, '2025-04-15 09:09:06.534621', '2025-04-15 09:09:06.534621', NULL, NULL, 2, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -912,7 +924,7 @@ CREATE TABLE `django_admin_log` (
   `change_message` longtext NOT NULL,
   `content_type_id` int(11) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_admin_log`
@@ -1111,7 +1123,20 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (190, '2025-04-14 08:44:57.973301', '23', 'الأصول غير الملموسة', 2, '[{\"changed\": {\"fields\": [\"Account parent\", \"Account status\", \"Account amount\"]}}]', 60, 1),
 (191, '2025-04-14 08:45:15.145294', '24', 'استثمارات طويلة الأجل', 2, '[{\"changed\": {\"fields\": [\"Account parent\", \"Account status\", \"Account amount\"]}}]', 60, 1),
 (192, '2025-04-14 08:46:20.515727', '9', 'النقد وما يعادله', 2, '[{\"changed\": {\"fields\": [\"Account parent\", \"Account status\", \"Account amount\"]}}]', 60, 1),
-(193, '2025-04-14 10:20:42.993987', '24', 'akshdkj askdj8888', 2, '[{\"changed\": {\"fields\": [\"Email address\"]}}]', 2, 1);
+(193, '2025-04-14 10:20:42.993987', '24', 'akshdkj askdj8888', 2, '[{\"changed\": {\"fields\": [\"Email address\"]}}]', 2, 1),
+(194, '2025-04-15 09:45:07.396750', '3', 'فندق قصر سبأ صنعاء', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
+(195, '2025-04-15 09:45:23.701854', '4', 'فندق أمواج عدن', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
+(196, '2025-04-15 09:45:36.074834', '6', 'نزل سقطرى البيئي', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
+(197, '2025-04-15 09:45:49.132912', '7', 'فندق برج السلام تعز', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
+(198, '2025-04-15 09:46:09.536928', '8', 'فندق إب جراند', 2, '[]', 18, 1),
+(199, '2025-04-15 11:16:52.466789', '15', 'Booking #15 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(200, '2025-04-15 11:17:50.384226', '6', 'دفعة #6 لحجز 6', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\", \"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062f\\u0641\\u0639\", \"\\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a \\u0627\\u0644\\u062f\\u0641\\u0639\", \"\\u0643\\u0648\\u062f \\u0627\\u0644\\u062e\\u0635\\u0645\"]}}]', 47, 1),
+(201, '2025-04-15 11:35:57.482512', '11', 'البنوك والتحويلات- الحساب الجاري', 2, '[{\"changed\": {\"fields\": [\"Account name\", \"Account status\", \"Account amount\"]}}]', 60, 1),
+(202, '2025-04-15 11:38:57.954950', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(203, '2025-04-15 11:39:30.099669', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
+(204, '2025-04-15 11:42:07.065895', '8', 'دفعة #8 لحجز 8', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\", \"\\u0643\\u0648\\u062f \\u0627\\u0644\\u062e\\u0635\\u0645\"]}}]', 47, 1),
+(205, '2025-04-15 11:42:23.192115', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 13, 1),
+(206, '2025-04-15 11:46:33.727327', '8', 'دفعة #8 لحجز 8', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062f\\u0641\\u0639\"]}}]', 47, 1);
 
 -- --------------------------------------------------------
 
@@ -1122,7 +1147,7 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 CREATE TABLE `django_celery_beat_clockedschedule` (
   `id` int(11) NOT NULL,
   `clocked_time` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1138,7 +1163,7 @@ CREATE TABLE `django_celery_beat_crontabschedule` (
   `day_of_month` varchar(124) NOT NULL,
   `month_of_year` varchar(64) NOT NULL,
   `timezone` varchar(63) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1150,7 +1175,7 @@ CREATE TABLE `django_celery_beat_intervalschedule` (
   `id` int(11) NOT NULL,
   `every` int(11) NOT NULL,
   `period` varchar(24) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1182,7 +1207,7 @@ CREATE TABLE `django_celery_beat_periodictask` (
   `headers` longtext NOT NULL,
   `clocked_id` int(11) DEFAULT NULL,
   `expire_seconds` int(10) UNSIGNED DEFAULT NULL CHECK (`expire_seconds` >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1193,7 +1218,7 @@ CREATE TABLE `django_celery_beat_periodictask` (
 CREATE TABLE `django_celery_beat_periodictasks` (
   `ident` smallint(6) NOT NULL,
   `last_update` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1206,7 +1231,7 @@ CREATE TABLE `django_celery_beat_solarschedule` (
   `event` varchar(24) NOT NULL,
   `latitude` decimal(9,6) NOT NULL,
   `longitude` decimal(9,6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1218,7 +1243,7 @@ CREATE TABLE `django_content_type` (
   `id` int(11) NOT NULL,
   `app_label` varchar(100) NOT NULL,
   `model` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_content_type`
@@ -1316,7 +1341,7 @@ CREATE TABLE `django_migrations` (
   `app` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_migrations`
@@ -1475,7 +1500,7 @@ CREATE TABLE `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_session`
@@ -1486,6 +1511,7 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('2fi5eeu4ipz2yla6vdqafugd8qfe2zzd', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u3isS:-N3eGd25LioxNTDcHW2AOcR1-a54-IMK2CQY2EQ9W2k', '2025-04-26 21:59:04.548651'),
 ('36a5zqbpvthu744luvy0c5wf05bpw2sq', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tzlxv:E8740pbH4c2SDPh1MrvLtFcga4CrMuTtVTzTSg6Kszg', '2025-04-16 00:28:23.262162'),
 ('4qwidslc5rv5bwnnn9vojw17lac024x2', '.eJxVjEsOwiAUAO_C2hB-9bVduvcMBN4Dixow0CYa490NSRe6nZnMm1m3rYvdWqg2EZuZZIdf5h3eQu6Cri5fCseS15o87wnfbePnQuF-2tu_weLa0reCVJQKh2iOMELUMOoRUGryUpkpBiAEmkBGBUaSEJGMhAGFVoQeVZ-20Foq2YbnI9UXm8XnC2gTPq0:1u1Qis:2IExrJIyDL02aZFFhIG1ebU90iA7VXyoH31wv3f9jvs', '2025-04-20 14:11:42.423432'),
+('97vtz13dazlvyaxrciygorp88umw38fx', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u4c8x:vsSM0XDbPnXbEpcZGkSqQykWXwnU_tPcTUkeV7o9GN4', '2025-04-29 08:59:47.795984'),
 ('9gbgf7ayr4f7hqr52htplmecg9e65d5x', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u2SSk:DTRMdhRPYKDJ5lRlRKTuiuLteuMx-Cd8rdyB1r6LpGE', '2025-04-23 10:15:18.561767'),
 ('9gp052mwzhajr8onfp6tsv354is0lli4', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u44hB:41QOxSiCEpEOsIu5Pr_I59IPbrv4UCnZAKslv4DIVC0', '2025-04-27 21:16:53.259829'),
 ('ijjs6o02bw4j18j0vaamteyz1u6evyxe', '.eJxVjEsOwiAUAO_C2hB-9bVduvcMBN4Dixow0CYa490NSRe6nZnMm1m3rYvdWqg2EZuZZIdf5h3eQu6Cri5fCseS15o87wnfbePnQuF-2tu_weLa0reCVJQKh2iOMELUMOoRUGryUpkpBiAEmkBGBUaSEJGMhAGFVoQeVZ-20Foq2YbnI9UXm8XnC2gTPq0:1u4Mg9:ll10r26ZqeitzSHykqy66SbiO9YhoRRN-LLuFeYQX1o', '2025-04-28 16:29:01.713175'),
@@ -1509,7 +1535,7 @@ CREATE TABLE `django_site` (
   `id` int(11) NOT NULL,
   `domain` varchar(100) NOT NULL,
   `name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_site`
@@ -1531,7 +1557,7 @@ CREATE TABLE `home_contactmessage` (
   `message` longtext NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `is_read` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1547,7 +1573,7 @@ CREATE TABLE `home_heroslider` (
   `title` varchar(255) NOT NULL,
   `description` longtext DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `home_heroslider`
@@ -1568,7 +1594,7 @@ CREATE TABLE `home_infobox` (
   `title` varchar(255) NOT NULL,
   `description` longtext NOT NULL,
   `show_at_home` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1581,7 +1607,7 @@ CREATE TABLE `home_partner` (
   `name` varchar(100) NOT NULL,
   `description` longtext NOT NULL,
   `image` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1598,7 +1624,7 @@ CREATE TABLE `home_paymenpolicy` (
   `content` longtext NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1614,7 +1640,7 @@ CREATE TABLE `home_pricingplan` (
   `features` longtext NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `is_primary` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1631,7 +1657,7 @@ CREATE TABLE `home_privacypolicy` (
   `content` longtext NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1645,7 +1671,7 @@ CREATE TABLE `home_roomtypehome` (
   `image` varchar(100) NOT NULL,
   `link` varchar(200) DEFAULT NULL,
   `show_at_home` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1671,7 +1697,7 @@ CREATE TABLE `home_setting` (
   `seo_title` varchar(255) NOT NULL,
   `seo_description` longtext NOT NULL,
   `seo_keywords` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1685,7 +1711,7 @@ CREATE TABLE `home_socialmedialink` (
   `link` varchar(255) NOT NULL,
   `icon` varchar(100) NOT NULL,
   `status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1703,7 +1729,7 @@ CREATE TABLE `home_teammember` (
   `twitter` varchar(200) DEFAULT NULL,
   `instagram` varchar(200) DEFAULT NULL,
   `linkedin` varchar(200) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1720,7 +1746,7 @@ CREATE TABLE `home_termsconditions` (
   `content` longtext NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1734,7 +1760,7 @@ CREATE TABLE `home_testimonial` (
   `position` varchar(100) NOT NULL,
   `content` longtext NOT NULL,
   `image` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1752,14 +1778,19 @@ CREATE TABLE `hotelmanagement_city` (
   `country` varchar(255) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `hotelmanagement_city`
 --
 
 INSERT INTO `hotelmanagement_city` (`id`, `created_at`, `updated_at`, `deleted_at`, `state`, `slug`, `country`, `created_by_id`, `updated_by_id`) VALUES
-(1, '2025-03-20 20:56:26.264276', '2025-03-20 20:56:26.264276', NULL, 'sanaa', 'sanaa', 'sanaa', NULL, NULL);
+(1, '2025-03-20 20:56:26.264276', '2025-03-20 20:56:26.264276', NULL, 'sanaa', 'sanaa', 'sanaa', NULL, NULL),
+(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'عدن', 'aden', 'Yemen', 1, 1),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'حضرموت', 'hadramaut', 'Yemen', 1, 1),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'أرخبيل سقطرى', 'socotra', 'Yemen', 1, 1),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'تعز', 'taiz', 'Yemen', 1, 1),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'إب', 'ibb', 'Yemen', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1784,7 +1815,7 @@ CREATE TABLE `hotelmanagement_hotel` (
   `location_id` bigint(20) NOT NULL,
   `manager_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `hotelmanagement_hotel`
@@ -1792,7 +1823,13 @@ CREATE TABLE `hotelmanagement_hotel` (
 
 INSERT INTO `hotelmanagement_hotel` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `slug`, `profile_picture`, `description`, `business_license_number`, `document_path`, `is_verified`, `verification_date`, `created_by_id`, `location_id`, `manager_id`, `updated_by_id`) VALUES
 (1, '2025-03-01 19:06:29.271764', '2025-03-22 19:20:42.029802', NULL, 'احمد', 'ahmed-vip', 'hotels/images/image_picker_input.dart.png', 'aggggggggggggggggggg', '1515453432132', 'hotel_documents/2025/03/01/image_picker_input.dart.png', 1, '2025-03-01 19:06:26.000000', 1, 1, 2, 1),
-(2, '2025-03-01 19:06:29.271764', '2025-03-07 22:21:49.143958', NULL, 'sami', 'saaa55-vip', 'hotels/images/image_picker_input.dart.png', 'kkkkkk', '1515453432132', 'hotel_documents/2025/03/01/image_picker_input.dart.png', 1, '2025-03-01 19:06:26.000000', 1, 1, 14, 1);
+(2, '2025-03-01 19:06:29.271764', '2025-03-07 22:21:49.143958', NULL, 'sami', 'saaa55-vip', 'hotels/images/image_picker_input.dart.png', 'kkkkkk', '1515453432132', 'hotel_documents/2025/03/01/image_picker_input.dart.png', 1, '2025-03-01 19:06:26.000000', 1, 1, 14, 1),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 09:45:07.387266', NULL, 'فندق قصر سبأ صنعاء', 'sheba-palace-sanaa', 'hotels/images/discount-hotel-img.jpg', 'فندق فاخر في قلب صنعاء يتميز بالعمارة اليمنية التقليدية الأصيلة. يقدم خدمات متكاملة وراحة للنزلاء.', 'BUS-SN-101', 'docs/licenses/sheba_sanaa.pdf', 1, '2025-04-15 01:56:01.000000', 1, 1, 8, 1),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 09:45:23.691919', NULL, 'فندق أمواج عدن', 'aden-waves', 'hotels/images/airline-img10.png', 'فندق حديث يطل على بحر العرب في عدن. يوفر إطلالات خلابة وغرف مريحة.', 'BUS-AD-205', 'docs/licenses/aden_waves.pdf', 1, '2025-04-15 01:56:01.000000', 1, 2, 19, 1),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'منتجع لؤلؤة المكلا', 'mukalla-pearl', 'images/hotels/mukalla_pearl.jpg', 'منتجع شاطئي يقع على ساحل حضرموت. مثالي للاسترخاء والاستمتاع بالطبيعة.', NULL, NULL, 0, NULL, 1, 3, NULL, 1),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 09:45:36.065320', NULL, 'نزل سقطرى البيئي', 'socotra-eco-lodge', 'hotels/images/img15.jpg', 'تجربة إقامة مستدامة وسط التنوع البيولوجي الفريد لسقطرى. مناسب لمحبي الطبيعة والمغامرة.', 'BUS-SO-001', 'docs/licenses/socotra_eco.pdf', 1, '2025-04-15 01:56:01.000000', 1, 4, 20, 1),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 09:45:49.124712', NULL, 'فندق برج السلام تعز', 'salam-tower-taiz', 'hotels/images/airline-img5.png', 'فندق عصري في مدينة تعز يوفر إقامة مريحة وخدمات مميزة لرجال الأعمال والسياح.', 'BUS-TZ-310', 'docs/licenses/salam_taiz.pdf', 1, '2025-04-15 01:56:01.000000', 1, 5, 21, 1),
+(8, '2025-04-15 01:56:01.000000', '2025-04-15 09:46:09.525694', NULL, 'فندق إب جراند', 'ibb-grand-hotel', 'images/hotels/ibb_grand.jpg', 'يقع في مدينة إب الخضراء، يوفر الفندق جواً هادئاً ومريحاً للزوار.', 'BUS-IB-402', 'docs/licenses/ibb_grand.pdf', 0, NULL, 1, 6, 22, 1);
 
 -- --------------------------------------------------------
 
@@ -1810,7 +1847,7 @@ CREATE TABLE `hotelmanagement_hotelrequest` (
   `profile_picture` varchar(100) NOT NULL,
   `business_license_number` varchar(50) DEFAULT NULL,
   `document_path` varchar(100) DEFAULT NULL,
-  `additional_images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`additional_images`)),
+  `additional_images` longtext NOT NULL CHECK (json_valid(`additional_images`)),
   `country` varchar(100) NOT NULL,
   `state` varchar(100) NOT NULL,
   `city_name` varchar(100) NOT NULL,
@@ -1824,7 +1861,7 @@ CREATE TABLE `hotelmanagement_hotelrequest` (
   `approved_by_id` bigint(20) DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1842,7 +1879,19 @@ CREATE TABLE `hotelmanagement_image` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `hotelmanagement_image`
+--
+
+INSERT INTO `hotelmanagement_image` (`id`, `created_at`, `updated_at`, `deleted_at`, `image_path`, `image_url`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
+(1, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/hotels/sheba_sanaa_lobby.jpg', NULL, 2, 1, 2),
+(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/hotels/sheba_sanaa_room1.jpg', NULL, 2, 1, 2),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/hotels/aden_waves_view.jpg', NULL, 3, 2, 3),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/hotels/aden_waves_pool.jpg', NULL, 3, 2, 3),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/hotels/socotra_eco_exterior.jpg', NULL, 6, 4, 6),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/hotels/socotra_eco_interior.jpg', NULL, 6, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -1859,14 +1908,20 @@ CREATE TABLE `hotelmanagement_location` (
   `city_id` bigint(20) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `hotelmanagement_location`
 --
 
 INSERT INTO `hotelmanagement_location` (`id`, `created_at`, `updated_at`, `deleted_at`, `address`, `city_id`, `created_by_id`, `updated_by_id`) VALUES
-(1, '2025-03-01 19:00:56.470001', '2025-03-01 19:00:56.470001', NULL, 'shomaila', 1, 1, 1);
+(1, '2025-03-01 19:00:56.470001', '2025-03-01 19:00:56.470001', NULL, 'shomaila', 1, 1, 1),
+(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'شارع حدة، بالقرب من فندق شهران', 1, 1, 1),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'مديرية كريتر، الشارع الرئيسي', 2, 1, 1),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'كورنيش المكلا، مقابل البحر', 3, 1, 1),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'حديبو، الطريق العام', 4, 1, 1),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'شارع جمال عبدالناصر', 5, 1, 1),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'وسط المدينة، بالقرب من الدائري', 6, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1884,7 +1939,7 @@ CREATE TABLE `hotelmanagement_phone` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1909,7 +1964,7 @@ CREATE TABLE `notifications_notifications` (
   `updated_by_id` bigint(20) DEFAULT NULL,
   `recipient_type` varchar(50) NOT NULL,
   `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `notifications_notifications`
@@ -1921,7 +1976,11 @@ INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status
 (120, 'سينتهي حجزك في الغرفة room vip 2025 (احمد) في تمام الساعة 2025-04-09 16:23:10+00:00. هل تريد التمديد؟', '2025-04-09 11:23:10.020955', '1', '0', 1, '/', 2, 5, '2025-04-09 11:23:10.020955', NULL, NULL, '2025-04-09 11:23:10.020955', NULL, 'single_user', 'تذكير بانتهاء الحجز'),
 (121, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:23:10.287891', '1', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-09 11:23:10.287891', NULL, NULL, '2025-04-09 11:23:10.287891', NULL, 'single_user', 'اشعار اتمام الحجز'),
 (122, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:26:51.275733', '1', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-09 11:26:51.275085', NULL, NULL, '2025-04-09 11:26:51.275733', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(123, 'يرجى إضافة الضيوف لحجزك.', '2025-04-13 21:28:32.335042', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-13 21:28:32.335042', NULL, NULL, '2025-04-13 21:28:32.335042', NULL, 'single_user', 'اشعار اتمام الحجز');
+(123, 'يرجى إضافة الضيوف لحجزك.', '2025-04-13 21:28:32.335042', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-13 21:28:32.335042', NULL, NULL, '2025-04-13 21:28:32.335042', NULL, 'single_user', 'اشعار اتمام الحجز'),
+(124, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:16:52.466789', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-15 11:16:52.466789', NULL, NULL, '2025-04-15 11:16:52.466789', NULL, 'single_user', 'اشعار اتمام الحجز'),
+(125, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:39:30.099669', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-15 11:39:30.099669', NULL, NULL, '2025-04-15 11:39:30.099669', NULL, 'single_user', 'اشعار اتمام الحجز'),
+(126, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:42:23.176493', '0', '1', 1, '/payments/add_guest/1/', 24, 24, '2025-04-15 11:42:23.176493', NULL, NULL, '2025-04-15 11:42:23.176493', NULL, 'single_user', 'اشعار اتمام الحجز'),
+(127, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:46:33.727327', '0', '1', 1, '/payments/add_guest/1/', 24, 24, '2025-04-15 11:46:33.727327', NULL, NULL, '2025-04-15 11:46:33.727327', NULL, 'single_user', 'اشعار اتمام الحجز');
 
 -- --------------------------------------------------------
 
@@ -1941,7 +2000,7 @@ CREATE TABLE `oauth2_provider_accesstoken` (
   `source_refresh_token_id` bigint(20) DEFAULT NULL,
   `id_token_id` bigint(20) DEFAULT NULL,
   `token_checksum` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1965,7 +2024,7 @@ CREATE TABLE `oauth2_provider_application` (
   `post_logout_redirect_uris` longtext NOT NULL,
   `hash_client_secret` tinyint(1) NOT NULL,
   `allowed_origins` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1987,7 +2046,7 @@ CREATE TABLE `oauth2_provider_grant` (
   `code_challenge_method` varchar(10) NOT NULL,
   `nonce` varchar(255) NOT NULL,
   `claims` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2004,7 +2063,7 @@ CREATE TABLE `oauth2_provider_idtoken` (
   `updated` datetime(6) NOT NULL,
   `application_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2022,7 +2081,7 @@ CREATE TABLE `oauth2_provider_refreshtoken` (
   `updated` datetime(6) NOT NULL,
   `revoked` datetime(6) DEFAULT NULL,
   `token_family` char(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2040,7 +2099,7 @@ CREATE TABLE `payments_currency` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `payments_currency`
@@ -2070,7 +2129,7 @@ CREATE TABLE `payments_hotelpaymentmethod` (
   `hotel_id` bigint(20) NOT NULL,
   `payment_option_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `payments_hotelpaymentmethod`
@@ -2108,7 +2167,7 @@ CREATE TABLE `payments_payment` (
   `payment_method_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `payments_payment`
@@ -2120,9 +2179,9 @@ INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, 
 (3, '2025-04-06 10:18:14.932174', '2025-04-06 10:18:14.932174', NULL, 'payments/transfer/transfer_image/app-store.png', 0, '2025-04-06 10:18:14.928098', 510.00, 500.00, '$', 'e_pay', 'تم التحويل بواسطة: kajshdjkask - رقم التحويل: 151651616', 10.00, 'sms', 2, NULL, 1, NULL, 1),
 (4, '2025-04-11 18:56:33.452439', '2025-04-11 18:57:34.058359', NULL, 'payments/transfer/transfer_image/bg.jpg', 2, '2025-04-11 18:56:33.439916', 2550.00, 2550.00, '$', 'e_pay', 'تم التحويل بواسطة: sjsdhkfhsk - رقم التحويل: 65151561651', 0.00, '', 14, NULL, 1, NULL, 1),
 (5, '2025-04-12 21:49:48.889019', '2025-04-12 21:49:48.889019', NULL, '', 0, '2025-04-12 21:49:48.880391', 15.00, 15.00, '$', 'e_pay', 'تم التحويل بواسطة: mosa mohamed - ', 0.00, '', 15, NULL, 4, NULL, 5),
-(6, '2025-04-12 21:52:57.134413', '2025-04-12 21:52:57.135403', NULL, '', 0, '2025-04-12 21:52:57.128551', 25.00, 25.00, '$', 'cash', 'تم التحويل بواسطة: mosa mohamed - ', 0.00, '', 16, NULL, 4, NULL, 5),
+(6, '2025-04-12 21:52:57.134413', '2025-04-15 11:17:50.373201', NULL, '', 1, '2025-04-12 21:52:57.000000', 25.00, 25.00, '$', 'cash', 'تم التحويل بواسطة: mosa mohamed -', 0.00, '0', 2, NULL, 4, NULL, 5),
 (7, '2025-04-13 19:55:57.390962', '2025-04-13 19:55:57.390962', NULL, '', 0, '2025-04-13 19:55:57.390962', 100.00, 120.00, 'USD', 'cache', 'Payment for hotel booking', 10.00, NULL, 1, NULL, 1, NULL, 1),
-(8, '2025-04-13 21:39:32.498833', '2025-04-13 21:39:32.498833', NULL, '', 0, '2025-04-13 21:39:32.495928', 0.00, 0.00, '$', 'cash', 'ss', 25.00, NULL, 16, NULL, 1, NULL, NULL);
+(8, '2025-04-13 21:39:32.498833', '2025-04-15 11:46:33.708106', NULL, '', 1, '2025-04-13 21:39:32.000000', 0.00, 0.00, '$', 'cash', 'ss', 25.00, '-', 16, NULL, 1, NULL, 24);
 
 -- --------------------------------------------------------
 
@@ -2149,7 +2208,7 @@ CREATE TABLE `payments_paymenthistory` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `payment_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `payments_paymenthistory`
@@ -2158,7 +2217,10 @@ CREATE TABLE `payments_paymenthistory` (
 INSERT INTO `payments_paymenthistory` (`id`, `created_at`, `updated_at`, `deleted_at`, `history_date`, `previous_payment_status`, `new_payment_status`, `previous_payment_totalamount`, `new_payment_totalamount`, `previous_payment_discount`, `new_payment_discount`, `previous_payment_discount_code`, `new_payment_discount_code`, `note`, `changed_by_id`, `created_by_id`, `payment_id`, `updated_by_id`) VALUES
 (1, '2025-04-01 23:47:37.159981', '2025-04-01 23:47:37.159981', NULL, '2025-04-01 23:47:37.160510', 0, 1, 12.00, 12.00, 10.00, 10.00, '11ass', '11ass', 'Payment updated on 2025-04-01 23:47:37.157066+00:00', 12, NULL, 2, NULL),
 (2, '2025-04-11 18:19:28.055142', '2025-04-11 18:19:28.055769', NULL, '2025-04-11 18:19:28.055769', 2, 0, 150.00, 150.00, 10.00, 10.00, 'aa', 'aa', 'Payment updated on 2025-04-11 18:19:28.054092+00:00', 12, NULL, 1, NULL),
-(3, '2025-04-11 18:57:34.066264', '2025-04-11 18:57:34.067305', NULL, '2025-04-11 18:57:34.067305', 0, 2, 2550.00, 2550.00, 0.00, 0.00, '', '', 'Payment updated on 2025-04-11 18:57:34.066264+00:00', 1, NULL, 4, NULL);
+(3, '2025-04-11 18:57:34.066264', '2025-04-11 18:57:34.067305', NULL, '2025-04-11 18:57:34.067305', 0, 2, 2550.00, 2550.00, 0.00, 0.00, '', '', 'Payment updated on 2025-04-11 18:57:34.066264+00:00', 1, NULL, 4, NULL),
+(4, '2025-04-15 11:17:50.376712', '2025-04-15 11:17:50.376712', NULL, '2025-04-15 11:17:50.376712', 0, 1, 25.00, 25.00, 0.00, 0.00, '', '0', 'Payment updated on 2025-04-15 11:17:50.376712+00:00', 5, NULL, 6, NULL),
+(7, '2025-04-15 11:42:07.065895', '2025-04-15 11:42:07.065895', NULL, '2025-04-15 11:42:07.065895', 0, 0, 0.00, 0.00, 25.00, 25.00, NULL, '-', 'Payment updated on 2025-04-15 11:42:07.065895+00:00', 24, NULL, 8, NULL),
+(10, '2025-04-15 11:46:33.712132', '2025-04-15 11:46:33.712132', NULL, '2025-04-15 11:46:33.712132', 0, 1, 0.00, 0.00, 25.00, 25.00, '-', '-', 'Payment updated on 2025-04-15 11:46:33.712132+00:00', 24, NULL, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -2177,7 +2239,7 @@ CREATE TABLE `payments_paymentoption` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `currency_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `payments_paymentoption`
@@ -2210,7 +2272,7 @@ CREATE TABLE `reviews_hotelreview` (
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reviews_hotelreview`
@@ -2238,7 +2300,7 @@ CREATE TABLE `reviews_roomreview` (
   `room_type_id` bigint(20) DEFAULT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reviews_roomreview`
@@ -2266,17 +2328,14 @@ CREATE TABLE `rooms_availability` (
   `room_status_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms_availability`
 --
 
 INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
-(19, '2025-04-11 18:56:33.432327', '2025-04-11 18:57:34.048152', NULL, '2025-04-11', 20, 'Updated due to booking #14', NULL, 1, 3, 1, NULL),
-(20, '2025-04-12 21:49:48.876535', '2025-04-12 21:52:57.124527', NULL, '2025-04-12', 13, 'Updated due to booking #16', NULL, 1, 3, 1, NULL),
-(21, '2025-04-13 21:38:57.293939', '2025-04-13 21:38:57.293939', NULL, '2025-04-13', 14, 'تم التحديث بسبب تمديد الحجز #6', NULL, 1, 3, 1, NULL),
-(22, '2025-04-14 11:53:59.297980', '2025-04-14 16:29:12.066932', NULL, '2025-04-14', 16, 'Updated due to booking #17', NULL, 1, 3, 1, NULL);
+(23, '2025-04-15 11:38:57.939328', '2025-04-15 11:38:57.954950', NULL, '2025-04-15', 13, 'Updated due to booking #16', NULL, 1, 3, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -2294,14 +2353,21 @@ CREATE TABLE `rooms_category` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms_category`
 --
 
 INSERT INTO `rooms_category` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `description`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(1, '2025-03-01 19:18:19.935767', '2025-03-01 19:18:46.244395', NULL, 'vip', 'شسيسشيش', NULL, 1, NULL);
+(1, '2025-03-01 19:18:19.935767', '2025-03-01 19:18:46.244395', NULL, 'vip', 'شسيسشيش', NULL, 1, NULL),
+(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'قياسي', 'غرف مريحة بمواصفات أساسية', 2, 1, 2),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'جناح', 'أجنحة واسعة مع منطقة جلوس منفصلة', 2, 1, 2),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة ديلوكس', 'غرف بمساحة أكبر وتجهيزات إضافية', 3, 2, 3),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة مطلة على البحر', 'غرف تتمتع بإطلالة مباشرة على البحر', 3, 2, 3),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'كوخ بيئي', 'أكواخ بسيطة وصديقة للبيئة', 6, 4, 6),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'قياسي', 'غرف مريحة بمواصفات أساسية', 3, 2, 3),
+(8, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'قياسي', 'غرف مريحة بمواصفات أساسية', 6, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -2321,7 +2387,7 @@ CREATE TABLE `rooms_roomimage` (
   `hotel_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms_roomimage`
@@ -2329,7 +2395,12 @@ CREATE TABLE `rooms_roomimage` (
 
 INSERT INTO `rooms_roomimage` (`id`, `created_at`, `updated_at`, `deleted_at`, `image`, `is_main`, `caption`, `created_by_id`, `hotel_id`, `room_type_id`, `updated_by_id`) VALUES
 (1, '2025-03-01 19:22:07.144698', '2025-03-01 19:22:07.144698', NULL, 'room_images/wasell.jpg', 1, 'sssssssss', 2, 1, 1, 2),
-(2, '2025-03-01 19:22:24.536866', '2025-03-01 19:22:24.536866', NULL, 'room_images/search.jpg', 0, 'saa', 2, 1, 1, 2);
+(2, '2025-03-01 19:22:24.536866', '2025-03-01 19:22:24.536866', NULL, 'room_images/search.jpg', 0, 'saa', 2, 1, 1, 2),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/sheba_std_double_1.jpg', 1, 'غرفة قياسية مزدوجة في فندق قصر سبأ', 2, 1, 2, 2),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/sheba_std_double_2.jpg', 0, 'حمام الغرفة القياسية المزدوجة', 2, 1, 2, 2),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/aden_seaview_1.jpg', 1, 'إطلالة من غرفة مطلة على البحر في فندق أمواج عدن', 3, 2, 5, 3),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/aden_seaview_2.jpg', 0, 'سرير مزدوج في غرفة مطلة على البحر', 3, 2, 5, 3),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/socotra_eco_hut_1.jpg', 1, 'كوخ بيئي مزدوج في نزل سقطرى', 6, 4, 6, 6);
 
 -- --------------------------------------------------------
 
@@ -2350,7 +2421,7 @@ CREATE TABLE `rooms_roomprice` (
   `hotel_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms_roomprice`
@@ -2358,7 +2429,11 @@ CREATE TABLE `rooms_roomprice` (
 
 INSERT INTO `rooms_roomprice` (`id`, `created_at`, `updated_at`, `deleted_at`, `date_from`, `date_to`, `price`, `is_special_offer`, `created_by_id`, `hotel_id`, `room_type_id`, `updated_by_id`) VALUES
 (1, '2025-04-01 23:57:21.633047', '2025-04-01 23:57:21.633047', NULL, '2025-04-01', '2025-04-11', 500.00, 0, 1, 1, 1, 1),
-(2, '2025-04-04 21:50:12.631031', '2025-04-04 21:50:28.360614', NULL, '2025-04-04', '2025-04-05', 330.00, 0, 1, 2, 1, 1);
+(2, '2025-04-04 21:50:12.631031', '2025-04-04 21:50:28.360614', NULL, '2025-04-04', '2025-04-05', 330.00, 0, 1, 2, 1, 1),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-04-15', '2025-12-31', 50000.00, 0, 2, 1, 2, 2),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-04-15', '2025-12-31', 75000.00, 0, 3, 2, 5, 3),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-07-01', '2025-08-31', 55000.00, 1, 2, 1, 2, 2),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-04-15', '2025-12-31', 40000.00, 0, 6, 4, 6, 6);
 
 -- --------------------------------------------------------
 
@@ -2378,15 +2453,22 @@ CREATE TABLE `rooms_roomstatus` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms_roomstatus`
 --
 
 INSERT INTO `rooms_roomstatus` (`id`, `created_at`, `updated_at`, `deleted_at`, `code`, `name`, `description`, `is_available`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(3, '2025-03-01 19:21:28.992783', '2025-03-01 19:21:28.992783', NULL, 'AVAILABLE', 'Available', 'Default status for available rooms', 1, NULL, 1, NULL),
-(4, '2025-04-13 21:34:31.765930', '2025-04-13 21:34:31.765930', NULL, '3', 'متاح', 'متاح', 1, 1, 1, 1);
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'AV', 'متاحة', 'الغرفة جاهزة للحجز', 1, 2, 1, 2),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OC', 'مشغولة', 'الغرفة مسكونة حالياً', 0, 2, 1, 2),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'CL', 'تحت التنظيف', 'الغرفة قيد التنظيف', 0, 2, 1, 2),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OO', 'خارج الخدمة', 'الغرفة غير متاحة للصيانة', 0, 2, 1, 2),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'AV', 'متاحة', 'الغرفة جاهزة للحجز', 1, 3, 2, 3),
+(8, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OC', 'مشغولة', 'الغرفة مسكونة حالياً', 0, 3, 2, 3),
+(9, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'CL', 'تحت التنظيف', 'الغرفة قيد التنظيف', 0, 3, 2, 3),
+(10, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'AV', 'متاحة', 'الغرفة جاهزة للحجز', 1, 6, 4, 6),
+(11, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OC', 'مشغولة', 'الغرفة مسكونة حالياً', 0, 6, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -2411,14 +2493,21 @@ CREATE TABLE `rooms_roomtype` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms_roomtype`
 --
 
 INSERT INTO `rooms_roomtype` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `description`, `default_capacity`, `max_capacity`, `beds_count`, `rooms_count`, `base_price`, `is_active`, `category_id`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(1, '2025-03-01 19:21:28.984379', '2025-03-25 18:41:12.396279', NULL, 'room vip 2025', 'asdaskdjhsa', 4, 4, 6, 15, 15.00, 1, 1, 2, 1, 1);
+(1, '2025-03-01 19:21:28.984379', '2025-03-25 18:41:12.396279', NULL, 'room vip 2025', 'asdaskdjhsa', 4, 4, 6, 15, 15.00, 1, 1, 2, 1, 1),
+(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة قياسية مفردة', 'غرفة مريحة لشخص واحد', 1, 1, 1, 10, 35000.00, 1, 1, 2, 1, 2),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة قياسية مزدوجة', 'غرفة مريحة لشخصين بسرير مزدوج أو سريرين منفصلين', 2, 3, 2, 15, 50000.00, 1, 1, 2, 1, 2),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'جناح جونيور', 'جناح أنيق مع منطقة جلوس صغيرة', 2, 3, 1, 5, 80000.00, 1, 2, 2, 1, 2),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة ديلوكس مزدوجة', 'غرفة واسعة مع تجهيزات محسنة لشخصين', 2, 3, 1, 8, 60000.00, 1, 3, 3, 2, 3),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة مزدوجة مطلة على البحر', 'غرفة لشخصين بإطلالة بحرية رائعة', 2, 2, 1, 12, 75000.00, 1, 4, 3, 2, 3),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'كوخ بيئي مزدوج', 'كوخ بسيط ومستدام لشخصين', 2, 2, 2, 6, 40000.00, 1, 5, 6, 4, 6),
+(8, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة قياسية مزدوجة', 'غرفة أساسية ومريحة لشخصين', 2, 3, 2, 10, 45000.00, 1, 6, 3, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -2443,7 +2532,7 @@ CREATE TABLE `services_coupon` (
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
   `description` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `services_coupon`
@@ -2471,7 +2560,7 @@ CREATE TABLE `services_hotelservice` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `services_hotelservice`
@@ -2501,7 +2590,7 @@ CREATE TABLE `services_roomtypeservice` (
   `hotel_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `services_roomtypeservice`
@@ -2529,7 +2618,7 @@ CREATE TABLE `service_offers` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2545,7 +2634,7 @@ CREATE TABLE `social_auth_association` (
   `issued` int(11) NOT NULL,
   `lifetime` int(11) NOT NULL,
   `assoc_type` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2559,7 +2648,7 @@ CREATE TABLE `social_auth_code` (
   `code` varchar(32) NOT NULL,
   `verified` tinyint(1) NOT NULL,
   `timestamp` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2572,7 +2661,7 @@ CREATE TABLE `social_auth_nonce` (
   `server_url` varchar(255) NOT NULL,
   `timestamp` int(11) NOT NULL,
   `salt` varchar(65) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2586,8 +2675,8 @@ CREATE TABLE `social_auth_partial` (
   `next_step` smallint(5) UNSIGNED NOT NULL CHECK (`next_step` >= 0),
   `backend` varchar(32) NOT NULL,
   `timestamp` datetime(6) NOT NULL,
-  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`data`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+  `data` longtext NOT NULL CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2602,8 +2691,8 @@ CREATE TABLE `social_auth_usersocialauth` (
   `user_id` bigint(20) NOT NULL,
   `created` datetime(6) NOT NULL,
   `modified` datetime(6) NOT NULL,
-  `extra_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`extra_data`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+  `extra_data` longtext NOT NULL CHECK (json_valid(`extra_data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2615,7 +2704,7 @@ CREATE TABLE `token_blacklist_blacklistedtoken` (
   `id` bigint(20) NOT NULL,
   `blacklisted_at` datetime(6) NOT NULL,
   `token_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2630,7 +2719,7 @@ CREATE TABLE `token_blacklist_outstandingtoken` (
   `expires_at` datetime(6) NOT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `jti` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `token_blacklist_outstandingtoken`
@@ -2655,10 +2744,10 @@ CREATE TABLE `users_activitylog` (
   `table_name` varchar(100) NOT NULL,
   `record_id` int(11) NOT NULL,
   `action` varchar(50) NOT NULL,
-  `details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`details`)),
+  `details` longtext DEFAULT NULL CHECK (json_valid(`details`)),
   `ip_address` char(39) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2689,14 +2778,14 @@ CREATE TABLE `users_customuser` (
   `chart_id` bigint(20) DEFAULT NULL,
   `otp_code` varchar(6) DEFAULT NULL,
   `otp_created_at` datetime(6) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users_customuser`
 --
 
 INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `chield_id`, `chart_id`, `otp_code`, `otp_created_at`) VALUES
-(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-14 19:18:14.774521', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
+(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-15 08:59:47.790875', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
 (2, 'pbkdf2_sha256$600000$mRv4uTHEeVZ15lsGse5C0D$hF0CKJC3qr2/+yCUM252q7NnSKiBR3C+X1CTuLAv7WI=', '2025-03-22 19:47:22.367954', 0, 'b', '', '', 'b@b.com', 1, '2025-03-21 12:48:09.506849', '2025-03-21 12:48:10.018701', '2025-03-22 19:21:25.333335', 'hotel_manager', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
@@ -2710,11 +2799,11 @@ INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, 
 (12, 'pbkdf2_sha256$600000$cyoobnnbnn1veqfofkr18v$Q3A3UVNX8rMFNQOeuwLDAxNV9v68C9+85WPeG58gGsQ=', '2025-03-11 15:03:22.973314', 0, 'ammaralwan', 'ammar', 'alwan', 'ammaralwan@ss.com', 0, '2025-03-11 15:03:07.343237', '2025-03-11 15:03:09.211771', '2025-03-11 15:03:09.211771', 'customer', '781717177', 'users/2025/03/11/terms.jpg', 'Female', '1996-04-18', 1, NULL, NULL, NULL, NULL),
 (13, 'pbkdf2_sha256$600000$FqqK1ybDPJVmeLbEpH5xM5$XxlG67Ut3xXs/TN8aC0TcX2qZMHyLlyXteu8KboTH60=', '2025-03-11 15:07:08.449784', 0, 'asdjhasj', 'asjdhjkash', 'asdas', 'sajh@asd.cc', 0, '2025-03-11 15:07:06.624072', '2025-03-11 15:07:08.427732', '2025-03-11 15:07:08.427732', 'customer', '88186541312', 'users/2025/03/11/terms_iJzbCqG.jpg', 'Female', '2003-03-13', 1, NULL, NULL, NULL, NULL),
 (14, 'pbkdf2_sha256$600000$YnIbgLo63DhZI2tNuYeVVW$uG9BZ9YIOFennwzEZmG/A8lTZvE7Ptg0deSs7OWZ8Fw=', '2025-04-01 00:25:41.994904', 0, 'c', '', '', '', 1, '2025-03-22 19:41:27.289430', '2025-03-22 19:41:28.023706', '2025-04-01 00:25:20.895010', 'hotel_manager', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
-(19, 'pbkdf2_sha256$600000$5btSIZ0meGoH7mIdZnZ2pq$pU2k/iJgQJupEIDPLMwvsD2VYGNs0C0I6xaarKIDRUw=', NULL, 0, 'ahmed55', 'ahmed', 'mohamed', 'ahmed55@gmail.com', 0, '2025-04-14 08:59:30.196083', '2025-04-14 08:59:30.695011', '2025-04-14 08:59:30.695011', 'customer', '781717609', 'users/2025/04/14/balcony-cabin.jpg', 'Male', '2002-04-16', 1, NULL, NULL, NULL, NULL),
-(20, 'pbkdf2_sha256$600000$5rzSsIknevW8wjtyR2OSK4$wia+D6BMbFGN0tobMrPbr9Yl7eQv9Qu0lrf+o+McRt0=', NULL, 0, 'asdj99', 'kashd', 'kahsdk', 'aksjh@ad.com', 0, '2025-04-14 09:18:17.227642', '2025-04-14 09:18:17.732487', '2025-04-14 09:18:17.732487', 'customer', '944546546546', 'users/2025/04/14/balcony-cabin_8Leghw0.jpg', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
-(21, 'pbkdf2_sha256$600000$w6YKTc69n9HZ2zgYTs3zWd$8OSkKjnCDWKJ0vSE95QIo2GkLr59wYufN/SScIh77ik=', '2025-04-14 09:22:48.126297', 0, 'aslkdjaskldj', 'jskdhakhs', 'klasjdlaj', 'aslkdjaskldj@asdkhask.com', 0, '2025-04-14 09:22:47.610283', '2025-04-14 09:22:48.126297', '2025-04-14 09:22:48.126297', 'customer', '54545615165155', 'users/2025/04/14/airline-img7.png', 'Male', '2000-04-17', 1, NULL, NULL, NULL, NULL),
-(22, 'pbkdf2_sha256$600000$WowJQYcWmNPQRq75m9DBwD$sFpU5VAB1yykG0t+eYrClT1NP0FyKbed5QjN/eLpLuw=', NULL, 0, 'aksjhd888', 'askldhal', '51sa65d1', 'aksjhd888@gmail.com', 0, '2025-04-14 09:24:54.398287', '2025-04-14 09:24:54.906295', '2025-04-14 09:24:54.906295', 'customer', '156161616516', 'users/2025/04/14/alamo.png', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
-(23, 'pbkdf2_sha256$600000$lh8yo0GMTQ6nPaGh4diOpi$05NWcRu04df9nfhdFEp8QYCPan1HIx54H9ojRG7bqGg=', '2025-04-14 09:36:49.911434', 0, 'sldasjk7888', 'ahsdajk', '5as5d5as', 'sldasjk7888@gmail.com', 0, '2025-04-14 09:36:49.383620', '2025-04-14 09:36:49.901501', '2025-04-14 09:36:49.901501', 'customer', '94861564564564', 'users/2025/04/14/balcony-cabin_55yeNlS.jpg', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
+(19, 'pbkdf2_sha256$600000$5btSIZ0meGoH7mIdZnZ2pq$pU2k/iJgQJupEIDPLMwvsD2VYGNs0C0I6xaarKIDRUw=', NULL, 0, 'ahmed55', 'ahmed', 'mohamed', 'ahmed55@gmail.com', 0, '2025-04-14 08:59:30.196083', '2025-04-14 08:59:30.695011', '2025-04-14 08:59:30.695011', 'hotel_manager', '781717609', 'users/2025/04/14/balcony-cabin.jpg', 'Male', '2002-04-16', 1, NULL, NULL, NULL, NULL),
+(20, 'pbkdf2_sha256$600000$5rzSsIknevW8wjtyR2OSK4$wia+D6BMbFGN0tobMrPbr9Yl7eQv9Qu0lrf+o+McRt0=', NULL, 0, 'asdj99', 'kashd', 'kahsdk', 'aksjh@ad.com', 0, '2025-04-14 09:18:17.227642', '2025-04-14 09:18:17.732487', '2025-04-14 09:18:17.732487', 'hotel_manager', '944546546546', 'users/2025/04/14/balcony-cabin_8Leghw0.jpg', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
+(21, 'pbkdf2_sha256$600000$w6YKTc69n9HZ2zgYTs3zWd$8OSkKjnCDWKJ0vSE95QIo2GkLr59wYufN/SScIh77ik=', '2025-04-14 09:22:48.126297', 0, 'aslkdjaskldj', 'jskdhakhs', 'klasjdlaj', 'aslkdjaskldj@asdkhask.com', 0, '2025-04-14 09:22:47.610283', '2025-04-14 09:22:48.126297', '2025-04-14 09:22:48.126297', 'hotel_manager', '54545615165155', 'users/2025/04/14/airline-img7.png', 'Male', '2000-04-17', 1, NULL, NULL, NULL, NULL),
+(22, 'pbkdf2_sha256$600000$WowJQYcWmNPQRq75m9DBwD$sFpU5VAB1yykG0t+eYrClT1NP0FyKbed5QjN/eLpLuw=', NULL, 0, 'aksjhd888', 'askldhal', '51sa65d1', 'aksjhd888@gmail.com', 0, '2025-04-14 09:24:54.398287', '2025-04-14 09:24:54.906295', '2025-04-14 09:24:54.906295', 'hotel_manager', '156161616516', 'users/2025/04/14/alamo.png', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
+(23, 'pbkdf2_sha256$600000$lh8yo0GMTQ6nPaGh4diOpi$05NWcRu04df9nfhdFEp8QYCPan1HIx54H9ojRG7bqGg=', '2025-04-14 09:36:49.911434', 0, 'sldasjk7888', 'ahsdajk', '5as5d5as', 'sldasjk7888@gmail.com', 0, '2025-04-14 09:36:49.383620', '2025-04-14 09:36:49.901501', '2025-04-14 09:36:49.901501', 'hotel_manager', '94861564564564', 'users/2025/04/14/balcony-cabin_55yeNlS.jpg', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
 (24, 'pbkdf2_sha256$600000$9QN4xmuJkVLcJFk99RYcpL$rOJkveBdmC4qHWGvR8TFoVMyLmh0nhdyy4myMntSRvU=', '2025-04-14 11:20:16.025710', 0, 'aklsdj888888888', 'akshdkj', 'askdj8888', 'kwownon@gmail.com', 0, '2025-04-14 09:56:33.354379', '2025-04-14 09:56:33.885576', '2025-04-14 10:20:42.993987', 'customer', '11111111113', 'users/2025/04/14/airline-img3.png', 'Male', '2000-02-11', 1, NULL, 53, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -2727,7 +2816,7 @@ CREATE TABLE `users_customuser_groups` (
   `id` bigint(20) NOT NULL,
   `customuser_id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users_customuser_groups`
@@ -2746,7 +2835,7 @@ CREATE TABLE `users_customuser_user_permissions` (
   `id` bigint(20) NOT NULL,
   `customuser_id` bigint(20) NOT NULL,
   `permission_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -3453,7 +3542,7 @@ ALTER TABLE `accounts_chartofaccounts`
 -- AUTO_INCREMENT for table `accounts_journalentry`
 --
 ALTER TABLE `accounts_journalentry`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `auth_group`
@@ -3519,7 +3608,7 @@ ALTER TABLE `bookings_bookingdetail`
 -- AUTO_INCREMENT for table `bookings_bookinghistory`
 --
 ALTER TABLE `bookings_bookinghistory`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `bookings_extensionmovement`
@@ -3537,13 +3626,13 @@ ALTER TABLE `bookings_guest`
 -- AUTO_INCREMENT for table `customer_favourites`
 --
 ALTER TABLE `customer_favourites`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
 
 --
 -- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
@@ -3675,13 +3764,13 @@ ALTER TABLE `home_testimonial`
 -- AUTO_INCREMENT for table `hotelmanagement_city`
 --
 ALTER TABLE `hotelmanagement_city`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_hotel`
 --
 ALTER TABLE `hotelmanagement_hotel`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_hotelrequest`
@@ -3693,13 +3782,13 @@ ALTER TABLE `hotelmanagement_hotelrequest`
 -- AUTO_INCREMENT for table `hotelmanagement_image`
 --
 ALTER TABLE `hotelmanagement_image`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_location`
 --
 ALTER TABLE `hotelmanagement_location`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `hotelmanagement_phone`
@@ -3711,7 +3800,7 @@ ALTER TABLE `hotelmanagement_phone`
 -- AUTO_INCREMENT for table `notifications_notifications`
 --
 ALTER TABLE `notifications_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT for table `oauth2_provider_accesstoken`
@@ -3765,7 +3854,7 @@ ALTER TABLE `payments_payment`
 -- AUTO_INCREMENT for table `payments_paymenthistory`
 --
 ALTER TABLE `payments_paymenthistory`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `payments_paymentoption`
@@ -3789,37 +3878,37 @@ ALTER TABLE `reviews_roomreview`
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
 --
 ALTER TABLE `rooms_category`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `rooms_roomimage`
 --
 ALTER TABLE `rooms_roomimage`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `rooms_roomprice`
 --
 ALTER TABLE `rooms_roomprice`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `rooms_roomstatus`
 --
 ALTER TABLE `rooms_roomstatus`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `rooms_roomtype`
 --
 ALTER TABLE `rooms_roomtype`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `services_coupon`

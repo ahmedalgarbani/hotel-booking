@@ -253,7 +253,11 @@ def hotel_detail(request, slug):
         ),
         slug=slug
     )
-    coupon = Coupon.objects.filter(hotel=hotel).order_by('-created_at').first()
+    coupon = Coupon.objects.filter(hotel=hotel,
+                                   expired_date__gte=datetime.now().date(),
+                                #    quantity__gt=0,
+                                   status=True
+                                   ).order_by('-created_at').first()
 
     external_hotels = Hotel.objects.exclude(id=hotel.id)[:6]
     reviews = HotelReview.objects.filter(status=True)
@@ -298,17 +302,24 @@ def hotel_detail(request, slug):
     if request.user.is_authenticated:
         favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
         external_hotels = external_hotels.annotate(
+            review_count=Count('hotel_reviews'),
+        average_rating=Avg('hotel_reviews__rating_service'),
             is_favorite=Case(
                 When(id__in=favorite_hotel_ids, then=True),
                 default=False,
                 output_field=BooleanField()
             )
         )
-    
+       
+    try:
+        setting = Setting.objects.latest('id')
+    except Setting.DoesNotExist:
+        setting = None 
 
     ctx = {
         'hotel': hotel,
         'coupon': coupon,
+        'setting':setting,
         'available_room_types': available_room_types,
         'hotel_services': hotel_services,
         'reviews': reviews,
