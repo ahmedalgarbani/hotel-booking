@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+    {# Add the link to the chart of accounts report #}
+    {% if chart_of_accounts_report_url %}
+        <li>
+            <a href="{{ chart_of_accounts_report_url }}" class="addlink">
+                {% trans "تقرير دليل الحسابات" %}
+            </a>
+        </li>
+    {% endif %}
+    {{ block.super }} {# Include default items #}
+{% endblock %}
