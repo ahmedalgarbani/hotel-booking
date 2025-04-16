@@ -3,8 +3,6 @@ from datetime import timedelta # Added timedelta import
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.text import slugify # Added slugify import
-from faker import Faker
-
 # Import all models from your apps here
 # Example: from accounts.models import User
 # from rooms.models import Room, RoomType
@@ -18,7 +16,7 @@ from HotelManagement.models import City, Location, Hotel, Phone, Image, HotelReq
 from notifications.models import Notifications
 from payments.models import Currency, PaymentOption, HotelPaymentMethod, Payment, PaymentHistory
 from reviews.models import HotelReview, RoomReview
-from rooms.models import Category as RoomCategory, RoomType, RoomPrice, RoomStatus, Availability, RoomImage # Renamed Category to avoid conflict
+from rooms.models import Category as RoomCategory, RoomType, RoomPrice, Availability, RoomImage # Renamed Category to avoid conflict
 from services.models import HotelService, RoomTypeService, Offer, Coupon
 from users.models import CustomUser, ActivityLog
 
@@ -219,26 +217,7 @@ class Command(BaseCommand):
         if not created_room_categories:
              self.stdout.write(self.style.WARNING('No room categories created. Room types will not have categories.'))
 
-        # --- Create Room Statuses ---
-        room_statuses = []
-        status_names = ['Available', 'Occupied', 'Maintenance', 'Cleaning', 'Reserved']
-        for name in status_names:
-             # Ensure unique status names
-             if not RoomStatus.objects.filter(name=name).exists():
-                 room_statuses.append(RoomStatus(
-                     name=name,
-                     description=fake.sentence(),
-                     is_available=(name == 'Available'), # Set is_available based on name
-                     created_by=random.choice(created_users)
-                 ))
-        RoomStatus.objects.bulk_create(room_statuses)
-        self.stdout.write(self.style.SUCCESS(f'Successfully created {len(room_statuses)} RoomStatus records.'))
-        created_room_statuses = list(RoomStatus.objects.all())
-        if not created_room_statuses:
-             self.stdout.write(self.style.ERROR('No room statuses created. Cannot proceed with room types.'))
-             # Decide if we should return or just warn
-             # return
-
+        
         # --- Create Room Types ---
         room_types = []
         for hotel in created_hotels:
@@ -252,7 +231,6 @@ class Command(BaseCommand):
                      capacity=random.randint(1, 4),
                      beds=random.randint(1, 2),
                      price_per_night=random.uniform(50.0, 500.0),
-                     status=random.choice(created_room_statuses) if created_room_statuses else None,
                      created_by=hotel.created_by,
                      # Add other fields like amenities, size etc.
                  ))

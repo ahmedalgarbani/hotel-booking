@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2025 at 08:41 PM
+-- Generation Time: Apr 16, 2025 at 04:41 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.12
 
@@ -100,7 +100,9 @@ INSERT INTO `accounts_chartofaccounts` (`id`, `created_at`, `updated_at`, `delet
 (50, NULL, NULL, NULL, '5600', 'مصاريف التسويق والإعلان', 'Expenses', 0.00, 'تكاليف الحملات التسويقية والإعلانية', 0, NULL, 6, NULL, NULL),
 (51, NULL, NULL, NULL, '5700', 'مصاريف أخرى', 'Expenses', 0.00, 'مصاريف أخرى غير مصنفة', 0, NULL, 6, NULL, NULL),
 (52, '2025-04-14 09:36:49.911434', '2025-04-14 09:36:49.911434', NULL, '1106621', 'عملاء دائمون - ahsdajk5as5d5as', 'Asset', 0.00, 'الحسابات المدينة / العملاء', 1, NULL, 7, NULL, NULL),
-(53, '2025-04-14 09:56:33.279378', '2025-04-14 09:56:33.279378', NULL, '1101443', 'عملاء دائمون - akshdkjaskdj8888', 'Asset', 0.00, 'الحسابات المدينة / العملاء', 1, NULL, 7, NULL, NULL);
+(53, '2025-04-14 09:56:33.279378', '2025-04-14 09:56:33.279378', NULL, '1101443', 'عملاء دائمون - akshdkjaskdj8888', 'Asset', 0.00, 'الحسابات المدينة / العملاء', 1, NULL, 7, NULL, NULL),
+(54, '2025-04-16 12:20:30.120259', '2025-04-16 12:20:30.120259', NULL, '1104319', 'عملاء دائمون - ajkhdk kajshdask', 'Asset', 0.00, 'الحسابات المدينة / العملاء', 1, NULL, 7, NULL, NULL),
+(55, '2025-04-16 12:21:28.287097', '2025-04-16 12:21:28.287097', NULL, '1102770', 'عملاء دائمون - test tset', 'Asset', 0.00, 'الحسابات المدينة / العملاء', 1, NULL, 7, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -182,101 +184,97 @@ CREATE TABLE `auth_group_permissions` (
 --
 
 INSERT INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
-(97, 1, 253),
-(98, 1, 254),
-(99, 1, 255),
-(96, 1, 256),
-(100, 1, 265),
-(101, 1, 266),
-(102, 1, 267),
-(103, 1, 268),
-(110, 1, 276),
-(111, 1, 280),
-(112, 1, 285),
-(113, 1, 286),
-(114, 1, 287),
-(104, 1, 288),
-(105, 1, 292),
-(106, 1, 293),
-(107, 1, 294),
-(108, 1, 295),
-(109, 1, 296),
-(115, 1, 297),
-(116, 1, 298),
-(117, 1, 299),
-(118, 1, 300),
-(119, 1, 301),
-(120, 1, 302),
-(121, 1, 303),
-(122, 1, 304),
-(123, 1, 305),
-(124, 1, 306),
-(125, 1, 307),
-(126, 1, 308),
-(127, 1, 309),
-(128, 1, 310),
-(129, 1, 311),
-(130, 1, 312),
-(131, 1, 313),
-(132, 1, 314),
-(133, 1, 315),
-(134, 1, 316),
-(135, 1, 317),
-(136, 1, 318),
-(137, 1, 319),
-(138, 1, 320),
-(139, 1, 361),
-(140, 1, 362),
-(141, 1, 363),
-(142, 1, 364),
-(143, 1, 365),
-(144, 1, 366),
-(145, 1, 367),
-(146, 1, 368),
-(147, 1, 373),
-(148, 1, 374),
-(149, 1, 375),
-(150, 1, 376),
-(156, 1, 377),
-(157, 1, 378),
-(158, 1, 379),
-(159, 1, 380),
-(160, 1, 381),
-(161, 1, 382),
-(162, 1, 383),
-(151, 1, 384),
-(152, 1, 389),
-(153, 1, 390),
-(154, 1, 391),
-(155, 1, 392),
-(164, 1, 395),
-(165, 1, 396),
-(166, 1, 399),
-(163, 1, 400),
-(168, 1, 405),
-(169, 1, 406),
-(170, 1, 407),
-(171, 1, 408),
-(172, 1, 413),
-(173, 1, 414),
-(174, 1, 415),
-(167, 1, 416),
-(175, 1, 425),
-(176, 1, 426),
-(177, 1, 427),
-(178, 1, 428),
-(179, 1, 429),
-(180, 1, 430),
-(181, 1, 431),
-(182, 1, 432),
-(183, 1, 433),
-(184, 1, 434),
-(185, 1, 435),
-(186, 1, 436),
-(187, 1, 437),
-(188, 1, 438),
-(189, 1, 439),
-(190, 1, 440);
+(1, 1, 11),
+(2, 1, 12),
+(3, 1, 13),
+(4, 1, 14),
+(8, 1, 31),
+(5, 1, 32),
+(6, 1, 33),
+(7, 1, 34),
+(9, 1, 42),
+(10, 1, 46),
+(11, 1, 51),
+(12, 1, 52),
+(13, 1, 53),
+(14, 1, 54),
+(15, 1, 58),
+(16, 1, 59),
+(17, 1, 60),
+(18, 1, 61),
+(19, 1, 62),
+(20, 1, 63),
+(21, 1, 64),
+(22, 1, 65),
+(23, 1, 66),
+(24, 1, 67),
+(25, 1, 68),
+(26, 1, 69),
+(27, 1, 70),
+(28, 1, 71),
+(29, 1, 72),
+(30, 1, 73),
+(31, 1, 74),
+(32, 1, 75),
+(33, 1, 76),
+(34, 1, 77),
+(35, 1, 78),
+(40, 1, 83),
+(41, 1, 84),
+(42, 1, 85),
+(43, 1, 86),
+(44, 1, 139),
+(45, 1, 140),
+(46, 1, 141),
+(47, 1, 142),
+(48, 1, 143),
+(49, 1, 144),
+(50, 1, 145),
+(51, 1, 146),
+(52, 1, 151),
+(53, 1, 152),
+(54, 1, 153),
+(55, 1, 154),
+(67, 1, 159),
+(56, 1, 160),
+(57, 1, 161),
+(58, 1, 162),
+(59, 1, 163),
+(60, 1, 164),
+(61, 1, 165),
+(62, 1, 166),
+(63, 1, 175),
+(64, 1, 176),
+(65, 1, 177),
+(66, 1, 178),
+(70, 1, 181),
+(71, 1, 182),
+(68, 1, 185),
+(69, 1, 186),
+(79, 1, 191),
+(72, 1, 192),
+(73, 1, 193),
+(74, 1, 194),
+(75, 1, 199),
+(76, 1, 200),
+(77, 1, 201),
+(78, 1, 202),
+(83, 1, 211),
+(84, 1, 212),
+(85, 1, 213),
+(86, 1, 214),
+(87, 1, 215),
+(88, 1, 216),
+(89, 1, 217),
+(90, 1, 218),
+(91, 1, 219),
+(92, 1, 220),
+(93, 1, 221),
+(94, 1, 222),
+(95, 1, 223),
+(80, 1, 224),
+(81, 1, 225),
+(82, 1, 226);
 
 -- --------------------------------------------------------
 
@@ -296,316 +294,312 @@ CREATE TABLE `auth_permission` (
 --
 
 INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALUES
-(243, 'Can add log entry', 1, 'add_logentry'),
-(244, 'Can change log entry', 1, 'change_logentry'),
-(245, 'Can delete log entry', 1, 'delete_logentry'),
-(246, 'Can view log entry', 1, 'view_logentry'),
-(247, 'Can approve hotel request', 30, 'can_approve_request'),
-(248, 'Can reject hotel request', 30, 'can_reject_request'),
-(249, 'Can add permission', 31, 'add_permission'),
-(250, 'Can change permission', 31, 'change_permission'),
-(251, 'Can delete permission', 31, 'delete_permission'),
-(252, 'Can view permission', 31, 'view_permission'),
-(253, 'Can add group', 4, 'add_group'),
-(254, 'Can change group', 4, 'change_group'),
-(255, 'Can delete group', 4, 'delete_group'),
-(256, 'Can view group', 4, 'view_group'),
-(257, 'Can add content type', 32, 'add_contenttype'),
-(258, 'Can change content type', 32, 'change_contenttype'),
-(259, 'Can delete content type', 32, 'delete_contenttype'),
-(260, 'Can view content type', 32, 'view_contenttype'),
-(261, 'Can add session', 33, 'add_session'),
-(262, 'Can change session', 33, 'change_session'),
-(263, 'Can delete session', 33, 'delete_session'),
-(264, 'Can view session', 33, 'view_session'),
-(265, 'Can add مستخدم', 2, 'add_customuser'),
-(266, 'Can change مستخدم', 2, 'change_customuser'),
-(267, 'Can delete مستخدم', 2, 'delete_customuser'),
-(268, 'Can view مستخدم', 2, 'view_customuser'),
-(269, 'Can add سجل النشاط', 34, 'add_activitylog'),
-(270, 'Can change سجل النشاط', 34, 'change_activitylog'),
-(271, 'Can delete سجل النشاط', 34, 'delete_activitylog'),
-(272, 'Can view سجل النشاط', 34, 'view_activitylog'),
-(273, 'Can add منطقه', 21, 'add_city'),
-(274, 'Can change منطقه', 21, 'change_city'),
-(275, 'Can delete منطقه', 21, 'delete_city'),
-(276, 'Can view منطقه', 21, 'view_city'),
-(277, 'Can add فندق', 18, 'add_hotel'),
-(278, 'Can change فندق', 18, 'change_hotel'),
-(279, 'Can delete فندق', 18, 'delete_hotel'),
-(280, 'Can view فندق', 18, 'view_hotel'),
-(281, 'Can add طلب إضافة فندق', 30, 'add_hotelrequest'),
-(282, 'Can change طلب إضافة فندق', 30, 'change_hotelrequest'),
-(283, 'Can delete طلب إضافة فندق', 30, 'delete_hotelrequest'),
-(284, 'Can view طلب إضافة فندق', 30, 'view_hotelrequest'),
-(285, 'Can add صورة', 19, 'add_image'),
-(286, 'Can change صورة', 19, 'change_image'),
-(287, 'Can delete صورة', 19, 'delete_image'),
-(288, 'Can view صورة', 19, 'view_image'),
-(289, 'Can add الموقع', 22, 'add_location'),
-(290, 'Can change الموقع', 22, 'change_location'),
-(291, 'Can delete الموقع', 22, 'delete_location'),
-(292, 'Can view الموقع', 22, 'view_location'),
-(293, 'Can add رقم هاتف', 20, 'add_phone'),
-(294, 'Can change رقم هاتف', 20, 'change_phone'),
-(295, 'Can delete رقم هاتف', 20, 'delete_phone'),
-(296, 'Can view رقم هاتف', 20, 'view_phone'),
-(297, 'Can add توفر الغرف', 9, 'add_availability'),
-(298, 'Can change توفر الغرف', 9, 'change_availability'),
-(299, 'Can delete توفر الغرف', 9, 'delete_availability'),
-(300, 'Can view توفر الغرف', 9, 'view_availability'),
-(301, 'Can add تصنيف', 6, 'add_category'),
-(302, 'Can change تصنيف', 6, 'change_category'),
-(303, 'Can delete تصنيف', 6, 'delete_category'),
-(304, 'Can view تصنيف', 6, 'view_category'),
-(305, 'Can add صورة الغرفة', 7, 'add_roomimage'),
-(306, 'Can change صورة الغرفة', 7, 'change_roomimage'),
-(307, 'Can delete صورة الغرفة', 7, 'delete_roomimage'),
-(308, 'Can view صورة الغرفة', 7, 'view_roomimage'),
-(309, 'Can add سعر الغرفة', 8, 'add_roomprice'),
-(310, 'Can change سعر الغرفة', 8, 'change_roomprice'),
-(311, 'Can delete سعر الغرفة', 8, 'delete_roomprice'),
-(312, 'Can view سعر الغرفة', 8, 'view_roomprice'),
-(313, 'Can add حالة الغرفة', 10, 'add_roomstatus'),
-(314, 'Can change حالة الغرفة', 10, 'change_roomstatus'),
-(315, 'Can delete حالة الغرفة', 10, 'delete_roomstatus'),
-(316, 'Can view حالة الغرفة', 10, 'view_roomstatus'),
-(317, 'Can add نوع الغرفة', 5, 'add_roomtype'),
-(318, 'Can change نوع الغرفة', 5, 'change_roomtype'),
-(319, 'Can delete نوع الغرفة', 5, 'delete_roomtype'),
-(320, 'Can view نوع الغرفة', 5, 'view_roomtype'),
-(321, 'Can add contact message', 36, 'add_contactmessage'),
-(322, 'Can change contact message', 36, 'change_contactmessage'),
-(323, 'Can delete contact message', 36, 'delete_contactmessage'),
-(324, 'Can view contact message', 36, 'view_contactmessage'),
-(325, 'Can add hero slider', 37, 'add_heroslider'),
-(326, 'Can change hero slider', 37, 'change_heroslider'),
-(327, 'Can delete hero slider', 37, 'delete_heroslider'),
-(328, 'Can view hero slider', 37, 'view_heroslider'),
-(329, 'Can add info box', 38, 'add_infobox'),
-(330, 'Can change info box', 38, 'change_infobox'),
-(331, 'Can delete info box', 38, 'delete_infobox'),
-(332, 'Can view info box', 38, 'view_infobox'),
-(333, 'Can add partner', 39, 'add_partner'),
-(334, 'Can change partner', 39, 'change_partner'),
-(335, 'Can delete partner', 39, 'delete_partner'),
-(336, 'Can view partner', 39, 'view_partner'),
-(337, 'Can add pricing plan', 40, 'add_pricingplan'),
-(338, 'Can change pricing plan', 40, 'change_pricingplan'),
-(339, 'Can delete pricing plan', 40, 'delete_pricingplan'),
-(340, 'Can view pricing plan', 40, 'view_pricingplan'),
-(341, 'Can add room type home', 41, 'add_roomtypehome'),
-(342, 'Can change room type home', 41, 'change_roomtypehome'),
-(343, 'Can delete room type home', 41, 'delete_roomtypehome'),
-(344, 'Can view room type home', 41, 'view_roomtypehome'),
-(345, 'Can add setting', 42, 'add_setting'),
-(346, 'Can change setting', 42, 'change_setting'),
-(347, 'Can delete setting', 42, 'delete_setting'),
-(348, 'Can view setting', 42, 'view_setting'),
-(349, 'Can add social media link', 43, 'add_socialmedialink'),
-(350, 'Can change social media link', 43, 'change_socialmedialink'),
-(351, 'Can delete social media link', 43, 'delete_socialmedialink'),
-(352, 'Can view social media link', 43, 'view_socialmedialink'),
-(353, 'Can add team member', 44, 'add_teammember'),
-(354, 'Can change team member', 44, 'change_teammember'),
-(355, 'Can delete team member', 44, 'delete_teammember'),
-(356, 'Can view team member', 44, 'view_teammember'),
-(357, 'Can add testimonial', 45, 'add_testimonial'),
-(358, 'Can change testimonial', 45, 'change_testimonial'),
-(359, 'Can delete testimonial', 45, 'delete_testimonial'),
-(360, 'Can view testimonial', 45, 'view_testimonial'),
-(361, 'Can add حجز', 13, 'add_booking'),
-(362, 'Can change حجز', 13, 'change_booking'),
-(363, 'Can delete حجز', 13, 'delete_booking'),
-(364, 'Can view حجز', 13, 'view_booking'),
-(365, 'Can add تفصيل الحجز', 14, 'add_bookingdetail'),
-(366, 'Can change تفصيل الحجز', 14, 'change_bookingdetail'),
-(367, 'Can delete تفصيل الحجز', 14, 'delete_bookingdetail'),
-(368, 'Can view تفصيل الحجز', 14, 'view_bookingdetail'),
-(369, 'Can add ضيف', 46, 'add_guest'),
-(370, 'Can change ضيف', 46, 'change_guest'),
-(371, 'Can delete ضيف', 46, 'delete_guest'),
-(372, 'Can view ضيف', 46, 'view_guest'),
-(373, 'Can add extension movement', 15, 'add_extensionmovement'),
-(374, 'Can change extension movement', 15, 'change_extensionmovement'),
-(375, 'Can delete extension movement', 15, 'delete_extensionmovement'),
-(376, 'Can view extension movement', 15, 'view_extensionmovement'),
-(377, 'Can add عملة', 27, 'add_currency'),
-(378, 'Can change عملة', 27, 'change_currency'),
-(379, 'Can delete عملة', 27, 'delete_currency'),
-(380, 'Can view عملة', 27, 'view_currency'),
-(381, 'Can add طريقة دفع الفندق', 29, 'add_hotelpaymentmethod'),
-(382, 'Can change طريقة دفع الفندق', 29, 'change_hotelpaymentmethod'),
-(383, 'Can delete طريقة دفع الفندق', 29, 'delete_hotelpaymentmethod'),
-(384, 'Can view طريقة دفع الفندق', 29, 'view_hotelpaymentmethod'),
-(385, 'Can add دفعة', 47, 'add_payment'),
-(386, 'Can change دفعة', 47, 'change_payment'),
-(387, 'Can delete دفعة', 47, 'delete_payment'),
-(388, 'Can view دفعة', 47, 'view_payment'),
-(389, 'Can add طريقة دفع', 28, 'add_paymentoption'),
-(390, 'Can change طريقة دفع', 28, 'change_paymentoption'),
-(391, 'Can delete طريقة دفع', 28, 'delete_paymentoption'),
-(392, 'Can view طريقة دفع', 28, 'view_paymentoption'),
-(393, 'Can add مراجعة فندق', 17, 'add_hotelreview'),
-(394, 'Can change مراجعة فندق', 17, 'change_hotelreview'),
-(395, 'Can delete مراجعة فندق', 17, 'delete_hotelreview'),
-(396, 'Can view مراجعة فندق', 17, 'view_hotelreview'),
-(397, 'Can add مراجعة غرفة', 16, 'add_roomreview'),
-(398, 'Can change مراجعة غرفة', 16, 'change_roomreview'),
-(399, 'Can delete مراجعة غرفة', 16, 'delete_roomreview'),
-(400, 'Can view مراجعة غرفة', 16, 'view_roomreview'),
-(401, 'Can add coupon', 48, 'add_coupon'),
-(402, 'Can change coupon', 48, 'change_coupon'),
-(403, 'Can delete coupon', 48, 'delete_coupon'),
-(404, 'Can view coupon', 48, 'view_coupon'),
-(405, 'Can add خدمة فندقية', 12, 'add_hotelservice'),
-(406, 'Can change خدمة فندقية', 12, 'change_hotelservice'),
-(407, 'Can delete خدمة فندقية', 12, 'delete_hotelservice'),
-(408, 'Can view خدمة فندقية', 12, 'view_hotelservice'),
-(409, 'Can add عرض', 49, 'add_offer'),
-(410, 'Can change عرض', 49, 'change_offer'),
-(411, 'Can delete عرض', 49, 'delete_offer'),
-(412, 'Can view عرض', 49, 'view_offer'),
-(413, 'Can add خدمة نوع الغرفة', 11, 'add_roomtypeservice'),
-(414, 'Can change خدمة نوع الغرفة', 11, 'change_roomtypeservice'),
-(415, 'Can delete خدمة نوع الغرفة', 11, 'delete_roomtypeservice'),
-(416, 'Can view خدمة نوع الغرفة', 11, 'view_roomtypeservice'),
-(417, 'Can add blacklisted token', 50, 'add_blacklistedtoken'),
-(418, 'Can change blacklisted token', 50, 'change_blacklistedtoken'),
-(419, 'Can delete blacklisted token', 50, 'delete_blacklistedtoken'),
-(420, 'Can view blacklisted token', 50, 'view_blacklistedtoken'),
-(421, 'Can add outstanding token', 51, 'add_outstandingtoken'),
-(422, 'Can change outstanding token', 51, 'change_outstandingtoken'),
-(423, 'Can delete outstanding token', 51, 'delete_outstandingtoken'),
-(424, 'Can view outstanding token', 51, 'view_outstandingtoken'),
-(425, 'Can add تصنيف', 25, 'add_category'),
-(426, 'Can change تصنيف', 25, 'change_category'),
-(427, 'Can delete تصنيف', 25, 'delete_category'),
-(428, 'Can view تصنيف', 25, 'view_category'),
-(429, 'Can add تعليق', 24, 'add_comment'),
-(430, 'Can change تعليق', 24, 'change_comment'),
-(431, 'Can delete تعليق', 24, 'delete_comment'),
-(432, 'Can view تعليق', 24, 'view_comment'),
-(433, 'Can add مقال', 23, 'add_post'),
-(434, 'Can change مقال', 23, 'change_post'),
-(435, 'Can delete مقال', 23, 'delete_post'),
-(436, 'Can view مقال', 23, 'view_post'),
-(437, 'Can add وسم', 26, 'add_tag'),
-(438, 'Can change وسم', 26, 'change_tag'),
-(439, 'Can delete وسم', 26, 'delete_tag'),
-(440, 'Can view وسم', 26, 'view_tag'),
-(441, 'Can add إشعار', 52, 'add_notifications'),
-(442, 'Can change إشعار', 52, 'change_notifications'),
-(443, 'Can delete إشعار', 52, 'delete_notifications'),
-(444, 'Can view إشعار', 52, 'view_notifications'),
-(445, 'Can add المفضلات', 53, 'add_favourites'),
-(446, 'Can change المفضلات', 53, 'change_favourites'),
-(447, 'Can delete المفضلات', 53, 'delete_favourites'),
-(448, 'Can view المفضلات', 53, 'view_favourites'),
-(449, 'Can add crontab', 54, 'add_crontabschedule'),
-(450, 'Can change crontab', 54, 'change_crontabschedule'),
-(451, 'Can delete crontab', 54, 'delete_crontabschedule'),
-(452, 'Can view crontab', 54, 'view_crontabschedule'),
-(453, 'Can add interval', 55, 'add_intervalschedule'),
-(454, 'Can change interval', 55, 'change_intervalschedule'),
-(455, 'Can delete interval', 55, 'delete_intervalschedule'),
-(456, 'Can view interval', 55, 'view_intervalschedule'),
-(457, 'Can add periodic task', 56, 'add_periodictask'),
-(458, 'Can change periodic task', 56, 'change_periodictask'),
-(459, 'Can delete periodic task', 56, 'delete_periodictask'),
-(460, 'Can view periodic task', 56, 'view_periodictask'),
-(461, 'Can add periodic task track', 57, 'add_periodictasks'),
-(462, 'Can change periodic task track', 57, 'change_periodictasks'),
-(463, 'Can delete periodic task track', 57, 'delete_periodictasks'),
-(464, 'Can view periodic task track', 57, 'view_periodictasks'),
-(465, 'Can add solar event', 58, 'add_solarschedule'),
-(466, 'Can change solar event', 58, 'change_solarschedule'),
-(467, 'Can delete solar event', 58, 'delete_solarschedule'),
-(468, 'Can view solar event', 58, 'view_solarschedule'),
-(469, 'Can add clocked', 59, 'add_clockedschedule'),
-(470, 'Can change clocked', 59, 'change_clockedschedule'),
-(471, 'Can delete clocked', 59, 'delete_clockedschedule'),
-(472, 'Can view clocked', 59, 'view_clockedschedule'),
-(473, 'Can add chart of accounts', 60, 'add_chartofaccounts'),
-(474, 'Can change chart of accounts', 60, 'change_chartofaccounts'),
-(475, 'Can delete chart of accounts', 60, 'delete_chartofaccounts'),
-(476, 'Can view chart of accounts', 60, 'view_chartofaccounts'),
-(477, 'Can add journal entry', 61, 'add_journalentry'),
-(478, 'Can change journal entry', 61, 'change_journalentry'),
-(479, 'Can delete journal entry', 61, 'delete_journalentry'),
-(480, 'Can view journal entry', 61, 'view_journalentry'),
-(481, 'Can add سجل الحجز', 62, 'add_bookinghistory'),
-(482, 'Can change سجل الحجز', 62, 'change_bookinghistory'),
-(483, 'Can delete سجل الحجز', 62, 'delete_bookinghistory'),
-(484, 'Can view سجل الحجز', 62, 'view_bookinghistory'),
-(485, 'Can add سجل الدفعة', 63, 'add_paymenthistory'),
-(486, 'Can change سجل الدفعة', 63, 'change_paymenthistory'),
-(487, 'Can delete سجل الدفعة', 63, 'delete_paymenthistory'),
-(488, 'Can view سجل الدفعة', 63, 'view_paymenthistory'),
-(489, 'Can add privacy policy', 64, 'add_privacypolicy'),
-(490, 'Can change privacy policy', 64, 'change_privacypolicy'),
-(491, 'Can delete privacy policy', 64, 'delete_privacypolicy'),
-(492, 'Can view privacy policy', 64, 'view_privacypolicy'),
-(493, 'Can add terms conditions', 65, 'add_termsconditions'),
-(494, 'Can change terms conditions', 65, 'change_termsconditions'),
-(495, 'Can delete terms conditions', 65, 'delete_termsconditions'),
-(496, 'Can view terms conditions', 65, 'view_termsconditions'),
-(497, 'Can add paymen policy', 66, 'add_paymenpolicy'),
-(498, 'Can change paymen policy', 66, 'change_paymenpolicy'),
-(499, 'Can delete paymen policy', 66, 'delete_paymenpolicy'),
-(500, 'Can view paymen policy', 66, 'view_paymenpolicy'),
-(501, 'Can add Token', 67, 'add_token'),
-(502, 'Can change Token', 67, 'change_token'),
-(503, 'Can delete Token', 67, 'delete_token'),
-(504, 'Can view Token', 67, 'view_token'),
-(505, 'Can add Token', 68, 'add_tokenproxy'),
-(506, 'Can change Token', 68, 'change_tokenproxy'),
-(507, 'Can delete Token', 68, 'delete_tokenproxy'),
-(508, 'Can view Token', 68, 'view_tokenproxy'),
-(509, 'Can add association', 69, 'add_association'),
-(510, 'Can change association', 69, 'change_association'),
-(511, 'Can delete association', 69, 'delete_association'),
-(512, 'Can view association', 69, 'view_association'),
-(513, 'Can add code', 70, 'add_code'),
-(514, 'Can change code', 70, 'change_code'),
-(515, 'Can delete code', 70, 'delete_code'),
-(516, 'Can view code', 70, 'view_code'),
-(517, 'Can add nonce', 71, 'add_nonce'),
-(518, 'Can change nonce', 71, 'change_nonce'),
-(519, 'Can delete nonce', 71, 'delete_nonce'),
-(520, 'Can view nonce', 71, 'view_nonce'),
-(521, 'Can add user social auth', 72, 'add_usersocialauth'),
-(522, 'Can change user social auth', 72, 'change_usersocialauth'),
-(523, 'Can delete user social auth', 72, 'delete_usersocialauth'),
-(524, 'Can view user social auth', 72, 'view_usersocialauth'),
-(525, 'Can add partial', 73, 'add_partial'),
-(526, 'Can change partial', 73, 'change_partial'),
-(527, 'Can delete partial', 73, 'delete_partial'),
-(528, 'Can view partial', 73, 'view_partial'),
-(529, 'Can add site', 74, 'add_site'),
-(530, 'Can change site', 74, 'change_site'),
-(531, 'Can delete site', 74, 'delete_site'),
-(532, 'Can view site', 74, 'view_site'),
-(533, 'Can add application', 75, 'add_application'),
-(534, 'Can change application', 75, 'change_application'),
-(535, 'Can delete application', 75, 'delete_application'),
-(536, 'Can view application', 75, 'view_application'),
-(537, 'Can add access token', 76, 'add_accesstoken'),
-(538, 'Can change access token', 76, 'change_accesstoken'),
-(539, 'Can delete access token', 76, 'delete_accesstoken'),
-(540, 'Can view access token', 76, 'view_accesstoken'),
-(541, 'Can add grant', 77, 'add_grant'),
-(542, 'Can change grant', 77, 'change_grant'),
-(543, 'Can delete grant', 77, 'delete_grant'),
-(544, 'Can view grant', 77, 'view_grant'),
-(545, 'Can add refresh token', 78, 'add_refreshtoken'),
-(546, 'Can change refresh token', 78, 'change_refreshtoken'),
-(547, 'Can delete refresh token', 78, 'delete_refreshtoken'),
-(548, 'Can view refresh token', 78, 'view_refreshtoken'),
-(549, 'Can add id token', 79, 'add_idtoken'),
-(550, 'Can change id token', 79, 'change_idtoken'),
-(551, 'Can delete id token', 79, 'delete_idtoken'),
-(552, 'Can view id token', 79, 'view_idtoken');
+(1, 'Can add log entry', 1, 'add_logentry'),
+(2, 'Can change log entry', 1, 'change_logentry'),
+(3, 'Can delete log entry', 1, 'delete_logentry'),
+(4, 'Can view log entry', 1, 'view_logentry'),
+(5, 'Can approve hotel request', 30, 'can_approve_request'),
+(6, 'Can reject hotel request', 30, 'can_reject_request'),
+(7, 'Can add permission', 31, 'add_permission'),
+(8, 'Can change permission', 31, 'change_permission'),
+(9, 'Can delete permission', 31, 'delete_permission'),
+(10, 'Can view permission', 31, 'view_permission'),
+(11, 'Can add group', 4, 'add_group'),
+(12, 'Can change group', 4, 'change_group'),
+(13, 'Can delete group', 4, 'delete_group'),
+(14, 'Can view group', 4, 'view_group'),
+(15, 'Can add content type', 32, 'add_contenttype'),
+(16, 'Can change content type', 32, 'change_contenttype'),
+(17, 'Can delete content type', 32, 'delete_contenttype'),
+(18, 'Can view content type', 32, 'view_contenttype'),
+(19, 'Can add session', 33, 'add_session'),
+(20, 'Can change session', 33, 'change_session'),
+(21, 'Can delete session', 33, 'delete_session'),
+(22, 'Can view session', 33, 'view_session'),
+(23, 'Can add chart of accounts', 34, 'add_chartofaccounts'),
+(24, 'Can change chart of accounts', 34, 'change_chartofaccounts'),
+(25, 'Can delete chart of accounts', 34, 'delete_chartofaccounts'),
+(26, 'Can view chart of accounts', 34, 'view_chartofaccounts'),
+(27, 'Can add journal entry', 35, 'add_journalentry'),
+(28, 'Can change journal entry', 35, 'change_journalentry'),
+(29, 'Can delete journal entry', 35, 'delete_journalentry'),
+(30, 'Can view journal entry', 35, 'view_journalentry'),
+(31, 'Can add مستخدم', 2, 'add_customuser'),
+(32, 'Can change مستخدم', 2, 'change_customuser'),
+(33, 'Can delete مستخدم', 2, 'delete_customuser'),
+(34, 'Can view مستخدم', 2, 'view_customuser'),
+(35, 'Can add سجل النشاط', 36, 'add_activitylog'),
+(36, 'Can change سجل النشاط', 36, 'change_activitylog'),
+(37, 'Can delete سجل النشاط', 36, 'delete_activitylog'),
+(38, 'Can view سجل النشاط', 36, 'view_activitylog'),
+(39, 'Can add منطقه', 21, 'add_city'),
+(40, 'Can change منطقه', 21, 'change_city'),
+(41, 'Can delete منطقه', 21, 'delete_city'),
+(42, 'Can view منطقه', 21, 'view_city'),
+(43, 'Can add فندق', 18, 'add_hotel'),
+(44, 'Can change فندق', 18, 'change_hotel'),
+(45, 'Can delete فندق', 18, 'delete_hotel'),
+(46, 'Can view فندق', 18, 'view_hotel'),
+(47, 'Can add طلب إضافة فندق', 30, 'add_hotelrequest'),
+(48, 'Can change طلب إضافة فندق', 30, 'change_hotelrequest'),
+(49, 'Can delete طلب إضافة فندق', 30, 'delete_hotelrequest'),
+(50, 'Can view طلب إضافة فندق', 30, 'view_hotelrequest'),
+(51, 'Can add صورة', 19, 'add_image'),
+(52, 'Can change صورة', 19, 'change_image'),
+(53, 'Can delete صورة', 19, 'delete_image'),
+(54, 'Can view صورة', 19, 'view_image'),
+(55, 'Can add الموقع', 22, 'add_location'),
+(56, 'Can change الموقع', 22, 'change_location'),
+(57, 'Can delete الموقع', 22, 'delete_location'),
+(58, 'Can view الموقع', 22, 'view_location'),
+(59, 'Can add رقم هاتف', 20, 'add_phone'),
+(60, 'Can change رقم هاتف', 20, 'change_phone'),
+(61, 'Can delete رقم هاتف', 20, 'delete_phone'),
+(62, 'Can view رقم هاتف', 20, 'view_phone'),
+(63, 'Can add توفر الغرف', 9, 'add_availability'),
+(64, 'Can change توفر الغرف', 9, 'change_availability'),
+(65, 'Can delete توفر الغرف', 9, 'delete_availability'),
+(66, 'Can view توفر الغرف', 9, 'view_availability'),
+(67, 'Can add تصنيف', 6, 'add_category'),
+(68, 'Can change تصنيف', 6, 'change_category'),
+(69, 'Can delete تصنيف', 6, 'delete_category'),
+(70, 'Can view تصنيف', 6, 'view_category'),
+(71, 'Can add صورة الغرفة', 7, 'add_roomimage'),
+(72, 'Can change صورة الغرفة', 7, 'change_roomimage'),
+(73, 'Can delete صورة الغرفة', 7, 'delete_roomimage'),
+(74, 'Can view صورة الغرفة', 7, 'view_roomimage'),
+(75, 'Can add سعر الغرفة', 8, 'add_roomprice'),
+(76, 'Can change سعر الغرفة', 8, 'change_roomprice'),
+(77, 'Can delete سعر الغرفة', 8, 'delete_roomprice'),
+(78, 'Can view سعر الغرفة', 8, 'view_roomprice'),
+(79, 'Can add حالة الغرفة', 10, 'add_roomstatus'),
+(80, 'Can change حالة الغرفة', 10, 'change_roomstatus'),
+(81, 'Can delete حالة الغرفة', 10, 'delete_roomstatus'),
+(82, 'Can view حالة الغرفة', 10, 'view_roomstatus'),
+(83, 'Can add نوع الغرفة', 5, 'add_roomtype'),
+(84, 'Can change نوع الغرفة', 5, 'change_roomtype'),
+(85, 'Can delete نوع الغرفة', 5, 'delete_roomtype'),
+(86, 'Can view نوع الغرفة', 5, 'view_roomtype'),
+(87, 'Can add contact message', 37, 'add_contactmessage'),
+(88, 'Can change contact message', 37, 'change_contactmessage'),
+(89, 'Can delete contact message', 37, 'delete_contactmessage'),
+(90, 'Can view contact message', 37, 'view_contactmessage'),
+(91, 'Can add hero slider', 38, 'add_heroslider'),
+(92, 'Can change hero slider', 38, 'change_heroslider'),
+(93, 'Can delete hero slider', 38, 'delete_heroslider'),
+(94, 'Can view hero slider', 38, 'view_heroslider'),
+(95, 'Can add info box', 39, 'add_infobox'),
+(96, 'Can change info box', 39, 'change_infobox'),
+(97, 'Can delete info box', 39, 'delete_infobox'),
+(98, 'Can view info box', 39, 'view_infobox'),
+(99, 'Can add partner', 40, 'add_partner'),
+(100, 'Can change partner', 40, 'change_partner'),
+(101, 'Can delete partner', 40, 'delete_partner'),
+(102, 'Can view partner', 40, 'view_partner'),
+(103, 'Can add paymen policy', 41, 'add_paymenpolicy'),
+(104, 'Can change paymen policy', 41, 'change_paymenpolicy'),
+(105, 'Can delete paymen policy', 41, 'delete_paymenpolicy'),
+(106, 'Can view paymen policy', 41, 'view_paymenpolicy'),
+(107, 'Can add pricing plan', 42, 'add_pricingplan'),
+(108, 'Can change pricing plan', 42, 'change_pricingplan'),
+(109, 'Can delete pricing plan', 42, 'delete_pricingplan'),
+(110, 'Can view pricing plan', 42, 'view_pricingplan'),
+(111, 'Can add privacy policy', 43, 'add_privacypolicy'),
+(112, 'Can change privacy policy', 43, 'change_privacypolicy'),
+(113, 'Can delete privacy policy', 43, 'delete_privacypolicy'),
+(114, 'Can view privacy policy', 43, 'view_privacypolicy'),
+(115, 'Can add room type home', 44, 'add_roomtypehome'),
+(116, 'Can change room type home', 44, 'change_roomtypehome'),
+(117, 'Can delete room type home', 44, 'delete_roomtypehome'),
+(118, 'Can view room type home', 44, 'view_roomtypehome'),
+(119, 'Can add setting', 45, 'add_setting'),
+(120, 'Can change setting', 45, 'change_setting'),
+(121, 'Can delete setting', 45, 'delete_setting'),
+(122, 'Can view setting', 45, 'view_setting'),
+(123, 'Can add social media link', 46, 'add_socialmedialink'),
+(124, 'Can change social media link', 46, 'change_socialmedialink'),
+(125, 'Can delete social media link', 46, 'delete_socialmedialink'),
+(126, 'Can view social media link', 46, 'view_socialmedialink'),
+(127, 'Can add team member', 47, 'add_teammember'),
+(128, 'Can change team member', 47, 'change_teammember'),
+(129, 'Can delete team member', 47, 'delete_teammember'),
+(130, 'Can view team member', 47, 'view_teammember'),
+(131, 'Can add terms conditions', 48, 'add_termsconditions'),
+(132, 'Can change terms conditions', 48, 'change_termsconditions'),
+(133, 'Can delete terms conditions', 48, 'delete_termsconditions'),
+(134, 'Can view terms conditions', 48, 'view_termsconditions'),
+(135, 'Can add testimonial', 49, 'add_testimonial'),
+(136, 'Can change testimonial', 49, 'change_testimonial'),
+(137, 'Can delete testimonial', 49, 'delete_testimonial'),
+(138, 'Can view testimonial', 49, 'view_testimonial'),
+(139, 'Can add حجز', 13, 'add_booking'),
+(140, 'Can change حجز', 13, 'change_booking'),
+(141, 'Can delete حجز', 13, 'delete_booking'),
+(142, 'Can view حجز', 13, 'view_booking'),
+(143, 'Can add تفصيل الحجز', 14, 'add_bookingdetail'),
+(144, 'Can change تفصيل الحجز', 14, 'change_bookingdetail'),
+(145, 'Can delete تفصيل الحجز', 14, 'delete_bookingdetail'),
+(146, 'Can view تفصيل الحجز', 14, 'view_bookingdetail'),
+(147, 'Can add سجل الحجز', 50, 'add_bookinghistory'),
+(148, 'Can change سجل الحجز', 50, 'change_bookinghistory'),
+(149, 'Can delete سجل الحجز', 50, 'delete_bookinghistory'),
+(150, 'Can view سجل الحجز', 50, 'view_bookinghistory'),
+(151, 'Can add extension movement', 15, 'add_extensionmovement'),
+(152, 'Can change extension movement', 15, 'change_extensionmovement'),
+(153, 'Can delete extension movement', 15, 'delete_extensionmovement'),
+(154, 'Can view extension movement', 15, 'view_extensionmovement'),
+(155, 'Can add ضيف', 51, 'add_guest'),
+(156, 'Can change ضيف', 51, 'change_guest'),
+(157, 'Can delete ضيف', 51, 'delete_guest'),
+(158, 'Can view ضيف', 51, 'view_guest'),
+(159, 'Can add عملة', 27, 'add_currency'),
+(160, 'Can change عملة', 27, 'change_currency'),
+(161, 'Can delete عملة', 27, 'delete_currency'),
+(162, 'Can view عملة', 27, 'view_currency'),
+(163, 'Can add طريقة دفع الفندق', 29, 'add_hotelpaymentmethod'),
+(164, 'Can change طريقة دفع الفندق', 29, 'change_hotelpaymentmethod'),
+(165, 'Can delete طريقة دفع الفندق', 29, 'delete_hotelpaymentmethod'),
+(166, 'Can view طريقة دفع الفندق', 29, 'view_hotelpaymentmethod'),
+(167, 'Can add دفعة', 52, 'add_payment'),
+(168, 'Can change دفعة', 52, 'change_payment'),
+(169, 'Can delete دفعة', 52, 'delete_payment'),
+(170, 'Can view دفعة', 52, 'view_payment'),
+(171, 'Can add سجل الدفعة', 53, 'add_paymenthistory'),
+(172, 'Can change سجل الدفعة', 53, 'change_paymenthistory'),
+(173, 'Can delete سجل الدفعة', 53, 'delete_paymenthistory'),
+(174, 'Can view سجل الدفعة', 53, 'view_paymenthistory'),
+(175, 'Can add طريقة دفع', 28, 'add_paymentoption'),
+(176, 'Can change طريقة دفع', 28, 'change_paymentoption'),
+(177, 'Can delete طريقة دفع', 28, 'delete_paymentoption'),
+(178, 'Can view طريقة دفع', 28, 'view_paymentoption'),
+(179, 'Can add مراجعة فندق', 17, 'add_hotelreview'),
+(180, 'Can change مراجعة فندق', 17, 'change_hotelreview'),
+(181, 'Can delete مراجعة فندق', 17, 'delete_hotelreview'),
+(182, 'Can view مراجعة فندق', 17, 'view_hotelreview'),
+(183, 'Can add مراجعة غرفة', 16, 'add_roomreview'),
+(184, 'Can change مراجعة غرفة', 16, 'change_roomreview'),
+(185, 'Can delete مراجعة غرفة', 16, 'delete_roomreview'),
+(186, 'Can view مراجعة غرفة', 16, 'view_roomreview'),
+(187, 'Can add coupon', 54, 'add_coupon'),
+(188, 'Can change coupon', 54, 'change_coupon'),
+(189, 'Can delete coupon', 54, 'delete_coupon'),
+(190, 'Can view coupon', 54, 'view_coupon'),
+(191, 'Can add خدمة فندقية', 12, 'add_hotelservice'),
+(192, 'Can change خدمة فندقية', 12, 'change_hotelservice'),
+(193, 'Can delete خدمة فندقية', 12, 'delete_hotelservice'),
+(194, 'Can view خدمة فندقية', 12, 'view_hotelservice'),
+(195, 'Can add عرض', 55, 'add_offer'),
+(196, 'Can change عرض', 55, 'change_offer'),
+(197, 'Can delete عرض', 55, 'delete_offer'),
+(198, 'Can view عرض', 55, 'view_offer'),
+(199, 'Can add خدمة نوع الغرفة', 11, 'add_roomtypeservice'),
+(200, 'Can change خدمة نوع الغرفة', 11, 'change_roomtypeservice'),
+(201, 'Can delete خدمة نوع الغرفة', 11, 'delete_roomtypeservice'),
+(202, 'Can view خدمة نوع الغرفة', 11, 'view_roomtypeservice'),
+(203, 'Can add blacklisted token', 56, 'add_blacklistedtoken'),
+(204, 'Can change blacklisted token', 56, 'change_blacklistedtoken'),
+(205, 'Can delete blacklisted token', 56, 'delete_blacklistedtoken'),
+(206, 'Can view blacklisted token', 56, 'view_blacklistedtoken'),
+(207, 'Can add outstanding token', 57, 'add_outstandingtoken'),
+(208, 'Can change outstanding token', 57, 'change_outstandingtoken'),
+(209, 'Can delete outstanding token', 57, 'delete_outstandingtoken'),
+(210, 'Can view outstanding token', 57, 'view_outstandingtoken'),
+(211, 'Can add تصنيف', 25, 'add_category'),
+(212, 'Can change تصنيف', 25, 'change_category'),
+(213, 'Can delete تصنيف', 25, 'delete_category'),
+(214, 'Can view تصنيف', 25, 'view_category'),
+(215, 'Can add تعليق', 24, 'add_comment'),
+(216, 'Can change تعليق', 24, 'change_comment'),
+(217, 'Can delete تعليق', 24, 'delete_comment'),
+(218, 'Can view تعليق', 24, 'view_comment'),
+(219, 'Can add مقال', 23, 'add_post'),
+(220, 'Can change مقال', 23, 'change_post'),
+(221, 'Can delete مقال', 23, 'delete_post'),
+(222, 'Can view مقال', 23, 'view_post'),
+(223, 'Can add وسم', 26, 'add_tag'),
+(224, 'Can change وسم', 26, 'change_tag'),
+(225, 'Can delete وسم', 26, 'delete_tag'),
+(226, 'Can view وسم', 26, 'view_tag'),
+(227, 'Can add إشعار', 58, 'add_notifications'),
+(228, 'Can change إشعار', 58, 'change_notifications'),
+(229, 'Can delete إشعار', 58, 'delete_notifications'),
+(230, 'Can view إشعار', 58, 'view_notifications'),
+(231, 'Can add المفضلات', 59, 'add_favourites'),
+(232, 'Can change المفضلات', 59, 'change_favourites'),
+(233, 'Can delete المفضلات', 59, 'delete_favourites'),
+(234, 'Can view المفضلات', 59, 'view_favourites'),
+(235, 'Can add crontab', 60, 'add_crontabschedule'),
+(236, 'Can change crontab', 60, 'change_crontabschedule'),
+(237, 'Can delete crontab', 60, 'delete_crontabschedule'),
+(238, 'Can view crontab', 60, 'view_crontabschedule'),
+(239, 'Can add interval', 61, 'add_intervalschedule'),
+(240, 'Can change interval', 61, 'change_intervalschedule'),
+(241, 'Can delete interval', 61, 'delete_intervalschedule'),
+(242, 'Can view interval', 61, 'view_intervalschedule'),
+(243, 'Can add periodic task', 62, 'add_periodictask'),
+(244, 'Can change periodic task', 62, 'change_periodictask'),
+(245, 'Can delete periodic task', 62, 'delete_periodictask'),
+(246, 'Can view periodic task', 62, 'view_periodictask'),
+(247, 'Can add periodic task track', 63, 'add_periodictasks'),
+(248, 'Can change periodic task track', 63, 'change_periodictasks'),
+(249, 'Can delete periodic task track', 63, 'delete_periodictasks'),
+(250, 'Can view periodic task track', 63, 'view_periodictasks'),
+(251, 'Can add solar event', 64, 'add_solarschedule'),
+(252, 'Can change solar event', 64, 'change_solarschedule'),
+(253, 'Can delete solar event', 64, 'delete_solarschedule'),
+(254, 'Can view solar event', 64, 'view_solarschedule'),
+(255, 'Can add clocked', 65, 'add_clockedschedule'),
+(256, 'Can change clocked', 65, 'change_clockedschedule'),
+(257, 'Can delete clocked', 65, 'delete_clockedschedule'),
+(258, 'Can view clocked', 65, 'view_clockedschedule'),
+(259, 'Can add Token', 66, 'add_token'),
+(260, 'Can change Token', 66, 'change_token'),
+(261, 'Can delete Token', 66, 'delete_token'),
+(262, 'Can view Token', 66, 'view_token'),
+(263, 'Can add Token', 67, 'add_tokenproxy'),
+(264, 'Can change Token', 67, 'change_tokenproxy'),
+(265, 'Can delete Token', 67, 'delete_tokenproxy'),
+(266, 'Can view Token', 67, 'view_tokenproxy'),
+(267, 'Can add association', 68, 'add_association'),
+(268, 'Can change association', 68, 'change_association'),
+(269, 'Can delete association', 68, 'delete_association'),
+(270, 'Can view association', 68, 'view_association'),
+(271, 'Can add code', 69, 'add_code'),
+(272, 'Can change code', 69, 'change_code'),
+(273, 'Can delete code', 69, 'delete_code'),
+(274, 'Can view code', 69, 'view_code'),
+(275, 'Can add nonce', 70, 'add_nonce'),
+(276, 'Can change nonce', 70, 'change_nonce'),
+(277, 'Can delete nonce', 70, 'delete_nonce'),
+(278, 'Can view nonce', 70, 'view_nonce'),
+(279, 'Can add user social auth', 71, 'add_usersocialauth'),
+(280, 'Can change user social auth', 71, 'change_usersocialauth'),
+(281, 'Can delete user social auth', 71, 'delete_usersocialauth'),
+(282, 'Can view user social auth', 71, 'view_usersocialauth'),
+(283, 'Can add partial', 72, 'add_partial'),
+(284, 'Can change partial', 72, 'change_partial'),
+(285, 'Can delete partial', 72, 'delete_partial'),
+(286, 'Can view partial', 72, 'view_partial'),
+(287, 'Can add application', 73, 'add_application'),
+(288, 'Can change application', 73, 'change_application'),
+(289, 'Can delete application', 73, 'delete_application'),
+(290, 'Can view application', 73, 'view_application'),
+(291, 'Can add access token', 74, 'add_accesstoken'),
+(292, 'Can change access token', 74, 'change_accesstoken'),
+(293, 'Can delete access token', 74, 'delete_accesstoken'),
+(294, 'Can view access token', 74, 'view_accesstoken'),
+(295, 'Can add grant', 75, 'add_grant'),
+(296, 'Can change grant', 75, 'change_grant'),
+(297, 'Can delete grant', 75, 'delete_grant'),
+(298, 'Can view grant', 75, 'view_grant'),
+(299, 'Can add refresh token', 76, 'add_refreshtoken'),
+(300, 'Can change refresh token', 76, 'change_refreshtoken'),
+(301, 'Can delete refresh token', 76, 'delete_refreshtoken'),
+(302, 'Can view refresh token', 76, 'view_refreshtoken'),
+(303, 'Can add id token', 77, 'add_idtoken'),
+(304, 'Can change id token', 77, 'change_idtoken'),
+(305, 'Can delete id token', 77, 'delete_idtoken'),
+(306, 'Can view id token', 77, 'view_idtoken');
 
 -- --------------------------------------------------------
 
@@ -726,19 +720,7 @@ CREATE TABLE `bookings_booking` (
 --
 
 INSERT INTO `bookings_booking` (`id`, `created_at`, `updated_at`, `deleted_at`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `status`, `account_status`, `rooms_booked`, `created_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-04-01 22:54:09.479536', '2025-04-09 09:57:45.224056', NULL, '2025-04-01 22:53:52.000000', '2025-04-09 11:25:57.000000', NULL, 193.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 12),
-(2, '2025-04-06 10:18:14.846826', '2025-04-09 09:57:35.164748', NULL, '2025-04-07 08:52:23.000000', '2025-04-09 13:50:27.000000', NULL, 500.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(3, '2025-04-09 09:54:08.148171', '2025-04-09 10:20:59.911062', NULL, '2025-04-08 09:53:00.000000', '2025-04-09 14:55:05.000000', NULL, 111.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(5, '2025-04-09 10:17:54.329465', '2025-04-09 10:21:09.576864', NULL, '2025-04-07 10:17:31.000000', '2025-04-09 10:18:33.000000', NULL, 99.00, '0', 1, 2, NULL, 1, NULL, 1, NULL, 5),
-(7, '2025-04-09 10:26:55.856738', '2025-04-09 10:45:30.176573', NULL, '2025-04-07 10:26:29.000000', '2025-04-09 15:30:37.000000', NULL, 99.00, '0', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(9, '2025-04-09 10:56:59.805559', '2025-04-09 11:05:33.291198', NULL, '2025-04-07 10:56:42.000000', '2025-04-09 10:58:45.000000', NULL, 66.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(10, '2025-04-09 11:06:47.520593', '2025-04-09 11:17:30.353369', NULL, '2025-04-07 11:06:22.000000', '2025-04-09 16:08:27.000000', NULL, 15.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(12, '2025-04-09 11:22:11.969607', '2025-04-09 11:23:10.125066', NULL, '2025-04-09 11:21:48.000000', '2025-04-09 16:23:10.000000', NULL, 66.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(13, '2025-04-09 11:26:33.564688', '2025-04-09 11:26:51.257373', NULL, '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', NULL, 94.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(14, '2025-04-11 18:56:33.354568', '2025-04-11 18:57:34.015704', NULL, '2025-04-11 00:00:00.000000', '2025-04-12 00:00:00.000000', NULL, 2550.00, '2', 1, 5, NULL, 1, NULL, 1, NULL, 1),
-(15, '2025-04-12 21:49:48.854959', '2025-04-15 11:16:52.447612', NULL, '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 15.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 5),
-(16, '2025-04-12 21:52:57.100321', '2025-04-15 11:46:33.727327', NULL, '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, '1', 1, 1, NULL, 1, NULL, 1, NULL, 24),
-(17, '2025-04-14 11:53:59.218695', '2025-04-14 16:29:12.018475', NULL, '2025-11-02 00:00:00.000000', '2025-11-06 00:00:00.000000', NULL, 160.00, '2', 1, 1, NULL, 1, NULL, 1, NULL, 1);
+(1, '2025-04-16 12:13:49.882602', '2025-04-16 12:13:49.882602', NULL, '2025-04-18 00:00:00.000000', '2025-04-30 00:00:00.000000', NULL, 2640000.00, '0', 1, 4, NULL, 1, NULL, 2, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -761,14 +743,6 @@ CREATE TABLE `bookings_bookingdetail` (
   `service_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `bookings_bookingdetail`
---
-
-INSERT INTO `bookings_bookingdetail` (`id`, `created_at`, `updated_at`, `deleted_at`, `quantity`, `price`, `total`, `notes`, `booking_id`, `created_by_id`, `hotel_id`, `service_id`, `updated_by_id`) VALUES
-(1, '2025-04-07 20:42:08.696496', '2025-04-07 20:42:08.696496', NULL, 2, 80.00, 160.00, 'advanced', 1, 1, 1, 1, 1),
-(2, '2025-04-07 20:42:28.090072', '2025-04-07 20:42:28.090072', NULL, 2, 80.00, 160.00, 'advanced', 2, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -795,31 +769,6 @@ CREATE TABLE `bookings_bookinghistory` (
   `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `bookings_bookinghistory`
---
-
-INSERT INTO `bookings_bookinghistory` (`id`, `history_date`, `previous_status`, `new_status`, `check_in_date`, `check_out_date`, `actual_check_out_date`, `amount`, `account_status`, `rooms_booked`, `booking_id`, `changed_by_id`, `hotel_id`, `parent_booking_id`, `room_id`, `user_id`) VALUES
-(1, '2025-04-01 22:54:33.035731', '0', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
-(2, '2025-04-01 22:57:17.086497', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
-(3, '2025-04-01 22:57:41.949606', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-02 22:53:54.000000', '2025-04-01 22:57:41.921859', 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
-(5, '2025-04-09 09:01:22.869681', '0', '1', '2025-04-07 08:52:23.000000', '2025-04-09 13:50:27.000000', NULL, 500.00, 1, 1, 2, 1, 1, NULL, 1, 1),
-(6, '2025-04-09 09:26:07.495135', '1', '1', '2025-04-01 22:53:52.000000', '2025-04-09 11:25:57.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
-(7, '2025-04-09 09:57:35.170888', '1', '0', '2025-04-07 08:52:23.000000', '2025-04-09 13:50:27.000000', NULL, 500.00, 1, 1, 2, 5, 1, NULL, 1, 5),
-(8, '2025-04-09 09:57:45.237350', '1', '2', '2025-04-01 22:53:52.000000', '2025-04-09 11:25:57.000000', NULL, 193.00, 1, 1, 1, 12, 1, NULL, 1, 12),
-(9, '2025-04-09 10:20:59.918941', '1', '0', '2025-04-08 09:53:00.000000', '2025-04-09 14:55:05.000000', NULL, 111.00, 1, 1, 3, 5, 1, NULL, 1, 5),
-(10, '2025-04-09 10:21:09.582567', '1', '0', '2025-04-07 10:17:31.000000', '2025-04-09 10:18:33.000000', NULL, 99.00, 1, 2, 5, 5, 1, NULL, 1, 5),
-(11, '2025-04-09 10:45:30.176573', '1', '0', '2025-04-07 10:26:29.000000', '2025-04-09 15:30:37.000000', NULL, 99.00, 1, 1, 7, 5, 1, NULL, 1, 5),
-(13, '2025-04-09 11:05:33.304119', '1', '2', '2025-04-07 10:56:42.000000', '2025-04-09 10:58:45.000000', NULL, 66.00, 1, 1, 9, 5, 1, NULL, 1, 5),
-(14, '2025-04-09 11:17:30.360238', '1', '2', '2025-04-07 11:06:22.000000', '2025-04-09 16:08:27.000000', NULL, 15.00, 1, 1, 10, 5, 1, NULL, 1, 5),
-(15, '2025-04-09 11:26:51.269644', '0', '1', '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', NULL, 94.00, 1, 1, 13, 5, 1, NULL, 1, 5),
-(16, '2025-04-11 18:57:34.020618', '0', '2', '2025-04-11 00:00:00.000000', '2025-04-12 00:00:00.000000', NULL, 2550.00, 1, 5, 14, 1, 1, NULL, 1, 1),
-(17, '2025-04-13 21:28:32.329757', '0', '1', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, 1, 1, 16, 5, 1, NULL, 1, 5),
-(18, '2025-04-14 16:29:12.031055', '0', '2', '2025-11-02 00:00:00.000000', '2025-11-06 00:00:00.000000', NULL, 160.00, 1, 1, 17, 1, 1, NULL, 1, 1),
-(19, '2025-04-15 11:16:52.447612', '0', '1', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 15.00, 1, 1, 15, 5, 1, NULL, 1, 5),
-(21, '2025-04-15 11:38:57.939328', '1', '0', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, 1, 1, 16, 5, 1, NULL, 1, 5),
-(22, '2025-04-15 11:39:30.099669', '0', '1', '2025-04-13 00:00:00.000000', '2025-04-14 00:00:00.000000', NULL, 25.00, 1, 1, 16, 5, 1, NULL, 1, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -838,18 +787,6 @@ CREATE TABLE `bookings_extensionmovement` (
   `payment_receipt_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `bookings_extensionmovement`
---
-
-INSERT INTO `bookings_extensionmovement` (`movement_number`, `original_departure`, `extension_date`, `new_departure`, `reason`, `extension_year`, `duration`, `booking_id`, `payment_receipt_id`) VALUES
-(1, '2025-04-14', '2025-04-13', '2025-04-17', 'personal', 2025, 3, 16, NULL),
-(2, '2025-04-17', '2025-04-13', '2025-04-17', 'personal', 2025, 0, 16, NULL),
-(3, '2025-04-17', '2025-04-13', '2025-04-17', 'personal', 2025, 0, 16, NULL),
-(4, '2025-04-17', '2025-04-13', '2025-04-18', 'personal', 2025, 1, 16, NULL),
-(5, '2025-04-18', '2025-04-13', '2025-04-19', 'personal', 2025, 1, 16, NULL),
-(6, '2025-04-19', '2025-04-13', '2025-04-20', 'personal', 2025, 1, 16, 8);
-
 -- --------------------------------------------------------
 
 --
@@ -858,6 +795,9 @@ INSERT INTO `bookings_extensionmovement` (`movement_number`, `original_departure
 
 CREATE TABLE `bookings_guest` (
   `id` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
   `name` varchar(150) NOT NULL,
   `phone_number` varchar(14) NOT NULL,
   `id_card_image` varchar(100) DEFAULT NULL,
@@ -866,21 +806,10 @@ CREATE TABLE `bookings_guest` (
   `check_in_date` datetime(6) DEFAULT NULL,
   `check_out_date` datetime(6) DEFAULT NULL,
   `booking_id` bigint(20) NOT NULL,
-  `hotel_id` bigint(20) NOT NULL,
-  `created_at` datetime(6) DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
+  `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `bookings_guest`
---
-
-INSERT INTO `bookings_guest` (`id`, `name`, `phone_number`, `id_card_image`, `gender`, `birthday_date`, `check_in_date`, `check_out_date`, `booking_id`, `hotel_id`, `created_at`, `created_by_id`, `deleted_at`, `updated_at`, `updated_by_id`) VALUES
-(1, 'ahmed mohamed', '781717609', 'guests/id_card_images/alamo.png', 'male', '2002-04-07', '2025-04-07 20:51:05.000000', '2025-04-19 20:51:04.000000', 2, 1, '2025-04-13 21:17:51.188896', NULL, NULL, '2025-04-13 21:17:51.684130', NULL),
-(2, 'ahmed', '16156161516', 'guests/id_card_images/bg.jpg', 'male', '2025-04-22', '2025-04-09 11:25:58.000000', '2025-04-09 16:40:00.000000', 13, 1, '2025-04-13 21:17:51.188896', NULL, NULL, '2025-04-13 21:17:51.684130', NULL);
 
 -- --------------------------------------------------------
 
@@ -904,10 +833,7 @@ CREATE TABLE `customer_favourites` (
 --
 
 INSERT INTO `customer_favourites` (`id`, `created_at`, `updated_at`, `deleted_at`, `created_by_id`, `hotel_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-04-01 00:24:39.320663', '2025-04-01 00:24:39.320663', NULL, 1, 1, 1, 14),
-(57, '2025-04-04 21:45:45.521085', '2025-04-04 21:45:45.521085', NULL, NULL, 2, NULL, 5),
-(61, '2025-04-11 20:11:32.685861', '2025-04-11 20:11:32.685861', NULL, NULL, 1, NULL, 1),
-(62, '2025-04-15 09:09:06.534621', '2025-04-15 09:09:06.534621', NULL, NULL, 2, NULL, 1);
+(1, '2025-04-15 22:12:15.648799', '2025-04-15 22:12:15.648799', NULL, NULL, 2, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -931,212 +857,55 @@ CREATE TABLE `django_admin_log` (
 --
 
 INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
-(1, '2025-04-01 00:24:39.322998', '1', ' - احمد', 1, '[{\"added\": {}}]', 53, 1),
-(2, '2025-04-01 00:25:20.913442', '14', 'c', 2, '[{\"changed\": {\"fields\": [\"Groups\"]}}]', 2, 1),
-(3, '2025-04-01 00:26:23.956918', '1', 'Hotel Managers', 2, '[{\"changed\": {\"fields\": [\"Permissions\"]}}]', 4, 1),
-(4, '2025-04-01 00:26:59.043384', '1', 'إشعار من a إلى c - 1', 1, '[{\"added\": {}}]', 52, 1),
-(5, '2025-04-01 00:27:14.798855', '2', 'إشعار من a إلى ammar alwan - 2', 1, '[{\"added\": {}}]', 52, 1),
-(6, '2025-04-01 00:28:01.538582', '1', 'Hotel Managers', 2, '[{\"changed\": {\"fields\": [\"Permissions\"]}}]', 4, 1),
-(7, '2025-04-01 00:29:02.883231', '1', 'إشعار من a إلى a - 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u0644\\u0645\"]}}]', 52, 14),
-(8, '2025-04-01 00:29:41.453537', '1', 'إشعار من a إلى c - 1', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u0644\\u0645\"]}}]', 52, 1),
-(9, '2025-04-01 22:54:09.498035', '1', 'Booking #1 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(10, '2025-04-01 22:57:17.102621', '1', 'Booking #1 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 13, 1),
-(11, '2025-04-01 23:42:01.987544', '1', 'دفعة #1 لحجز 1', 1, '[{\"added\": {}}]', 47, 1),
-(12, '2025-04-01 23:45:09.019906', '2', 'دفعة #2 لحجز 2', 1, '[{\"added\": {}}]', 47, 1),
-(13, '2025-04-01 23:57:21.638032', '1', 'room vip 2025 - 500 (2025-04-01 إلى 2025-04-11)', 1, '[{\"added\": {}}]', 8, 1),
-(14, '2025-04-02 00:00:51.030698', '1', 'ahmed', 1, '[{\"added\": {}}]', 48, 1),
-(15, '2025-04-02 00:01:14.396725', '1', 'ahmed', 2, '[{\"changed\": {\"fields\": [\"Min purchase amount\"]}}]', 48, 1),
-(16, '2025-04-02 00:01:29.128987', '1', 'ahmed', 2, '[]', 48, 1),
-(17, '2025-04-02 00:12:05.657169', '2', 'new ---', 1, '[{\"added\": {}}]', 48, 1),
-(18, '2025-04-03 17:25:16.807787', '1', 'ammar alwan - احمد (5 نجوم)', 1, '[{\"added\": {}}]', 17, 1),
-(19, '2025-04-03 17:46:35.262010', 'None', 'إشعار من a إلى كل مديري الفنادق - 1', 1, '[{\"added\": {}}]', 52, 1),
-(20, '2025-04-03 17:52:05.554302', 'None', 'إشعار من a إلى كل العملاء - 2', 1, '[{\"added\": {}}]', 52, 1),
-(21, '2025-04-03 17:55:52.531821', '21', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(22, '2025-04-03 17:55:52.535772', '20', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(23, '2025-04-03 17:55:52.543749', '19', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(24, '2025-04-03 17:55:52.547738', '18', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(25, '2025-04-03 17:55:52.549770', '17', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(26, '2025-04-03 17:55:52.552760', '16', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(27, '2025-04-03 17:55:52.555758', '15', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(28, '2025-04-03 17:55:52.558711', '14', 'إشعار من a إلى كل العملاء - 2', 3, '', 52, 1),
-(29, '2025-04-03 17:55:52.561961', '13', 'إشعار من a إلى كل مديري الفنادق - 1', 3, '', 52, 1),
-(30, '2025-04-03 17:55:52.564963', '12', 'إشعار من a إلى كل مديري الفنادق - 1', 3, '', 52, 1),
-(31, '2025-04-03 17:55:52.566953', '11', 'إشعار من a إلى كل مديري الفنادق - 1', 3, '', 52, 1),
-(32, '2025-04-03 17:55:52.572938', '10', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(33, '2025-04-03 17:55:52.575930', '9', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(34, '2025-04-03 17:55:52.578923', '8', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(35, '2025-04-03 17:55:52.581931', '7', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(36, '2025-04-03 17:55:52.583944', '6', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(37, '2025-04-03 17:55:52.586936', '5', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(38, '2025-04-03 17:55:52.589345', '4', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(39, '2025-04-03 17:55:52.591891', '3', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(40, '2025-04-03 17:55:52.594959', '2', 'إشعار من a إلى ammar alwan - 2', 3, '', 52, 1),
-(41, '2025-04-03 17:55:52.597907', '1', 'إشعار من a إلى c - 1', 3, '', 52, 1),
-(42, '2025-04-03 17:56:07.255323', '22', 'إشعار من a إلى mosa mohamed - 1', 1, '[{\"added\": {}}]', 52, 1),
-(43, '2025-04-03 17:56:36.037334', 'None', 'إشعار من a إلى كل العملاء - 2', 1, '[{\"added\": {}}]', 52, 1),
-(44, '2025-04-03 20:29:27.330760', '1', 'gggs', 1, '[{\"added\": {}}]', 37, 1),
-(45, '2025-04-03 22:28:22.450565', '45', 'mosa - sami', 3, '', 53, 1),
-(46, '2025-04-04 21:50:12.631031', '2', 'room vip 2025 - 330 (2025-04-04 إلى 2025-04-05)', 1, '[{\"added\": {}}]', 8, 1),
-(47, '2025-04-04 21:50:28.376228', '2', 'room vip 2025 - 330.00 (2025-04-04 إلى 2025-04-05)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0641\\u0646\\u062f\\u0642\"]}}]', 8, 1),
-(48, '2025-04-06 10:00:18.824861', '1', 'wifi', 1, '[{\"added\": {}}]', 12, 1),
-(49, '2025-04-06 10:00:44.581010', '2', 'pool', 1, '[{\"added\": {}}]', 12, 1),
-(50, '2025-04-06 10:01:55.802040', '1', 'free message', 1, '[{\"added\": {}}]', 11, 1),
-(51, '2025-04-06 10:02:22.066808', '2', 'good view', 1, '[{\"added\": {}}]', 11, 1),
-(52, '2025-04-07 20:42:08.700645', '1', 'free message - 1', 1, '[{\"added\": {}}]', 14, 1),
-(53, '2025-04-07 20:42:28.092074', '2', 'free message - 2', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 14, 1),
-(54, '2025-04-07 20:51:07.451852', '1', 'ahmed mohamed - 1', 1, '[{\"added\": {}}]', 46, 1),
-(55, '2025-04-09 07:49:55.118717', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\"]}}]', 13, 1),
-(56, '2025-04-09 08:04:27.685412', '30', 'إشعار من a إلى mosa mohamed - 2', 3, '', 52, 1),
-(57, '2025-04-09 08:04:27.685412', '29', 'إشعار من a إلى mosaa1 - 2', 3, '', 52, 1),
-(58, '2025-04-09 08:04:27.685412', '28', 'إشعار من a إلى asdjsk - 2', 3, '', 52, 1),
-(59, '2025-04-09 08:04:27.695460', '27', 'إشعار من a إلى ahmed mohamed - 2', 3, '', 52, 1),
-(60, '2025-04-09 08:04:27.695460', '26', 'إشعار من a إلى askja kksskks - 2', 3, '', 52, 1),
-(61, '2025-04-09 08:04:27.695460', '25', 'إشعار من a إلى ajshdkajs aksljdlas - 2', 3, '', 52, 1),
-(62, '2025-04-09 08:04:27.695460', '24', 'إشعار من a إلى ammar alwan - 2', 3, '', 52, 1),
-(63, '2025-04-09 08:04:27.695460', '23', 'إشعار من a إلى asjdhjkash asdas - 2', 3, '', 52, 1),
-(64, '2025-04-09 08:04:27.695460', '22', 'إشعار من a إلى mosa mohamed - 1', 3, '', 52, 1),
-(65, '2025-04-09 08:52:44.705109', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062f\\u062e\\u0648\\u0644\", \"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\"]}}]', 13, 1),
-(66, '2025-04-09 09:01:22.877869', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(67, '2025-04-09 09:26:07.518414', '1', 'Booking #1 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u062a\\u0633\\u062c\\u064a\\u0644 \\u0627\\u0644\\u062e\\u0631\\u0648\\u062c\", \"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0645\\u063a\\u0627\\u062f\\u0631\\u0629 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\"]}}]', 13, 1),
-(68, '2025-04-09 09:26:38.883711', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 13, 1),
-(69, '2025-04-09 09:27:06.179024', '5', 'mosa mohamed', 2, '[{\"changed\": {\"fields\": [\"Email address\"]}}]', 2, 1),
-(70, '2025-04-09 09:54:08.191304', '3', 'Booking #3 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(71, '2025-04-09 09:57:35.210050', '2', 'Booking #2 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(72, '2025-04-09 09:57:45.268034', '1', 'Booking #1 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(73, '2025-04-09 10:14:44.198052', '69', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(74, '2025-04-09 10:14:44.204804', '68', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(75, '2025-04-09 10:14:44.209514', '67', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(76, '2025-04-09 10:14:44.212572', '66', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(77, '2025-04-09 10:14:44.212572', '65', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(78, '2025-04-09 10:14:44.220374', '64', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(79, '2025-04-09 10:14:44.230207', '63', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
-(80, '2025-04-09 10:14:44.230207', '62', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(81, '2025-04-09 10:14:44.239221', '61', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(82, '2025-04-09 10:14:44.244050', '60', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(83, '2025-04-09 10:14:44.245049', '59', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(84, '2025-04-09 10:14:44.251491', '58', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(85, '2025-04-09 10:14:44.255879', '57', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
-(86, '2025-04-09 10:14:44.260478', '56', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(87, '2025-04-09 10:14:44.264050', '55', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(88, '2025-04-09 10:14:44.267721', '54', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(89, '2025-04-09 10:14:44.271546', '53', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(90, '2025-04-09 10:14:44.276423', '52', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(91, '2025-04-09 10:14:44.277647', '51', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
-(92, '2025-04-09 10:14:44.277647', '50', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(93, '2025-04-09 10:14:44.288121', '49', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(94, '2025-04-09 10:14:44.292597', '48', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(95, '2025-04-09 10:14:44.297523', '47', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(96, '2025-04-09 10:14:44.300796', '46', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(97, '2025-04-09 10:14:44.304703', '45', 'إشعار من b إلى ammar alwan - 0', 3, '', 52, 1),
-(98, '2025-04-09 10:14:44.308727', '44', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(99, '2025-04-09 10:14:44.312860', '43', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(100, '2025-04-09 10:14:44.313906', '42', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(101, '2025-04-09 10:14:44.321339', '41', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(102, '2025-04-09 10:14:44.327082', '40', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(103, '2025-04-09 10:14:44.334173', '39', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(104, '2025-04-09 10:14:44.338464', '38', 'إشعار من ammar alwan إلى ammar alwan - 1', 3, '', 52, 1),
-(105, '2025-04-09 10:14:44.342645', '37', 'إشعار من a إلى a - 1', 3, '', 52, 1),
-(106, '2025-04-09 10:14:44.347044', '36', 'إشعار من a إلى a - 1', 3, '', 52, 1),
-(107, '2025-04-09 10:14:44.348098', '35', 'إشعار من b إلى a - 0', 3, '', 52, 1),
-(108, '2025-04-09 10:14:44.354767', '34', 'إشعار من a إلى a - 1', 3, '', 52, 1),
-(109, '2025-04-09 10:14:44.358703', '33', 'إشعار من a إلى a - 1', 3, '', 52, 1),
-(110, '2025-04-09 10:17:55.024989', '5', 'Booking #5 - room vip 2025 (2 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(111, '2025-04-09 10:20:59.962588', '3', 'Booking #3 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(112, '2025-04-09 10:21:09.615616', '5', 'Booking #5 - room vip 2025 (2 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(113, '2025-04-09 10:22:00.219062', '71', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(114, '2025-04-09 10:22:00.231431', '70', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(115, '2025-04-09 10:22:53.838744', '6', 'Booking #6 - room vip 2025 (2 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(116, '2025-04-09 10:26:15.537470', '6', 'Booking #6 - room vip 2025 (2 rooms)', 3, '', 13, 1),
-(117, '2025-04-09 10:26:56.117647', '7', 'Booking #7 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(118, '2025-04-09 10:45:19.714691', '8', 'Booking #8 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(119, '2025-04-09 10:45:30.176573', '7', 'Booking #7 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(120, '2025-04-09 10:54:44.907922', '8', 'Booking #8 - room vip 2025 (1 rooms)', 3, '', 13, 1),
-(121, '2025-04-09 10:56:24.149195', '18', 'room vip 2025 - 6 rooms available on 2025-04-09', 2, '[{\"changed\": {\"fields\": [\"\\u0639\\u062f\\u062f \\u0627\\u0644\\u063a\\u0631\\u0641 \\u0627\\u0644\\u0645\\u062a\\u0648\\u0641\\u0631\\u0629\"]}}]', 9, 1),
-(122, '2025-04-09 10:57:00.259936', '9', 'Booking #9 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(123, '2025-04-09 11:06:48.182575', '10', 'Booking #10 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(124, '2025-04-09 11:07:55.400751', '97', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(125, '2025-04-09 11:07:55.406054', '96', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(126, '2025-04-09 11:07:55.409852', '95', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(127, '2025-04-09 11:07:55.412969', '94', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(128, '2025-04-09 11:07:55.417522', '93', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(129, '2025-04-09 11:07:55.422161', '92', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(130, '2025-04-09 11:07:55.426608', '91', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(131, '2025-04-09 11:07:55.429668', '90', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(132, '2025-04-09 11:07:55.433380', '89', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(133, '2025-04-09 11:07:55.438368', '88', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(134, '2025-04-09 11:07:55.442159', '87', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(135, '2025-04-09 11:07:55.446005', '86', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(136, '2025-04-09 11:07:55.449941', '85', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(137, '2025-04-09 11:07:55.453947', '84', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(138, '2025-04-09 11:07:55.458091', '83', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(139, '2025-04-09 11:07:55.462074', '82', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(140, '2025-04-09 11:07:55.469156', '81', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(141, '2025-04-09 11:07:55.474381', '80', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(142, '2025-04-09 11:07:55.478343', '79', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(143, '2025-04-09 11:07:55.479661', '78', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(144, '2025-04-09 11:07:55.485447', '77', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(145, '2025-04-09 11:07:55.489440', '76', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(146, '2025-04-09 11:07:55.493552', '75', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(147, '2025-04-09 11:07:55.496625', '74', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(148, '2025-04-09 11:07:55.501353', '73', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(149, '2025-04-09 11:07:55.505443', '72', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(150, '2025-04-09 11:17:07.468263', '113', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(151, '2025-04-09 11:17:07.478876', '112', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(152, '2025-04-09 11:17:07.481958', '111', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(153, '2025-04-09 11:17:07.486869', '110', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(154, '2025-04-09 11:17:07.490868', '109', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(155, '2025-04-09 11:17:07.493868', '108', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(156, '2025-04-09 11:17:07.497297', '107', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(157, '2025-04-09 11:17:07.506872', '106', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(158, '2025-04-09 11:17:07.510868', '105', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(159, '2025-04-09 11:17:07.513942', '104', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(160, '2025-04-09 11:17:07.519079', '103', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(161, '2025-04-09 11:17:07.522867', '102', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(162, '2025-04-09 11:17:07.526870', '101', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(163, '2025-04-09 11:17:07.529868', '100', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(164, '2025-04-09 11:17:07.534882', '99', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(165, '2025-04-09 11:17:07.539162', '98', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(166, '2025-04-09 11:17:17.632078', '117', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(167, '2025-04-09 11:17:17.638067', '116', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(168, '2025-04-09 11:17:17.642110', '115', 'إشعار من mosa mohamed إلى mosa mohamed - 1', 3, '', 52, 1),
-(169, '2025-04-09 11:17:17.647286', '114', 'إشعار من b إلى mosa mohamed - 0', 3, '', 52, 1),
-(170, '2025-04-09 11:18:10.728028', '11', 'Booking #11 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(171, '2025-04-09 11:21:32.264820', '11', 'Booking #11 - room vip 2025 (1 rooms)', 3, '', 13, 1),
-(172, '2025-04-09 11:22:12.100255', '12', 'Booking #12 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(173, '2025-04-09 11:26:33.586655', '13', 'Booking #13 - room vip 2025 (1 rooms)', 1, '[{\"added\": {}}]', 13, 1),
-(174, '2025-04-11 12:29:06.785198', '16', 'joker Games', 3, '', 2, 1),
-(175, '2025-04-11 12:29:06.796346', '15', 'صديق الطالب', 3, '', 2, 1),
-(176, '2025-04-11 12:38:40.120556', '18', 'مارس - Mars', 3, '', 2, 1),
-(177, '2025-04-11 12:38:40.135510', '17', 'سكاي تو - SKY 2', 3, '', 2, 1),
-(178, '2025-04-11 18:58:13.047969', '18', 'room vip 2025 - 5 rooms available on 2025-04-09', 3, '', 9, 1),
-(179, '2025-04-11 18:58:13.053935', '17', 'room vip 2025 - 14 rooms available on 2025-04-06', 3, '', 9, 1),
-(180, '2025-04-11 18:58:13.053935', '16', 'room vip 2025 - 18 rooms available on 2025-04-01', 3, '', 9, 1),
-(181, '2025-04-11 18:58:13.059523', '15', 'room vip 2025 - 11 rooms available on 2025-03-31', 3, '', 9, 1),
-(182, '2025-04-11 18:58:13.062609', '14', 'room vip 2025 - 3 rooms available on 2025-03-22', 3, '', 9, 1),
-(183, '2025-04-12 21:26:44.554023', '2', 'احمد - al akwa', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0634\\u0637\"]}}]', 29, 1),
-(184, '2025-04-12 21:26:50.131588', '1', 'احمد - al najim', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0634\\u0637\"]}}]', 29, 1),
-(185, '2025-04-12 21:38:32.194343', '4', 'كاش - dollar (مفعّل)', 1, '[{\"added\": {}}]', 28, 1),
-(186, '2025-04-12 21:44:33.455565', '4', 'احمد - كاش', 1, '[{\"added\": {}}]', 29, 1),
-(187, '2025-04-12 21:44:40.834739', '1', 'احمد - al najim', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0634\\u0637\"]}}]', 29, 1),
-(188, '2025-04-13 21:28:32.341635', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(189, '2025-04-13 21:34:31.770207', '4', 'متاح (3)', 1, '[{\"added\": {}}]', 10, 1),
-(190, '2025-04-14 08:44:57.973301', '23', 'الأصول غير الملموسة', 2, '[{\"changed\": {\"fields\": [\"Account parent\", \"Account status\", \"Account amount\"]}}]', 60, 1),
-(191, '2025-04-14 08:45:15.145294', '24', 'استثمارات طويلة الأجل', 2, '[{\"changed\": {\"fields\": [\"Account parent\", \"Account status\", \"Account amount\"]}}]', 60, 1),
-(192, '2025-04-14 08:46:20.515727', '9', 'النقد وما يعادله', 2, '[{\"changed\": {\"fields\": [\"Account parent\", \"Account status\", \"Account amount\"]}}]', 60, 1),
-(193, '2025-04-14 10:20:42.993987', '24', 'akshdkj askdj8888', 2, '[{\"changed\": {\"fields\": [\"Email address\"]}}]', 2, 1),
-(194, '2025-04-15 09:45:07.396750', '3', 'فندق قصر سبأ صنعاء', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
-(195, '2025-04-15 09:45:23.701854', '4', 'فندق أمواج عدن', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
-(196, '2025-04-15 09:45:36.074834', '6', 'نزل سقطرى البيئي', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
-(197, '2025-04-15 09:45:49.132912', '7', 'فندق برج السلام تعز', 2, '[{\"changed\": {\"fields\": [\"Profile picture\"]}}]', 18, 1),
-(198, '2025-04-15 09:46:09.536928', '8', 'فندق إب جراند', 2, '[]', 18, 1),
-(199, '2025-04-15 11:16:52.466789', '15', 'Booking #15 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(200, '2025-04-15 11:17:50.384226', '6', 'دفعة #6 لحجز 6', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u062d\\u062c\\u0632\", \"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062f\\u0641\\u0639\", \"\\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a \\u0627\\u0644\\u062f\\u0641\\u0639\", \"\\u0643\\u0648\\u062f \\u0627\\u0644\\u062e\\u0635\\u0645\"]}}]', 47, 1),
-(201, '2025-04-15 11:35:57.482512', '11', 'البنوك والتحويلات- الحساب الجاري', 2, '[{\"changed\": {\"fields\": [\"Account name\", \"Account status\", \"Account amount\"]}}]', 60, 1),
-(202, '2025-04-15 11:38:57.954950', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(203, '2025-04-15 11:39:30.099669', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062d\\u062c\\u0632\"]}}]', 13, 1),
-(204, '2025-04-15 11:42:07.065895', '8', 'دفعة #8 لحجز 8', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\", \"\\u0643\\u0648\\u062f \\u0627\\u0644\\u062e\\u0635\\u0645\"]}}]', 47, 1),
-(205, '2025-04-15 11:42:23.192115', '16', 'Booking #16 - room vip 2025 (1 rooms)', 2, '[{\"changed\": {\"fields\": [\"\\u0627\\u0644\\u0645\\u0633\\u062a\\u062e\\u062f\\u0645\"]}}]', 13, 1),
-(206, '2025-04-15 11:46:33.727327', '8', 'دفعة #8 لحجز 8', 2, '[{\"changed\": {\"fields\": [\"\\u062d\\u0627\\u0644\\u0629 \\u0627\\u0644\\u062f\\u0641\\u0639\"]}}]', 47, 1);
+(1, '2025-04-15 22:04:49.661479', '8', 'غرفة قياسية مفردة - إضافية', 1, '[{\"added\": {}}]', 7, 1),
+(2, '2025-04-15 22:07:32.338032', '1', 'غرفة قياسية مزدوجة - 10 rooms available on 2025-04-15', 1, '[{\"added\": {}}]', 9, 1),
+(3, '2025-04-15 22:11:27.720396', '1', 'hello', 1, '[{\"added\": {}}]', 38, 1),
+(4, '2025-04-16 09:54:37.761198', '2', 'غرفة قياسية مزدوجة - 5 rooms available on 2025-04-17', 2, '[{\"changed\": {\"fields\": [\"\\u0646\\u0648\\u0639 \\u0627\\u0644\\u063a\\u0631\\u0641\\u0629\"]}}]', 9, 1),
+(5, '2025-04-16 10:00:04.644091', '1', 'غرفة قياسية مزدوجة - 10 rooms available on 2025-04-16', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u062a\\u0648\\u0641\\u0631\"]}}]', 9, 1),
+(6, '2025-04-16 12:01:47.503558', '5', 'غرفة قياسية مفردة - 55000.00 (2025-04-16 إلى 2025-04-21)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0628\\u062f\\u0621\", \"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0627\\u0646\\u062a\\u0647\\u0627\\u0621\"]}}]', 8, 1),
+(7, '2025-04-16 12:03:31.293556', '5', 'غرفة قياسية مفردة - 55000.00 (2025-04-16 إلى 2025-05-21)', 2, '[{\"changed\": {\"fields\": [\"\\u062a\\u0627\\u0631\\u064a\\u062e \\u0627\\u0644\\u0627\\u0646\\u062a\\u0647\\u0627\\u0621\"]}}]', 8, 1),
+(8, '2025-04-16 12:26:35.985171', '28', 'Ahmed Mohamed', 3, '', 2, 1),
+(9, '2025-04-16 12:26:36.000813', '25', 'ahmed algarbani', 3, '', 2, 1),
+(10, '2025-04-16 12:37:53.226444', '34', 'سكاي تو - SKY 2', 3, '', 2, 1),
+(11, '2025-04-16 12:37:53.233469', '33', 'joker Games', 3, '', 2, 1),
+(12, '2025-04-16 12:37:53.236472', '32', 'Ahmed Mohamed', 3, '', 2, 1),
+(13, '2025-04-16 12:37:53.240409', '24', 'akshdkj askdj8888', 3, '', 2, 1),
+(14, '2025-04-16 12:38:40.372802', '59', 'عملاء دائمون -  ', 3, '', 34, 1),
+(15, '2025-04-16 12:38:40.377924', '58', 'عملاء دائمون -  ', 3, '', 34, 1),
+(16, '2025-04-16 12:38:40.381953', '57', 'عملاء دائمون -  ', 3, '', 34, 1),
+(17, '2025-04-16 12:38:40.388720', '56', 'عملاء دائمون -  ', 3, '', 34, 1),
+(18, '2025-04-16 12:50:35.704598', '60', 'عملاء دائمون -  ', 3, '', 34, 1),
+(19, '2025-04-16 12:50:45.145016', '36', 'صديق الطالب', 3, '', 2, 1),
+(20, '2025-04-16 12:50:45.151863', '35', 'joker Games', 3, '', 2, 1),
+(21, '2025-04-16 12:59:30.185341', '61', 'عملاء دائمون -  ', 3, '', 34, 1),
+(22, '2025-04-16 12:59:38.250893', '38', 'ahmed algarbani', 3, '', 2, 1),
+(23, '2025-04-16 13:26:41.814137', '43', 'joker Games', 3, '', 2, 1),
+(24, '2025-04-16 13:26:41.818894', '42', 'صديق الطالب', 3, '', 2, 1),
+(25, '2025-04-16 13:26:41.822379', '40', 'ahmed algarbani', 3, '', 2, 1),
+(26, '2025-04-16 13:26:41.823421', '39', 'مارس - Mars', 3, '', 2, 1),
+(27, '2025-04-16 13:39:02.973353', '45', 'سكاي تو - SKY 2', 3, '', 2, 1),
+(28, '2025-04-16 13:39:02.982509', '44', 'مارس - Mars', 3, '', 2, 1),
+(29, '2025-04-16 13:46:42.010746', '50', 'ahmed algarbani', 3, '', 2, 1),
+(30, '2025-04-16 13:46:42.024335', '49', 'Ahmed Mohamed', 3, '', 2, 1),
+(31, '2025-04-16 13:46:42.027580', '48', 'صديق الطالب', 3, '', 2, 1),
+(32, '2025-04-16 13:46:42.031605', '46', 'joker Games', 3, '', 2, 1),
+(33, '2025-04-16 14:25:09.447535', '52', 'joker Games', 3, '', 2, 1),
+(34, '2025-04-16 14:25:09.452447', '51', 'مارس - Mars', 3, '', 2, 1),
+(35, '2025-04-16 14:38:12.513845', '58', 'joker Games', 3, '', 2, 1),
+(36, '2025-04-16 14:38:12.520342', '57', 'ahmed algarbani', 3, '', 2, 1),
+(37, '2025-04-16 14:38:12.522339', '56', 'صديق الطالب', 3, '', 2, 1),
+(38, '2025-04-16 14:38:12.527874', '54', 'سكاي تو - SKY 2', 3, '', 2, 1),
+(39, '2025-04-16 14:40:16.486218', '72', 'عملاء دائمون - مارس - Mars ', 3, '', 34, 1),
+(40, '2025-04-16 14:40:16.492487', '71', 'عملاء دائمون - joker Games ', 3, '', 34, 1),
+(41, '2025-04-16 14:40:16.497293', '70', 'عملاء دائمون - ahmed algarbani', 3, '', 34, 1),
+(42, '2025-04-16 14:40:16.500713', '69', 'عملاء دائمون -  ', 3, '', 34, 1),
+(43, '2025-04-16 14:40:16.503888', '68', 'عملاء دائمون -  ', 3, '', 34, 1),
+(44, '2025-04-16 14:40:16.510583', '67', 'عملاء دائمون -  ', 3, '', 34, 1),
+(45, '2025-04-16 14:40:16.515303', '66', 'عملاء دائمون -  ', 3, '', 34, 1),
+(46, '2025-04-16 14:40:16.518794', '65', 'عملاء دائمون -  ', 3, '', 34, 1),
+(47, '2025-04-16 14:40:16.522253', '64', 'عملاء دائمون -  ', 3, '', 34, 1),
+(48, '2025-04-16 14:40:16.525748', '63', 'عملاء دائمون -  ', 3, '', 34, 1),
+(49, '2025-04-16 14:40:16.529304', '62', 'عملاء دائمون -  ', 3, '', 34, 1);
 
 -- --------------------------------------------------------
 
@@ -1250,84 +1019,82 @@ CREATE TABLE `django_content_type` (
 --
 
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
-(60, 'accounts', 'chartofaccounts'),
-(61, 'accounts', 'journalentry'),
+(34, 'accounts', 'chartofaccounts'),
+(35, 'accounts', 'journalentry'),
 (1, 'admin', 'logentry'),
 (4, 'auth', 'group'),
 (31, 'auth', 'permission'),
 (3, 'auth', 'user'),
-(67, 'authtoken', 'token'),
-(68, 'authtoken', 'tokenproxy'),
+(66, 'authtoken', 'token'),
+(67, 'authtoken', 'tokenproxy'),
 (25, 'blog', 'category'),
 (24, 'blog', 'comment'),
 (23, 'blog', 'post'),
 (26, 'blog', 'tag'),
 (13, 'bookings', 'booking'),
 (14, 'bookings', 'bookingdetail'),
-(62, 'bookings', 'bookinghistory'),
+(50, 'bookings', 'bookinghistory'),
 (15, 'bookings', 'extensionmovement'),
-(46, 'bookings', 'guest'),
+(51, 'bookings', 'guest'),
 (32, 'contenttypes', 'contenttype'),
-(53, 'customer', 'favourites'),
-(59, 'django_celery_beat', 'clockedschedule'),
-(54, 'django_celery_beat', 'crontabschedule'),
-(55, 'django_celery_beat', 'intervalschedule'),
-(56, 'django_celery_beat', 'periodictask'),
-(57, 'django_celery_beat', 'periodictasks'),
-(58, 'django_celery_beat', 'solarschedule'),
-(36, 'home', 'contactmessage'),
-(37, 'home', 'heroslider'),
-(38, 'home', 'infobox'),
-(39, 'home', 'partner'),
-(66, 'home', 'paymenpolicy'),
-(40, 'home', 'pricingplan'),
-(64, 'home', 'privacypolicy'),
-(41, 'home', 'roomtypehome'),
-(42, 'home', 'setting'),
-(43, 'home', 'socialmedialink'),
-(44, 'home', 'teammember'),
-(65, 'home', 'termsconditions'),
-(45, 'home', 'testimonial'),
+(59, 'customer', 'favourites'),
+(65, 'django_celery_beat', 'clockedschedule'),
+(60, 'django_celery_beat', 'crontabschedule'),
+(61, 'django_celery_beat', 'intervalschedule'),
+(62, 'django_celery_beat', 'periodictask'),
+(63, 'django_celery_beat', 'periodictasks'),
+(64, 'django_celery_beat', 'solarschedule'),
+(37, 'home', 'contactmessage'),
+(38, 'home', 'heroslider'),
+(39, 'home', 'infobox'),
+(40, 'home', 'partner'),
+(41, 'home', 'paymenpolicy'),
+(42, 'home', 'pricingplan'),
+(43, 'home', 'privacypolicy'),
+(44, 'home', 'roomtypehome'),
+(45, 'home', 'setting'),
+(46, 'home', 'socialmedialink'),
+(47, 'home', 'teammember'),
+(48, 'home', 'termsconditions'),
+(49, 'home', 'testimonial'),
 (21, 'HotelManagement', 'city'),
 (18, 'HotelManagement', 'hotel'),
 (30, 'HotelManagement', 'hotelrequest'),
 (19, 'HotelManagement', 'image'),
 (22, 'HotelManagement', 'location'),
 (20, 'HotelManagement', 'phone'),
-(52, 'notifications', 'notifications'),
-(76, 'oauth2_provider', 'accesstoken'),
-(75, 'oauth2_provider', 'application'),
-(77, 'oauth2_provider', 'grant'),
-(79, 'oauth2_provider', 'idtoken'),
-(78, 'oauth2_provider', 'refreshtoken'),
+(58, 'notifications', 'notifications'),
+(74, 'oauth2_provider', 'accesstoken'),
+(73, 'oauth2_provider', 'application'),
+(75, 'oauth2_provider', 'grant'),
+(77, 'oauth2_provider', 'idtoken'),
+(76, 'oauth2_provider', 'refreshtoken'),
 (27, 'payments', 'currency'),
 (29, 'payments', 'hotelpaymentmethod'),
-(47, 'payments', 'payment'),
-(63, 'payments', 'paymenthistory'),
+(52, 'payments', 'payment'),
+(53, 'payments', 'paymenthistory'),
 (28, 'payments', 'paymentoption'),
 (17, 'reviews', 'hotelreview'),
 (16, 'reviews', 'roomreview'),
 (9, 'rooms', 'availability'),
 (6, 'rooms', 'category'),
-(35, 'rooms', 'review'),
 (7, 'rooms', 'roomimage'),
 (8, 'rooms', 'roomprice'),
 (10, 'rooms', 'roomstatus'),
 (5, 'rooms', 'roomtype'),
-(48, 'services', 'coupon'),
+(54, 'services', 'coupon'),
 (12, 'services', 'hotelservice'),
-(49, 'services', 'offer'),
+(55, 'services', 'offer'),
 (11, 'services', 'roomtypeservice'),
 (33, 'sessions', 'session'),
-(74, 'sites', 'site'),
-(69, 'social_django', 'association'),
-(70, 'social_django', 'code'),
-(71, 'social_django', 'nonce'),
-(73, 'social_django', 'partial'),
-(72, 'social_django', 'usersocialauth'),
-(50, 'token_blacklist', 'blacklistedtoken'),
-(51, 'token_blacklist', 'outstandingtoken'),
-(34, 'users', 'activitylog'),
+(68, 'social_django', 'association'),
+(69, 'social_django', 'code'),
+(70, 'social_django', 'nonce'),
+(72, 'social_django', 'partial'),
+(71, 'social_django', 'usersocialauth'),
+(56, 'token_blacklist', 'blacklistedtoken'),
+(57, 'token_blacklist', 'outstandingtoken'),
+(36, 'users', 'activitylog'),
 (2, 'users', 'customuser');
 
 -- --------------------------------------------------------
@@ -1348,147 +1115,125 @@ CREATE TABLE `django_migrations` (
 --
 
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
-(1, 'contenttypes', '0001_initial', '2025-04-01 00:07:34.651272'),
-(2, 'contenttypes', '0002_remove_content_type_name', '2025-04-01 00:07:34.748019'),
-(3, 'auth', '0001_initial', '2025-04-01 00:07:35.122987'),
-(4, 'auth', '0002_alter_permission_name_max_length', '2025-04-01 00:07:35.195077'),
-(5, 'auth', '0003_alter_user_email_max_length', '2025-04-01 00:07:35.206704'),
-(6, 'auth', '0004_alter_user_username_opts', '2025-04-01 00:07:35.217541'),
-(7, 'auth', '0005_alter_user_last_login_null', '2025-04-01 00:07:35.228288'),
-(8, 'auth', '0006_require_contenttypes_0002', '2025-04-01 00:07:35.233570'),
-(9, 'auth', '0007_alter_validators_add_error_messages', '2025-04-01 00:07:35.244241'),
-(10, 'auth', '0008_alter_user_username_max_length', '2025-04-01 00:07:35.257476'),
-(11, 'auth', '0009_alter_user_last_name_max_length', '2025-04-01 00:07:35.267413'),
-(12, 'auth', '0010_alter_group_name_max_length', '2025-04-01 00:07:35.286294'),
-(13, 'auth', '0011_update_proxy_permissions', '2025-04-01 00:07:35.301672'),
-(14, 'auth', '0012_alter_user_first_name_max_length', '2025-04-01 00:07:35.314520'),
-(15, 'auth', '0013_alter_permission_options', '2025-04-01 00:07:35.325484'),
-(16, 'auth', '0014_alter_permission_options_alter_user_user_permissions', '2025-04-01 00:07:35.342437'),
-(17, 'auth', '0015_alter_user_user_permissions', '2025-04-01 00:07:35.352415'),
-(18, 'users', '0001_initial', '2025-04-01 00:07:35.960068'),
-(19, 'HotelManagement', '0001_initial', '2025-04-01 00:07:36.208719'),
-(20, 'HotelManagement', '0002_initial', '2025-04-01 00:07:38.921204'),
-(21, 'admin', '0001_initial', '2025-04-01 00:07:39.308117'),
-(22, 'admin', '0002_logentry_remove_auto_add', '2025-04-01 00:07:39.358801'),
-(23, 'admin', '0003_logentry_add_action_flag_choices', '2025-04-01 00:07:39.412713'),
-(24, 'blog', '0001_initial', '2025-04-01 00:07:39.577946'),
-(25, 'blog', '0002_initial', '2025-04-01 00:07:41.556877'),
-(26, 'services', '0001_initial', '2025-04-01 00:07:41.670735'),
-(27, 'rooms', '0001_initial', '2025-04-01 00:07:41.859080'),
-(28, 'payments', '0001_initial', '2025-04-01 00:07:41.938771'),
-(29, 'bookings', '0001_initial', '2025-04-01 00:07:42.688013'),
-(30, 'bookings', '0002_initial', '2025-04-01 00:07:43.056088'),
-(31, 'bookings', '0003_initial', '2025-04-01 00:07:44.513069'),
-(32, 'customer', '0001_initial', '2025-04-01 00:07:45.056020'),
-(33, 'customer', '0002_auto_20250401_0255', '2025-04-01 00:07:45.061035'),
-(34, 'django_celery_beat', '0001_initial', '2025-04-01 00:07:45.352098'),
-(35, 'django_celery_beat', '0002_auto_20161118_0346', '2025-04-01 00:07:45.470219'),
-(36, 'django_celery_beat', '0003_auto_20161209_0049', '2025-04-01 00:07:45.535722'),
-(37, 'django_celery_beat', '0004_auto_20170221_0000', '2025-04-01 00:07:45.557042'),
-(38, 'django_celery_beat', '0005_add_solarschedule_events_choices', '2025-04-01 00:07:45.578575'),
-(39, 'django_celery_beat', '0006_auto_20180322_0932', '2025-04-01 00:07:45.741869'),
-(40, 'django_celery_beat', '0007_auto_20180521_0826', '2025-04-01 00:07:45.842670'),
-(41, 'django_celery_beat', '0008_auto_20180914_1922', '2025-04-01 00:07:45.940847'),
-(42, 'django_celery_beat', '0006_auto_20180210_1226', '2025-04-01 00:07:45.972015'),
-(43, 'django_celery_beat', '0006_periodictask_priority', '2025-04-01 00:07:46.011788'),
-(44, 'django_celery_beat', '0009_periodictask_headers', '2025-04-01 00:07:46.062013'),
-(45, 'django_celery_beat', '0010_auto_20190429_0326', '2025-04-01 00:07:46.742022'),
-(46, 'django_celery_beat', '0011_auto_20190508_0153', '2025-04-01 00:07:46.979672'),
-(47, 'django_celery_beat', '0012_periodictask_expire_seconds', '2025-04-01 00:07:47.029133'),
-(48, 'django_celery_beat', '0013_auto_20200609_0727', '2025-04-01 00:07:47.057636'),
-(49, 'django_celery_beat', '0014_remove_clockedschedule_enabled', '2025-04-01 00:07:47.088573'),
-(50, 'django_celery_beat', '0015_edit_solarschedule_events_choices', '2025-04-01 00:07:47.103113'),
-(51, 'django_celery_beat', '0016_alter_crontabschedule_timezone', '2025-04-01 00:07:47.126623'),
-(52, 'django_celery_beat', '0017_alter_crontabschedule_month_of_year', '2025-04-01 00:07:47.156728'),
-(53, 'django_celery_beat', '0018_improve_crontab_helptext', '2025-04-01 00:07:47.176007'),
-(54, 'django_celery_beat', '0019_alter_periodictasks_options', '2025-04-01 00:07:47.188114'),
-(55, 'home', '0001_initial', '2025-04-01 00:07:47.439234'),
-(56, 'notifications', '0001_initial', '2025-04-01 00:07:47.462568'),
-(57, 'notifications', '0002_initial', '2025-04-01 00:07:47.808315'),
-(58, 'payments', '0002_initial', '2025-04-01 00:07:50.485536'),
-(59, 'payments', '0003_alter_payment_payment_date', '2025-04-01 00:07:50.557857'),
-(60, 'payments', '0004_alter_payment_payment_date', '2025-04-01 00:07:50.629131'),
-(61, 'payments', '0005_alter_payment_payment_date', '2025-04-01 00:07:50.693048'),
-(62, 'payments', '0006_alter_payment_payment_date', '2025-04-01 00:07:50.773456'),
-(63, 'payments', '0007_alter_payment_payment_date', '2025-04-01 00:07:50.839775'),
-(64, 'reviews', '0001_initial', '2025-04-01 00:07:50.898198'),
-(65, 'reviews', '0002_initial', '2025-04-01 00:07:52.510348'),
-(66, 'rooms', '0002_initial', '2025-04-01 00:07:58.086348'),
-(67, 'services', '0002_initial', '2025-04-01 00:08:01.073250'),
-(68, 'sessions', '0001_initial', '2025-04-01 00:08:01.156179'),
-(69, 'token_blacklist', '0001_initial', '2025-04-01 00:08:01.637029'),
-(70, 'token_blacklist', '0002_outstandingtoken_jti_hex', '2025-04-01 00:08:01.791544'),
-(71, 'token_blacklist', '0003_auto_20171017_2007', '2025-04-01 00:08:01.977327'),
-(72, 'token_blacklist', '0004_auto_20171017_2013', '2025-04-01 00:08:02.291635'),
-(73, 'token_blacklist', '0005_remove_outstandingtoken_jti', '2025-04-01 00:08:02.471446'),
-(74, 'token_blacklist', '0006_auto_20171017_2113', '2025-04-01 00:08:02.598652'),
-(75, 'token_blacklist', '0007_auto_20171017_2214', '2025-04-01 00:08:03.592691'),
-(76, 'token_blacklist', '0008_migrate_to_bigautofield', '2025-04-01 00:08:04.150082'),
-(77, 'token_blacklist', '0010_fix_migrate_to_bigautofield', '2025-04-01 00:08:04.295226'),
-(78, 'token_blacklist', '0011_linearizes_history', '2025-04-01 00:08:04.307429'),
-(79, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-04-01 00:08:04.429308'),
-(80, 'notifications', '0003_notifications_created_at_notifications_created_by_and_more', '2025-04-01 00:18:50.671046'),
-(81, 'rooms', '0003_delete_review', '2025-04-01 00:18:50.703948'),
-(82, 'bookings', '0004_bookinghistory', '2025-04-01 22:31:39.209526'),
-(83, 'payments', '0008_paymenthistory', '2025-04-01 23:37:11.738040'),
-(84, 'payments', '0009_remove_paymenthistory_new_status_and_more', '2025-04-01 23:51:03.963333'),
-(85, 'services', '0003_coupon_description', '2025-04-02 00:03:01.943859'),
-(86, 'services', '0004_alter_coupon_description', '2025-04-02 00:06:15.693092'),
-(87, 'notifications', '0004_notifications_recipient_type_and_more', '2025-04-03 17:44:07.963114'),
-(88, 'home', '0002_termsconditions_privacypolicy', '2025-04-03 18:06:27.445755'),
-(89, 'home', '0003_paymenpolicy', '2025-04-03 20:17:38.995453'),
-(90, 'services', '0005_alter_coupon_description', '2025-04-07 20:24:20.035224'),
-(91, 'notifications', '0005_notifications_title', '2025-04-09 09:16:23.410067'),
-(92, 'accounts', '0001_initial', '2025-04-09 11:33:35.922237'),
-(93, 'authtoken', '0001_initial', '2025-04-11 11:07:00.742230'),
-(94, 'authtoken', '0002_auto_20160226_1747', '2025-04-11 11:07:01.115131'),
-(95, 'authtoken', '0003_tokenproxy', '2025-04-11 11:07:01.137317'),
-(96, 'authtoken', '0004_alter_tokenproxy_options', '2025-04-11 11:07:01.161416'),
-(97, 'sites', '0001_initial', '2025-04-11 11:07:01.216041'),
-(98, 'sites', '0002_alter_domain_unique', '2025-04-11 11:07:01.298298'),
-(99, 'default', '0001_initial', '2025-04-11 11:07:01.971729'),
-(100, 'social_auth', '0001_initial', '2025-04-11 11:07:01.983673'),
-(101, 'default', '0002_add_related_name', '2025-04-11 11:07:02.152691'),
-(102, 'social_auth', '0002_add_related_name', '2025-04-11 11:07:02.165946'),
-(103, 'default', '0003_alter_email_max_length', '2025-04-11 11:07:02.197261'),
-(104, 'social_auth', '0003_alter_email_max_length', '2025-04-11 11:07:02.208838'),
-(105, 'default', '0004_auto_20160423_0400', '2025-04-11 11:07:02.338848'),
-(106, 'social_auth', '0004_auto_20160423_0400', '2025-04-11 11:07:02.344743'),
-(107, 'social_auth', '0005_auto_20160727_2333', '2025-04-11 11:07:02.370068'),
-(108, 'social_django', '0006_partial', '2025-04-11 11:07:02.407870'),
-(109, 'social_django', '0007_code_timestamp', '2025-04-11 11:07:02.451184'),
-(110, 'social_django', '0008_partial_timestamp', '2025-04-11 11:07:02.491302'),
-(111, 'social_django', '0009_auto_20191118_0520', '2025-04-11 11:07:02.665777'),
-(112, 'social_django', '0010_uid_db_index', '2025-04-11 11:07:02.782702'),
-(113, 'social_django', '0011_alter_id_fields', '2025-04-11 11:07:03.303320'),
-(114, 'social_django', '0012_usersocialauth_extra_data_new', '2025-04-11 11:07:03.414750'),
-(115, 'social_django', '0013_migrate_extra_data', '2025-04-11 11:07:03.664046'),
-(116, 'social_django', '0014_remove_usersocialauth_extra_data', '2025-04-11 11:07:03.880040'),
-(117, 'social_django', '0015_rename_extra_data_new_usersocialauth_extra_data', '2025-04-11 11:07:04.346780'),
-(118, 'social_django', '0016_alter_usersocialauth_extra_data', '2025-04-11 11:07:04.425381'),
-(119, 'social_django', '0003_alter_email_max_length', '2025-04-11 11:07:04.438929'),
-(120, 'social_django', '0002_add_related_name', '2025-04-11 11:07:04.446880'),
-(121, 'social_django', '0004_auto_20160423_0400', '2025-04-11 11:07:04.454728'),
-(122, 'social_django', '0001_initial', '2025-04-11 11:07:04.461080'),
-(123, 'social_django', '0005_auto_20160727_2333', '2025-04-11 11:07:04.465061'),
-(124, 'oauth2_provider', '0001_initial', '2025-04-11 11:11:47.759803'),
-(125, 'oauth2_provider', '0002_auto_20190406_1805', '2025-04-11 11:11:48.054406'),
-(126, 'oauth2_provider', '0003_auto_20201211_1314', '2025-04-11 11:11:48.332423'),
-(127, 'oauth2_provider', '0004_auto_20200902_2022', '2025-04-11 11:11:49.574251'),
-(128, 'oauth2_provider', '0005_auto_20211222_2352', '2025-04-11 11:11:50.042241'),
-(129, 'oauth2_provider', '0006_alter_application_client_secret', '2025-04-11 11:11:50.354662'),
-(130, 'oauth2_provider', '0007_application_post_logout_redirect_uris', '2025-04-11 11:11:50.485986'),
-(131, 'oauth2_provider', '0008_alter_accesstoken_token', '2025-04-11 11:11:50.602633'),
-(132, 'oauth2_provider', '0009_add_hash_client_secret', '2025-04-11 11:11:50.845928'),
-(133, 'oauth2_provider', '0010_application_allowed_origins', '2025-04-11 11:11:50.947445'),
-(134, 'oauth2_provider', '0011_refreshtoken_token_family', '2025-04-11 11:11:51.096203'),
-(135, 'oauth2_provider', '0012_add_token_checksum', '2025-04-11 11:11:58.098357'),
-(136, 'accounts', '0002_remove_journalentry_journal_entry_created_at_and_more', '2025-04-11 12:25:43.844075'),
-(137, 'payments', '0010_alter_hotelpaymentmethod_account_name_and_more', '2025-04-12 21:40:20.677213'),
-(138, 'payments', '0011_alter_hotelpaymentmethod_account_name_and_more', '2025-04-12 21:43:52.276933'),
-(139, 'bookings', '0005_guest_created_at_guest_created_by_guest_deleted_at_and_more', '2025-04-13 21:17:51.861039'),
-(140, 'users', '0002_customuser_chart_alter_customuser_user_type', '2025-04-14 09:52:53.644766'),
-(141, 'users', '0003_customuser_otp_code_customuser_otp_created_at', '2025-04-14 10:11:35.442213');
+(1, 'contenttypes', '0001_initial', '2025-04-15 20:32:15.632211'),
+(2, 'contenttypes', '0002_remove_content_type_name', '2025-04-15 20:32:15.687538'),
+(3, 'auth', '0001_initial', '2025-04-15 20:32:15.885211'),
+(4, 'auth', '0002_alter_permission_name_max_length', '2025-04-15 20:32:15.941664'),
+(5, 'auth', '0003_alter_user_email_max_length', '2025-04-15 20:32:15.943071'),
+(6, 'auth', '0004_alter_user_username_opts', '2025-04-15 20:32:15.954008'),
+(7, 'auth', '0005_alter_user_last_login_null', '2025-04-15 20:32:15.959591'),
+(8, 'auth', '0006_require_contenttypes_0002', '2025-04-15 20:32:15.963581'),
+(9, 'auth', '0007_alter_validators_add_error_messages', '2025-04-15 20:32:15.969301'),
+(10, 'auth', '0008_alter_user_username_max_length', '2025-04-15 20:32:15.970521'),
+(11, 'auth', '0009_alter_user_last_name_max_length', '2025-04-15 20:32:15.979280'),
+(12, 'auth', '0010_alter_group_name_max_length', '2025-04-15 20:32:15.986684'),
+(13, 'auth', '0011_update_proxy_permissions', '2025-04-15 20:32:15.995659'),
+(14, 'auth', '0012_alter_user_first_name_max_length', '2025-04-15 20:32:16.000510'),
+(15, 'auth', '0013_alter_permission_options', '2025-04-15 20:32:16.005742'),
+(16, 'auth', '0014_alter_permission_options_alter_user_user_permissions', '2025-04-15 20:32:16.013445'),
+(17, 'auth', '0015_alter_user_user_permissions', '2025-04-15 20:32:16.019135'),
+(18, 'accounts', '0001_initial', '2025-04-15 20:32:16.043739'),
+(19, 'users', '0001_initial', '2025-04-15 20:32:16.451265'),
+(20, 'HotelManagement', '0001_initial', '2025-04-15 20:32:16.542838'),
+(21, 'HotelManagement', '0002_initial', '2025-04-15 20:32:17.733352'),
+(22, 'accounts', '0002_initial', '2025-04-15 20:32:18.082301'),
+(23, 'admin', '0001_initial', '2025-04-15 20:32:18.195587'),
+(24, 'admin', '0002_logentry_remove_auto_add', '2025-04-15 20:32:18.216783'),
+(25, 'admin', '0003_logentry_add_action_flag_choices', '2025-04-15 20:32:18.237678'),
+(26, 'authtoken', '0001_initial', '2025-04-15 20:32:18.321449'),
+(27, 'authtoken', '0002_auto_20160226_1747', '2025-04-15 20:32:18.359866'),
+(28, 'authtoken', '0003_tokenproxy', '2025-04-15 20:32:18.377762'),
+(29, 'authtoken', '0004_alter_tokenproxy_options', '2025-04-15 20:32:18.383172'),
+(30, 'blog', '0001_initial', '2025-04-15 20:32:18.449053'),
+(31, 'blog', '0002_initial', '2025-04-15 20:32:19.392229'),
+(32, 'services', '0001_initial', '2025-04-15 20:32:19.452981'),
+(33, 'rooms', '0001_initial', '2025-04-15 20:32:19.559453'),
+(34, 'payments', '0001_initial', '2025-04-15 20:32:19.628358'),
+(35, 'bookings', '0001_initial', '2025-04-15 20:32:19.768278'),
+(36, 'bookings', '0002_initial', '2025-04-15 20:32:21.422953'),
+(37, 'customer', '0001_initial', '2025-04-15 20:32:21.427494'),
+(38, 'customer', '0002_initial', '2025-04-15 20:32:21.742322'),
+(39, 'django_celery_beat', '0001_initial', '2025-04-15 20:32:21.910261'),
+(40, 'django_celery_beat', '0002_auto_20161118_0346', '2025-04-15 20:32:21.989147'),
+(41, 'django_celery_beat', '0003_auto_20161209_0049', '2025-04-15 20:32:22.009463'),
+(42, 'django_celery_beat', '0004_auto_20170221_0000', '2025-04-15 20:32:22.014334'),
+(43, 'django_celery_beat', '0005_add_solarschedule_events_choices', '2025-04-15 20:32:22.022457'),
+(44, 'django_celery_beat', '0006_auto_20180322_0932', '2025-04-15 20:32:22.078600'),
+(45, 'django_celery_beat', '0007_auto_20180521_0826', '2025-04-15 20:32:22.111013'),
+(46, 'django_celery_beat', '0008_auto_20180914_1922', '2025-04-15 20:32:22.143426'),
+(47, 'django_celery_beat', '0006_auto_20180210_1226', '2025-04-15 20:32:22.165610'),
+(48, 'django_celery_beat', '0006_periodictask_priority', '2025-04-15 20:32:22.186677'),
+(49, 'django_celery_beat', '0009_periodictask_headers', '2025-04-15 20:32:22.212340'),
+(50, 'django_celery_beat', '0010_auto_20190429_0326', '2025-04-15 20:32:22.395072'),
+(51, 'django_celery_beat', '0011_auto_20190508_0153', '2025-04-15 20:32:22.483387'),
+(52, 'django_celery_beat', '0012_periodictask_expire_seconds', '2025-04-15 20:32:22.492653'),
+(53, 'django_celery_beat', '0013_auto_20200609_0727', '2025-04-15 20:32:22.513693'),
+(54, 'django_celery_beat', '0014_remove_clockedschedule_enabled', '2025-04-15 20:32:22.529886'),
+(55, 'django_celery_beat', '0015_edit_solarschedule_events_choices', '2025-04-15 20:32:22.601694'),
+(56, 'django_celery_beat', '0016_alter_crontabschedule_timezone', '2025-04-15 20:32:22.641557'),
+(57, 'django_celery_beat', '0017_alter_crontabschedule_month_of_year', '2025-04-15 20:32:22.729152'),
+(58, 'django_celery_beat', '0018_improve_crontab_helptext', '2025-04-15 20:32:22.737617'),
+(59, 'django_celery_beat', '0019_alter_periodictasks_options', '2025-04-15 20:32:22.745085'),
+(60, 'home', '0001_initial', '2025-04-15 20:32:22.926102'),
+(61, 'home', '0002_initial', '2025-04-15 20:32:23.347628'),
+(62, 'notifications', '0001_initial', '2025-04-15 20:32:23.364739'),
+(63, 'notifications', '0002_initial', '2025-04-15 20:32:23.645766'),
+(64, 'oauth2_provider', '0001_initial', '2025-04-15 20:32:24.395517'),
+(65, 'oauth2_provider', '0002_auto_20190406_1805', '2025-04-15 20:32:24.544924'),
+(66, 'oauth2_provider', '0003_auto_20201211_1314', '2025-04-15 20:32:24.622214'),
+(67, 'oauth2_provider', '0004_auto_20200902_2022', '2025-04-15 20:32:24.990916'),
+(68, 'oauth2_provider', '0005_auto_20211222_2352', '2025-04-15 20:32:25.146478'),
+(69, 'oauth2_provider', '0006_alter_application_client_secret', '2025-04-15 20:32:25.295882'),
+(70, 'oauth2_provider', '0007_application_post_logout_redirect_uris', '2025-04-15 20:32:25.333579'),
+(71, 'oauth2_provider', '0008_alter_accesstoken_token', '2025-04-15 20:32:25.366209'),
+(72, 'oauth2_provider', '0009_add_hash_client_secret', '2025-04-15 20:32:25.410289'),
+(73, 'oauth2_provider', '0010_application_allowed_origins', '2025-04-15 20:32:25.443867'),
+(74, 'oauth2_provider', '0011_refreshtoken_token_family', '2025-04-15 20:32:25.480233'),
+(75, 'oauth2_provider', '0012_add_token_checksum', '2025-04-15 20:32:25.881595'),
+(76, 'payments', '0002_initial', '2025-04-15 20:32:27.634575'),
+(77, 'reviews', '0001_initial', '2025-04-15 20:32:27.662336'),
+(78, 'reviews', '0002_initial', '2025-04-15 20:32:28.716740'),
+(79, 'rooms', '0002_initial', '2025-04-15 20:32:30.908060'),
+(80, 'services', '0002_initial', '2025-04-15 20:32:32.108229'),
+(81, 'sessions', '0001_initial', '2025-04-15 20:32:32.167731'),
+(82, 'default', '0001_initial', '2025-04-15 20:32:32.412535'),
+(83, 'social_auth', '0001_initial', '2025-04-15 20:32:32.412535'),
+(84, 'default', '0002_add_related_name', '2025-04-15 20:32:32.535922'),
+(85, 'social_auth', '0002_add_related_name', '2025-04-15 20:32:32.543428'),
+(86, 'default', '0003_alter_email_max_length', '2025-04-15 20:32:32.543428'),
+(87, 'social_auth', '0003_alter_email_max_length', '2025-04-15 20:32:32.561410'),
+(88, 'default', '0004_auto_20160423_0400', '2025-04-15 20:32:32.599042'),
+(89, 'social_auth', '0004_auto_20160423_0400', '2025-04-15 20:32:32.610843'),
+(90, 'social_auth', '0005_auto_20160727_2333', '2025-04-15 20:32:32.629215'),
+(91, 'social_django', '0006_partial', '2025-04-15 20:32:32.663218'),
+(92, 'social_django', '0007_code_timestamp', '2025-04-15 20:32:32.682989'),
+(93, 'social_django', '0008_partial_timestamp', '2025-04-15 20:32:32.715324'),
+(94, 'social_django', '0009_auto_20191118_0520', '2025-04-15 20:32:32.810445'),
+(95, 'social_django', '0010_uid_db_index', '2025-04-15 20:32:32.869536'),
+(96, 'social_django', '0011_alter_id_fields', '2025-04-15 20:32:33.163219'),
+(97, 'social_django', '0012_usersocialauth_extra_data_new', '2025-04-15 20:32:33.227502'),
+(98, 'social_django', '0013_migrate_extra_data', '2025-04-15 20:32:33.290507'),
+(99, 'social_django', '0014_remove_usersocialauth_extra_data', '2025-04-15 20:32:33.351815'),
+(100, 'social_django', '0015_rename_extra_data_new_usersocialauth_extra_data', '2025-04-15 20:32:33.492150'),
+(101, 'social_django', '0016_alter_usersocialauth_extra_data', '2025-04-15 20:32:33.610608'),
+(102, 'token_blacklist', '0001_initial', '2025-04-15 20:32:33.824724'),
+(103, 'token_blacklist', '0002_outstandingtoken_jti_hex', '2025-04-15 20:32:33.877519'),
+(104, 'token_blacklist', '0003_auto_20171017_2007', '2025-04-15 20:32:33.956243'),
+(105, 'token_blacklist', '0004_auto_20171017_2013', '2025-04-15 20:32:34.042462'),
+(106, 'token_blacklist', '0005_remove_outstandingtoken_jti', '2025-04-15 20:32:34.097671'),
+(107, 'token_blacklist', '0006_auto_20171017_2113', '2025-04-15 20:32:34.148847'),
+(108, 'token_blacklist', '0007_auto_20171017_2214', '2025-04-15 20:32:34.612204'),
+(109, 'token_blacklist', '0008_migrate_to_bigautofield', '2025-04-15 20:32:34.898937'),
+(110, 'token_blacklist', '0010_fix_migrate_to_bigautofield', '2025-04-15 20:32:34.947058'),
+(111, 'token_blacklist', '0011_linearizes_history', '2025-04-15 20:32:34.961479'),
+(112, 'token_blacklist', '0012_alter_outstandingtoken_user', '2025-04-15 20:32:35.007176'),
+(113, 'social_django', '0001_initial', '2025-04-15 20:32:35.015363'),
+(114, 'social_django', '0004_auto_20160423_0400', '2025-04-15 20:32:35.019115'),
+(115, 'social_django', '0003_alter_email_max_length', '2025-04-15 20:32:35.022454'),
+(116, 'social_django', '0002_add_related_name', '2025-04-15 20:32:35.027528'),
+(117, 'social_django', '0005_auto_20160727_2333', '2025-04-15 20:32:35.031723'),
+(118, 'rooms', '0003_remove_availability_room_status_delete_roomstatus', '2025-04-15 21:51:17.159148'),
+(119, 'payments', '0003_alter_payment_payment_discount_code', '2025-04-16 12:15:12.066768');
 
 -- --------------------------------------------------------
 
@@ -1507,42 +1252,9 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('0yl931fcaoku6bj97llo093n65ytagii', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0pEu:p0tPXMJ-0aU94H6G8gQssRGU0PA-O6PBufjO-g6P0X8', '2025-04-18 22:10:16.094012'),
-('2fi5eeu4ipz2yla6vdqafugd8qfe2zzd', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u3isS:-N3eGd25LioxNTDcHW2AOcR1-a54-IMK2CQY2EQ9W2k', '2025-04-26 21:59:04.548651'),
-('36a5zqbpvthu744luvy0c5wf05bpw2sq', '.eJxVjMsKwjAQRf8lawlp86Iu3fsNYTIzsVFJpGlBEf_dFrrQ7T3nnrcIsMxjWBpPIZM4CisOv1sEvHHZAF2hXKrEWuYpR7kpcqdNnivx_bS7f4ER2ri-k7O211qTwsE7BFLO-qi0B1bIkTAlQCJvjKa-s4lWVSe2JnkajO22aOPWci2Bn488vcSx69XglPp8AS32QQA:1tzlxv:E8740pbH4c2SDPh1MrvLtFcga4CrMuTtVTzTSg6Kszg', '2025-04-16 00:28:23.262162'),
-('4qwidslc5rv5bwnnn9vojw17lac024x2', '.eJxVjEsOwiAUAO_C2hB-9bVduvcMBN4Dixow0CYa490NSRe6nZnMm1m3rYvdWqg2EZuZZIdf5h3eQu6Cri5fCseS15o87wnfbePnQuF-2tu_weLa0reCVJQKh2iOMELUMOoRUGryUpkpBiAEmkBGBUaSEJGMhAGFVoQeVZ-20Foq2YbnI9UXm8XnC2gTPq0:1u1Qis:2IExrJIyDL02aZFFhIG1ebU90iA7VXyoH31wv3f9jvs', '2025-04-20 14:11:42.423432'),
-('97vtz13dazlvyaxrciygorp88umw38fx', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u4c8x:vsSM0XDbPnXbEpcZGkSqQykWXwnU_tPcTUkeV7o9GN4', '2025-04-29 08:59:47.795984'),
-('9gbgf7ayr4f7hqr52htplmecg9e65d5x', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u2SSk:DTRMdhRPYKDJ5lRlRKTuiuLteuMx-Cd8rdyB1r6LpGE', '2025-04-23 10:15:18.561767'),
-('9gp052mwzhajr8onfp6tsv354is0lli4', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u44hB:41QOxSiCEpEOsIu5Pr_I59IPbrv4UCnZAKslv4DIVC0', '2025-04-27 21:16:53.259829'),
-('ijjs6o02bw4j18j0vaamteyz1u6evyxe', '.eJxVjEsOwiAUAO_C2hB-9bVduvcMBN4Dixow0CYa490NSRe6nZnMm1m3rYvdWqg2EZuZZIdf5h3eQu6Cri5fCseS15o87wnfbePnQuF-2tu_weLa0reCVJQKh2iOMELUMOoRUGryUpkpBiAEmkBGBUaSEJGMhAGFVoQeVZ-20Foq2YbnI9UXm8XnC2gTPq0:1u4Mg9:ll10r26ZqeitzSHykqy66SbiO9YhoRRN-LLuFeYQX1o', '2025-04-28 16:29:01.713175'),
-('jv45xb43mzicwywb7r05tyzrv4jtvn0n', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1tzPPv:xQX2Ir4KW2I8JiVl-DDx4EGxDyqojrQQ_60_rDAm7eo', '2025-04-15 00:23:47.372092'),
-('m788aphwuw44cfx943r9xipcmv6w8nk6', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u3iMT:tnM0yzWYG1AqtvTiGnGKTJ3_5yN_HVRlSoF_1adb_bk', '2025-04-26 21:26:01.087376'),
-('mgrmv5gfbspwnr9mt07o8wit9i8col80', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0STl:6_0JM_-2J4eq3DJZpuP3LL9VOyCbIoCjx-T4xwEO8VQ', '2025-04-17 21:52:05.094323'),
-('pv11uhp3xweuaxxzlq1o8wcjadrs35h9', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u4PJu:KFK451I2i6qE7XGcnePrVFdlomAA_W_AZpmUP5FOuAU', '2025-04-28 19:18:14.781481'),
-('rmynaz3o2mktwqryu7zuuh89ontkl1v5', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u44ef:hHgqAl37h7iVDJ0NDYqprJgNnn4I7I5LE0TviXqHkX4', '2025-04-27 21:14:17.200467'),
-('vh5jd1dq55mqytjnhcmwd43mlo75wrfi', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u0Ofx:wf5WQCnxzxcv203VOMrkmi-9aX5j9zVWv9dWX_ViC5k', '2025-04-17 17:48:25.276072'),
-('w64itva0ea4mhf9b42xyqdiiifrgpo05', '.eJxVjEEOwiAQRe_C2hBaoKRduvcMZJgZLGrAlDapMd7dNulCt_-9_97CwzKPfqk8-URiEFacfrcAeOe8A7pBvhaJJc9TCnJX5EGrvBTix_lw_wIj1HF7x87aVmtNCnvXIZDqrAtKO2CFHAhjBCRyxmhqGxtpU3Vka6Kj3thmj1auNZXseX2m6SUG9fkCrIc_zg:1u1Ldm:sdSGsrBa8G7PrrjxJakSGFK4THg-yQ6j3OQdFmqwMrk', '2025-04-20 08:46:06.802097'),
-('wtvilv2rep1vicsotb4as8ywisw6iwb6', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u0ou8:gImGXUz9OMti1QvvoSMavgZJa4itx4rtIymywuzpikM', '2025-04-18 21:48:48.642060'),
-('yginkza1urshcwvas0ishc08cta7f1g0', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u2S6q:y80qUqZwUVdWHnjB5uVazMo5mBPS2z6lfv_R8W_LYno', '2025-04-23 09:52:40.489327');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `django_site`
---
-
-CREATE TABLE `django_site` (
-  `id` int(11) NOT NULL,
-  `domain` varchar(100) NOT NULL,
-  `name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `django_site`
---
-
-INSERT INTO `django_site` (`id`, `domain`, `name`) VALUES
-(1, 'example.com', 'example.com');
+('ejkt477rw2a80094croirlqf5oo8udpr', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u523H:t5jmDlNtAdC-vzmRaQ3RwYYjHsZaPAQEg7gUQcSFTdE', '2025-04-30 12:39:39.712488'),
+('mk9pc3p86zxwxogqxk49hhfylgvwsqcy', '.eJxVjEEOwiAQAP_C2RAWqEs9evcNBHZBqgaS0p6MfzckPeh1ZjJv4cO-Fb_3tPqFxUWAOP2yGOiZ6hD8CPXeJLW6rUuUI5GH7fLWOL2uR_s3KKGXsVWsM2iasj2jw2zQGYcEhiNoO-eETMgzQtZogZXKbAEnUkYzRdLi8wXI_Tdw:1u52mG:_Fpep5V-lOg7wEXYpP_HNLM7Ddqa7jXKYYQzxAJUzO0', '2025-04-30 13:26:08.212357'),
+('nc6sa8c55x7l3qa2nkjc1feg119jwwqz', '.eJxVy0EOwiAQheG7sDYNxRlg3Lnq0iMQhg6lsZGk2JXx7lbjQlcv-V--hwpxu5ewNVnDPKqTQlKH38gxXeX2flpNc1xCqqt039q6qdZpkW74zOW8M_PvS2xlx1ZHYifZZmtFHCALWe0RKVH2FgyjIQBgzo6A89gDcT46jUwYfa-eL817N3E:1u53uT:oS5gGEM69jcfHQIXQAmHx40UhBqZqktKg9B-yNvNPzQ', '2025-04-30 14:38:41.919194');
 
 -- --------------------------------------------------------
 
@@ -1580,7 +1292,7 @@ CREATE TABLE `home_heroslider` (
 --
 
 INSERT INTO `home_heroslider` (`id`, `image1`, `image2`, `image3`, `title`, `description`, `is_active`) VALUES
-(1, 'slider_images/infor.jpg', 'slider_images/infor_nWWVJDc.jpg', 'slider_images/infor_1XFJlK5.jpg', 'gggs', 'aslkjdlksajdlk', 1);
+(1, 'slider_images/balcony-cabin.jpg', 'slider_images/avatar.jpeg', 'slider_images/app-store.png', 'hello', 'hi', 1);
 
 -- --------------------------------------------------------
 
@@ -1847,7 +1559,7 @@ CREATE TABLE `hotelmanagement_hotelrequest` (
   `profile_picture` varchar(100) NOT NULL,
   `business_license_number` varchar(50) DEFAULT NULL,
   `document_path` varchar(100) DEFAULT NULL,
-  `additional_images` longtext NOT NULL CHECK (json_valid(`additional_images`)),
+  `additional_images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`additional_images`)),
   `country` varchar(100) NOT NULL,
   `state` varchar(100) NOT NULL,
   `city_name` varchar(100) NOT NULL,
@@ -1949,38 +1661,22 @@ CREATE TABLE `hotelmanagement_phone` (
 
 CREATE TABLE `notifications_notifications` (
   `id` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `recipient_type` varchar(50) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `message` longtext NOT NULL,
   `send_time` datetime(6) NOT NULL,
   `status` varchar(50) NOT NULL,
   `notification_type` varchar(50) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `action_url` varchar(255) DEFAULT NULL,
-  `sender_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) DEFAULT NULL,
-  `created_at` datetime(6) DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
+  `sender_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL,
-  `recipient_type` varchar(50) NOT NULL,
-  `title` varchar(255) NOT NULL
+  `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `notifications_notifications`
---
-
-INSERT INTO `notifications_notifications` (`id`, `message`, `send_time`, `status`, `notification_type`, `is_active`, `action_url`, `sender_id`, `user_id`, `created_at`, `created_by_id`, `deleted_at`, `updated_at`, `updated_by_id`, `recipient_type`, `title`) VALUES
-(118, 'سينتهي حجزك في الغرفة room vip 2025 (احمد) في تمام الساعة 2025-04-09 16:19:50+00:00. هل تريد التمديد؟', '2025-04-09 11:19:50.017815', '0', '0', 1, '/', 2, 9, '2025-04-09 11:19:50.017815', NULL, NULL, '2025-04-09 11:19:50.017815', NULL, 'single_user', 'تذكير بانتهاء الحجز'),
-(119, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:19:50.059276', '0', '1', 1, '/payments/add_guest/1/', 9, 9, '2025-04-09 11:19:50.059276', NULL, NULL, '2025-04-09 11:19:50.059276', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(120, 'سينتهي حجزك في الغرفة room vip 2025 (احمد) في تمام الساعة 2025-04-09 16:23:10+00:00. هل تريد التمديد؟', '2025-04-09 11:23:10.020955', '1', '0', 1, '/', 2, 5, '2025-04-09 11:23:10.020955', NULL, NULL, '2025-04-09 11:23:10.020955', NULL, 'single_user', 'تذكير بانتهاء الحجز'),
-(121, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:23:10.287891', '1', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-09 11:23:10.287891', NULL, NULL, '2025-04-09 11:23:10.287891', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(122, 'يرجى إضافة الضيوف لحجزك.', '2025-04-09 11:26:51.275733', '1', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-09 11:26:51.275085', NULL, NULL, '2025-04-09 11:26:51.275733', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(123, 'يرجى إضافة الضيوف لحجزك.', '2025-04-13 21:28:32.335042', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-13 21:28:32.335042', NULL, NULL, '2025-04-13 21:28:32.335042', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(124, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:16:52.466789', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-15 11:16:52.466789', NULL, NULL, '2025-04-15 11:16:52.466789', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(125, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:39:30.099669', '0', '1', 1, '/payments/add_guest/1/', 5, 5, '2025-04-15 11:39:30.099669', NULL, NULL, '2025-04-15 11:39:30.099669', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(126, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:42:23.176493', '0', '1', 1, '/payments/add_guest/1/', 24, 24, '2025-04-15 11:42:23.176493', NULL, NULL, '2025-04-15 11:42:23.176493', NULL, 'single_user', 'اشعار اتمام الحجز'),
-(127, 'يرجى إضافة الضيوف لحجزك.', '2025-04-15 11:46:33.727327', '0', '1', 1, '/payments/add_guest/1/', 24, 24, '2025-04-15 11:46:33.727327', NULL, NULL, '2025-04-15 11:46:33.727327', NULL, 'single_user', 'اشعار اتمام الحجز');
 
 -- --------------------------------------------------------
 
@@ -2174,14 +1870,7 @@ CREATE TABLE `payments_payment` (
 --
 
 INSERT INTO `payments_payment` (`id`, `created_at`, `updated_at`, `deleted_at`, `transfer_image`, `payment_status`, `payment_date`, `payment_subtotal`, `payment_totalamount`, `payment_currency`, `payment_type`, `payment_note`, `payment_discount`, `payment_discount_code`, `booking_id`, `created_by_id`, `payment_method_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-04-01 23:42:01.973721', '2025-04-11 18:19:28.046667', NULL, 'payments/transfer/transfer_image/infor.jpg', 0, '2025-04-01 23:41:17.000000', 140.00, 150.00, 'dolar', 'e_pay', 'ajkshdkhas', 10.00, 'aa', 1, 1, 1, 1, 12),
-(2, '2025-04-01 23:45:09.001660', '2025-04-01 23:47:37.149928', NULL, 'payments/transfer/transfer_image/infor_zxe8Yu0.jpg', 1, '2025-04-01 23:44:41.000000', 111.00, 12.00, '$', 'e_pay', 'asjdasjhj', 10.00, '11ass', 1, 1, 2, 1, 12),
-(3, '2025-04-06 10:18:14.932174', '2025-04-06 10:18:14.932174', NULL, 'payments/transfer/transfer_image/app-store.png', 0, '2025-04-06 10:18:14.928098', 510.00, 500.00, '$', 'e_pay', 'تم التحويل بواسطة: kajshdjkask - رقم التحويل: 151651616', 10.00, 'sms', 2, NULL, 1, NULL, 1),
-(4, '2025-04-11 18:56:33.452439', '2025-04-11 18:57:34.058359', NULL, 'payments/transfer/transfer_image/bg.jpg', 2, '2025-04-11 18:56:33.439916', 2550.00, 2550.00, '$', 'e_pay', 'تم التحويل بواسطة: sjsdhkfhsk - رقم التحويل: 65151561651', 0.00, '', 14, NULL, 1, NULL, 1),
-(5, '2025-04-12 21:49:48.889019', '2025-04-12 21:49:48.889019', NULL, '', 0, '2025-04-12 21:49:48.880391', 15.00, 15.00, '$', 'e_pay', 'تم التحويل بواسطة: mosa mohamed - ', 0.00, '', 15, NULL, 4, NULL, 5),
-(6, '2025-04-12 21:52:57.134413', '2025-04-15 11:17:50.373201', NULL, '', 1, '2025-04-12 21:52:57.000000', 25.00, 25.00, '$', 'cash', 'تم التحويل بواسطة: mosa mohamed -', 0.00, '0', 2, NULL, 4, NULL, 5),
-(7, '2025-04-13 19:55:57.390962', '2025-04-13 19:55:57.390962', NULL, '', 0, '2025-04-13 19:55:57.390962', 100.00, 120.00, 'USD', 'cache', 'Payment for hotel booking', 10.00, NULL, 1, NULL, 1, NULL, 1),
-(8, '2025-04-13 21:39:32.498833', '2025-04-15 11:46:33.708106', NULL, '', 1, '2025-04-13 21:39:32.000000', 0.00, 0.00, '$', 'cash', 'ss', 25.00, '-', 16, NULL, 1, NULL, 24);
+(1, '2025-04-16 12:13:49.917872', '2025-04-16 12:13:49.917872', NULL, 'payments/transfer/transfer_image/bg_aNUVRHR.jpg', 0, '2025-04-16 12:13:49.898226', 2640000.00, 2640000.00, '$', 'e_pay', 'تم التحويل بواسطة:  - ', 0.00, '', 1, NULL, 1, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -2209,18 +1898,6 @@ CREATE TABLE `payments_paymenthistory` (
   `payment_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `payments_paymenthistory`
---
-
-INSERT INTO `payments_paymenthistory` (`id`, `created_at`, `updated_at`, `deleted_at`, `history_date`, `previous_payment_status`, `new_payment_status`, `previous_payment_totalamount`, `new_payment_totalamount`, `previous_payment_discount`, `new_payment_discount`, `previous_payment_discount_code`, `new_payment_discount_code`, `note`, `changed_by_id`, `created_by_id`, `payment_id`, `updated_by_id`) VALUES
-(1, '2025-04-01 23:47:37.159981', '2025-04-01 23:47:37.159981', NULL, '2025-04-01 23:47:37.160510', 0, 1, 12.00, 12.00, 10.00, 10.00, '11ass', '11ass', 'Payment updated on 2025-04-01 23:47:37.157066+00:00', 12, NULL, 2, NULL),
-(2, '2025-04-11 18:19:28.055142', '2025-04-11 18:19:28.055769', NULL, '2025-04-11 18:19:28.055769', 2, 0, 150.00, 150.00, 10.00, 10.00, 'aa', 'aa', 'Payment updated on 2025-04-11 18:19:28.054092+00:00', 12, NULL, 1, NULL),
-(3, '2025-04-11 18:57:34.066264', '2025-04-11 18:57:34.067305', NULL, '2025-04-11 18:57:34.067305', 0, 2, 2550.00, 2550.00, 0.00, 0.00, '', '', 'Payment updated on 2025-04-11 18:57:34.066264+00:00', 1, NULL, 4, NULL),
-(4, '2025-04-15 11:17:50.376712', '2025-04-15 11:17:50.376712', NULL, '2025-04-15 11:17:50.376712', 0, 1, 25.00, 25.00, 0.00, 0.00, '', '0', 'Payment updated on 2025-04-15 11:17:50.376712+00:00', 5, NULL, 6, NULL),
-(7, '2025-04-15 11:42:07.065895', '2025-04-15 11:42:07.065895', NULL, '2025-04-15 11:42:07.065895', 0, 0, 0.00, 0.00, 25.00, 25.00, NULL, '-', 'Payment updated on 2025-04-15 11:42:07.065895+00:00', 24, NULL, 8, NULL),
-(10, '2025-04-15 11:46:33.712132', '2025-04-15 11:46:33.712132', NULL, '2025-04-15 11:46:33.712132', 0, 1, 0.00, 0.00, 25.00, 25.00, '-', '-', 'Payment updated on 2025-04-15 11:46:33.712132+00:00', 24, NULL, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -2274,13 +1951,6 @@ CREATE TABLE `reviews_hotelreview` (
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `reviews_hotelreview`
---
-
-INSERT INTO `reviews_hotelreview` (`id`, `created_at`, `updated_at`, `deleted_at`, `rating_service`, `rating_location`, `rating_value_for_money`, `rating_cleanliness`, `review`, `status`, `created_by_id`, `hotel_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-04-03 17:25:16.802853', '2025-04-03 17:25:16.802853', NULL, 5, 5, 5, 5, 'ahmed', 1, 1, 1, 1, 12);
-
 -- --------------------------------------------------------
 
 --
@@ -2302,13 +1972,6 @@ CREATE TABLE `reviews_roomreview` (
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `reviews_roomreview`
---
-
-INSERT INTO `reviews_roomreview` (`id`, `created_at`, `updated_at`, `deleted_at`, `rating`, `review`, `status`, `created_by_id`, `hotel_id`, `room_type_id`, `updated_by_id`, `user_id`) VALUES
-(1, '2025-04-03 20:32:08.487554', '2025-04-03 20:32:08.487554', NULL, 3, 'sajkdhask', 1, NULL, 1, 1, NULL, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -2325,7 +1988,6 @@ CREATE TABLE `rooms_availability` (
   `notes` longtext DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
-  `room_status_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -2334,8 +1996,23 @@ CREATE TABLE `rooms_availability` (
 -- Dumping data for table `rooms_availability`
 --
 
-INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_status_id`, `room_type_id`, `updated_by_id`) VALUES
-(23, '2025-04-15 11:38:57.939328', '2025-04-15 11:38:57.954950', NULL, '2025-04-15', 13, 'Updated due to booking #16', NULL, 1, 3, 1, NULL);
+INSERT INTO `rooms_availability` (`id`, `created_at`, `updated_at`, `deleted_at`, `availability_date`, `available_rooms`, `notes`, `created_by_id`, `hotel_id`, `room_type_id`, `updated_by_id`) VALUES
+(1, '2025-04-15 22:07:32.332146', '2025-04-16 10:00:04.644091', NULL, '2025-04-16', 10, 's', 1, 1, 3, 1),
+(2, '2025-04-15 22:10:24.101174', '2025-04-16 09:54:37.757104', NULL, '2025-04-17', 5, '', NULL, 1, 3, 1),
+(3, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-18', 5, NULL, NULL, 1, 2, NULL),
+(4, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-19', 5, NULL, NULL, 1, 2, NULL),
+(5, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-20', 5, NULL, NULL, 1, 2, NULL),
+(6, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-21', 5, NULL, NULL, 1, 2, NULL),
+(7, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-22', 5, NULL, NULL, 1, 2, NULL),
+(8, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-23', 5, NULL, NULL, 1, 2, NULL),
+(9, '2025-04-15 22:10:24.102351', '2025-04-15 22:10:24.102351', NULL, '2025-04-24', 5, NULL, NULL, 1, 2, NULL),
+(10, '2025-04-15 22:10:24.103393', '2025-04-15 22:10:24.103393', NULL, '2025-04-25', 5, NULL, NULL, 1, 2, NULL),
+(11, '2025-04-15 22:10:24.103393', '2025-04-15 22:10:24.103393', NULL, '2025-04-26', 5, NULL, NULL, 1, 2, NULL),
+(12, '2025-04-15 22:10:24.103393', '2025-04-15 22:10:24.103393', NULL, '2025-04-27', 5, NULL, NULL, 1, 2, NULL),
+(13, '2025-04-15 22:10:24.103393', '2025-04-15 22:10:24.103393', NULL, '2025-04-28', 5, NULL, NULL, 1, 2, NULL),
+(14, '2025-04-15 22:10:24.103393', '2025-04-15 22:10:24.103393', NULL, '2025-04-29', 5, NULL, NULL, 1, 2, NULL),
+(15, '2025-04-15 22:10:24.103393', '2025-04-15 22:10:24.103393', NULL, '2025-04-30', 5, NULL, NULL, 1, 2, NULL),
+(16, '2025-04-16 12:13:49.898226', '2025-04-16 12:13:49.898226', NULL, '2025-04-16', 6, 'Updated due to booking #1', NULL, 1, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -2348,10 +2025,10 @@ CREATE TABLE `rooms_category` (
   `created_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   `deleted_at` datetime(6) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` longtext DEFAULT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
-  `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -2359,15 +2036,15 @@ CREATE TABLE `rooms_category` (
 -- Dumping data for table `rooms_category`
 --
 
-INSERT INTO `rooms_category` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `description`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(1, '2025-03-01 19:18:19.935767', '2025-03-01 19:18:46.244395', NULL, 'vip', 'شسيسشيش', NULL, 1, NULL),
-(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'قياسي', 'غرف مريحة بمواصفات أساسية', 2, 1, 2),
-(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'جناح', 'أجنحة واسعة مع منطقة جلوس منفصلة', 2, 1, 2),
-(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة ديلوكس', 'غرف بمساحة أكبر وتجهيزات إضافية', 3, 2, 3),
-(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'غرفة مطلة على البحر', 'غرف تتمتع بإطلالة مباشرة على البحر', 3, 2, 3),
-(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'كوخ بيئي', 'أكواخ بسيطة وصديقة للبيئة', 6, 4, 6),
-(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'قياسي', 'غرف مريحة بمواصفات أساسية', 3, 2, 3),
-(8, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'قياسي', 'غرف مريحة بمواصفات أساسية', 6, 4, 6);
+INSERT INTO `rooms_category` (`id`, `created_at`, `updated_at`, `deleted_at`, `status`, `name`, `description`, `created_by_id`, `updated_by_id`) VALUES
+(1, '2025-03-01 19:18:19.935767', '2025-03-01 19:18:46.244395', NULL, 0, 'vip', 'شسيسشيش', NULL, NULL),
+(2, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'قياسي', 'غرف مريحة بمواصفات أساسية', 2, 2),
+(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'جناح', 'أجنحة واسعة مع منطقة جلوس منفصلة', 2, 2),
+(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'غرفة ديلوكس', 'غرف بمساحة أكبر وتجهيزات إضافية', 3, 3),
+(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'غرفة مطلة على البحر', 'غرف تتمتع بإطلالة مباشرة على البحر', 3, 3),
+(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'كوخ بيئي', 'أكواخ بسيطة وصديقة للبيئة', 6, 6),
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'قياسي2', 'غرف مريحة بمواصفات أساسية', 3, 3),
+(8, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 0, 'قياسي1', 'غرف مريحة بمواصفات أساسية', 6, 6);
 
 -- --------------------------------------------------------
 
@@ -2400,7 +2077,8 @@ INSERT INTO `rooms_roomimage` (`id`, `created_at`, `updated_at`, `deleted_at`, `
 (4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/sheba_std_double_2.jpg', 0, 'حمام الغرفة القياسية المزدوجة', 2, 1, 2, 2),
 (5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/aden_seaview_1.jpg', 1, 'إطلالة من غرفة مطلة على البحر في فندق أمواج عدن', 3, 2, 5, 3),
 (6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/aden_seaview_2.jpg', 0, 'سرير مزدوج في غرفة مطلة على البحر', 3, 2, 5, 3),
-(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/socotra_eco_hut_1.jpg', 1, 'كوخ بيئي مزدوج في نزل سقطرى', 6, 4, 6, 6);
+(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'images/rooms/socotra_eco_hut_1.jpg', 1, 'كوخ بيئي مزدوج في نزل سقطرى', 6, 4, 6, 6),
+(8, '2025-04-15 22:04:49.657032', '2025-04-15 22:04:49.657032', NULL, 'room_images/balcony-cabin.jpg', 0, 'sssss', 1, 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -2421,7 +2099,7 @@ CREATE TABLE `rooms_roomprice` (
   `hotel_id` bigint(20) NOT NULL,
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 --
 -- Dumping data for table `rooms_roomprice`
@@ -2432,43 +2110,8 @@ INSERT INTO `rooms_roomprice` (`id`, `created_at`, `updated_at`, `deleted_at`, `
 (2, '2025-04-04 21:50:12.631031', '2025-04-04 21:50:28.360614', NULL, '2025-04-04', '2025-04-05', 330.00, 0, 1, 2, 1, 1),
 (3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-04-15', '2025-12-31', 50000.00, 0, 2, 1, 2, 2),
 (4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-04-15', '2025-12-31', 75000.00, 0, 3, 2, 5, 3),
-(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-07-01', '2025-08-31', 55000.00, 1, 2, 1, 2, 2),
+(5, '2025-04-15 01:56:01.000000', '2025-04-16 12:03:31.293556', NULL, '2025-04-16', '2025-05-21', 55000.00, 1, 2, 1, 2, 1),
 (6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, '2025-04-15', '2025-12-31', 40000.00, 0, 6, 4, 6, 6);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `rooms_roomstatus`
---
-
-CREATE TABLE `rooms_roomstatus` (
-  `id` bigint(20) NOT NULL,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  `deleted_at` datetime(6) DEFAULT NULL,
-  `code` varchar(50) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `description` longtext DEFAULT NULL,
-  `is_available` tinyint(1) NOT NULL,
-  `created_by_id` bigint(20) DEFAULT NULL,
-  `hotel_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `rooms_roomstatus`
---
-
-INSERT INTO `rooms_roomstatus` (`id`, `created_at`, `updated_at`, `deleted_at`, `code`, `name`, `description`, `is_available`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(3, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'AV', 'متاحة', 'الغرفة جاهزة للحجز', 1, 2, 1, 2),
-(4, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OC', 'مشغولة', 'الغرفة مسكونة حالياً', 0, 2, 1, 2),
-(5, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'CL', 'تحت التنظيف', 'الغرفة قيد التنظيف', 0, 2, 1, 2),
-(6, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OO', 'خارج الخدمة', 'الغرفة غير متاحة للصيانة', 0, 2, 1, 2),
-(7, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'AV', 'متاحة', 'الغرفة جاهزة للحجز', 1, 3, 2, 3),
-(8, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OC', 'مشغولة', 'الغرفة مسكونة حالياً', 0, 3, 2, 3),
-(9, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'CL', 'تحت التنظيف', 'الغرفة قيد التنظيف', 0, 3, 2, 3),
-(10, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'AV', 'متاحة', 'الغرفة جاهزة للحجز', 1, 6, 4, 6),
-(11, '2025-04-15 01:56:01.000000', '2025-04-15 01:56:01.000000', NULL, 'OC', 'مشغولة', 'الغرفة مسكونة حالياً', 0, 6, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -2493,7 +2136,7 @@ CREATE TABLE `rooms_roomtype` (
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 --
 -- Dumping data for table `rooms_roomtype`
@@ -2522,6 +2165,7 @@ CREATE TABLE `services_coupon` (
   `deleted_at` datetime(6) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `code` varchar(255) NOT NULL,
+  `description` longtext NOT NULL,
   `quantity` int(11) NOT NULL,
   `min_purchase_amount` int(11) NOT NULL,
   `expired_date` date NOT NULL,
@@ -2530,17 +2174,8 @@ CREATE TABLE `services_coupon` (
   `status` tinyint(1) NOT NULL,
   `created_by_id` bigint(20) DEFAULT NULL,
   `hotel_id` bigint(20) NOT NULL,
-  `updated_by_id` bigint(20) DEFAULT NULL,
-  `description` longtext NOT NULL
+  `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `services_coupon`
---
-
-INSERT INTO `services_coupon` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `code`, `quantity`, `min_purchase_amount`, `expired_date`, `discount_type`, `discount`, `status`, `created_by_id`, `hotel_id`, `updated_by_id`, `description`) VALUES
-(1, '2025-04-02 00:00:51.028703', '2025-04-02 00:01:29.126328', NULL, 'ahmed', 'a1', 9, 100, '2025-04-15', 'amount', 150, 1, 1, 1, 1, 'sadas'),
-(2, '2025-04-02 00:12:05.651295', '2025-04-02 00:12:05.651295', NULL, 'new ---', 'sms', 10, 30, '2025-04-10', 'amount', 10, 1, 1, 1, 1, '<p><big>عرض جديد بمناسبه العيد بكود خصم <strong><span style=\"color:#e74c3c\">sms&nbsp; </span></strong><img alt=\"heart\" src=\"http://127.0.0.1:8000/static/ckeditor/ckeditor/plugins/smiley/images/heart.png\" style=\"height:23px; width:23px\" title=\"heart\" /><img alt=\"yes\" src=\"http://127.0.0.1:8000/static/ckeditor/ckeditor/plugins/smiley/images/thumbs_up.png\" style=\"height:23px; width:23px\" title=\"yes\" />تنتهي نهايه العام 2025</big></p>');
 
 -- --------------------------------------------------------
 
@@ -2561,14 +2196,6 @@ CREATE TABLE `services_hotelservice` (
   `hotel_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `services_hotelservice`
---
-
-INSERT INTO `services_hotelservice` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `description`, `icon`, `is_active`, `created_by_id`, `hotel_id`, `updated_by_id`) VALUES
-(1, '2025-04-06 10:00:18.817702', '2025-04-06 10:00:18.817702', NULL, 'wifi', 'goood', 'service/hotel/icon/infor.jpg', 1, 1, 1, 1),
-(2, '2025-04-06 10:00:44.573600', '2025-04-06 10:00:44.573600', NULL, 'pool', 'pooling', 'service/hotel/icon/avatar.jpeg', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -2591,14 +2218,6 @@ CREATE TABLE `services_roomtypeservice` (
   `room_type_id` bigint(20) NOT NULL,
   `updated_by_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `services_roomtypeservice`
---
-
-INSERT INTO `services_roomtypeservice` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `description`, `is_active`, `icon`, `additional_fee`, `created_by_id`, `hotel_id`, `room_type_id`, `updated_by_id`) VALUES
-(1, '2025-04-06 10:01:55.789614', '2025-04-06 10:01:55.789614', NULL, 'free message', 'free message', 1, 'service/roomtype/icon/client-logo4.png', 10, 1, 1, 1, 1),
-(2, '2025-04-06 10:02:22.060206', '2025-04-06 10:02:22.060206', NULL, 'good view', 'good view', 1, 'service/roomtype/icon/seat1.png', 0, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -2675,7 +2294,7 @@ CREATE TABLE `social_auth_partial` (
   `next_step` smallint(5) UNSIGNED NOT NULL CHECK (`next_step` >= 0),
   `backend` varchar(32) NOT NULL,
   `timestamp` datetime(6) NOT NULL,
-  `data` longtext NOT NULL CHECK (json_valid(`data`))
+  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`data`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -2691,8 +2310,15 @@ CREATE TABLE `social_auth_usersocialauth` (
   `user_id` bigint(20) NOT NULL,
   `created` datetime(6) NOT NULL,
   `modified` datetime(6) NOT NULL,
-  `extra_data` longtext NOT NULL CHECK (json_valid(`extra_data`))
+  `extra_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`extra_data`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `social_auth_usersocialauth`
+--
+
+INSERT INTO `social_auth_usersocialauth` (`id`, `provider`, `uid`, `user_id`, `created`, `modified`, `extra_data`) VALUES
+(25, 'google-oauth2', 'telegram1imo@gmail.com', 59, '2025-04-16 14:38:41.676930', '2025-04-16 14:38:41.684862', '{\"auth_time\": 1744814321, \"expires\": 3598, \"token_type\": \"Bearer\", \"first_name\": \"\\u0645\\u0627\\u0631\\u0633 - Mars\", \"last_name\": \"\", \"gender\": null, \"birthday\": null, \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocKksxVfE_3RHUvFZftePpn2f01-HtmaEZQEyndPqpo7xHeo3SE=s96-c\", \"access_token\": \"ya29.a0AZYkNZjDhlTI39fEJmxJgHQuXI3YuzTD9vZpjbO-txDiviALf9hAG6ejAUZYkaYg4Mp7Lvo4x8X6pLQ4Fb3Oz5iqC46XPb2SbiSo_4XdeIRwQm9z5DdBP0bgOKdG-a4OrOe_MgNJ2Grz2qspwbfSuItAInAClCbN25fTWPj92AaCgYKAdMSARQSFQHGX2MiY3_m6iV9nOTk_oORZBk6aQ0177\"}');
 
 -- --------------------------------------------------------
 
@@ -2721,16 +2347,6 @@ CREATE TABLE `token_blacklist_outstandingtoken` (
   `jti` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `token_blacklist_outstandingtoken`
---
-
-INSERT INTO `token_blacklist_outstandingtoken` (`id`, `token`, `created_at`, `expires_at`, `user_id`, `jti`) VALUES
-(1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NDQ2NTczMSwiaWF0IjoxNzQzODYwOTMxLCJqdGkiOiIxY2Y0NGNiZmE3MzQ0ZGM1ODc0YjcxZmUxODczNzgxMyIsInVzZXJfaWQiOjF9.2xW-D2AulXtYC9LAW2OEAU0S5qmHnVMuacQl-mYrLN8', '2025-04-05 13:48:51.985296', '2025-04-12 13:48:51.000000', 1, '1cf44cbfa7344dc5874b71fe18737813'),
-(2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NDY2MjM4NywiaWF0IjoxNzQ0MDU3NTg3LCJqdGkiOiJhMWJmMDBhZmEwMTk0NDc2OWJkOTIzOWI1NGEzZjE3NCIsInVzZXJfaWQiOjF9.HAx5vW6jcvn4TjM_t47K05MUiUCzT6XtKOnz8Ei84dY', '2025-04-07 20:26:27.401240', '2025-04-14 20:26:27.000000', 1, 'a1bf00afa01944769bd9239b54a3f174'),
-(3, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NTE3ODg1MywiaWF0IjoxNzQ0NTc0MDUzLCJqdGkiOiI4M2M1YjM0OWJkYzE0YTYzOGM4OWIxZGQ4N2ZiNmYwZSIsInVzZXJfaWQiOjF9.rvQuuVnWCjvZBSayUzMPQFdKgCwpX5YFKvqW15knL0s', '2025-04-13 19:54:13.205594', '2025-04-20 19:54:13.000000', 1, '83c5b349bdc14a638c89b1dd87fb6f0e'),
-(4, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NTIzNjMxMywiaWF0IjoxNzQ0NjMxNTEzLCJqdGkiOiIyMzljNmY2NDI5NmY0MmEwYmIyYTg2OTU5M2YyODU0NyIsInVzZXJfaWQiOjF9.ciwMZrPtWZEXcyYwE1vqX1ggp_5E7rB25CGYw-K_wv4', '2025-04-14 11:51:53.854538', '2025-04-21 11:51:53.000000', 1, '239c6f64296f42a0bb2a869593f28547');
-
 -- --------------------------------------------------------
 
 --
@@ -2744,7 +2360,7 @@ CREATE TABLE `users_activitylog` (
   `table_name` varchar(100) NOT NULL,
   `record_id` int(11) NOT NULL,
   `action` varchar(50) NOT NULL,
-  `details` longtext DEFAULT NULL CHECK (json_valid(`details`)),
+  `details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`details`)),
   `ip_address` char(39) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -2774,18 +2390,18 @@ CREATE TABLE `users_customuser` (
   `gender` varchar(10) DEFAULT NULL,
   `birth_date` date DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
-  `chield_id` bigint(20) DEFAULT NULL,
-  `chart_id` bigint(20) DEFAULT NULL,
   `otp_code` varchar(6) DEFAULT NULL,
-  `otp_created_at` datetime(6) DEFAULT NULL
+  `otp_created_at` datetime(6) DEFAULT NULL,
+  `chart_id` bigint(20) DEFAULT NULL,
+  `chield_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users_customuser`
 --
 
-INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `chield_id`, `chart_id`, `otp_code`, `otp_created_at`) VALUES
-(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-15 08:59:47.790875', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
+INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `date_joined`, `created_at`, `updated_at`, `user_type`, `phone`, `image`, `gender`, `birth_date`, `is_active`, `otp_code`, `otp_created_at`, `chart_id`, `chield_id`) VALUES
+(1, 'pbkdf2_sha256$600000$WiLeYKRGdIKtWxdmTAtOmU$KTRRkjHfaMrfsm0s9x9BjNoJSbF/vkwNCqNRJNelKoI=', '2025-04-16 13:26:08.204201', 1, 'a', '', '', 'a@a.com', 1, '2025-03-20 20:53:38.214703', '2025-03-20 20:53:39.041969', '2025-03-20 20:53:39.041969', '', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
 (2, 'pbkdf2_sha256$600000$mRv4uTHEeVZ15lsGse5C0D$hF0CKJC3qr2/+yCUM252q7NnSKiBR3C+X1CTuLAv7WI=', '2025-03-22 19:47:22.367954', 0, 'b', '', '', 'b@b.com', 1, '2025-03-21 12:48:09.506849', '2025-03-21 12:48:10.018701', '2025-03-22 19:21:25.333335', 'hotel_manager', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
 (3, 'pbkdf2_sha256$600000$HDDXD5Lhdd8rcHhLG8UYVl$Q8FJflDelq1YQWUDvzR/2zhtU7X8maa5nF3lcjo0XlA=', '2025-03-01 22:40:14.016174', 0, 'motasem', '', '', 'motasem@motasem.com', 0, '2025-03-01 22:21:39.232835', '2025-03-01 22:21:41.258606', '2025-03-01 22:21:41.258606', 'user', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
 (4, 'pbkdf2_sha256$600000$69WafNQFxgQDN0ybf7EQYW$qearY4fO/keI64yiOKwtTlw4JsxM0IK+xRJFrCut2lo=', '2025-03-04 19:13:37.238210', 0, 'kakaka', '', '', 'kakaka@kakaka.kakaka', 0, '2025-03-04 19:06:56.842290', '2025-03-04 19:06:58.774589', '2025-03-04 19:06:58.774589', 'user', '', '', NULL, NULL, 1, NULL, NULL, NULL, NULL),
@@ -2804,7 +2420,9 @@ INSERT INTO `users_customuser` (`id`, `password`, `last_login`, `is_superuser`, 
 (21, 'pbkdf2_sha256$600000$w6YKTc69n9HZ2zgYTs3zWd$8OSkKjnCDWKJ0vSE95QIo2GkLr59wYufN/SScIh77ik=', '2025-04-14 09:22:48.126297', 0, 'aslkdjaskldj', 'jskdhakhs', 'klasjdlaj', 'aslkdjaskldj@asdkhask.com', 0, '2025-04-14 09:22:47.610283', '2025-04-14 09:22:48.126297', '2025-04-14 09:22:48.126297', 'hotel_manager', '54545615165155', 'users/2025/04/14/airline-img7.png', 'Male', '2000-04-17', 1, NULL, NULL, NULL, NULL),
 (22, 'pbkdf2_sha256$600000$WowJQYcWmNPQRq75m9DBwD$sFpU5VAB1yykG0t+eYrClT1NP0FyKbed5QjN/eLpLuw=', NULL, 0, 'aksjhd888', 'askldhal', '51sa65d1', 'aksjhd888@gmail.com', 0, '2025-04-14 09:24:54.398287', '2025-04-14 09:24:54.906295', '2025-04-14 09:24:54.906295', 'hotel_manager', '156161616516', 'users/2025/04/14/alamo.png', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
 (23, 'pbkdf2_sha256$600000$lh8yo0GMTQ6nPaGh4diOpi$05NWcRu04df9nfhdFEp8QYCPan1HIx54H9ojRG7bqGg=', '2025-04-14 09:36:49.911434', 0, 'sldasjk7888', 'ahsdajk', '5as5d5as', 'sldasjk7888@gmail.com', 0, '2025-04-14 09:36:49.383620', '2025-04-14 09:36:49.901501', '2025-04-14 09:36:49.901501', 'hotel_manager', '94861564564564', 'users/2025/04/14/balcony-cabin_55yeNlS.jpg', 'Male', '2000-11-11', 1, NULL, NULL, NULL, NULL),
-(24, 'pbkdf2_sha256$600000$9QN4xmuJkVLcJFk99RYcpL$rOJkveBdmC4qHWGvR8TFoVMyLmh0nhdyy4myMntSRvU=', '2025-04-14 11:20:16.025710', 0, 'aklsdj888888888', 'akshdkj', 'askdj8888', 'kwownon@gmail.com', 0, '2025-04-14 09:56:33.354379', '2025-04-14 09:56:33.885576', '2025-04-14 10:20:42.993987', 'customer', '11111111113', 'users/2025/04/14/airline-img3.png', 'Male', '2000-02-11', 1, NULL, 53, NULL, NULL);
+(26, 'pbkdf2_sha256$600000$hZUmsvhJFisnXWaFeAlQf5$GrvGT1Zw0gbrfWXGcgwLaHwKg3+OXlwA1pGZC1rw478=', '2025-04-16 12:20:30.651886', 0, 'as888aua', 'ajkhdk', 'kajshdask', 'kjashd654@asd.com', 0, '2025-04-16 12:20:30.120259', '2025-04-16 12:20:30.638306', '2025-04-16 12:20:30.638306', 'customer', '7817171717', 'users/2025/04/16/balcony-cabin.jpg', 'Male', '2000-11-11', 1, NULL, NULL, 54, NULL),
+(27, 'pbkdf2_sha256$600000$Y85SoKwjr8uGSY4BPSRNt0$KTvVe8q8lECZKcUDEXn6JFcPbH+xF4+ILIFGUllRs30=', '2025-04-16 12:21:28.848034', 0, 'test444', 'test', 'tset', 'testt44@gma.com', 0, '2025-04-16 12:21:28.296690', '2025-04-16 12:21:28.827509', '2025-04-16 12:21:28.827509', 'customer', '781717609', 'users/2025/04/16/airline-img7.png', 'Female', '2002-11-11', 1, NULL, NULL, 55, NULL),
+(59, '!GtAs4iBJ35YjOL9uuD6KYz2vriON7450105XrMWn', '2025-04-16 14:38:41.714787', 0, 'telegram1imo', 'مارس - Mars', '', 'telegram1imo@gmail.com', 0, '2025-04-16 14:38:41.668958', '2025-04-16 14:38:41.669953', '2025-04-16 14:38:41.746499', 'customer', '', 'https://lh3.googleusercontent.com/a/ACg8ocKksxVfE_3RHUvFZftePpn2f01-HtmaEZQEyndPqpo7xHeo3SE=s96-c', NULL, NULL, 1, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2817,13 +2435,6 @@ CREATE TABLE `users_customuser_groups` (
   `customuser_id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users_customuser_groups`
---
-
-INSERT INTO `users_customuser_groups` (`id`, `customuser_id`, `group_id`) VALUES
-(1, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -2983,8 +2594,8 @@ ALTER TABLE `bookings_extensionmovement`
 ALTER TABLE `bookings_guest`
   ADD PRIMARY KEY (`id`),
   ADD KEY `bookings_guest_booking_id_b8c4c07b_fk_bookings_booking_id` (`booking_id`),
-  ADD KEY `bookings_guest_hotel_id_333c72e5_fk_HotelManagement_hotel_id` (`hotel_id`),
   ADD KEY `bookings_guest_created_by_id_0cc0af08_fk_users_customuser_id` (`created_by_id`),
+  ADD KEY `bookings_guest_hotel_id_333c72e5_fk_HotelManagement_hotel_id` (`hotel_id`),
   ADD KEY `bookings_guest_updated_by_id_7fb9973c_fk_users_customuser_id` (`updated_by_id`);
 
 --
@@ -3066,13 +2677,6 @@ ALTER TABLE `django_migrations`
 ALTER TABLE `django_session`
   ADD PRIMARY KEY (`session_key`),
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
-
---
--- Indexes for table `django_site`
---
-ALTER TABLE `django_site`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `django_site_domain_a2e37b91_uniq` (`domain`);
 
 --
 -- Indexes for table `home_contactmessage`
@@ -3220,8 +2824,8 @@ ALTER TABLE `hotelmanagement_phone`
 --
 ALTER TABLE `notifications_notifications`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `notifications_notifi_sender_id_c6ee4409_fk_users_cus` (`sender_id`),
   ADD KEY `notifications_notifi_created_by_id_17bcaf8b_fk_users_cus` (`created_by_id`),
+  ADD KEY `notifications_notifi_sender_id_c6ee4409_fk_users_cus` (`sender_id`),
   ADD KEY `notifications_notifi_updated_by_id_cb05afb1_fk_users_cus` (`updated_by_id`),
   ADD KEY `notifications_notifi_user_id_429b0a5e_fk_users_cus` (`user_id`);
 
@@ -3350,7 +2954,6 @@ ALTER TABLE `rooms_availability`
   ADD PRIMARY KEY (`id`),
   ADD KEY `rooms_availability_created_by_id_168a5943_fk_users_customuser_id` (`created_by_id`),
   ADD KEY `rooms_availability_hotel_id_e9028aaa_fk_HotelManagement_hotel_id` (`hotel_id`),
-  ADD KEY `rooms_availability_room_status_id_1add85a0_fk_rooms_roo` (`room_status_id`),
   ADD KEY `rooms_availability_room_type_id_ee87e18f_fk_rooms_roomtype_id` (`room_type_id`),
   ADD KEY `rooms_availability_updated_by_id_f8d6a9d2_fk_users_customuser_id` (`updated_by_id`);
 
@@ -3359,7 +2962,7 @@ ALTER TABLE `rooms_availability`
 --
 ALTER TABLE `rooms_category`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_hotel_category` (`hotel_id`,`name`),
+  ADD UNIQUE KEY `unique_hotel_category` (`name`),
   ADD KEY `rooms_category_created_by_id_c539b61c_fk_users_customuser_id` (`created_by_id`),
   ADD KEY `rooms_category_updated_by_id_85bbbd5a_fk_users_customuser_id` (`updated_by_id`);
 
@@ -3382,15 +2985,6 @@ ALTER TABLE `rooms_roomprice`
   ADD KEY `rooms_roomprice_hotel_id_bfc064b3_fk_HotelManagement_hotel_id` (`hotel_id`),
   ADD KEY `rooms_roomprice_room_type_id_b8f396b9_fk_rooms_roomtype_id` (`room_type_id`),
   ADD KEY `rooms_roomprice_updated_by_id_20da56f3_fk_users_customuser_id` (`updated_by_id`);
-
---
--- Indexes for table `rooms_roomstatus`
---
-ALTER TABLE `rooms_roomstatus`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_hotel_status_code` (`hotel_id`,`code`),
-  ADD KEY `rooms_roomstatus_created_by_id_50bd38ee_fk_users_customuser_id` (`created_by_id`),
-  ADD KEY `rooms_roomstatus_updated_by_id_8cedb596_fk_users_customuser_id` (`updated_by_id`);
 
 --
 -- Indexes for table `rooms_roomtype`
@@ -3509,8 +3103,8 @@ ALTER TABLE `users_activitylog`
 ALTER TABLE `users_customuser`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
-  ADD KEY `users_customuser_chield_id_8f3dc45a_fk_users_customuser_id` (`chield_id`),
-  ADD KEY `users_customuser_chart_id_e799e924_fk_accounts_` (`chart_id`);
+  ADD KEY `users_customuser_chart_id_e799e924_fk_accounts_` (`chart_id`),
+  ADD KEY `users_customuser_chield_id_8f3dc45a_fk_users_customuser_id` (`chield_id`);
 
 --
 -- Indexes for table `users_customuser_groups`
@@ -3536,7 +3130,7 @@ ALTER TABLE `users_customuser_user_permissions`
 -- AUTO_INCREMENT for table `accounts_chartofaccounts`
 --
 ALTER TABLE `accounts_chartofaccounts`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `accounts_journalentry`
@@ -3554,13 +3148,13 @@ ALTER TABLE `auth_group`
 -- AUTO_INCREMENT for table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=553;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
 
 --
 -- AUTO_INCREMENT for table `blog_category`
@@ -3596,43 +3190,43 @@ ALTER TABLE `blog_tag`
 -- AUTO_INCREMENT for table `bookings_booking`
 --
 ALTER TABLE `bookings_booking`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookingdetail`
 --
 ALTER TABLE `bookings_bookingdetail`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bookings_bookinghistory`
 --
 ALTER TABLE `bookings_bookinghistory`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bookings_extensionmovement`
 --
 ALTER TABLE `bookings_extensionmovement`
-  MODIFY `movement_number` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `movement_number` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bookings_guest`
 --
 ALTER TABLE `bookings_guest`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `customer_favourites`
 --
 ALTER TABLE `customer_favourites`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `django_celery_beat_clockedschedule`
@@ -3668,19 +3262,13 @@ ALTER TABLE `django_celery_beat_solarschedule`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
-
---
--- AUTO_INCREMENT for table `django_site`
---
-ALTER TABLE `django_site`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
 
 --
 -- AUTO_INCREMENT for table `home_contactmessage`
@@ -3800,7 +3388,7 @@ ALTER TABLE `hotelmanagement_phone`
 -- AUTO_INCREMENT for table `notifications_notifications`
 --
 ALTER TABLE `notifications_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `oauth2_provider_accesstoken`
@@ -3848,13 +3436,13 @@ ALTER TABLE `payments_hotelpaymentmethod`
 -- AUTO_INCREMENT for table `payments_payment`
 --
 ALTER TABLE `payments_payment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `payments_paymenthistory`
 --
 ALTER TABLE `payments_paymenthistory`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `payments_paymentoption`
@@ -3866,19 +3454,19 @@ ALTER TABLE `payments_paymentoption`
 -- AUTO_INCREMENT for table `reviews_hotelreview`
 --
 ALTER TABLE `reviews_hotelreview`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews_roomreview`
 --
 ALTER TABLE `reviews_roomreview`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rooms_availability`
 --
 ALTER TABLE `rooms_availability`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `rooms_category`
@@ -3890,43 +3478,37 @@ ALTER TABLE `rooms_category`
 -- AUTO_INCREMENT for table `rooms_roomimage`
 --
 ALTER TABLE `rooms_roomimage`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `rooms_roomprice`
 --
 ALTER TABLE `rooms_roomprice`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `rooms_roomstatus`
---
-ALTER TABLE `rooms_roomstatus`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rooms_roomtype`
 --
 ALTER TABLE `rooms_roomtype`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `services_coupon`
 --
 ALTER TABLE `services_coupon`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `services_hotelservice`
 --
 ALTER TABLE `services_hotelservice`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `services_roomtypeservice`
 --
 ALTER TABLE `services_roomtypeservice`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `service_offers`
@@ -3962,7 +3544,7 @@ ALTER TABLE `social_auth_partial`
 -- AUTO_INCREMENT for table `social_auth_usersocialauth`
 --
 ALTER TABLE `social_auth_usersocialauth`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `token_blacklist_blacklistedtoken`
@@ -3974,7 +3556,7 @@ ALTER TABLE `token_blacklist_blacklistedtoken`
 -- AUTO_INCREMENT for table `token_blacklist_outstandingtoken`
 --
 ALTER TABLE `token_blacklist_outstandingtoken`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users_activitylog`
@@ -3986,13 +3568,13 @@ ALTER TABLE `users_activitylog`
 -- AUTO_INCREMENT for table `users_customuser`
 --
 ALTER TABLE `users_customuser`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_groups`
 --
 ALTER TABLE `users_customuser_groups`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users_customuser_user_permissions`
@@ -4335,7 +3917,6 @@ ALTER TABLE `reviews_roomreview`
 ALTER TABLE `rooms_availability`
   ADD CONSTRAINT `rooms_availability_created_by_id_168a5943_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
   ADD CONSTRAINT `rooms_availability_hotel_id_e9028aaa_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
-  ADD CONSTRAINT `rooms_availability_room_status_id_1add85a0_fk_rooms_roo` FOREIGN KEY (`room_status_id`) REFERENCES `rooms_roomstatus` (`id`),
   ADD CONSTRAINT `rooms_availability_room_type_id_ee87e18f_fk_rooms_roomtype_id` FOREIGN KEY (`room_type_id`) REFERENCES `rooms_roomtype` (`id`),
   ADD CONSTRAINT `rooms_availability_updated_by_id_f8d6a9d2_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
 
@@ -4344,7 +3925,6 @@ ALTER TABLE `rooms_availability`
 --
 ALTER TABLE `rooms_category`
   ADD CONSTRAINT `rooms_category_created_by_id_c539b61c_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
-  ADD CONSTRAINT `rooms_category_hotel_id_606560bc_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
   ADD CONSTRAINT `rooms_category_updated_by_id_85bbbd5a_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
 
 --
@@ -4364,14 +3944,6 @@ ALTER TABLE `rooms_roomprice`
   ADD CONSTRAINT `rooms_roomprice_hotel_id_bfc064b3_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
   ADD CONSTRAINT `rooms_roomprice_room_type_id_b8f396b9_fk_rooms_roomtype_id` FOREIGN KEY (`room_type_id`) REFERENCES `rooms_roomtype` (`id`),
   ADD CONSTRAINT `rooms_roomprice_updated_by_id_20da56f3_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
-
---
--- Constraints for table `rooms_roomstatus`
---
-ALTER TABLE `rooms_roomstatus`
-  ADD CONSTRAINT `rooms_roomstatus_created_by_id_50bd38ee_fk_users_customuser_id` FOREIGN KEY (`created_by_id`) REFERENCES `users_customuser` (`id`),
-  ADD CONSTRAINT `rooms_roomstatus_hotel_id_121c26cc_fk_HotelManagement_hotel_id` FOREIGN KEY (`hotel_id`) REFERENCES `hotelmanagement_hotel` (`id`),
-  ADD CONSTRAINT `rooms_roomstatus_updated_by_id_8cedb596_fk_users_customuser_id` FOREIGN KEY (`updated_by_id`) REFERENCES `users_customuser` (`id`);
 
 --
 -- Constraints for table `rooms_roomtype`

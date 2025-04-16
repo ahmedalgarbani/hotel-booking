@@ -25,12 +25,14 @@ def get_room_price(room):
     room_type = get_object_or_404(RoomType, id=room.id)
     return room_type.base_price
 
+from datetime import timedelta
+
 def calculate_total_cost(room, check_in_date, check_out_date, room_number):
     """
     Calculate the total cost for a room booking.
     """
     total_cost = 0.0
-    last_room_price = None  # Track last room price
+    last_room_price = None  
 
     delta = check_out_date - check_in_date
     num_days = delta.days
@@ -44,10 +46,11 @@ def calculate_total_cost(room, check_in_date, check_out_date, room_number):
         ).first()
         
         if room_price:
-            total_cost += float(room_price.price) * room_number
-            last_room_price = room_price.price  # Store last price
+            daily_cost = float(room_price.price) * room_number
+            last_room_price = room_price.price
         else:
-            total_cost += float(room.base_price) * room_number
-            last_room_price = room.base_price  # Default to base price
-
-    return total_cost, last_room_price  # Ensure second value is not None
+            daily_cost = float(room.base_price) * room_number
+            last_room_price = room.base_price
+        
+        total_cost += daily_cost 
+    return total_cost, last_room_price

@@ -5,7 +5,7 @@ from django.urls import reverse
 from HotelManagement.models import BaseModel
 from bookings.tasks import send_booking_end_reminders
 from notifications.models import Notifications
-from rooms.models import Availability, RoomStatus
+from rooms.models import Availability
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -209,7 +209,6 @@ class Booking(BaseModel):
                 room_type=self.room,
                 availability_date=today, 
                 defaults={
-                    "room_status": RoomStatus.objects.get(id=3),  
                     "available_rooms": max(0, self.room.rooms_count + change),  
                     "notes": f"Updated due to booking #{self.id}",
                 }

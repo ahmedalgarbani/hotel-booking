@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from HotelManagement.admin import ImageAdmin
 from HotelManagement.models import Hotel
 from api.admin import admin_site
-from .models import RoomType, Category, Availability, RoomPrice, RoomImage, RoomStatus
+from .models import RoomType, Category, Availability, RoomPrice, RoomImage
 
 class HotelManagerAdminMixin:
 
@@ -33,8 +33,7 @@ class HotelManagerAdminMixin:
                 kwargs["queryset"] = Hotel.objects.filter(Q(manager=request.user) | Q(manager=request.user.chield))
             elif db_field.name == "room_type":
                 kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
-            elif db_field.name == "room_status":
-                kwargs["queryset"] = RoomStatus.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+
             elif db_field.name == "category":
                 kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_price":
@@ -79,9 +78,9 @@ class HotelManagerAdminMixin:
         super().save_model(request, obj, form, change)
 
 class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
-    list_display = ['name', 'hotel', 'description', 'get_room_types_count']
-    search_fields = ['name', 'hotel__name']
-    list_filter = ['hotel']
+    list_display = ['name', 'status', 'description', 'get_room_types_count']
+    search_fields = ['name', 'status']
+    list_filter = ['status']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
@@ -92,7 +91,19 @@ class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         return obj.room_types.count()
     get_room_types_count.short_description = _("عدد أنواع الغرف")
 
+
+
+
+class RoomImageInline(admin.TabularInline):  
+    model = RoomImage
+    extra = 1
+    fields = ('image', 'is_main', 'caption')
+    verbose_name = "صورة الغرفة"
+    verbose_name_plural = "صور الغرفة"
+
+
 class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
+    inlines = [RoomImageInline]
     list_display = ['name', 'hotel', 'category', 'default_capacity', 'max_capacity', 'rooms_count', 'base_price', 'is_active', 'get_available_rooms', 'preview_image']
     search_fields = ['name', 'hotel__name']
     list_filter = ['hotel', 'category', 'is_active']
@@ -154,51 +165,12 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         )
     is_active.short_description = _("نشط")
 
-class RoomStatusAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
-    list_display = ['name', 'code', 'hotel', 'is_available', 'get_rooms_count']
-    search_fields = ['name', 'code', 'hotel__name']
-    list_filter = ['hotel', 'is_available']
-    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
-    def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
-        return self.readonly_fields
-
-    def get_rooms_count(self, obj):
-        today = timezone.now().date()
-        count = Availability.objects.filter(
-            room_status=obj,
-            availability_date=today
-        ).aggregate(total=Sum('available_rooms'))['total'] or 0
-        
-        return format_html(
-            '<div style="text-align: center;">'
-            '<span style="font-size: 1.2em; font-weight: bold;">{}</span>'
-            '<div style="color: #666; font-size: 0.8em;">غرفة</div>'
-            '</div>',
-            count
-        )
-    get_rooms_count.short_description = _("عدد الغرف اليوم")
-
-    def is_available(self, obj):
-        icon = '🟢' if obj.is_available else '🔴'
-        status = _("متاح") if obj.is_available else _("غير متاح")
-        color = '#28a745' if obj.is_available else '#dc3545'
-        return format_html(
-            '<div style="display: flex; align-items: center; gap: 5px;">'
-            '<span style="font-size: 1.2em;">{}</span>'
-            '<span style="color: {};">{}</span>'
-            '</div>',
-            icon, color, status
-        )
-    is_available.short_description = _("الحالة")
-    is_available.boolean = True
 
 class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     change_list_template = 'admin/rooms/availability/change_list.html'
-    list_display = ['room_type', 'hotel', 'availability_date', 'available_rooms', 'room_status', 'bulk_create_button']
+    list_display = ['room_type', 'hotel', 'availability_date', 'available_rooms',  'bulk_create_button']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'availability_date', 'room_type', 'room_status']
+    list_filter = ['hotel', 'availability_date', 'room_type']
     list_editable = ['available_rooms']
     date_hierarchy = 'availability_date'
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
@@ -237,7 +209,6 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 start_date = form.cleaned_data['start_date']
                 end_date = form.cleaned_data['end_date']
                 available_rooms = form.cleaned_data['available_rooms']
-                room_status = form.cleaned_data['room_status']
                 room_type = form.cleaned_data['room_type']
                 
                 current_date = start_date
@@ -250,7 +221,6 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                             room_type=room_type,
                             availability_date=current_date,
                             available_rooms=available_rooms,
-                            room_status=room_status
                         )
                     )
                     current_date += timedelta(days=1)
@@ -289,7 +259,6 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 availability_date=next_day,
                 defaults={
                     'available_rooms': availability.available_rooms,
-                    'room_status': availability.room_status
                 }
             )
         self.message_user(request, _("تم نسخ التوفر إلى اليوم التالي بنجاح"))
@@ -313,16 +282,12 @@ class BulkAvailabilityAdminForm(forms.Form):
         label=_("نوع الغرفة"),
         empty_label=None
     )
-    room_status = forms.ModelChoiceField(
-        queryset=RoomStatus.objects.all(),
-        label=_("حالة الغرفة")
-    )
+
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user and not user.is_superuser:
-            self.fields['room_status'].queryset = RoomStatus.objects.filter(hotel__manager=user)
             self.fields['room_type'].queryset = RoomType.objects.filter(hotel__manager=user)
 
 
@@ -386,5 +351,4 @@ admin_site.register(Category,CategoryAdmin)
 admin_site.register(RoomImage,RoomImageAdmin)
 admin_site.register(RoomPrice,RoomPriceAdmin)
 admin_site.register(Availability,AvailabilityAdmin)
-admin_site.register(RoomStatus,RoomStatusAdmin)
 admin_site.register(RoomType,RoomTypeAdmin)

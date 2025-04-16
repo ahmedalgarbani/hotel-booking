@@ -10,7 +10,7 @@ from bookings.models import Booking
 from customer.models import Favourites
 from notifications.models import Notifications
 from payments.models import HotelPaymentMethod, Payment
-from rooms.models import RoomType
+from rooms.models import Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
 from .serializers import BookingSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserSerializer
@@ -180,6 +180,10 @@ class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
     
 class RoomsViewSet(viewsets.ModelViewSet):
     queryset = RoomType.objects.all()
+    serializer_class = RoomsSerializer
+    
+class CategoriesViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
     serializer_class = RoomsSerializer
 
 

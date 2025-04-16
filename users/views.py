@@ -59,7 +59,7 @@ def register(request):
             chart = create_chart_of_account(
                 account_number=f"110{random_number}",
                 account_name=f"عملاء دائمون - {firstName} {lastName}",
-                account_type="Asset",
+                account_type="Assets",
                 account_balance=0,
                 account_parent=ChartOfAccounts.objects.get(account_number="1100"),
                 account_description="الحسابات المدينة / العملاء",
@@ -72,9 +72,9 @@ def register(request):
                 user_type='customer',
                 phone=phoneNumber,
                 first_name=firstName,
-                chart = chart,
                 last_name=lastName,
                 image=profileImage,
+                chart=chart,
                 gender=gender,
                 birth_date=birth_date
             )

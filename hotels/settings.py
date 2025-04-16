@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+        'accounts',
+
     'users',
     'HotelManagement',
     'rooms',
@@ -63,7 +65,6 @@ INSTALLED_APPS = [
     'notifications',
     'customer',
     'django_celery_beat',
-    'accounts',
     'ckeditor',
     'rest_framework.authtoken',
     'social_django',
@@ -73,7 +74,7 @@ INSTALLED_APPS = [
 
 ]
 
-# python manage.py makemigrations users HotelManagement rooms home bookings payments reviews services blog notifications customer
+# python manage.py makemigrations accounts users HotelManagement rooms home bookings payments reviews services blog notifications customer
 
 
 REST_FRAMEWORK = {
@@ -123,6 +124,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET  = os.getenv('GOOGLE_CLIENT_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI =("http://127.0.0.1:8000/auth/complete/google-oauth2/")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['profile', 'email', 'openid'] 
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name', 'gender', 'birthday', 'picture']
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:8000",
 #     "http://127.0.0.1:8000",
@@ -433,7 +436,6 @@ JAZZMIN_SETTINGS = {
         "rooms.RoomImage": "fas fa-image",
         "rooms.RoomAmenity": "fas fa-coffee",
         "rooms.RoomFeature": "fas fa-list-ul",
-        "rooms.RoomStatus": "fas fa-info-circle",
         "rooms.RoomPrice": "fas fa-tag",
         "rooms.RoomPriceHistory": "fas fa-history",
         "rooms.RoomDiscount": "fas fa-percent",

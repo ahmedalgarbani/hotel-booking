@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
+from HotelManagement.services import check_room_availability_full
 from rooms.models import RoomType
 from HotelManagement.models import Hotel
 from rooms.services import calculate_total_cost, check_room_availability
@@ -26,8 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 def process_booking(request, room_id):
-    room = get_object_or_404(RoomType, id=room_id)
-    
+    room = get_object_or_404(RoomType, id=room_id)    
     if request.method == "POST":
         check_in = request.POST.get("check_in_date")
         check_out = request.POST.get("check_out_date")
@@ -63,11 +63,12 @@ def process_booking(request, room_id):
             messages.error(request, f"السعة القصوى لهذا النوع من الغرف هي {room.max_capacity} أشخاص.")
             return redirect('rooms:room_detail', room_id=room_id)
 
-        is_available, message = check_room_availability(room, room.hotel, room_number)
+        # is_available, message = check_room_availability(room, room.hotel, room_number)
+        is_available, message = check_room_availability_full(today_date=today,hotel=room.hotel,room_type=room,  required_rooms=room_number,check_in=check_in_date,check_out=check_out_date)
+
         if not is_available:
             messages.error(request, message)
             return redirect('rooms:room_detail', room_id=room_id)
-
         total_price,room_price= calculate_total_cost(room, check_in_date, check_out_date, room_number)
 
         extra_services_details = []
@@ -84,7 +85,7 @@ def process_booking(request, room_id):
                     "name": service.name,
                     "price": service_price
                 })
-      
+        days_count = (check_out_date - check_in_date).days
         grand_total = total_price + extra_services_total
 
         from decimal import Decimal
@@ -94,6 +95,7 @@ def process_booking(request, room_id):
             "room_id": room_id,
             "check_in": check_in,
             "check_out": check_out,
+            "days":days_count,
             "room_price": float(room_price) if isinstance(room_price, Decimal) else room_price,
             "room_number": room_number,
             "adult_number": adult_number,

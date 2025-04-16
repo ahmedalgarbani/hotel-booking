@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from bookings.models import Booking
-from .models import RoomType, Availability, RoomStatus
+from .models import RoomType, Availability
 from django.utils import timezone
 
 # @receiver(post_save, sender=RoomType)

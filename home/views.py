@@ -25,11 +25,13 @@ from .models import ContactMessage
 from django.utils import timezone
 from datetime import timedelta
 # Create your views here.
+from social_django.models import UserSocialAuth
 
 
 
 
 def index(request):    
+    
     for key in list(request.session.keys()):
         if not key.startswith("_"): 
             del request.session[key]
@@ -213,6 +215,8 @@ def hotels(request):
     if request.user.is_authenticated:
         favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
         hotels = hotels.annotate(
+            review_count=Count('hotel_reviews'),
+        average_rating=Avg('hotel_reviews__rating_service'),
             is_favorite=Case(
                 When(id__in=favorite_hotel_ids, then=True),
                 default=False,
@@ -241,8 +245,11 @@ def hotels(request):
 
 
 from django.db.models import Count, Avg, Q, F, Subquery, OuterRef
+from django.utils.timezone import now
 
 def hotel_detail(request, slug):
+    today = now().date()
+
     hotel = get_object_or_404(
         Hotel.objects.annotate(
             review_count=Count('hotel_reviews', filter=Q(hotel_reviews__status=True)),
@@ -253,80 +260,77 @@ def hotel_detail(request, slug):
         ),
         slug=slug
     )
-    coupon = Coupon.objects.filter(hotel=hotel,
-                                   expired_date__gte=datetime.now().date(),
-                                #    quantity__gt=0,
-                                   status=True
-                                   ).order_by('-created_at').first()
+
+    coupon = Coupon.objects.filter(
+        hotel=hotel,
+        expired_date__gte=today,
+        status=True
+    ).order_by('-created_at').first()
 
     external_hotels = Hotel.objects.exclude(id=hotel.id)[:6]
+
     reviews = HotelReview.objects.filter(status=True)
 
-    today = datetime.now().date()
-
-    available_room_types = Availability.objects.filter(
-        hotel=hotel,
-        available_rooms__gt=0,
-    ).select_related('room_type')
-
-    # Subquery to get the latest 'created_at' per room_type
     latest_availability = Availability.objects.filter(
         hotel=hotel,
-        room_type=OuterRef('room_type'),
         available_rooms__gt=0,
-    ).order_by('-created_at')
+        availability_date__gt=today
+    ).values('room_type').annotate(latest_created_at=Max('created_at'))
 
-    # Annotate each availability record with the latest one for each room type
-    available_room_types = available_room_types.annotate(
-        latest_record=Subquery(latest_availability.values('created_at')[:1])
-    ).filter(
-        created_at=F('latest_record')
-    )
+    latest_dates = [item['latest_created_at'] for item in latest_availability]
 
-    for available_room in available_room_types:
+    available_rooms = Availability.objects.filter(
+        created_at__in=latest_dates
+    ).select_related('room_type')
+
+    hotel_room_types = set(RoomType.objects.filter(hotel=hotel))
+    unique_room_types = set()
+    filtered_available_rooms = []
+
+    for room in available_rooms:
+        room_type = room.room_type
+        if room_type in hotel_room_types and room_type not in unique_room_types:
+            unique_room_types.add(room_type)
+            filtered_available_rooms.append(room)
+
+    for room in filtered_available_rooms:
         room_price = RoomPrice.objects.filter(
-            room_type=available_room.room_type,
+            room_type=room.room_type,
             hotel=hotel,
             date_from__lte=today,
             date_to__gte=today
         ).order_by('-date_from').first()
-        available_room.services = available_room.room_type.room_services.filter(is_active=True).order_by('id')[:4]
 
-        if room_price:
-            available_room.price = room_price.price
-        else:
-            available_room.price = available_room.room_type.base_price  
+        room.services = room.room_type.room_services.filter(is_active=True).order_by('id')[:4]
+        room.price = room_price.price if room_price else room.room_type.base_price
 
     hotel_services = HotelService.objects.filter(hotel=hotel, is_active=True)
 
     if request.user.is_authenticated:
-        favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
+        favorite_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
         external_hotels = external_hotels.annotate(
             review_count=Count('hotel_reviews'),
-        average_rating=Avg('hotel_reviews__rating_service'),
+            average_rating=Avg('hotel_reviews__rating_service'),
             is_favorite=Case(
-                When(id__in=favorite_hotel_ids, then=True),
+                When(id__in=favorite_ids, then=True),
                 default=False,
                 output_field=BooleanField()
             )
         )
-       
-    try:
-        setting = Setting.objects.latest('id')
-    except Setting.DoesNotExist:
-        setting = None 
 
-    ctx = {
+    setting = Setting.objects.order_by('-id').first()
+
+    context = {
         'hotel': hotel,
         'coupon': coupon,
-        'setting':setting,
-        'available_room_types': available_room_types,
+        'setting': setting,
+        'available_room_types': filtered_available_rooms,
         'hotel_services': hotel_services,
         'reviews': reviews,
         'external_hotels': external_hotels,  
     }
 
-    return render(request, 'frontend/home/pages/hotel-single.html', ctx)
+    return render(request, 'frontend/home/pages/hotel-single.html', context)
 
 
 

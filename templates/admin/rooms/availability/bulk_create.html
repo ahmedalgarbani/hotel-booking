@@ -141,16 +141,7 @@
                 </div>
             </div>
 
-            <div class="form-row{% if form.room_status.errors %} errors{% endif %}">
-                <div>
-                    {{ form.room_status.errors }}
-                    {{ form.room_status.label_tag }}
-                    {{ form.room_status }}
-                    {% if form.room_status.help_text %}
-                    <div class="help">{{ form.room_status.help_text|safe }}</div>
-                    {% endif %}
-                </div>
-            </div>
+            
 
             <div class="preview-section" id="preview">
                 <h3>{% trans "معاينة" %}</h3>

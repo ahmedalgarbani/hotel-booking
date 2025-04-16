@@ -25,7 +25,6 @@ def create_hotel_staff_groups(sender, **kwargs):
                 'roomimage',
                 'roomprice',
                 'availability',
-                'roomstatus'
             ],  # للتحكم الكامل في الغرف
             'services': ['roomtypeservice', 'hotelservice'],  # للتحكم في خدمات الغرف
             'bookings': [

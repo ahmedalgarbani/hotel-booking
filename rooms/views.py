@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+
+from HotelManagement.services import check_room_availability_full
 from .forms import ReviewForm
 from .models import RoomType
 from reviews.models import RoomReview
@@ -133,94 +135,14 @@ def room_detail(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
     external_rooms = RoomType.objects.exclude(id=room_id)[:6]
     
-    if request.method == 'POST':
-        try:
-            # Get and validate form data
-            check_in_str = request.POST.get('check_in_date', '').strip()
-            check_out_str = request.POST.get('check_out_date', '').strip()
-            
-            try:
-                room_number = int(request.POST.get('room_number', 1))
-                adult_number = int(request.POST.get('adult_number', 1))
-            except ValueError:
-                messages.error(request, "يجب أن يكون عدد الغرف وعدد الأشخاص أرقاماً صحيحة.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            extra_services = request.POST.getlist('extra_services')
-            
-            if not check_in_str or not check_out_str:
-                messages.error(request, "يرجى تحديد تاريخ الدخول والخروج.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            try:
-                # Parse dates
-                check_in_date = datetime.strptime(check_in_str, '%Y-%m-%d').date()
-                check_out_date = datetime.strptime(check_out_str, '%Y-%m-%d').date()
-            except ValueError:
-                messages.error(request, "صيغة التاريخ غير صحيحة. يجب أن تكون بالشكل YYYY-MM-DD.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            # Validate dates
-            today = timezone.now().date()
-            if check_in_date < today:
-                messages.error(request, "لا يمكن اختيار تاريخ دخول في الماضي.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            if check_out_date <= check_in_date:
-                messages.error(request, "يجب أن يكون تاريخ الخروج بعد تاريخ الدخول.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            # Validate room number and adult number
-            if room_number < 1:
-                messages.error(request, "يجب أن يكون عدد الغرف 1 على الأقل.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            if adult_number > room.max_capacity:
-                messages.error(request, f"السعة القصوى لهذا النوع من الغرف هي {room.max_capacity} أشخاص.")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            is_available, message = check_room_availability(room, room.hotel, room_number)
-         
-            if not is_available:
-                messages.error(request, message)
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            try:
-                # Calculate total price
-                total_price = calculate_total_price(room, check_in_date, check_out_date, room_number, extra_services)
-            except Exception as e:
-                messages.error(request, f"حدث خطأ في حساب السعر: {str(e)}")
-                return redirect('rooms:room_detail', room_id=room_id)
-            
-            # Store booking data in session
-            request.session['booking_data'] = {
-                'room_id': room_id,
-                'hotel_id': room.hotel.id,
-                'check_in_date': check_in_str,
-                'check_out_date': check_out_str,
-                'room_number': room_number,
-                'adult_number': adult_number,
-                'extra_services': extra_services,
-                'total_price': str(total_price)
-            }
-            
-            # Redirect to checkout
-            return redirect('payments:process_booking', room_id=room.id)
-            
-        except Exception as e:
-            print(f"Error in room_detail: {str(e)}")  # Add logging
-            messages.error(request, f"حدث خطأ في معالجة البيانات: {str(e)}")
-            return redirect('rooms:room_detail', room_id=room_id)
-    
     image=RoomImage.objects.filter(room_type=room)
-    reviews_list = RoomReview.objects.filter(room_type=room, status=True).order_by('-created_at') # Fetch only active reviews and order them
+    reviews_list = RoomReview.objects.filter(room_type=room, status=True).order_by('-created_at')
     if reviews_list.exists():
         average_rating = reviews_list.aggregate(Avg('rating'))['rating__avg']
-        average_rating = round(average_rating, 1) if average_rating else 0.0 # Handle case where average_rating is None
+        average_rating = round(average_rating, 1) if average_rating else 0.0 
     else:
-        average_rating = 0.0 # Default to 0 if no reviews
+        average_rating = 0.0 
 
-    # Pagination for reviews
     page = request.GET.get('page')
     paginator = Paginator(reviews_list, 3) # Show 3 reviews per page, adjust as needed
     try:

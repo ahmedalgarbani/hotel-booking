@@ -5,7 +5,7 @@ from django.db.models.functions import TruncMonth
 from HotelManagement.models import *
 from bookings.models import *
 from payments.models import Payment
-from rooms.models import RoomImage, RoomPrice, RoomStatus, RoomType, Availability
+from rooms.models import RoomImage, RoomPrice, RoomType, Availability
 from users.models import *
 from services.models import *
 from notifications.models import Notifications

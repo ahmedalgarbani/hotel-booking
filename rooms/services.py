@@ -241,9 +241,6 @@ def check_room_availability(room_type, hotel, room_number):
     if not latest_availability:
         return False, "لا توجد بيانات توفر حديثة لهذا النوع من الغرف في هذا الفندق"
     
-    if not latest_availability.room_status.code == 'AVAILABLE':
-        return False, f"الغرف غير متاحة للحجز بسبب {latest_availability.room_status.code}"
-    
     if latest_availability.available_rooms < room_number:
         return False, f"عدد الغرف المطلوب غير متوفر. المتوفر حالياً: {latest_availability.available_rooms} غرفة"
 

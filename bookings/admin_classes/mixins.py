@@ -13,8 +13,9 @@ from bidi.algorithm import get_display
 
 # Import models needed by mixins and forms (adjust paths if necessary)
 from HotelManagement.models import Hotel
-from rooms.models import RoomType, RoomStatus
-from bookings.models import Booking # Import Booking for ChangeStatusForm choices
+from rooms.models import RoomType
+from bookings.models import Booking
+from users.models import CustomUser # Import Booking for ChangeStatusForm choices
 
 # --- Mixins ---
 
@@ -72,8 +73,8 @@ class HotelManagerAdminMixin:
                     kwargs["queryset"] = allowed_hotels
                 elif db_field.name == "room":
                     kwargs["queryset"] = RoomType.objects.filter(hotel__in=allowed_hotels)
-                elif db_field.name == "room_status":
-                    kwargs["queryset"] = RoomStatus.objects.filter(hotel__in=allowed_hotels)
+                elif db_field.name == "user":
+                    kwargs["queryset"] = CustomUser.objects.filter(hotel__in=allowed_hotels)
                 elif db_field.name == "parent_booking":
                     kwargs["queryset"] = Booking.objects.filter(hotel__in=allowed_hotels)
                 # Add other fields like 'guest', 'bookingdetail' if they need filtering by hotel

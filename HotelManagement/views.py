@@ -146,21 +146,22 @@ def hotel_search(request):
             result_list = None
     else:
         result_list = None
-    print(result_list)
     hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
     today = datetime.now().date()
-    hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number)
-
+    hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number,today,check_out,check_in)
     if result_list:
         hotel_ids = [hot['id'] for hot in result_list]
         hotels_query = Hotel.objects.filter(id__in=hotel_ids)
     favorite_hotel_ids = []
+    from django.db.models import Count, Avg, Q, F, Subquery, OuterRef
 
     if request.user.is_authenticated:
         favorite_hotel_ids = list(
             Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
         )
         hotels_query = hotels_query.annotate(
+            review_count=Count('hotel_reviews'),
+        average_rating=Avg('hotel_reviews__rating_service'),
             is_favorite=Case(
                 When(id__in=favorite_hotel_ids, then=True),
                 default=False,

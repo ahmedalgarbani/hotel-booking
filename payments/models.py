@@ -149,7 +149,8 @@ class Payment(BaseModel):
     payment_discount_code = models.CharField(
        max_length=100,
         verbose_name=_("كود الخصم"),
-        null=True
+        null=True,
+        blank=True
        )
 
 

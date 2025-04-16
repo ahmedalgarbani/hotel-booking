@@ -19,6 +19,7 @@ router.register(r'hotel-payment-methods', HotelPaymentMethodViewSet, basename='h
 router.register(r'payment', PaymentViewSet, basename='payment')
 router.register(r'bookings', BookingViewSet,basename='booking')
 router.register(r'notifications', NotificationsViewSet,basename='notification')
+router.register(r'categories', CategoriesViewSet,basename='categories')
 # router.register(r'hotel_availability', HotelAvailabilityViewSet,basename='hotel_availability')
 
 urlpatterns = [
