@@ -11,15 +11,11 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from .models import RoomPrice, RoomType
 
-from django.utils import timezone
-from django.shortcuts import get_object_or_404
-from .models import RoomPrice, RoomType
-from datetime import timedelta
-from django.db.models import Q
+
 
 def calculate_total_cost(room, check_in_date, check_out_date, room_number):
     total_cost = 0.0
-    last_room_price = None  # Track last room price
+    last_room_price = None 
 
     delta = check_out_date - check_in_date
     num_days = delta.days

@@ -10,10 +10,10 @@ from bookings.models import Booking
 from customer.models import Favourites
 from notifications.models import Notifications
 from payments.models import HotelPaymentMethod, Payment
-from rooms.models import Category, RoomType
+from rooms.models import Availability, Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
-from .serializers import BookingSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserSerializer
+from .serializers import BookingSerializer, CategorySerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer, UserSerializer
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,7 +28,10 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Sum
 from datetime import datetime, timedelta
-
+from django.db.models import Sum, Count, Subquery,OuterRef
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
  
 User = get_user_model()
 # Views
@@ -53,10 +56,10 @@ class HotelsViewSet(viewsets.ModelViewSet):
         adult_number = request.query_params.get('adult_number', '').strip()
         check_in = request.query_params.get('check_in', '').strip()
         check_out = request.query_params.get('check_out', '').strip()
-        room_number = request.query_params.get('room_number', '').strip()
+        room_number = request.query_params.get('room_number', 1)
         category_type = request.query_params.get('category_type', '').strip()
 
-        if not any([hotel_name, location, adult_number, room_number, category_type]):
+        if not any([hotel_name, location, adult_number, room_number,category_type,check_in,check_out]):
             return Response({'error': 'Provide at least one search parameter'}, status=status.HTTP_400_BAD_REQUEST)
 
         queryset = Hotel.objects.all()
@@ -78,66 +81,43 @@ class HotelsViewSet(viewsets.ModelViewSet):
                 ).filter(total_capacity__gte=adult_number)
             except ValueError:
                 return Response({'error': 'Invalid adult number format'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-        # if room_number and check_in and check_out:
-        #     try:
-        #         room_number = int(room_number)
-        #         check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
-        #         check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
-
-
-        #         valid_room_type_ids = set()
-
-        #         for room_type in RoomType.objects.all():
-        #             availabilities = room_type.availabilities.filter(
-        #                 availability_date__gte=check_in_date,
-        #                 availability_date__lt=check_out_date
-        #             )
-
-        #             dates_needed = (check_out_date - check_in_date).days
-        #             if availabilities.count() == dates_needed and all(a.available_rooms >= room_number for a in availabilities):
-        #                 valid_room_type_ids.add(room_type.id)
-
-        #         queryset = queryset.filter(room_types__id__in=valid_room_type_ids)
-
-        #     except ValueError:
-        #         return Response({'error': 'Invalid date format or room number'}, status=status.HTTP_400_BAD_REQUEST)
-      
-
-        if room_number and check_in and check_out:
-            try:
-                room_number = int(room_number)
+        try:
+            room_number = int(room_number) if room_number else None
+            if check_in and check_out:
                 check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
                 check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
-                date_range = [check_in_date + timedelta(days=i) for i in range((check_out_date - check_in_date).days)]
 
-                valid_room_type_ids = set()
+                if check_in_date >= check_out_date:
+                    return Response({'error': 'Check-out must be after check-in'}, status=status.HTTP_400_BAD_REQUEST)
 
-                for room_type in RoomType.objects.all():
-                    has_enough_availability = True
-                    for date in date_range:
-                        latest_availability = room_type.availabilities.filter(
-                            availability_date=date
-                        ).order_by('-created_at').first()
+                total_days = (check_out_date - check_in_date).days
 
-                        if not latest_availability or latest_availability.available_rooms < room_number:
-                            has_enough_availability = False
-                            break
+                if room_number and room_number > 0:
+                    avail_room_types = Availability.objects.filter(
+                        availability_date__range=[check_in_date, check_out_date - timedelta(days=1)],
+                        # availability_date__range=[check_in, check_out],
+                        available_rooms__gte=room_number
+                    ).values('room_type') \
+                    .annotate(available_days=Count('id')) \
+                    .filter(available_days=total_days) \
+                    .values_list('room_type', flat=True)
+                    queryset = queryset.filter(room_types__id__in=avail_room_types)
+                
+            else:
+                queryset = queryset.annotate(
+                    latest_avail=Subquery(
+                        RoomType.objects.filter(
+                            hotel=OuterRef('pk')
+                        ).values('rooms_count')[:1]
+                    )
+                ).filter(latest_avail__gte=room_number)
 
-                    if has_enough_availability:
-                        valid_room_type_ids.add(room_type.id)
+        except ValueError:
+            return Response({'error': 'Invalid date or room number format'}, status=status.HTTP_400_BAD_REQUEST)
 
-                queryset = queryset.filter(room_types__id__in=valid_room_type_ids).distinct()
-
-            except ValueError:
-                return Response({'error': 'Invalid room number or date format'}, status=status.HTTP_400_BAD_REQUEST)
-
-        paginated_queryset = self.paginate_queryset(queryset)
+        paginated_queryset = self.paginate_queryset(queryset.distinct())
         serializer = HotelSerializer(paginated_queryset, many=True, context={'request': request})
-        
         return self.get_paginated_response(serializer.data)
-
 
 
 class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
@@ -183,8 +163,8 @@ class RoomsViewSet(viewsets.ModelViewSet):
     serializer_class = RoomsSerializer
     
 class CategoriesViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = RoomsSerializer
+    queryset = Category.objects.filter(status = True)
+    serializer_class = CategorySerializer
 
 
 class FavouritesViewSet(viewsets.ModelViewSet):
@@ -583,7 +563,6 @@ def get_best_hotels_by_gemini(request):
 
         hotel_list.append(hotel_data)
     result = call_gemini_api(prompt=prompt,text=hotel_list)
-
     if result:
         return Response({
             "result": result,
@@ -593,6 +572,21 @@ def get_best_hotels_by_gemini(request):
 
 
 
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 # booking------------------

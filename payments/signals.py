@@ -3,8 +3,10 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+
+from accounts.models import ChartOfAccounts
+from accounts.services_util import create_journal_entry
 from .models import Payment, PaymentHistory 
-from accounts.services import *
 
 @receiver(pre_save, sender=Payment)
 def store_payment_pre_save(sender, instance, **kwargs):

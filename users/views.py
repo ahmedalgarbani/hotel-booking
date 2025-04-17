@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .models import CustomUser
 from datetime import datetime, timedelta
-from accounts.services import *
+from accounts.services_util import *
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt

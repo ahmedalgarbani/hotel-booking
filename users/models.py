@@ -40,6 +40,7 @@ class CustomUser(AbstractUser):
         upload_to='users/%Y/%m/%d/',
         verbose_name=_('الصورة الشخصية'),
         blank=True,
+        null=True,
         help_text=_('الصورة الشخصية للمستخدم')
     )
     gender = models.CharField(

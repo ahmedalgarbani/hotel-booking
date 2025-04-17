@@ -6,9 +6,11 @@ from customer.models import Favourites
 from hotels import settings
 from notifications.models import Notifications
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
-from rooms.models import RoomType,RoomImage
+from rooms.models import Category, RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
 from django.core.exceptions import ValidationError
+
+from users.models import CustomUser
 
 User = get_user_model()
 
@@ -111,11 +113,12 @@ class BookingSerializer(serializers.ModelSerializer):
     room_name = serializers.SerializerMethodField()
     details = BookingDetailSerializer(many=True, read_only=True)
     guests = BookingGuestSerializer(many=True, read_only=True)
+    hotel_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
         fields = [
-            'id', 'hotel', 'hotel_name', 'details','guests',
+            'id', 'hotel', 'hotel_name','hotel_image', 'details','guests',
             'user', 'user_name', 'room', 'room_name',
             'check_in_date', 'check_out_date',
             'amount', 'status', 'rooms_booked'
@@ -123,6 +126,11 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def get_hotel_name(self, obj):
         return obj.hotel.name
+    def get_hotel_image(self, obj):
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.hotel.profile_picture.url) if obj.hotel.profile_picture else None
+        return obj.hotel.profile_picture.url if obj.hotel.profile_picture else None
 
     def get_user_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
@@ -233,6 +241,11 @@ class HotelAvabilitySerializer(serializers.ModelSerializer):
         model = Hotel
         fields = ['id', 'name', 'location',]
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'description']
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -240,6 +253,18 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','username','gender', 'birth_date','email', 'first_name', 'last_name', 'phone', 'image']
 
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id', 'username', 'email', 'first_name', 'last_name',
+            'phone', 'image', 'gender', 'birth_date', 
+        ]
+        read_only_fields = ['id', 'user_type', 'chield', 'chart']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
 # ------------test------------------
 # {
 #   "username": "ahmed2025",

@@ -136,39 +136,59 @@ def notifications_context(request):
 from datetime import datetime
 from django.db.models import Case, When, BooleanField
 
+from django.shortcuts import render
+from django.db.models import Count, Avg, Case, When, BooleanField
+from datetime import datetime
+import json
 
-def hotel_search(request): 
+def hotel_search(request):
+    def annotate_hotels(queryset, favorite_ids):
+        return queryset.annotate(
+            review_count=Count('hotel_reviews'),
+            average_rating=Avg('hotel_reviews__rating_service'),
+            is_favorite=Case(
+                When(id__in=favorite_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+
     result_list = request.GET.get('result_list')
-    if result_list:
-        try:
-            result_list = json.loads(result_list)
-        except json.JSONDecodeError:
-            result_list = None
-    else:
-        result_list = None
-    hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
-    today = datetime.now().date()
-    hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number,today,check_out,check_in)
-    if result_list:
-        hotel_ids = [hot['id'] for hot in result_list]
-        hotels_query = Hotel.objects.filter(id__in=hotel_ids)
     favorite_hotel_ids = []
-    from django.db.models import Count, Avg, Q, F, Subquery, OuterRef
 
     if request.user.is_authenticated:
         favorite_hotel_ids = list(
             Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
         )
-        hotels_query = hotels_query.annotate(
-            review_count=Count('hotel_reviews'),
-        average_rating=Avg('hotel_reviews__rating_service'),
-            is_favorite=Case(
-                When(id__in=favorite_hotel_ids, then=True),
-                default=False,
-                output_field=BooleanField()
-            )
-        )
- 
+
+    if result_list:
+        try:
+            result_list = json.loads(result_list)
+            if result_list:
+                hotel_ids = [hot['id'] for hot in result_list]
+                hotels_query = Hotel.objects.filter(id__in=hotel_ids)
+                hotels_query = annotate_hotels(hotels_query, favorite_hotel_ids)
+
+                for hotel in hotels_query:
+                    hotel.is_favorite = hotel.id in favorite_hotel_ids
+
+                ctx = {
+                    'adult_number': 1,
+                    'check_in_start': '',
+                    'check_out_start': '',
+                    'hotels': hotels_query,
+                }
+                return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
+
+        except json.JSONDecodeError:
+            pass  
+
+    hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
+    today = datetime.now().date()
+    hotels_query, error_message = get_hotels_query(
+        hotel_name, category_type, room_number, adult_number, today, check_out, check_in
+    )
+    hotels_query = annotate_hotels(hotels_query, favorite_hotel_ids)
 
     for hotel in hotels_query:
         hotel.is_favorite = hotel.id in favorite_hotel_ids

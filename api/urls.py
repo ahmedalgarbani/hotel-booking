@@ -20,12 +20,14 @@ router.register(r'payment', PaymentViewSet, basename='payment')
 router.register(r'bookings', BookingViewSet,basename='booking')
 router.register(r'notifications', NotificationsViewSet,basename='notification')
 router.register(r'categories', CategoriesViewSet,basename='categories')
+# router.register(r'user-profile', UserProfileView,basename='user-profile')
 # router.register(r'hotel_availability', HotelAvailabilityViewSet,basename='hotel_availability')
 
 urlpatterns = [
     
     path('', include(router.urls)),
     path('hotel_availability/', HotelAvailabilityViewSet.as_view(), name='hotel_availability'),
+    path('user-profile/', UserProfileView.as_view(), name='user-profile'),
     # path('profile/', UserProfileView.as_view(), name='user-profile'),
     #  JWT Token endpoints
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

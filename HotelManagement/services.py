@@ -96,7 +96,7 @@ def get_query_params(request):
 #         error_message = ""
 
 #     return hotels_query, error_message
-def get_hotels_query(hotel_name, category_type=None, room_number=None, adult_number=None, check_in=None, check_out=None, today=None):
+def get_hotels_query(hotel_name, category_type=None, room_number=1, adult_number=None, check_in=None, check_out=None, today=None):
     check_in = datetime.strptime(str(check_in), "%Y-%m-%d").date()
     check_out = datetime.strptime(str(check_out), "%Y-%m-%d %H:%M:%S").date()
     hotels_query = Hotel.objects.all()
@@ -128,7 +128,7 @@ def get_hotels_query(hotel_name, category_type=None, room_number=None, adult_num
         
         avail_room_types = Availability.objects.filter(
             availability_date__range=[check_in, check_out],
-            available_rooms__gte=1
+            available_rooms__gte=room_number
         ).values('room_type') \
         .annotate(available_days=Count('id')) \
         .filter(available_days=total_days) \
