@@ -10,6 +10,8 @@ from django.contrib.auth import get_user_model
 from django import forms
 from datetime import datetime, timedelta
 
+from pydantic import ValidationError
+
 # Import models and forms
 from bookings.models import Booking, ExtensionMovement
 from bookings.forms import BookingAdminForm, BookingExtensionForm
@@ -24,19 +26,18 @@ User = get_user_model()
 class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # Use the custom form if defined in forms.py
     form = BookingAdminForm
-    action_form = ChangeStatusForm # Re-enabled after fixing inheritance
+    action_form = ChangeStatusForm 
     list_display = [
-        'hotel', 'id', 'room', 'check_in_date', 'check_out_date',
+        'id', 'hotel',  'room', 'check_in_date', 'check_out_date',
         'amount', 'status', 'payment_status_display', 'extend_booking_button',
         'set_checkout_today_toggle'
     ]
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
-    # Keep only relevant actions for this specific admin class if desired
     actions = ['change_booking_status', 'export_bookings_report']
 
-    change_form_template = 'admin/bookings/booking.html' # Keep if customized
-    change_list_template = 'admin/bookings/booking/change_list.html' # Keep custom template reference
+    change_form_template = 'admin/bookings/booking.html' 
+    change_list_template = 'admin/bookings/booking/change_list.html' 
 
     def payment_status_display(self, obj):
         payment = obj.payments.order_by('-payment_date').first()
@@ -55,7 +56,6 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         if obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
             return format_html('<span style="color:green; font-weight:bold;">✔ {}</span>', _("تم تسجيل الخروج"))
         try:
-            # Assuming URL name is defined within the admin site's namespace
             url = reverse('admin:set_actual_check_out_date', args=[obj.pk])
         except Exception as e:
              print(f"Error reversing URL 'admin:set_actual_check_out_date': {e}")
@@ -84,30 +84,45 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     @admin.action(description=_('تغيير حالة الحجوزات المحددة'))
     def change_booking_status(self, request, queryset):
         new_status = request.POST.get('new_status')
+
         if not new_status:
             self.message_user(request, _("لم يتم اختيار حالة جديدة."), level='warning')
             return
 
+        selected_ids = request.POST.getlist('_selected_action')
+        queryset = Booking.objects.filter(pk__in=selected_ids)
+
         updated_count = 0
         payment_updated_count = 0
+
         try:
+            print(queryset)  # للتأكيد
             with transaction.atomic():
                 for booking in queryset:
                     booking.status = new_status
-                    booking.save() # Triggers signals/overridden save
+                    try:
+                        booking.save()
+                    except ValidationError as e:
+                        self.message_user(request, f"فشل تحديث الحجز #{booking.id}: {e}", level='error')
+                       
                     updated_count += 1
                     payment = booking.payments.order_by('-payment_date').first()
                     if payment:
                         if new_status == Booking.BookingStatus.CONFIRMED and payment.payment_status != 1:
-                            payment.payment_status = 1; payment.save(); payment_updated_count += 1
+                            payment.payment_status = 1
+                            payment.save()
+                            payment_updated_count += 1
                         elif new_status == Booking.BookingStatus.CANCELED and payment.payment_status != 2:
-                            payment.payment_status = 2; payment.save(); payment_updated_count += 1
+                            payment.payment_status = 2
+                            payment.save()
+                            payment_updated_count += 1
 
                 status_label = dict(Booking.BookingStatus.choices).get(new_status, new_status)
                 success_message = _("تم تغيير حالة %(count)d حجز(ات) إلى '%(status)s'") % {'count': updated_count, 'status': status_label}
                 if payment_updated_count > 0:
                     success_message += " " + (_("وتم تحديث حالة %(payment_count)d دفعة مرتبطة.") % {'payment_count': payment_updated_count})
                 self.message_user(request, success_message)
+
         except Exception as e:
             self.message_user(request, _("حدث خطأ أثناء تحديث الحجوزات: {}").format(str(e)), level='error')
 
@@ -255,12 +270,11 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
     def set_actual_check_out_date_view(self, request, pk):
          booking = get_object_or_404(Booking, pk=pk)
-         # Add permission checks if needed: e.g., if request.user.has_perm(...)
          if booking.actual_check_out_date is None and booking.status != Booking.BookingStatus.CANCELED:
              booking.actual_check_out_date = timezone.now()
              # Optionally update status
              # booking.status = Booking.BookingStatus.CHECKED_OUT # If you add this status
-             booking.save() # Triggers availability update via save method
+             booking.save() 
              self.message_user(request, _("تم تسجيل تاريخ المغادرة الفعلي للحجز رقم {} بنجاح.").format(pk))
          else:
              self.message_user(request, _("لا يمكن تسجيل المغادرة لهذا الحجز."), level='warning')

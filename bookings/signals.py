@@ -28,7 +28,6 @@ def create_booking_history_on_change(sender, instance, created, **kwargs):
     - نوع الغرفة
     بالإضافة لتحديث التوفر وإرسال الإشعارات في حال تغيرت الحالة.
     """
-    # التأكد أن الحجز الأصلي وليس امتداداً (parent_booking)
     if instance.parent_booking is not None:
         return
 
@@ -68,27 +67,27 @@ def create_booking_history_on_change(sender, instance, created, **kwargs):
     today = timezone.now().date()
 
     if previous_status == "1" and instance.status == "0":
-        instance.update_availability(-instance.rooms_booked, today)
+        instance.update_availability(-instance.rooms_booked)
 
     if instance.actual_check_out_date:
-        instance.update_availability(instance.rooms_booked, today)
+        instance.update_availability(instance.rooms_booked)
 
     if previous_status != "2" and instance.status == "2":
-        instance.update_availability(instance.rooms_booked, today)
+        instance.update_availability(instance.rooms_booked)
 
     if instance.status == "1":
         instance.send_notification()
 
-@receiver(post_save, sender=Booking)
-def update_availability_on_completion(sender, instance, **kwargs):
-    """
-    تحديث التوفر عند اكتمال الحجز، على سبيل المثال عند تغير الحالة إلى 'complete'
-    """
-    if instance.status == 'complete':
-        availability = Availability.objects.filter(
-            room_type=instance.room,   # افترض أن الحقل room يشير إلى نوع الغرفة
-            date=instance.check_in_date
-        ).first()
-        if availability and availability.available_rooms > 0:
-            availability.available_rooms -= 1  # تقليل عدد الغرف المتوفرة
-            availability.save()
+# @receiver(post_save, sender=Booking)
+# def update_availability_on_completion(sender, instance, **kwargs):
+#     """
+#     تحديث التوفر عند اكتمال الحجز، على سبيل المثال عند تغير الحالة إلى 'complete'
+#     """
+#     if instance.status == '1':
+#         availability = Availability.objects.filter(
+#             room_type=instance.room,   
+#             date=instance.check_in_date
+#         ).first()
+#         if availability and availability.available_rooms > 0:
+#             availability.available_rooms -= 1  
+#             availability.save()

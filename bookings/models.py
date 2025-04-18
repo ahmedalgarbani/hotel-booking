@@ -1,3 +1,4 @@
+from datetime import timedelta
 from unittest.mock import DEFAULT
 from django.conf import settings
 from django.db import models,transaction
@@ -141,48 +142,54 @@ class Booking(BaseModel):
         verbose_name_plural = _("الحجوزات")
         ordering = ['-check_in_date']
 
-
-
     def save(self, *args, **kwargs):
-        is_new_booking = self._state.adding  
+        is_new = self._state.adding
+        previous = None
         previous_status = None
-        is_new = self.pk is None
+        previous_actual_checkout = None
 
-        if not is_new_booking:
-            previous_booking = Booking.objects.get(pk=self.pk)
-            previous_status = previous_booking.status
+        if not is_new:
+            previous = Booking.objects.filter(pk=self.pk).first()
+            if previous:
+                previous_status = previous.status
+                previous_actual_checkout = previous.actual_check_out_date
 
-        latest_availability = (
-            Availability.objects.filter(hotel=self.hotel, room_type=self.room)
-            .order_by('-availability_date')
-            .first()
-        )
+        if self.status == Booking.BookingStatus.CONFIRMED:
+            if not self.check_in_date or not self.check_out_date:
+                raise ValidationError("يجب تحديد تاريخ الوصول والمغادرة.")
+            if self.check_out_date <= self.check_in_date:
+                raise ValidationError("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول.")
+            
+            start_date = self.check_in_date.date()
+            end_date = self.check_out_date.date()
+            for day in range((end_date - start_date).days):
+                date = start_date + timedelta(days=day)
+                availability = Availability.objects.filter(
+                    hotel=self.hotel,
+                    room_type=self.room,
+                    availability_date=date
+                ).first()
 
-        available_rooms = latest_availability.available_rooms if latest_availability else self.room.rooms_count
+                if not availability or availability.available_rooms < self.rooms_booked:
+                    raise ValidationError(f"لا يوجد غرف كافية في يوم {date}")
 
-        if is_new_booking and self.rooms_booked > available_rooms:
-            raise ValidationError(f"Cannot book {self.rooms_booked} rooms. Only {available_rooms} rooms are available.")
+        if self.status == Booking.BookingStatus.CONFIRMED and (is_new or previous_status != Booking.BookingStatus.CONFIRMED):
+            self.update_availability(-self.rooms_booked)
 
-        super().save(*args, **kwargs)  
+        if previous_status == Booking.BookingStatus.CONFIRMED and self.status in [Booking.BookingStatus.CANCELED, Booking.BookingStatus.PENDING]:
+            self.update_availability(self.rooms_booked)
 
-        today = timezone.now().date()
+        if self.actual_check_out_date and previous and not previous_actual_checkout:
+            self.update_availability(self.rooms_booked)
 
-        if is_new_booking or (previous_status == "1" and self.status == "0"):  
-            self.update_availability(-self.rooms_booked, today)
+        super().save(*args, **kwargs)
 
-        if self.actual_check_out_date:
-            self.update_availability(self.rooms_booked, today)
+        if self.status == Booking.BookingStatus.CONFIRMED and self.check_out_date:
+            send_booking_end_reminders.apply_async(
+                args=[self.id],
+                eta=self.check_out_date - timezone.timedelta(hours=5)
+            )
 
-        if previous_status != "2" and self.status == "2":  
-            self.update_availability(self.rooms_booked, today)
-
-        if self.status == "1": 
-            if is_new and self.check_out_date:
-                send_booking_end_reminders.apply_async(
-                    args=[self.id],
-                    eta=self.check_out_date - timezone.timedelta(hours=5)
-                )
-                
 
 
 
@@ -199,25 +206,30 @@ class Booking(BaseModel):
             action_url=action_url,
         )
          
-    def update_availability(self, change, date):
-        """Ensure availability is updated or created for today's date"""
-        today = timezone.now().date() 
+    
+    def update_availability(self, change):
+        if not self.check_in_date or not self.check_out_date:
+            return
+
+        start_date = self.check_in_date.date()
+        end_date = self.check_out_date.date()
+        total_days = (end_date - start_date).days
 
         with transaction.atomic():
-            availability, created = Availability.objects.get_or_create(
-                hotel=self.hotel,
-                room_type=self.room,
-                availability_date=today, 
-                defaults={
-                    "available_rooms": max(0, self.room.rooms_count + change),  
-                    "notes": f"Updated due to booking #{self.id}",
-                }
-            )
-
-            if not created:
-                availability.available_rooms = max(0, availability.available_rooms + change)
-                availability.notes = f"Updated due to booking #{self.id}"
+            for day in range(total_days):
+                date = start_date + timedelta(days=day)
+                availability, created = Availability.objects.get_or_create(
+                    hotel=self.hotel,
+                    room_type=self.room,
+                    availability_date=date,
+                    defaults={'available_rooms': 0}
+                )
+                availability.available_rooms += change
+                if availability.available_rooms < 0:
+                    raise ValidationError(f"لا يوجد غرف كافية في يوم {date}")
                 availability.save()
+
+    
 
 
     def __str__(self):
