@@ -4,120 +4,160 @@
 {% block content %}
 
 <style>
-  /* Default button styling */
-.add-to-wishlist {
+  /* ====== الاتجاه العام للغة العربية ====== */
+  .comment-forum {
+    direction: rtl;
+    text-align: right;
+  }
+  .star-rating {
+    direction: rtl;
+    display: inline-flex;
+    flex-direction: row-reverse;
+  }
+  
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+  
+  .star-rating label {
+    font-size: 22px; /* تم تكبير الحجم من 18px إلى 22px */
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    padding: 0 3px;
+  }
+  
+  .star-rating input[type="radio"]:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: #ffc107;
+  }
+  
+  .small-stars label {
+    font-size: 25px;
+  }
+  
+  /* ====== تنسيق textarea ====== */
+  textarea.form-control {
+    resize: none;
+    min-height: 100px;
+  }
+  
+  /* ====== زر الإضافة للمفضلة (wishlist) ====== */
+  .add-to-wishlist {
 color: #6c757d; /* grey by default */
-background-color: transparent;
-border: none;
-cursor: pointer;
-transition: background-color 0.3s, color 0.3s;
-}
-
-.add-to-wishlist .la-heart-o {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .add-to-wishlist .la-heart-o {
 color: #6c757d; /* grey heart */
-}
-
-.add-to-wishlist .la-heart {
+  }
+  
+  .add-to-wishlist .la-heart {
 color:red; /* white heart when selected */
 
-}
-
+  }
+  
 /* Blue button when added to wishlist */
-.btn-blue {
+  .btn-blue {
 background-color: #007bff; /* blue background */
 color: block; /* white text */
-}
-
-.btn-blue .la-heart {
+  }
+  
+  .btn-blue .la-heart {
 color: red; /* white heart icon when selected */
 
-}
-
-.custom-checkbox {
-display: flex;
-align-items: center;
-margin-bottom: 8px;
-}
-.custom-checkbox input[type="checkbox"] {
-margin-left: 8px;
-}
-.sidebar-review .ratings {
-margin-right: 0;
-}
-.sidebar-category .custom-checkbox {
-margin-bottom: 8px;
-}
-
-.messages .alert {
-padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
-margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
-border: 2px solid; /* إضافة حدود سميكة */
-border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
-font-weight: bold; /* جعل النص أكثر جرأة */
-}
-
-.messages .alert-success {
-color: #155724; /* لون نص النجاح (أخضر داكن) */
-background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
-border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
-}
-
-.messages .alert-error {
-color: #721c24; /* لون نص الخطأ (أحمر داكن) */
-background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
-border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
-}
-
+  }
+  
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .custom-checkbox input[type="checkbox"] {
+    margin-left: 8px;
+  }
+  .sidebar-review .ratings {
+    margin-right: 0;
+  }
+  .sidebar-category .custom-checkbox {
+    margin-bottom: 8px;
+  }
+  
+  /* ====== الرسائل (Alerts) ====== */
+  .messages .alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 2px solid;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  
+  .messages .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  
+  .messages .alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
 /* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
-.messages .alert-warning {
-color: #85640a;
-background-color: #fff3cd;
-border-color: #ffeeba;
-}
-
-.messages .alert-info {
-color: #0c5460;
-background-color: #d1ecf1;
-border-color: #bee5eb;
-}
-
-
-.custom-alert.warning {
-background:rgb(205, 255, 217);
-border: 1px solid #ffeeba;
-border-radius: 8px;
-padding: 1rem;
-margin: 1.5rem 0;
-box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.alert-content {
-display: flex;
-align-items: flex-start;
-gap: 1rem;
-}
-
-.alert-icon {
-width: 24px;
-height: 24px;
-color:rgb(7, 255, 32);
-flex-shrink: 0;
-}
-
-.alert-heading {
-color: #856404;
-margin: 0 0 0.5rem 0;
-font-size: 1.1rem;
-font-weight: 600;
-}
-
-.custom-alert p {
-color: #856404;
-margin: 0;
-font-size: 0.95rem;
-line-height: 1.5;
-}
-</style>
+  .messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+  
+  .messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+  }
+  
+  /* ====== تنسيق تنبيه مخصص (custom alert) ====== */
+  .custom-alert.warning {
+    background: rgb(205, 255, 217);
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .alert-icon {
+    width: 24px;
+    height: 24px;
+    color: rgb(7, 255, 32);
+    flex-shrink: 0;
+  }
+  
+  .alert-heading {
+    color: #856404;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .custom-alert p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  </style>
     <!-- ================================
     START BREADCRUMB TOP BAR
 ================================= -->
@@ -598,17 +638,17 @@ START TOUR DETAIL AREA
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
                                 <label>الخدمات</label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="service-5" type="radio" name="rating_service" value="5" required />
-                                  <label for="service-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-4" type="radio" name="rating_service" value="4" required />
-                                  <label for="service-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-3" type="radio" name="rating_service" value="3" required />
-                                  <label for="service-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-2" type="radio" name="rating_service" value="2" required />
-                                  <label for="service-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-1" type="radio" name="rating_service" value="1" required />
-                                  <label for="service-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="service-5" name="rating_service" value="5" required>
+                                  <label for="service-5">★</label>
+                                  <input type="radio" id="service-4" name="rating_service" value="4" required>
+                                  <label for="service-4">★</label>
+                                  <input type="radio" id="service-3" name="rating_service" value="3" required>
+                                  <label for="service-3">★</label>
+                                  <input type="radio" id="service-2" name="rating_service" value="2" required>
+                                  <label for="service-2">★</label>
+                                  <input type="radio" id="service-1" name="rating_service" value="1" required>
+                                  <label for="service-1">★</label>
                                 </div>
                               </div>
                             </div>
@@ -616,35 +656,35 @@ START TOUR DETAIL AREA
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
                                 <label>موقع الفندق</label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="location-5" type="radio" name="rating_location" value="5" required />
-                                  <label for="location-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-4" type="radio" name="rating_location" value="4" required />
-                                  <label for="location-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-3" type="radio" name="rating_location" value="3" required />
-                                  <label for="location-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-2" type="radio" name="rating_location" value="2" required />
-                                  <label for="location-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-1" type="radio" name="rating_location" value="1"required />
-                                  <label for="location-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="location-5" name="rating_location" value="5" required>
+                                  <label for="location-5">★</label>
+                                  <input type="radio" id="location-4" name="rating_location" value="4" required>
+                                  <label for="location-4">★</label>
+                                  <input type="radio" id="location-3" name="rating_location" value="3" required>
+                                  <label for="location-3">★</label>
+                                  <input type="radio" id="location-2" name="rating_location" value="2" required>
+                                  <label for="location-2">★</label>
+                                  <input type="radio" id="location-1" name="rating_location" value="1" required>
+                                  <label for="location-1">★</label>
                                 </div>
                               </div>
                             </div>
                             <!-- col-lg-4 -->
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
-                                <label>سعر الفندق </label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" required />
-                                  <label for="value-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" required />
-                                  <label for="value-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" required />
-                                  <label for="value-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" required />
-                                  <label for="value-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" required/>
-                                  <label for="value-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <label>سعر الفندق</label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="value-5" name="rating_value_for_money" value="5" required>
+                                  <label for="value-5">★</label>
+                                  <input type="radio" id="value-4" name="rating_value_for_money" value="4" required>
+                                  <label for="value-4">★</label>
+                                  <input type="radio" id="value-3" name="rating_value_for_money" value="3" required>
+                                  <label for="value-3">★</label>
+                                  <input type="radio" id="value-2" name="rating_value_for_money" value="2" required>
+                                  <label for="value-2">★</label>
+                                  <input type="radio" id="value-1" name="rating_value_for_money" value="1" required>
+                                  <label for="value-1">★</label>
                                 </div>
                               </div>
                             </div>
@@ -652,17 +692,17 @@ START TOUR DETAIL AREA
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
                                 <label>النظافة</label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="rating_cleanliness-5" type="radio" name="rating_cleanliness" value="5" />
-                                  <label for="rating_cleanliness-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-4" type="radio" name="rating_cleanliness" value="4" />
-                                  <label for="rating_cleanliness-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-3" type="radio" name="rating_cleanliness" value="3" />
-                                  <label for="rating_cleanliness-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-2" type="radio" name="rating_cleanliness" value="2" />
-                                  <label for="rating_cleanliness-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-1" type="radio" name="rating_cleanliness" value="1" />
-                                  <label for="rating_cleanliness-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="clean-5" name="rating_cleanliness" value="5">
+                                  <label for="clean-5">★</label>
+                                  <input type="radio" id="clean-4" name="rating_cleanliness" value="4">
+                                  <label for="clean-4">★</label>
+                                  <input type="radio" id="clean-3" name="rating_cleanliness" value="3">
+                                  <label for="clean-3">★</label>
+                                  <input type="radio" id="clean-2" name="rating_cleanliness" value="2">
+                                  <label for="clean-2">★</label>
+                                  <input type="radio" id="clean-1" name="rating_cleanliness" value="1">
+                                  <label for="clean-1">★</label>
                                 </div>
                               </div>
                             </div>
@@ -672,29 +712,21 @@ START TOUR DETAIL AREA
                         <!-- end rate-option -->
                         <div class="mb-3">
                           <label class="mb-2">رسالتك</label>
-                          <textarea
-                            id="review_desc"
-                            name="review"
-                            class="form-control"
-                            maxlength="100"
-                            placeholder="اكتب رسالتك"
-                          ></textarea>
+                          <textarea id="review_desc" name="review" class="form-control" maxlength="100" placeholder="اكتب رسالتك"></textarea>
                           <div class="d-flex justify-content-between mt-3">
                             <small class="text-muted">
                               <span id="chars">100</span> حرف متبقي
                             </small>
                           </div>
                         </div>
+                
                         <div class="submit-section">
                           <button type="submit" class="theme-btn btn-primary">إضافة المراجعة</button>
                         </div>
                       </form>
                     </div>
-                    <!-- end form-content -->
                   </div>
-                  <!-- end form-box -->
                 </div>
-                
                 <!-- end comment-forum -->
               </div>
               <!-- end single-content-item -->
