@@ -71,12 +71,12 @@ class Guest(BaseModel):
 
 # ------------ Booking -------------
 
-
 class Booking(BaseModel):
     class BookingStatus(models.TextChoices):
         PENDING = "0", _("قيد الانتظار")
         CONFIRMED = "1", _("مؤكد")
         CANCELED = "2", _("ملغي")
+
     hotel = models.ForeignKey(
         'HotelManagement.Hotel',
         on_delete=models.CASCADE,
@@ -127,7 +127,11 @@ class Booking(BaseModel):
         default=True,
         verbose_name=_("حالة الحساب")
     )
-    rooms_booked = models.PositiveIntegerField(verbose_name=_("عدد الغرف المحجوزة"), default=1, validators=[MinValueValidator(1)])
+    rooms_booked = models.PositiveIntegerField(
+        verbose_name=_("عدد الغرف المحجوزة"),
+        default=1,
+        validators=[MinValueValidator(1)]
+    )
     parent_booking = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -142,99 +146,139 @@ class Booking(BaseModel):
         verbose_name_plural = _("الحجوزات")
         ordering = ['-check_in_date']
 
-    def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        previous = None
-        previous_status = None
-        previous_actual_checkout = None
+    def __str__(self):
+        return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
 
-        if not is_new:
-            previous = Booking.objects.filter(pk=self.pk).first()
-            if previous:
-                previous_status = previous.status
-                previous_actual_checkout = previous.actual_check_out_date
+    def update_availability(self, change, start_date=None, end_date=None):
+        """تحديث التوافر بين تاريخين محددين"""
+        if not start_date:
+            start_date = self.check_in_date.date()
+        if not end_date:
+            end_date = self.check_out_date.date()
+
+        with transaction.atomic():
+            current_date = start_date
+            while current_date < end_date:
+                availability = Availability.objects.get(
+                    hotel=self.hotel,
+                    room_type=self.room,
+                    availability_date=current_date
+                )
+                print(f"{self.room.name} - {availability.available_rooms} rooms available on {current_date}")
+                print("ahmed------------------------------------")
+                availability.available_rooms += change
+                availability.save()
+                current_date += timedelta(days=1)
+
+    def send_notification(self, type=None, title=None):
+        """إرسال إشعار للمستخدم"""
+        message = _("يرجى إضافة الضيوف لحجزك.")
+        action_url = reverse("payments:add_guest", args=[self.room.id])
+        Notifications.objects.create(
+            sender=self.user,
+            user=self.user,
+            title=title if title else "اشعار اتمام الحجز",
+            message=message,
+            notification_type='2' if type == 'CONFIRMED' else '1',
+            action_url=action_url,
+        )
+
+    def send_cancellation_notification(self):
+        message = _("تم إلغاء حجزك.")
+        Notifications.objects.create(
+            sender=self.user,
+            user=self.user,
+            title="إلغاء الحجز",
+            message=message,
+            notification_type='BOOKING_CANCELED',
+        )
+
+    def clean(self):
+        super().clean()
 
         if self.status == Booking.BookingStatus.CONFIRMED:
             if not self.check_in_date or not self.check_out_date:
                 raise ValidationError("يجب تحديد تاريخ الوصول والمغادرة.")
             if self.check_out_date <= self.check_in_date:
                 raise ValidationError("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول.")
-            
-            start_date = self.check_in_date.date()
+
+            current_date = self.check_in_date.date()
             end_date = self.check_out_date.date()
-            for day in range((end_date - start_date).days):
-                date = start_date + timedelta(days=day)
+            while current_date < end_date:
                 availability = Availability.objects.filter(
                     hotel=self.hotel,
                     room_type=self.room,
-                    availability_date=date
+                    availability_date=current_date
                 ).first()
-
                 if not availability or availability.available_rooms < self.rooms_booked:
-                    raise ValidationError(f"لا يوجد غرف كافية في يوم {date}")
+                    raise ValidationError(f"لا يوجد توفر كافٍ في تاريخ {current_date}")
+                current_date += timedelta(days=1)
 
-        if self.status == Booking.BookingStatus.CONFIRMED and (is_new or previous_status != Booking.BookingStatus.CONFIRMED):
-            self.update_availability(-self.rooms_booked)
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        original = None
 
-        if previous_status == Booking.BookingStatus.CONFIRMED and self.status in [Booking.BookingStatus.CANCELED, Booking.BookingStatus.PENDING]:
-            self.update_availability(self.rooms_booked)
+        if not is_new:
+            try:
+                original = Booking.objects.get(pk=self.pk)
+            except Booking.DoesNotExist:
+                pass
 
-        if self.actual_check_out_date and previous and not previous_actual_checkout:
-            self.update_availability(self.rooms_booked)
+        if is_new and self.status == Booking.BookingStatus.CONFIRMED:
+            super().save(*args, **kwargs)
+            self.update_availability(change=-self.rooms_booked)
+            self.send_notification(type='CONFIRMED', title="تم تأكيد حجزك بنجاح.")
+            return
 
         super().save(*args, **kwargs)
 
-        if self.status == Booking.BookingStatus.CONFIRMED and self.check_out_date:
-            send_booking_end_reminders.apply_async(
-                args=[self.id],
-                eta=self.check_out_date - timezone.timedelta(hours=5)
-            )
-
-
-
-
-    def send_notification(self):
-        """Send a notification to the user to add guests."""
-        message = _("يرجى إضافة الضيوف لحجزك.")
-        action_url = reverse("payments:add_guest", args=[self.room.id]) 
-        Notifications.objects.create(
-            sender=self.user, 
-            user=self.user,
-            title="اشعار اتمام الحجز",
-            message=message,
-            notification_type='1', 
-            action_url=action_url,
-        )
-         
-    
-    def update_availability(self, change):
-        if not self.check_in_date or not self.check_out_date:
+        if not original:
             return
 
-        start_date = self.check_in_date.date()
-        end_date = self.check_out_date.date()
-        total_days = (end_date - start_date).days
+        # Update availability if confirmed and dates changed
+        if (
+            original.status == Booking.BookingStatus.CONFIRMED
+            and self.status == Booking.BookingStatus.CONFIRMED
+            and (original.check_in_date != self.check_in_date or original.check_out_date != self.check_out_date)
+        ):
+            self.update_availability(
+                change=original.rooms_booked,
+                start_date=original.check_in_date.date(),
+                end_date=original.check_out_date.date()
+            )
+            self.update_availability(
+                change=-self.rooms_booked,
+                start_date=self.check_in_date.date(),
+                end_date=self.check_out_date.date()
+            )
 
-        with transaction.atomic():
-            for day in range(total_days):
-                date = start_date + timedelta(days=day)
-                availability, created = Availability.objects.get_or_create(
-                    hotel=self.hotel,
-                    room_type=self.room,
-                    availability_date=date,
-                    defaults={'available_rooms': 0}
-                )
-                availability.available_rooms += change
-                if availability.available_rooms < 0:
-                    raise ValidationError(f"لا يوجد غرف كافية في يوم {date}")
-                availability.save()
+        # Handle status change
+        if original.status != self.status:
+            if self.status == Booking.BookingStatus.CONFIRMED:
+                self.update_availability(change=-self.rooms_booked)
+                self.send_notification(type='CONFIRMED', title="تم تأكيد حجزك بنجاح.")
+            elif self.status == Booking.BookingStatus.CANCELED and original.status == Booking.BookingStatus.CONFIRMED:
+                self.update_availability(change=self.rooms_booked)
+                self.send_cancellation_notification()
+                self.send_notification(type='CANCELED', title="تم إلغاء حجزك.")
 
-    
-
-
-    def __str__(self):
-        return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
-
+        # ✅ Handle actual checkout availability only if previously CONFIRMED
+        if (
+            original.status == Booking.BookingStatus.CONFIRMED
+            and self.actual_check_out_date
+            and original.actual_check_out_date != self.actual_check_out_date
+        ):
+            actual_end = self.actual_check_out_date.date()
+            self.update_availability(
+                change=self.rooms_booked,
+                start_date=self.check_out_date.date(),
+                end_date=actual_end
+            )
+            self.update_availability(
+                change=-self.rooms_booked,
+                start_date=self.check_in_date.date(),
+                end_date=actual_end
+            )
 
     @property
     def get_status_class(self):
@@ -244,7 +288,7 @@ class Booking(BaseModel):
             '2': 'danger'
         }
         return status_map.get(self.status, 'info')
-    
+
     @property
     def get_status_icon(self):
         icon_map = {

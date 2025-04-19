@@ -184,9 +184,10 @@ def hotel_search(request):
             pass  
 
     hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
-    print(check_in)
-    print(check_out)
+
     today = datetime.now().date()
+    hotels_query = Hotel.objects.none()
+    error_message = None
     if check_out:
         hotels_query, error_message = get_hotels_query(
             hotel_name, category_type, room_number, adult_number, today, check_out, check_in

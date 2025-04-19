@@ -76,7 +76,7 @@ def create_booking_history_on_change(sender, instance, created, **kwargs):
         instance.update_availability(instance.rooms_booked)
 
     if instance.status == "1":
-        instance.send_notification()
+        instance.send_confirmation_notification()
 
 # @receiver(post_save, sender=Booking)
 # def update_availability_on_completion(sender, instance, **kwargs):

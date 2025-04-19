@@ -21,137 +21,131 @@ from .mixins import HotelManagerAdminMixin, ChangeStatusForm
 
 User = get_user_model()
 
-from django.contrib.admin import ActionForm
-
-class ChangeStatusForm(ActionForm):  
-    new_status = forms.ChoiceField(
-        choices=[('', '-- اختر الحالة --')] + list(Booking.BookingStatus.choices),
-        required=False,
-        label="الحالة الجديدة"
-    )
-
-
-
-class BookingAdmin(HotelManagerAdminMixin,admin.ModelAdmin):
-    # form = BookingAdminForm
-    action_form = ChangeStatusForm  
+class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
+    # Use the custom form if defined in forms.py
+    form = BookingAdminForm
+    action_form = ChangeStatusForm # Re-enabled after fixing inheritance
     list_display = [
-        'hotel', 'id', 'room', 'check_in_date', 'check_out_date', 
-        'amount', 'status', 'payment_status', 'extend_booking_button',
+        'hotel', 'id', 'room', 'check_in_date', 'check_out_date',
+        'amount', 'status', 'payment_status_display', 'extend_booking_button',
         'set_checkout_today_toggle'
     ]
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
-    search_fields = ['guests__name', 'hotel__name', 'room__name']
-    actions = ['change_booking_status', 'export_bookings_report', 'export_upcoming_bookings', 'export_cancelled_bookings', 'export_peak_times']
-    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
-    
-    def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
-        return self.readonly_fields
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if request.user.is_superuser or request.user.user_type == 'admin':
-            return queryset
-        elif request.user.user_type == 'hotel_manager':
-            return queryset.filter(user=request.user)
-        elif request.user.user_type == 'hotel_staff':
-            return queryset.filter(user=request.user.chield)
-        return queryset.none()
-    
+    search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
+    # Keep only relevant actions for this specific admin class if desired
+    actions = ['change_booking_status', 'export_bookings_report']
+    readonly_fields = [  'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at']
+
+
+    change_form_template = 'admin/bookings/booking.html' # Keep if customized
+    change_list_template = 'admin/bookings/booking/change_list.html' # Keep custom template reference
+
+    def payment_status_display(self, obj):
+        payment = obj.payments.order_by('-payment_date').first()
+        if not payment:
+            return format_html(
+    '<div style="color: #6c757d; font-style: italic; display: flex; align-items: center;">'
+    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" '
+    'class="bi bi-info-circle" viewBox="0 0 16 16" style="margin-right: 5px;">'
+    '<path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>'
+    '<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .876-.252 1.007-.598l.088-.416c.066-.3.122-.507.23-.58.107-.072.268-.1.482-.122l.088-.416c.27-1.284.362-1.493-.64-1.574l-.088-.416.861-.108-.088-.416zm-1.498-.733c-.246 0-.45.178-.45.4s.204.4.45.4.45-.178.45-.4-.204-.4-.45-.4z"/>'
+    '</svg>'
+    '{}'
+    '</div>',
+    _("لا توجد دفعات")
+)
+
+        status_colors = {
+            0: '#fff3cd',  
+            1: '#d4edda',  
+            2: '#f8d7da',  
+        }
+        text_colors = {
+            0: '#856404',
+            1: '#155724',
+            2: '#721c24',
+        }
+        return format_html(
+            '<span style="background-color: {}; color: {}; padding: 3px 8px; border-radius: 12px; font-size: 0.85em; font-weight: 500;">{}</span>',
+            status_colors.get(payment.payment_status, '#e2e3e5'),
+            text_colors.get(payment.payment_status, '#383d41'),
+            payment.get_payment_status_display()
+        )
+
+
+    payment_status_display.short_description = _("حالة الدفع")
+    payment_status_display.admin_order_field = 'payments__payment_status'
 
     def set_checkout_today_toggle(self, obj):
         if obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
-            return format_html('<span style="color:green; font-weight:bold;">✔ تم تسجيل خروج المستخدم</span>')
-        url = reverse('bookings:set_actual_check_out_date', args=[obj.pk])        
+            return format_html('<span style="color:green; font-weight:bold;">✔ {}</span>', _("تم تسجيل الخروج"))
+        try:
+            # Assuming URL name is defined within the admin site's namespace
+            url = reverse('admin:set_actual_check_out_date', args=[obj.pk])
+        except Exception as e:
+             print(f"Error reversing URL 'admin:set_actual_check_out_date': {e}")
+             return _("خطأ في الرابط")
         return format_html(
-            f'<a class="button btn btn-warning" href="{url}">سجيل الخروج</a>'
+            '<a class="button btn btn-warning" href="{}">{}</a>',
+            url, _("تسجيل الخروج")
         )
-    
+    set_checkout_today_toggle.short_description = _('تسجيل الخروج الفعلي')
 
     def extend_booking_button(self, obj):
-        current_date = timezone.now()  
+        current_date = timezone.now().date()
+        # Ensure check_out_date is compared as date
+        checkout_date_part = obj.check_out_date.date() if isinstance(obj.check_out_date, datetime) else obj.check_out_date
 
-        if current_date > obj.check_out_date or obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
-            return format_html('<span style="color:red; font-weight:bold;">✔ غير قابل للتمديد</span>')
-
+        if not checkout_date_part or checkout_date_part < current_date or obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
+            return format_html('<span style="color:red; font-weight:bold;">✘ {}</span>', _("غير قابل للتمديد"))
         url = reverse('admin:booking-extend', args=[obj.pk])
+        # Ensure the popup function exists in your admin JS
         return format_html(
-            '<a class="button btn btn-success form-control" href="{0}" onclick="return showExtensionPopup(this.href);">تمديد الحجز</a>',
-            url
+            '<a class="button btn btn-success" href="{}" onclick="return showExtensionPopup(this.href);">{}</a>',
+            url, _("تمديد الحجز")
         )
+    extend_booking_button.short_description = _('تمديد الحجز')
 
-    
-    set_checkout_today_toggle.short_description = 'تسجيل الخروج الفعلي'
-    extend_booking_button.short_description = 'تمديد الحجز'
-
-    def payment_status(self, obj):
-        payment = obj.payments.last()
-        if not payment:
-            return format_html('<span style="color: red;">لم يتم إنشاء دفعة</span>')
-        status_colors = {
-            0: 'orange',  # معلق
-            1: 'green',   # مكتمل
-            2: 'red'      # ملغي
-        }
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            status_colors.get(payment.payment_status, 'black'),
-            payment.get_payment_status_display()
-        )
-    payment_status.short_description = "حالة الدفع"
-    payment_status.allow_tags = True
-
-    @admin.action(description='تغيير حالة الحجوزات المحددة')
+    @admin.action(description=_('تغيير حالة الحجوزات المحددة'))
     def change_booking_status(self, request, queryset):
         new_status = request.POST.get('new_status')
-        if new_status == '':
-            self.message_user(request, "لم يتم اختيار حالة جديدة.", level='warning')
+        if not new_status:
+            self.message_user(request, _("لم يتم اختيار حالة جديدة."), level='warning')
             return
-        
-        if new_status:
-            try:
-                with transaction.atomic():
-                    for booking in queryset:
-                        previous_status = booking.status
-                        booking.status = new_status
-                        booking.save()
 
-                        # عند تأكيد الحجز
-                        if new_status == Booking.BookingStatus.CONFIRMED:
-                            # تحديث حالة الدفع الموجود
-                            payment = booking.payments.first()  # نفترض أن كل حجز له دفعة واحدة
-                            if payment:
-                                payment.payment_status = 1  # تم الدفع
-                                payment.save()
+        updated_count = 0
+        payment_updated_count = 0
+        try:
+            with transaction.atomic():
+                for booking in queryset:
+                    booking.status = new_status
+                    booking.save() 
+                    updated_count += 1
+                    payment = booking.payments.order_by('-payment_date').first()
+                    if payment:
+                        if new_status == Booking.BookingStatus.CONFIRMED and payment.payment_status != 1:
+                            payment.payment_status = 1; payment.save(); payment_updated_count += 1
+                        elif new_status == Booking.BookingStatus.CANCELED and payment.payment_status != 2:
+                            payment.payment_status = 2; payment.save(); payment_updated_count += 1
 
-                        # عند إلغاء الحجز
-                        elif new_status == Booking.BookingStatus.CANCELED:
-                            payment = booking.payments.first()
-                            if payment:
-                                payment.payment_status = 2  # مرفوض
-                                payment.save()
-
-                    status_label = dict(Booking.BookingStatus.choices).get(new_status)
-                    success_message = f"تم تغيير حالة {queryset.count()} حجز(ات) إلى '{status_label}'"
-                    if new_status in [Booking.BookingStatus.CONFIRMED, Booking.BookingStatus.CANCELED]:
-                        success_message += " وتم تحديث حالات الدفع المرتبطة"
-                    self.message_user(request, success_message)
-
-            except Exception as e:
-                self.message_user(request, f"حدث خطأ أثناء تحديث الحجوزات: {str(e)}", level='error')
+                status_label = dict(Booking.BookingStatus.choices).get(new_status, new_status)
+                success_message = _("تم تغيير حالة %(count)d حجز(ات) إلى '%(status)s'") % {'count': updated_count, 'status': status_label}
+                if payment_updated_count > 0:
+                    success_message += " " + (_("وتم تحديث حالة %(payment_count)d دفعة مرتبطة.") % {'payment_count': payment_updated_count})
+                self.message_user(request, success_message)
+        except Exception as e:
+            self.message_user(request, _("حدث خطأ أثناء تحديث الحجوزات: {}").format(str(e)), level='error')
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
+        extra_context['daily_report_url'] = reverse('bookings:daily-report')
         extra_context['status_choices'] = Booking.BookingStatus.choices
         return super().changelist_view(request, extra_context=extra_context)
 
-
     def get_guest_name(self, obj):
         guest = obj.guests.first()
-        return guest.name if guest else "لا يوجد ضيف"
-   
-    get_guest_name.short_description = "اسم الضيف"
+        return guest.name if guest else _("لا يوجد ضيف")
+    get_guest_name.short_description = _("اسم الضيف")
 
     # --- PDF Export Action ---
     def export_bookings_report(self, request, queryset):
