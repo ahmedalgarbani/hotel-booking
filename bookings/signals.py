@@ -18,38 +18,30 @@ def store_booking_pre_save(sender, instance, **kwargs):
     else:
         instance._pre_save_instance = None
 
+
 @receiver(post_save, sender=Booking)
 def create_booking_history_on_change(sender, instance, created, **kwargs):
     """
-    إنشاء سجل جديد إذا تم تعديل الحجز الأصلي في أحد الحقول التالية:
-    - الحالة
-    - المبلغ
-    - عدد الغرف
-    - نوع الغرفة
-    بالإضافة لتحديث التوفر وإرسال الإشعارات في حال تغيرت الحالة.
+    Log changes to Booking in BookingHistory without modifying availability.
     """
     if instance.parent_booking is not None:
         return
 
-    
-
-    pre_instance = getattr(instance, '_pre_save_instance', None)
-    if not pre_instance:
+    pre = getattr(instance, '_pre_save_instance', None)
+    if not pre:
         return
 
-    changes_detected = (
-        pre_instance.status != instance.status or
-        pre_instance.amount != instance.amount or
-        pre_instance.rooms_booked != instance.rooms_booked or
-        pre_instance.room_id != instance.room_id or
-        pre_instance.actual_check_out_date != instance.actual_check_out_date
-    )
-
-    if changes_detected:
+    if (
+        pre.status != instance.status or
+        pre.amount != instance.amount or
+        pre.rooms_booked != instance.rooms_booked or
+        pre.room_id != instance.room_id or
+        pre.actual_check_out_date != instance.actual_check_out_date
+    ):
         BookingHistory.objects.create(
             booking=instance,
             changed_by=instance.user,
-            previous_status=pre_instance.status,
+            previous_status=pre.status,
             new_status=instance.status,
             hotel=instance.hotel,
             user=instance.user,
@@ -63,20 +55,21 @@ def create_booking_history_on_change(sender, instance, created, **kwargs):
             parent_booking=instance.parent_booking
         )
 
-    previous_status = pre_instance.status
-    today = timezone.now().date()
 
-    if previous_status == "1" and instance.status == "0":
-        instance.update_availability(-instance.rooms_booked)
+    # previous_status = pre_instance.status
+    # today = timezone.now().date()
 
-    if instance.actual_check_out_date:
-        instance.update_availability(instance.rooms_booked)
+    # if previous_status == "1" and instance.status == "0":
+    #     instance.update_availability(-instance.rooms_booked)
 
-    if previous_status != "2" and instance.status == "2":
-        instance.update_availability(instance.rooms_booked)
+    # if instance.actual_check_out_date:
+    #     instance.update_availability(instance.rooms_booked)
 
-    if instance.status == "1":
-        instance.send_confirmation_notification()
+    # if previous_status != "2" and instance.status == "2":
+    #     instance.update_availability(instance.rooms_booked)
+
+    # if instance.status == "1":
+    #     instance.send_notification()
 
 # @receiver(post_save, sender=Booking)
 # def update_availability_on_completion(sender, instance, **kwargs):

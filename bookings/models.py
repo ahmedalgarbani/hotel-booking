@@ -148,27 +148,25 @@ class Booking(BaseModel):
 
     def __str__(self):
         return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
-
     def update_availability(self, change, start_date=None, end_date=None):
         """تحديث التوافر بين تاريخين محددين"""
-        if not start_date:
-            start_date = self.check_in_date.date()
-        if not end_date:
-            end_date = self.check_out_date.date()
+        start = (start_date or self.check_in_date).date()
+        end = (end_date or self.check_out_date).date()
 
+        print(f"update_availability called: change={change}, start={start}, end={end}")
         with transaction.atomic():
-            current_date = start_date
-            while current_date < end_date:
+            current = start
+            while current < end:
                 availability = Availability.objects.get(
                     hotel=self.hotel,
                     room_type=self.room,
-                    availability_date=current_date
+                    availability_date=current
                 )
-                print(f"{self.room.name} - {availability.available_rooms} rooms available on {current_date}")
-                print("ahmed------------------------------------")
+                print(f"[{current}] before: {availability.available_rooms}")
                 availability.available_rooms += change
                 availability.save()
-                current_date += timedelta(days=1)
+                print(f"[{current}] after: {availability.available_rooms}")
+                current += timedelta(days=1)
 
     def send_notification(self, type=None, title=None):
         """إرسال إشعار للمستخدم"""
@@ -177,7 +175,7 @@ class Booking(BaseModel):
         Notifications.objects.create(
             sender=self.user,
             user=self.user,
-            title=title if title else "اشعار اتمام الحجز",
+            title=title or _("اشعار اتمام الحجز"),
             message=message,
             notification_type='2' if type == 'CONFIRMED' else '1',
             action_url=action_url,
@@ -188,36 +186,25 @@ class Booking(BaseModel):
         Notifications.objects.create(
             sender=self.user,
             user=self.user,
-            title="إلغاء الحجز",
+            title=_("إلغاء الحجز"),
             message=message,
             notification_type='BOOKING_CANCELED',
         )
 
     def clean(self):
         super().clean()
-
         if self.status == Booking.BookingStatus.CONFIRMED:
             if not self.check_in_date or not self.check_out_date:
-                raise ValidationError("يجب تحديد تاريخ الوصول والمغادرة.")
+                raise ValidationError(_("يجب تحديد تاريخ الوصول والمغادرة."))
             if self.check_out_date <= self.check_in_date:
-                raise ValidationError("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول.")
-
-            current_date = self.check_in_date.date()
-            end_date = self.check_out_date.date()
-            while current_date < end_date:
-                availability = Availability.objects.filter(
-                    hotel=self.hotel,
-                    room_type=self.room,
-                    availability_date=current_date
-                ).first()
-                if not availability or availability.available_rooms < self.rooms_booked:
-                    raise ValidationError(f"لا يوجد توفر كافٍ في تاريخ {current_date}")
-                current_date += timedelta(days=1)
+                raise ValidationError(_("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول."))
+        if self.hotel != self.room.hotel:
+            raise ValidationError(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
+        
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding
         original = None
-
         if not is_new:
             try:
                 original = Booking.objects.get(pk=self.pk)
@@ -226,77 +213,81 @@ class Booking(BaseModel):
 
         if is_new and self.status == Booking.BookingStatus.CONFIRMED:
             super().save(*args, **kwargs)
+            print("New CONFIRMED booking: reducing availability")
             self.update_availability(change=-self.rooms_booked)
-            self.send_notification(type='CONFIRMED', title="تم تأكيد حجزك بنجاح.")
+            self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
+            # Schedule end reminder
+            if self.check_out_date:
+                print("pass")
+                # send_booking_end_reminders.apply_async(
+                #     args=[self.id],
+                #     eta=self.check_out_date - timezone.timedelta(hours=5)
+                # )
             return
 
         super().save(*args, **kwargs)
-
         if not original:
             return
 
-        # Update availability if confirmed and dates changed
         if (
-            original.status == Booking.BookingStatus.CONFIRMED
-            and self.status == Booking.BookingStatus.CONFIRMED
-            and (original.check_in_date != self.check_in_date or original.check_out_date != self.check_out_date)
+            original.status == Booking.BookingStatus.CONFIRMED and
+            self.status == Booking.BookingStatus.CONFIRMED and
+            (original.check_in_date != self.check_in_date or original.check_out_date != self.check_out_date)
         ):
-            self.update_availability(
-                change=original.rooms_booked,
-                start_date=original.check_in_date.date(),
-                end_date=original.check_out_date.date()
-            )
-            self.update_availability(
-                change=-self.rooms_booked,
-                start_date=self.check_in_date.date(),
-                end_date=self.check_out_date.date()
-            )
+            print("Date change on confirmed booking: resetting availability")
+            self.update_availability(change=original.rooms_booked,
+                                     start_date=original.check_in_date,
+                                     end_date=original.check_out_date)
+            self.update_availability(change=-self.rooms_booked,
+                                     start_date=self.check_in_date,
+                                     end_date=self.check_out_date)
 
-        # Handle status change
+        
         if original.status != self.status:
             if self.status == Booking.BookingStatus.CONFIRMED:
+                print("Status changed to CONFIRMED: reducing availability")
                 self.update_availability(change=-self.rooms_booked)
-                self.send_notification(type='CONFIRMED', title="تم تأكيد حجزك بنجاح.")
-            elif self.status == Booking.BookingStatus.CANCELED and original.status == Booking.BookingStatus.CONFIRMED:
+                self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
+                if self.check_out_date:
+                    print("sss")
+                    # send_booking_end_reminders.apply_async(
+                    #     args=[self.id],
+                    #     eta=self.check_out_date - timezone.timedelta(hours=5)
+                    # )
+            elif (self.status == Booking.BookingStatus.CANCELED and
+                  original.status == Booking.BookingStatus.CONFIRMED):
+                print("Status changed to CANCELED: restoring availability")
                 self.update_availability(change=self.rooms_booked)
                 self.send_cancellation_notification()
-                self.send_notification(type='CANCELED', title="تم إلغاء حجزك.")
 
-        # ✅ Handle actual checkout availability only if previously CONFIRMED
         if (
-            original.status == Booking.BookingStatus.CONFIRMED
-            and self.actual_check_out_date
-            and original.actual_check_out_date != self.actual_check_out_date
+            original.status == Booking.BookingStatus.CONFIRMED and
+            self.status == Booking.BookingStatus.CONFIRMED and
+            self.actual_check_out_date and
+            original.actual_check_out_date != self.actual_check_out_date
         ):
+            print("Actual checkout updated: adjusting availability")
             actual_end = self.actual_check_out_date.date()
-            self.update_availability(
-                change=self.rooms_booked,
-                start_date=self.check_out_date.date(),
-                end_date=actual_end
-            )
-            self.update_availability(
-                change=-self.rooms_booked,
-                start_date=self.check_in_date.date(),
-                end_date=actual_end
-            )
+            self.update_availability(change=self.rooms_booked)
+            # self.update_availability(change=-self.rooms_booked)
 
     @property
     def get_status_class(self):
-        status_map = {
+        return {
             '0': 'info',
             '1': 'success',
             '2': 'danger'
-        }
-        return status_map.get(self.status, 'info')
+        }.get(self.status, 'info')
 
     @property
     def get_status_icon(self):
-        icon_map = {
+        return {
             '0': 'clock',
             '1': 'check',
             '2': 'times'
-        }
-        return icon_map.get(self.status, 'clock')
+        }.get(self.status, 'clock')
+
+
 
 
 # ------------ Booking Detail -------------
