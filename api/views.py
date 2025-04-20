@@ -13,7 +13,7 @@ from payments.models import HotelPaymentMethod, Payment
 from rooms.models import Availability, Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
-from .serializers import BookingSerializer, CategorySerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer, UserSerializer
+from .serializers import BookingSerializer, CategorySerializer, ChangePasswordSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer, UserSerializer
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -589,6 +589,32 @@ class UserProfileView(APIView):
     
 
 
+
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        user = request.user
+
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+
+            if not user.check_password(old_password):
+                return Response({"error": "the old password is Wrong."}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(new_password)
+            user.save()
+            return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+    
 # booking------------------
 # {
 #   "hotel":1,

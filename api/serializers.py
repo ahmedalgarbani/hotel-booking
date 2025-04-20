@@ -262,9 +262,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'phone', 'image', 'gender', 'birth_date', 
         ]
         read_only_fields = ['id', 'user_type', 'chield', 'chart']
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
+        # extra_kwargs = {
+        #     'password': {'write_only': True},
+        # }
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
 # ------------test------------------
 # {
 #   "username": "ahmed2025",

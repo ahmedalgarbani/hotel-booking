@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('hotel_availability/', HotelAvailabilityViewSet.as_view(), name='hotel_availability'),
     path('user-profile/', UserProfileView.as_view(), name='user-profile'),
+    path('change-password/', ChangePasswordView.as_view(), name='change-password'),
     # path('profile/', UserProfileView.as_view(), name='user-profile'),
     #  JWT Token endpoints
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
