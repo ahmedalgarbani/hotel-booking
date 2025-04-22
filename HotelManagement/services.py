@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db.models import Q
 
 from rooms.models import Availability, RoomType
@@ -124,7 +124,7 @@ def get_hotels_query(hotel_name, category_type=None, room_number=1, adult_number
     from django.db.models import Count
     if check_in and check_out and check_in != check_out:
         
-        total_days = (check_out - check_in).days
+        total_days = (check_out - check_in).days + 1
         
         avail_room_types = Availability.objects.filter(
             availability_date__range=[check_in, check_out],
@@ -133,12 +133,12 @@ def get_hotels_query(hotel_name, category_type=None, room_number=1, adult_number
         .annotate(available_days=Count('id')) \
         .filter(available_days=total_days) \
         .values_list('room_type', flat=True)
-        
+
         hotels_query = hotels_query.filter(
             room_types__id__in=avail_room_types
         )
 
-    # فلترة حسب عدد الغرف المطلوبة
+    #  حسب عدد الغرف المطلوبة
     if room_number and room_number > 0:
         if check_in and check_out and check_in != check_out:
             avail_room_types = Availability.objects.filter(

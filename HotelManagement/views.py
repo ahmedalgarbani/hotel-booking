@@ -192,6 +192,8 @@ def hotel_search(request):
         hotels_query, error_message = get_hotels_query(
             hotel_name, category_type, room_number, adult_number, today, check_out, check_in
         )
+        print(hotels_query)
+        print(error_message)
     hotels_query = annotate_hotels(hotels_query, favorite_hotel_ids)
 
     for hotel in hotels_query:

@@ -82,7 +82,8 @@ class HotelsViewSet(viewsets.ModelViewSet):
             except ValueError:
                 return Response({'error': 'Invalid adult number format'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            room_number = int(room_number) if room_number else None
+            room_number = int(room_number)
+
             if check_in and check_out:
                 check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
                 check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
@@ -90,20 +91,19 @@ class HotelsViewSet(viewsets.ModelViewSet):
                 if check_in_date >= check_out_date:
                     return Response({'error': 'Check-out must be after check-in'}, status=status.HTTP_400_BAD_REQUEST)
 
-                total_days = (check_out_date - check_in_date).days
+                total_days = (check_out_date - check_in_date).days + 1
 
-                if room_number and room_number > 0:
-                    avail_room_types = Availability.objects.filter(
-                        availability_date__range=[check_in_date, check_out_date - timedelta(days=1)],
-                        # availability_date__range=[check_in, check_out],
-                        available_rooms__gte=room_number
-                    ).values('room_type') \
-                    .annotate(available_days=Count('id')) \
-                    .filter(available_days=total_days) \
-                    .values_list('room_type', flat=True)
-                    queryset = queryset.filter(room_types__id__in=avail_room_types)
-                
-            else:
+                avail_room_types = Availability.objects.filter(
+                    availability_date__range=[check_in_date, check_out_date],
+                    available_rooms__gte=room_number
+                ).values('room_type') \
+                .annotate(available_days=Count('id')) \
+                .filter(available_days=total_days) \
+                .values_list('room_type', flat=True)
+
+                queryset = queryset.filter(room_types__id__in=avail_room_types)
+
+            elif room_number and room_number > 0:
                 queryset = queryset.annotate(
                     latest_avail=Subquery(
                         RoomType.objects.filter(
@@ -118,6 +118,7 @@ class HotelsViewSet(viewsets.ModelViewSet):
         paginated_queryset = self.paginate_queryset(queryset.distinct())
         serializer = HotelSerializer(paginated_queryset, many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)
+
 
 
 class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
@@ -615,7 +616,7 @@ class ChangePasswordView(APIView):
 
 
     
-# booking------------------
+# booking ------------------
 # {
 #   "hotel":1,
 #           "room" :1,

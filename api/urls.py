@@ -26,6 +26,11 @@ router.register(r'categories', CategoriesViewSet,basename='categories')
 urlpatterns = [
     
     path('', include(router.urls)),
+
+
+
+
+    
     path('hotel_availability/', HotelAvailabilityViewSet.as_view(), name='hotel_availability'),
     path('user-profile/', UserProfileView.as_view(), name='user-profile'),
     path('change-password/', ChangePasswordView.as_view(), name='change-password'),
@@ -43,3 +48,8 @@ urlpatterns = [
     path('get_best_hotels_by_gemini/', get_best_hotels_by_gemini, name='get_best_hotels_by_gemini'),  
 ]
 
+
+
+
+
+# http://127.0.0.1:8000/api/hotels/search?room_number=201&check_in=2025-06-11&check_out=2025-06-12&adult_number=1&hotel_name=$$$&location=###&category_type=@@@
