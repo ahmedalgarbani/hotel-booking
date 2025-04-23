@@ -201,8 +201,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'phone', 'first_name', 'last_name', 'image']
+        fields = ['username', 'email', 'password', 'phone', 'first_name', 'last_name', 'image', 'gender', 'birth_date', ]
         extra_kwargs = {'password': {'write_only': True}}
+ 
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)
@@ -215,7 +216,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         if image:
             user.image = image
             user.save()
-
         return user
 
 

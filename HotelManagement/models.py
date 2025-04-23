@@ -322,6 +322,7 @@ class HotelRequest(models.Model):
             
             # تعيين كلمة مرور عشوائية
             password = get_random_string(length=12)
+            print(password)
             hotel_manager.set_password(password)
             
             # إضافة المستخدم إلى مجموعة مدراء الفنادق
@@ -381,7 +382,6 @@ class HotelRequest(models.Model):
             phone_number=self.phone_number,
             created_by=user
         )
-        
         # إضافة الصور الإضافية
         if isinstance(self.additional_images, str):
             try:
