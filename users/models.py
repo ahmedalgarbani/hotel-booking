@@ -19,8 +19,8 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(
         max_length=20,
         choices=USER_TYPE_CHOICES,
-        default='customer',
         verbose_name=_('نوع المستخدم'),
+        default='customer',
         help_text=_('نوع حساب المستخدم في النظام')
     )
     
@@ -49,7 +49,8 @@ class CustomUser(AbstractUser):
         verbose_name=_("الجنس"),
         null=True
     )
-    birth_date = models.DateField(verbose_name=_("تاريخ الميلاد"),        null=True
+    birth_date = models.DateField(verbose_name=_("تاريخ الميلاد"),
+            null=True
 )
 
     is_active = models.BooleanField(
@@ -95,39 +96,11 @@ class CustomUser(AbstractUser):
     def is_customer(self):
         return self.user_type == 'customer'
     
-    # def save(self, *args, **kwargs):
-    #     if self._state.adding: 
-    #         from social_django.models import UserSocialAuth
-    #         from accounts.models import ChartOfAccounts
-    #         from accounts.services import create_chart_of_account 
-    #         from django.db import transaction
-    #         social_account = UserSocialAuth.objects.filter(id=19)
-
-    #         if social_account:
-    #             extra_data = social_account.extra_data
-    #             gender = extra_data.get('gender', 'Not specified')
-    #             birthday = extra_data.get('birthday', 'Not specified')
-    #             picture = extra_data.get('picture', 'Default image URL')
-    #             print(f"Gender: {gender}, Birthday: {birthday}, Picture: {picture}")
-    #         else:
-    #             print("No Google account linked with this user.")
-
-    #         print("First Name:", self.first_name)
-
-    #         random_number = random.randint(1000, 9999)
-    #         chart = create_chart_of_account(
-    #             account_number=f"110{random_number}",
-    #             account_name=f"عملاء دائمون - {self.first_name} {self.last_name}",
-    #             account_type="Assets",
-    #             account_balance=0,
-    #             account_parent=ChartOfAccounts.objects.get(account_number="1100"),
-    #             account_description="الحسابات المدينة / العملاء",
-    #             account_status=True,
-    #         )
-
-    #         self.chart = chart
-        
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self._state.adding: 
+           if self.is_superuser:
+               self.user_type = ''
+        super().save(*args, **kwargs)
     
 class ActivityLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('تاريخ الإنشاء'), help_text=_('تاريخ إنشاء السجل'))
