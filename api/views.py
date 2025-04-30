@@ -418,19 +418,37 @@ class BookingViewSet(viewsets.ModelViewSet):
         extra_services_details = []
 
         if extra_services:
-            services = RoomTypeService.objects.filter(id__in=extra_services)
-            days_count = (check_out_date_obj - check_in_date_obj).days
+            try:
+                # التحقق من وجود الخدمات المطلوبة
+                valid_service_ids = list(RoomTypeService.objects.filter(
+                    id__in=extra_services,
+                    room_type=room
+                ).values_list('id', flat=True))
 
-            for service in services:
-                service_price = float(service.additional_fee)
-                service_total = service_price * rooms_booked * days_count
-                extra_services_total += service_total
-                extra_services_details.append({
-                    "id": service.id,
-                    "name": service.name,
-                    "price": service_price,
-                    "total": service_total
-                })
+                # استخدام فقط معرفات الخدمات الصالحة
+                services = RoomTypeService.objects.filter(id__in=valid_service_ids)
+                days_count = (check_out_date_obj - check_in_date_obj).days
+
+                for service in services:
+                    service_price = float(service.additional_fee)
+                    service_total = service_price * rooms_booked * days_count
+                    extra_services_total += service_total
+                    extra_services_details.append({
+                        "id": service.id,
+                        "name": service.name,
+                        "price": service_price,
+                        "total": service_total
+                    })
+
+                # إذا كانت هناك خدمات غير صالحة، أضف تحذير
+                invalid_services = set(extra_services) - set(valid_service_ids)
+                if invalid_services:
+                    print(f"Warning: Services with IDs {invalid_services} not found for room {room.id}")
+            except Exception as e:
+                print(f"Error processing services: {str(e)}")
+                # استمر بدون خدمات إضافية في حالة حدوث خطأ
+                extra_services_total = 0
+                extra_services_details = []
 
         grand_total = total_price + extra_services_total
 
@@ -448,18 +466,23 @@ class BookingViewSet(viewsets.ModelViewSet):
         # إضافة تفاصيل الخدمات الإضافية إلى جدول BookingDetail
         from bookings.models import BookingDetail
 
-        if extra_services:
+        if extra_services_details:  # استخدم extra_services_details بدلاً من extra_services
             days_count = (check_out_date_obj - check_in_date_obj).days
             for service_detail in extra_services_details:
-                service = RoomTypeService.objects.get(id=service_detail["id"])
-                BookingDetail.objects.create(
-                    booking=booking,
-                    hotel=hotel,
-                    service=service,
-                    quantity=rooms_booked * days_count,
-                    price=service_detail["price"],
-                    notes=f"خدمة إضافية للحجز - {service.name}"
-                )
+                try:
+                    service = RoomTypeService.objects.get(id=service_detail["id"])
+                    BookingDetail.objects.create(
+                        booking=booking,
+                        hotel=hotel,
+                        service=service,
+                        quantity=rooms_booked * days_count,
+                        price=service_detail["price"],
+                        notes=f"خدمة إضافية للحجز - {service.name}"
+                    )
+                except RoomTypeService.DoesNotExist:
+                    print(f"Warning: Service with ID {service_detail['id']} not found when creating BookingDetail")
+                except Exception as e:
+                    print(f"Error creating BookingDetail: {str(e)}")
 
         serializer = BookingSerializer(booking)
         response_data = serializer.data
@@ -532,19 +555,37 @@ class BookingViewSet(viewsets.ModelViewSet):
         extra_services_details = []
 
         if extra_services:
-            services = RoomTypeService.objects.filter(id__in=extra_services)
-            days_count = (check_out_date_obj - check_in_date_obj).days
+            try:
+                # التحقق من وجود الخدمات المطلوبة
+                valid_service_ids = list(RoomTypeService.objects.filter(
+                    id__in=extra_services,
+                    room_type=room
+                ).values_list('id', flat=True))
 
-            for service in services:
-                service_price = float(service.additional_fee)
-                service_total = service_price * rooms_booked * days_count
-                extra_services_total += service_total
-                extra_services_details.append({
-                    "id": service.id,
-                    "name": service.name,
-                    "price": service_price,
-                    "total": service_total
-                })
+                # استخدام فقط معرفات الخدمات الصالحة
+                services = RoomTypeService.objects.filter(id__in=valid_service_ids)
+                days_count = (check_out_date_obj - check_in_date_obj).days
+
+                for service in services:
+                    service_price = float(service.additional_fee)
+                    service_total = service_price * rooms_booked * days_count
+                    extra_services_total += service_total
+                    extra_services_details.append({
+                        "id": service.id,
+                        "name": service.name,
+                        "price": service_price,
+                        "total": service_total
+                    })
+
+                # إذا كانت هناك خدمات غير صالحة، أضف تحذير
+                invalid_services = set(extra_services) - set(valid_service_ids)
+                if invalid_services:
+                    print(f"Warning: Services with IDs {invalid_services} not found for room {room.id}")
+            except Exception as e:
+                print(f"Error processing services: {str(e)}")
+                # استمر بدون خدمات إضافية في حالة حدوث خطأ
+                extra_services_total = 0
+                extra_services_details = []
 
         grand_total = total_price + extra_services_total
 
