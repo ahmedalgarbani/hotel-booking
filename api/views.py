@@ -32,6 +32,7 @@ from django.db.models import Sum, Count, Subquery,OuterRef
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from datetime import datetime
  
 User = get_user_model()
 # Views
@@ -388,7 +389,7 @@ class BookingViewSet(viewsets.ModelViewSet):
         room = get_object_or_404(RoomType, id=room_id)
         
         # التحقق من توافر الغرف
-        from datetime import datetime
+       
         today_date = datetime.now().date()
         check_in_date_obj = datetime.strptime(check_in_date, '%Y-%m-%d').date() if isinstance(check_in_date, str) else check_in_date
         check_out_date_obj = datetime.strptime(check_out_date, '%Y-%m-%d').date() if isinstance(check_out_date, str) else check_out_date
