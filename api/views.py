@@ -498,7 +498,7 @@ class BookingViewSet(viewsets.ModelViewSet):
         })
 
         return Response(response_data, status=status.HTTP_201_CREATED)
-
+#يعرض تفاصيل التكلفة وتوافر الغرفة دون إنشاء الحجز.
     @action(detail=False, methods=['post'])
     def calculate_booking_price(self, request):
         """
