@@ -1,0 +1,25 @@
+{% block top_navbar_right %}
+    {{ block.super }}
+    
+    {% with notifications=request.user.notifications.all %}
+    <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" title="الإشعارات">
+            <i class="fas fa-bell"></i>
+            {% if notifications|length > 0 %}
+                <span class="badge badge-warning navbar-badge">{{ notifications|length }}</span>
+            {% endif %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">{{ notifications|length }} إشعارات</span>
+            {% for notification in notifications %}
+                <a href="{{ notification.link }}" class="dropdown-item">
+                    <i class="fas fa-info-circle mr-2"></i> {{ notification.text }}
+                    <span class="float-right text-muted text-sm">{{ notification.created_at|timesince }} ago</span>
+                </a>
+                <div class="dropdown-divider"></div>
+            {% endfor %}
+            <a href="{% url 'admin:your_notification_model_changelist' %}" class="dropdown-item dropdown-footer">عرض كل الإشعارات</a>
+        </div>
+    </li>
+    {% endwith %}
+{% endblock %}

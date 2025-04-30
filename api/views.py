@@ -387,7 +387,6 @@ class BookingViewSet(viewsets.ModelViewSet):
         hotel = get_object_or_404(Hotel, id=hotel_id)
         room = get_object_or_404(RoomType, id=room_id)
         
-        # التحقق من توافر الغرف
         from datetime import datetime
         today_date = datetime.now().date()
         check_in_date_obj = datetime.strptime(check_in_date, '%Y-%m-%d').date() if isinstance(check_in_date, str) else check_in_date

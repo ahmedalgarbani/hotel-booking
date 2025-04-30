@@ -292,3 +292,10 @@ def user_dashboard_bookings(request):
     return render(request, 'admin/user_dashboard/pages/user-bookings.html', {
         'bookings_with_location': bookings_with_location
     })
+
+
+
+
+def payment_detail_view(request, pk):
+    payment = get_object_or_404(Payment, pk=pk)
+    return render(request, 'admin/payments/payment_detail.html', {'payment': payment})
