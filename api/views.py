@@ -33,7 +33,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
- 
+
 User = get_user_model()
 # Views
 
@@ -125,7 +125,7 @@ class HotelsViewSet(viewsets.ModelViewSet):
 class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
-    queryset = HotelPaymentMethod.objects.filter(is_active=True)  
+    queryset = HotelPaymentMethod.objects.filter(is_active=True)
     serializer_class = HotelPaymentMethodSerializer
 
     @action(detail=False, methods=['post'])
@@ -151,7 +151,7 @@ class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
             is_active=True,
             payment_option__is_active=True
         ).select_related('payment_option__currency')
-        
+
         serializer = HotelPaymentMethodSerializer(payment_methods, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -159,11 +159,11 @@ class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
 
 
 
-    
+
 class RoomsViewSet(viewsets.ModelViewSet):
     queryset = RoomType.objects.all()
     serializer_class = RoomsSerializer
-    
+
 class CategoriesViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.filter(status = True)
     serializer_class = CategorySerializer
@@ -184,7 +184,7 @@ class FavouritesViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         hotel_id = serializer.validated_data['hotel'].id
         if Favourites.objects.filter(user=request.user, hotel=hotel_id).exists():
             return Response({"detail": "Favourite already exists."}, status=status.HTTP_400_BAD_REQUEST)
@@ -226,9 +226,9 @@ class RegisterView(APIView):
             except Exception as e:
                 return Response({'error': 'Server error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
-    
+
+
 class LoginView(APIView):
     serializer_class = UserSerializer
 
@@ -261,7 +261,7 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
- 
+
 
     def post(self, request):
         try:
@@ -273,22 +273,22 @@ class LogoutView(APIView):
             return Response({"message": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
 
 
-        
+
+
 # Test login
 # {
 #     "email":"a9a0a2@a3a.com",
 #     "password":"a9a1515151a"
 # }
-        
+
 
 
 
 
 def usage(request):
-    return render(request,"api/usage_doc.html")        
+    return render(request,"api/usage_doc.html")
 
 
 
@@ -314,7 +314,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         payment_totalamount = request.data.get('payment_totalamount')
         payment_currency = request.data.get('payment_currency')
         payment_type = request.data.get('payment_type')
-        transfer_image = request.FILES.get('transfer_image') 
+        transfer_image = request.FILES.get('transfer_image')
         payment_note = request.data.get('payment_note', '')
         payment_discount = request.data.get('payment_discount', 0)
         if not all([booking_id, payment_method_id, payment_subtotal, payment_totalamount, payment_currency, payment_type]):
@@ -341,10 +341,10 @@ class PaymentViewSet(viewsets.ModelViewSet):
             payment_totalamount=payment_totalamount,
             payment_currency=payment_currency,
             payment_type=payment_type,
-            transfer_image=transfer_image, 
+            transfer_image=transfer_image,
             payment_note=payment_note,
             payment_discount=payment_discount,
-            payment_status=0 
+            payment_status=0
         )
 
         payment.save()
@@ -368,7 +368,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def create_booking(self, request):
-        required_fields = ["hotel_id", "room_id", "check_in_date", "check_out_date", "amount"]
+        required_fields = ["hotel_id", "room_id", "check_in_date", "check_out_date"]
         missing_fields = [field for field in required_fields if not request.data.get(field)]
 
         if missing_fields:
@@ -381,19 +381,19 @@ class BookingViewSet(viewsets.ModelViewSet):
         room_id = request.data["room_id"]
         check_in_date = request.data["check_in_date"]
         check_out_date = request.data["check_out_date"]
-        amount = request.data["amount"]
-        rooms_booked = request.data.get("rooms_booked", 1)
+        rooms_booked = int(request.data.get("rooms_booked", 1))
+        extra_services = request.data.get("extra_services", [])
 
         user = get_object_or_404(CustomUser, id=request.user.id)
         hotel = get_object_or_404(Hotel, id=hotel_id)
         room = get_object_or_404(RoomType, id=room_id)
-        
+
         # التحقق من توافر الغرف
-       
+        from datetime import datetime
         today_date = datetime.now().date()
         check_in_date_obj = datetime.strptime(check_in_date, '%Y-%m-%d').date() if isinstance(check_in_date, str) else check_in_date
         check_out_date_obj = datetime.strptime(check_out_date, '%Y-%m-%d').date() if isinstance(check_out_date, str) else check_out_date
-        
+
         from HotelManagement.services import check_room_availability_full
         is_available, message = check_room_availability_full(
             today_date=today_date,
@@ -403,22 +403,168 @@ class BookingViewSet(viewsets.ModelViewSet):
             check_in=check_in_date_obj,
             check_out=check_out_date_obj
         )
-        
+
         if not is_available:
             return Response({"error": message}, status=status.HTTP_400_BAD_REQUEST)
 
+        # حساب السعر الإجمالي
+        from rooms.services.pricing import calculate_total_cost
+        from rooms.models import RoomTypeService
+
+        total_price, room_price = calculate_total_cost(room, check_in_date_obj, check_out_date_obj, rooms_booked)
+
+        # إضافة تكلفة الخدمات الإضافية
+        extra_services_total = 0
+        extra_services_details = []
+
+        if extra_services:
+            services = RoomTypeService.objects.filter(id__in=extra_services)
+            days_count = (check_out_date_obj - check_in_date_obj).days
+
+            for service in services:
+                service_price = float(service.additional_fee)
+                service_total = service_price * rooms_booked * days_count
+                extra_services_total += service_total
+                extra_services_details.append({
+                    "id": service.id,
+                    "name": service.name,
+                    "price": service_price,
+                    "total": service_total
+                })
+
+        grand_total = total_price + extra_services_total
+
+        # إنشاء الحجز
         booking = Booking.objects.create(
             hotel=hotel,
             user=user,
             room=room,
             check_in_date=check_in_date,
             check_out_date=check_out_date,
-            amount=amount,
+            amount=grand_total,
             rooms_booked=rooms_booked
         )
 
+        # إضافة تفاصيل الخدمات الإضافية إلى جدول BookingDetail
+        from bookings.models import BookingDetail
+
+        if extra_services:
+            days_count = (check_out_date_obj - check_in_date_obj).days
+            for service_detail in extra_services_details:
+                service = RoomTypeService.objects.get(id=service_detail["id"])
+                BookingDetail.objects.create(
+                    booking=booking,
+                    hotel=hotel,
+                    service=service,
+                    quantity=rooms_booked * days_count,
+                    price=service_detail["price"],
+                    notes=f"خدمة إضافية للحجز - {service.name}"
+                )
+
         serializer = BookingSerializer(booking)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response_data = serializer.data
+        response_data.update({
+            "price_details": {
+                "room_price": room_price,
+                "total_room_cost": total_price,
+                "extra_services_cost": extra_services_total,
+                "extra_services": extra_services_details,
+                "grand_total": grand_total,
+                "days_count": (check_out_date_obj - check_in_date_obj).days
+            }
+        })
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['post'])
+    def calculate_booking_price(self, request):
+        """
+        Calculate the booking price without creating a booking.
+        This allows the user to see the price breakdown before confirming.
+        """
+        required_fields = ["hotel_id", "room_id", "check_in_date", "check_out_date"]
+        missing_fields = [field for field in required_fields if not request.data.get(field)]
+
+        if missing_fields:
+            return Response(
+                {"error": f"Missing required fields: {', '.join(missing_fields)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        hotel_id = request.data["hotel_id"]
+        room_id = request.data["room_id"]
+        check_in_date = request.data["check_in_date"]
+        check_out_date = request.data["check_out_date"]
+        rooms_booked = int(request.data.get("rooms_booked", 1))
+        extra_services = request.data.get("extra_services", [])
+
+        hotel = get_object_or_404(Hotel, id=hotel_id)
+        room = get_object_or_404(RoomType, id=room_id)
+
+        # التحقق من توافر الغرف
+        from datetime import datetime
+        today_date = datetime.now().date()
+        check_in_date_obj = datetime.strptime(check_in_date, '%Y-%m-%d').date() if isinstance(check_in_date, str) else check_in_date
+        check_out_date_obj = datetime.strptime(check_out_date, '%Y-%m-%d').date() if isinstance(check_out_date, str) else check_out_date
+
+        # التحقق من توافر الغرف (اختياري في هذه المرحلة)
+        from HotelManagement.services import check_room_availability_full
+        is_available, message = check_room_availability_full(
+            today_date=today_date,
+            hotel=hotel,
+            room_type=room,
+            required_rooms=rooms_booked,
+            check_in=check_in_date_obj,
+            check_out=check_out_date_obj
+        )
+
+        if not is_available:
+            return Response({"error": message, "is_available": False}, status=status.HTTP_200_OK)
+
+        # حساب سعر الغرفة
+        from rooms.services.pricing import calculate_total_cost
+        from rooms.models import RoomTypeService
+
+        total_price, room_price = calculate_total_cost(room, check_in_date_obj, check_out_date_obj, rooms_booked)
+
+        # حساب تكلفة الخدمات الإضافية
+        extra_services_total = 0
+        extra_services_details = []
+
+        if extra_services:
+            services = RoomTypeService.objects.filter(id__in=extra_services)
+            days_count = (check_out_date_obj - check_in_date_obj).days
+
+            for service in services:
+                service_price = float(service.additional_fee)
+                service_total = service_price * rooms_booked * days_count
+                extra_services_total += service_total
+                extra_services_details.append({
+                    "id": service.id,
+                    "name": service.name,
+                    "price": service_price,
+                    "total": service_total
+                })
+
+        grand_total = total_price + extra_services_total
+
+        # إرجاع تفاصيل السعر
+        return Response({
+            "is_available": True,
+            "price_details": {
+                "room_price": room_price,
+                "total_room_cost": total_price,
+                "extra_services_cost": extra_services_total,
+                "extra_services": extra_services_details,
+                "grand_total": grand_total,
+                "days_count": (check_out_date_obj - check_in_date_obj).days,
+                "hotel_name": hotel.name,
+                "room_name": room.name,
+                "rooms_booked": rooms_booked,
+                "check_in_date": check_in_date,
+                "check_out_date": check_out_date
+            }
+        }, status=status.HTTP_200_OK)
 
 
 class NotificationsViewSet(viewsets.ModelViewSet):
@@ -433,18 +579,18 @@ class NotificationsViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def mark_as_read(self, request, pk=None):
         notification = self.get_object()
-        notification.mark_as_read()  
+        notification.mark_as_read()
         return Response({'status': 'notification marked as read'}, status=status.HTTP_200_OK)
 
 
 
-    
+
 class HotelAvailabilityViewSet(APIView):
     def get(self, request):
-        
+
         hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
         hotels_query, error_message = get_hotels_query(hotel_name, category_type, room_number, adult_number, check_in, check_out)
-    
+
         serializer = HotelSerializer(hotels_query, many=True, context={'request': request})
         return Response({
             'adult_number': adult_number,
@@ -477,10 +623,10 @@ class HotelAvailabilityViewSet(APIView):
 @api_view(['POST'])
 def call_gemini_chat_bot(request):
     prompt = request.data.get('prompt')
-    
+
     if not prompt:
         return Response({"message": "Prompt is required."}, status=400)
-    
+
     message = call_gemini_api(prompt=prompt)
 
 
@@ -553,7 +699,7 @@ def get_best_hotels_by_gemini(request):
                 "max_capacity": room.max_capacity,
                 "beds_count": room.beds_count,
                 "rooms_count": room.rooms_count,
-                "base_price": str(room.base_price),          
+                "base_price": str(room.base_price),
                 "hotel": hotel.id,
                 "category": room.category.id if room.category else None,
             }
@@ -606,7 +752,7 @@ class UserProfileView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 
 
@@ -631,10 +777,10 @@ class ChangePasswordView(APIView):
             return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
-    
+
+
 # booking ------------------
 # {
 #   "hotel":1,
