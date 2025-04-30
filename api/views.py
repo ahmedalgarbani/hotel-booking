@@ -422,7 +422,8 @@ class BookingViewSet(viewsets.ModelViewSet):
                 # التحقق من وجود الخدمات المطلوبة
                 valid_service_ids = list(RoomTypeService.objects.filter(
                     id__in=extra_services,
-                    room_type=room
+                    room_type=room,
+                    hotel=hotel
                 ).values_list('id', flat=True))
 
                 # استخدام فقط معرفات الخدمات الصالحة
