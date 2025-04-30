@@ -409,7 +409,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 
         # حساب السعر الإجمالي
         from rooms.services.pricing import calculate_total_cost
-        from rooms.models import RoomTypeService
+        from services.models import RoomTypeService
 
         total_price, room_price = calculate_total_cost(room, check_in_date_obj, check_out_date_obj, rooms_booked)
 
@@ -546,7 +546,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 
         # حساب سعر الغرفة
         from rooms.services.pricing import calculate_total_cost
-        from rooms.models import RoomTypeService
+        from services.models import RoomTypeService
 
         total_price, room_price = calculate_total_cost(room, check_in_date_obj, check_out_date_obj, rooms_booked)
 
