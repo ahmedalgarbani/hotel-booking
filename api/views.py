@@ -384,9 +384,27 @@ class BookingViewSet(viewsets.ModelViewSet):
         rooms_booked = request.data.get("rooms_booked", 1)
 
         user = get_object_or_404(CustomUser, id=request.user.id)
-
         hotel = get_object_or_404(Hotel, id=hotel_id)
         room = get_object_or_404(RoomType, id=room_id)
+        
+        # التحقق من توافر الغرف
+        from datetime import datetime
+        today_date = datetime.now().date()
+        check_in_date_obj = datetime.strptime(check_in_date, '%Y-%m-%d').date() if isinstance(check_in_date, str) else check_in_date
+        check_out_date_obj = datetime.strptime(check_out_date, '%Y-%m-%d').date() if isinstance(check_out_date, str) else check_out_date
+        
+        from HotelManagement.services import check_room_availability_full
+        is_available, message = check_room_availability_full(
+            today_date=today_date,
+            hotel=hotel,
+            room_type=room,
+            required_rooms=rooms_booked,
+            check_in=check_in_date_obj,
+            check_out=check_out_date_obj
+        )
+        
+        if not is_available:
+            return Response({"error": message}, status=status.HTTP_400_BAD_REQUEST)
 
         booking = Booking.objects.create(
             hotel=hotel,
