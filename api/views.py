@@ -607,6 +607,8 @@ class BookingViewSet(viewsets.ModelViewSet):
             }
         }, status=status.HTTP_200_OK)
 
+        
+
 
 class NotificationsViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationsSerializer

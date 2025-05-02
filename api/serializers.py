@@ -106,7 +106,7 @@ class BookingGuestSerializer(serializers.ModelSerializer):
         fields = ['name', 'phone_number', 'id_card_image', 'gender', 'birthday_date', 'check_in_date', 'check_out_date']
 
 
-
+from django.conf import settings
 class BookingSerializer(serializers.ModelSerializer):
     hotel_name = serializers.SerializerMethodField()
     user_name = serializers.SerializerMethodField()
@@ -126,6 +126,8 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def get_hotel_name(self, obj):
         return obj.hotel.name
+    
+    
     def get_hotel_image(self, obj):
         request = self.context.get('request')
         if request:
