@@ -107,51 +107,104 @@ class BookingGuestSerializer(serializers.ModelSerializer):
 
 
 from django.conf import settings
+
+from rest_framework import serializers
+from datetime import datetime
+from .models import Booking
+
 class BookingSerializer(serializers.ModelSerializer):
-    hotel_name = serializers.SerializerMethodField()
-    user_name = serializers.SerializerMethodField()
-    room_name = serializers.SerializerMethodField()
+    # الحقول المشتقة (للقراءة فقط)
+    hotel_name = serializers.SerializerMethodField(read_only=True)
+    user_name = serializers.SerializerMethodField(read_only=True)
+    room_name = serializers.SerializerMethodField(read_only=True)
+    hotel_image = serializers.SerializerMethodField(read_only=True)
+    
+    # الحقول المرتبطة بعلاقات
     details = BookingDetailSerializer(many=True, read_only=True)
     guests = BookingGuestSerializer(many=True, read_only=True)
-    hotel_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
         fields = [
-            'id', 'hotel', 'hotel_name','hotel_image', 'details','guests',
-            'user', 'user_name', 'room', 'room_name',
-            'check_in_date', 'check_out_date',
-            'amount', 'status', 'rooms_booked'
+            'id', 
+            'hotel', 
+            'hotel_name',
+            'hotel_image', 
+            'details',
+            'guests',
+            'user', 
+            'user_name', 
+            'room', 
+            'room_name',
+            'check_in_date', 
+            'check_out_date',
+            'amount', 
+            'status', 
+            'rooms_booked'
+        ]
+        read_only_fields = [
+            'id',
+            'hotel_name',
+            'user_name',
+            'room_name',
+            'hotel_image',
+            'details',
+            'guests',
+            'user',        # يُعيّن تلقائيًا في الـ View
+            'status',      # قد يُعيّن تلقائيًا
+            'amount'       # قد يُحسب تلقائيًا
         ]
 
+    # ────────────────────────────────────────────────────────────────────
+    # دوال الحصول على الحقول المشتقة
+    # ────────────────────────────────────────────────────────────────────
     def get_hotel_name(self, obj):
-        return obj.hotel.name
-    
-    
+        return obj.hotel.name if obj.hotel else None
+
     def get_hotel_image(self, obj):
+        if not obj.hotel.profile_picture:
+            return None
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(obj.hotel.profile_picture.url) if obj.hotel.profile_picture else None
-        return obj.hotel.profile_picture.url if obj.hotel.profile_picture else None
+            return request.build_absolute_uri(obj.hotel.profile_picture.url)
+        return obj.hotel.profile_picture.url
 
     def get_user_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}"
+        return f"{obj.user.first_name} {obj.user.last_name}" if obj.user else "مستخدم مجهول"
 
     def get_room_name(self, obj):
-        return obj.room.name
+        return obj.room.name if obj.room else None
 
-
+    # ────────────────────────────────────────────────────────────────────
+    # التحقق من صحة البيانات
+    # ────────────────────────────────────────────────────────────────────
     def validate(self, data):
-        if data.get('check_in_date') and data.get('check_out_date'):
-            if data['check_in_date'] >= data['check_out_date']:
-                raise serializers.ValidationError('Check-in date must be before check-out date.')
+        # التحقق من التواريخ
+        check_in_str = data.get('check_in_date')
+        check_out_str = data.get('check_out_date')
 
-        if data.get('amount') <= 0:
-            raise serializers.ValidationError('Amount must be greater than 0.')
+        if check_in_str and check_out_str:
+            try:
+                check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
+                check_out = datetime.strptime(check_out_str, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                raise serializers.ValidationError("تنسيق التاريخ غير صالح. استخدم `YYYY-MM-DD`.")
+            
+            if check_in >= check_out:
+                raise serializers.ValidationError({
+                    "error": f"تاريخ المغادرة ({check_out_str}) يجب أن يكون بعد تاريخ الوصول ({check_in_str})."
+                })
+            
+            # إضافة التواريخ المحولة إلى البيانات
+            data['check_in_date'] = check_in
+            data['check_out_date'] = check_out
 
+        # التحقق من المبلغ
+        amount = data.get('amount')
+        if amount is not None and amount <= 0:
+            raise serializers.ValidationError("المبلغ يجب أن يكون أكبر من الصفر.")
+        
         return data
-
-
 
 
 

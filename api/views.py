@@ -422,7 +422,8 @@ class BookingViewSet(viewsets.ModelViewSet):
                 # التحقق من وجود الخدمات المطلوبة
                 valid_service_ids = list(RoomTypeService.objects.filter(
                     id__in=extra_services,
-                    room_type=room
+                    room_type=room,
+                    hotel=hotel
                 ).values_list('id', flat=True))
 
                 # استخدام فقط معرفات الخدمات الصالحة
@@ -498,7 +499,7 @@ class BookingViewSet(viewsets.ModelViewSet):
         })
 
         return Response(response_data, status=status.HTTP_201_CREATED)
-
+#يعرض تفاصيل التكلفة وتوافر الغرفة دون إنشاء الحجز.
     @action(detail=False, methods=['post'])
     def calculate_booking_price(self, request):
         """
