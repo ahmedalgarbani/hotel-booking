@@ -12,7 +12,7 @@ def create_chart_account(sender, request, user, **kwargs):
     if hasattr(user, 'chart') and user.chart:
         print("User already has a chart. Skipping chart creation.")
         return
-  
+
     social_account = UserSocialAuth.objects.filter(user=user).first()
 
     if social_account:
@@ -30,12 +30,28 @@ def create_chart_account(sender, request, user, **kwargs):
 
     random_number = random.randint(1000, 9999)
 
+    # Intentar obtener la cuenta padre, o crearla si no existe
+    try:
+        parent_account = ChartOfAccounts.objects.get(account_number="1100")
+    except ChartOfAccounts.DoesNotExist:
+        # Crear la cuenta padre si no existe
+        parent_account = create_chart_of_account(
+            account_number="1100",
+            account_name="حسابات العملاء",
+            account_type="Assets",
+            account_balance=0,
+            account_description="الحسابات المدينة / العملاء الرئيسية",
+            account_status=True
+        )
+        print(f"Created parent account: {parent_account}")
+
+    # Crear la cuenta del cliente
     chart = create_chart_of_account(
         account_number=f"110{random_number}",
         account_name=f"عملاء دائمون - {user.first_name} {user.last_name}",
         account_type="Assets",
         account_balance=0,
-        account_parent=ChartOfAccounts.objects.get(account_number="1100"),
+        account_parent=parent_account,
         account_description="الحسابات المدينة / العملاء",
         account_status=True,
     )

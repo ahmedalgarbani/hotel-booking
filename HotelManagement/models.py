@@ -15,7 +15,7 @@ from .notifications import Notification
 from users.models import CustomUser
 import json
 
-  
+
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -51,7 +51,7 @@ class BaseModel(models.Model):
         blank=True,
         null=True,
     )
-    
+
 
     class Meta:
         abstract = True
@@ -94,9 +94,29 @@ class Location(BaseModel):
     class Meta:
         verbose_name = _("الموقع")
         verbose_name_plural = _("المواقع")
+        # إضافة قيد فريد للتأكد من عدم تكرار نفس العنوان في نفس المدينة
+        unique_together = ['address', 'city']
 
     def __str__(self):
         return f"{self.address}"
+
+    @classmethod
+    def get_or_create_location(cls, address, city, user=None):
+        """
+        الحصول على موقع موجود أو إنشاء موقع جديد إذا لم يكن موجودًا
+        """
+        try:
+            # محاولة العثور على موقع موجود بنفس العنوان والمدينة
+            location = cls.objects.get(address=address, city=city)
+            return location, False
+        except cls.DoesNotExist:
+            # إنشاء موقع جديد إذا لم يكن موجودًا
+            location = cls.objects.create(
+                address=address,
+                city=city,
+                created_by=user
+            )
+            return location, True
 
 # -------------------- Hotel ----------------------------
 class Hotel(BaseModel):
@@ -220,7 +240,7 @@ class HotelRequest(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("الاسم"))
     email = models.EmailField(verbose_name=_("البريد الإلكتروني"))
     role = models.CharField(max_length=100, verbose_name=_("دور العمل"))
-    
+
     # معلومات الفندق
     hotel_name = models.CharField(max_length=100, verbose_name=_("اسم الفندق"))
     description = models.TextField(verbose_name=_("وصف الفندق"))
@@ -240,7 +260,7 @@ class HotelRequest(models.Model):
         blank=True
     )
     additional_images = models.JSONField(default=list, blank=True, verbose_name=_("صور إضافية"))
-    
+
     # معلومات المدينه
     country = models.CharField(max_length=100, verbose_name=_("الدولة"))
     state = models.CharField(max_length=100, verbose_name=_("المحافظة"))
@@ -248,11 +268,11 @@ class HotelRequest(models.Model):
     # معلومات الموقع
     city_name = models.CharField(max_length=100, verbose_name=_("المدينة"))
     address = models.CharField(max_length=255, verbose_name=_("العنوان"))
-    
+
     # معلومات الاتصال
     country_code = models.CharField(max_length=5, verbose_name=_("رمز الدولة"))
     phone_number = models.CharField(max_length=20, verbose_name=_("رقم الهاتف"))
-    
+
     # حالة الطلب
     is_approved = models.BooleanField(default=False, verbose_name=_("تمت الموافقة"))
     approved_by = models.ForeignKey(
@@ -264,7 +284,7 @@ class HotelRequest(models.Model):
         verbose_name=_("تمت الموافقة بواسطة")
     )
     approved_at = models.DateTimeField(null=True, blank=True, verbose_name=_("تاريخ الموافقة"))
-    
+
     # معلومات التتبع
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("تاريخ الإنشاء"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("تاريخ التحديث"))
@@ -284,29 +304,29 @@ class HotelRequest(models.Model):
         related_name='updated_hotel_requests',
         verbose_name=_("تم التحديث بواسطة")
     )
-    
+
     def __str__(self):
         return f"{self.hotel_name} - {self.name}"
-    
+
     @property
     def status(self):
         """حالة الطلب"""
         if self.is_approved:
             return "تمت الموافقة"
         return "في انتظار الموافقة"
-    
+
     class Meta:
         verbose_name = _("طلب إضافة فندق")
         verbose_name_plural = _("طلبات إضافة الفنادق")
         ordering = ['-created_at']
-    
+
     def approve(self, user=None):
         """
         الموافقة على طلب إضافة الفندق
         """
-        
+
         User = get_user_model()
-        
+
         # إنشاء مستخدم جديد كمدير فندق
         username = self.email  # استخدام البريد الإلكتروني كاسم مستخدم
         # التحقق من عدم وجود مستخدم بنفس البريد الإلكتروني
@@ -319,16 +339,16 @@ class HotelRequest(models.Model):
                 user_type="hotel_manager",
                 is_staff=True,
             )
-            
+
             # تعيين كلمة مرور عشوائية
             password = get_random_string(length=12)
             print(password)
             hotel_manager.set_password(password)
-            
+
             # إضافة المستخدم إلى مجموعة مدراء الفنادق
             hotel_managers_group = Group.objects.get(name='Hotel Managers')
             hotel_manager.groups.add(hotel_managers_group)
-            
+
             # # إضافة الصلاحيات المخصصة للمستخدم
             # content_type = ContentType.objects.get_for_model(HotelRequest)
             # approve_perm = Permission.objects.get(
@@ -336,9 +356,9 @@ class HotelRequest(models.Model):
             #     content_type=content_type
             # # )
             # hotel_manager.user_permissions.add(approve_perm)
-            
+
             hotel_manager.save()
-            
+
             # إرسال بريد إلكتروني للمستخدم مع معلومات تسجيل الدخول
             print(f"محاولة إرسال بريد إلكتروني إلى {hotel_manager.email}")
             email_sent = Notification.send_hotel_manager_credentials(hotel_manager, self.hotel_name, password)
@@ -346,20 +366,20 @@ class HotelRequest(models.Model):
                 print(f"فشل في إرسال البريد الإلكتروني إلى {hotel_manager.email}")
         else:
             hotel_manager = User.objects.get(email=self.email)
-        
+
         # إنشاء سجل المدينة إذا لم تكن موجودة
         city, created = City.objects.get_or_create(
             state=self.state,
             country=self.country
         )
-        
-        # إنشاء الموقع
-        location = Location.objects.create(
+
+        # استخدام الدالة الجديدة للحصول على موقع موجود أو إنشاء موقع جديد
+        location, created_location = Location.get_or_create_location(
             address=self.address,
             city=city,
-            created_by=user
+            user=user
         )
-        
+
         # إنشاء الفندق
         hotel = Hotel.objects.create(
             name=self.hotel_name,
@@ -374,7 +394,7 @@ class HotelRequest(models.Model):
             verification_date=timezone.now(),
 
         )
-        
+
         # إضافة رقم الهاتف
         Phone.objects.create(
             hotel=hotel,
@@ -396,11 +416,11 @@ class HotelRequest(models.Model):
                             )
             except json.JSONDecodeError:
                 pass
-        
+
         # تحديث حالة الطلب
         self.is_approved = True
         self.approved_by = user
         self.approved_at = timezone.now()
         self.save()
-        
+
         return hotel

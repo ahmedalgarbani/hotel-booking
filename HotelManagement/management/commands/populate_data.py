@@ -137,20 +137,24 @@ class Command(BaseCommand):
 
 
         # --- Create Locations ---
-        locations = []
+        created_locations = []
         for _ in range(count):
-             locations.append(Location(
-                 address=fake.address(),
-                 latitude=fake.latitude(),
-                 longitude=fake.longitude(),
-                 city=random.choice(created_cities) if created_cities else None,
-                 created_by=random.choice(created_users)
-             ))
-        Location.objects.bulk_create(locations)
-        self.stdout.write(self.style.SUCCESS(f'Successfully created {len(locations)} Location records.'))
-        created_locations = list(Location.objects.all())
+            if created_cities:
+                city = random.choice(created_cities)
+                address = fake.address()
+                user = random.choice(created_users)
+
+                # استخدام الدالة الجديدة للحصول على موقع موجود أو إنشاء موقع جديد
+                location, created = Location.get_or_create_location(
+                    address=address,
+                    city=city,
+                    user=user
+                )
+                created_locations.append(location)
+
+        self.stdout.write(self.style.SUCCESS(f'Successfully created/retrieved {len(created_locations)} Location records.'))
         if not created_locations:
-             self.stdout.write(self.style.WARNING('No locations created. Hotels will not have locations.'))
+            self.stdout.write(self.style.WARNING('No locations created. Hotels will not have locations.'))
 
         # --- Create Hotels ---
         hotels = []
@@ -217,7 +221,7 @@ class Command(BaseCommand):
         if not created_room_categories:
              self.stdout.write(self.style.WARNING('No room categories created. Room types will not have categories.'))
 
-        
+
         # --- Create Room Types ---
         room_types = []
         for hotel in created_hotels:
