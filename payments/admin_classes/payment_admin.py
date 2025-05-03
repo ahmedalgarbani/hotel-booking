@@ -2,72 +2,90 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 
-# Import models
 from payments.models import Payment
+from django.contrib.admin.helpers import ActionForm 
+from django import forms
 
-# Use your custom admin site if defined, otherwise use default admin.site
-try:
-    from api.admin import admin_site
-except ImportError:
-    print("Warning: Custom admin_site from api.admin not found. Using default admin.site.")
-    admin_site = admin.site
+class ChangeStatusForm(ActionForm): 
+    new_status = forms.ChoiceField(
+        choices=[('', '-- اختر الحالة --')] + list(Payment.payment_choice),
+        required=True, 
+        label=_("الحالة الجديدة")
+    )
 
-
-class PaymentAdmin(admin.ModelAdmin): # Consider inheriting from HotelManagerAdminMixin if applicable
+class PaymentAdmin(admin.ModelAdmin):
+    action_form = ChangeStatusForm
     list_display = [
         'id', 'booking_link', 'user_link', 'payment_method', 'payment_totalamount',
-        'payment_currency', 'payment_status_display', 'payment_date', 'payment_type'
+        'payment_currency', 'styled_payment_status', 'payment_date', 'payment_type',
+        'view_payment_details_button',
     ]
     list_filter = ['payment_status', 'payment_type', 'payment_method__hotel', 'payment_date']
-    search_fields = [
-        'booking__id', 'user__username', 'user__first_name', 'user__last_name',
-        'payment_method__method_name', 'id'
-    ]
-    readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency'] # Make calculated fields read-only
-    # Add actions if needed, e.g., export selected payments
-    # actions = ['export_payments_report']
+    search_fields = ['booking__id', 'user__username', 'user__first_name', 'user__last_name',
+                     'payment_method__method_name', 'id']
+    readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency']
+    actions = ['change_payment_status']
 
-    # Link to related booking
     def booking_link(self, obj):
         if obj.booking:
-            link = reverse("admin:bookings_booking_change", args=[obj.booking.id])
-            return format_html('<a href="{}">{} {}</a>', link, _("حجز رقم"), obj.booking.id)
+            url = reverse("admin:bookings_booking_change", args=[obj.booking.id])
+            return format_html('<a href="{}">{} {}</a>', url, _("حجز رقم"), obj.booking.id)
         return "-"
     booking_link.short_description = _("الحجز")
-    booking_link.admin_order_field = 'booking'
 
-    # Link to related user
     def user_link(self, obj):
         if obj.user:
-            link = reverse("admin:users_customuser_change", args=[obj.user.id]) # Adjust app_label if needed
-            return format_html('<a href="{}">{}</a>', link, obj.user.get_full_name() or obj.user.username)
+            url = reverse("admin:users_customuser_change", args=[obj.user.id])
+            return format_html('<a href="{}">{}</a>', url, obj.user.get_full_name() or obj.user.username)
         return "-"
     user_link.short_description = _("المستخدم")
-    user_link.admin_order_field = 'user'
 
-    # Display payment status with color
-    def payment_status_display(self, obj):
+    def styled_payment_status(self, obj):
+        status_colors = {
+            0: '#fff3cd',  # Pending
+            1: '#d4edda',  # Paid
+            2: '#f8d7da',  # Rejected
+        }
+        text_colors = {
+            0: '#856404',
+            1: '#155724',
+            2: '#721c24',
+        }
         return format_html(
-            '<span style="color: {};">{}</span>',
-            obj.get_status_class, # Use property from model
+            '<span style="background-color: {}; color: {}; padding: 3px 8px; border-radius: 12px; font-size: 0.85em; font-weight: 500;">{}</span>',
+            status_colors.get(obj.payment_status, '#e2e3e5'),
+            text_colors.get(obj.payment_status, '#383d41'),
             obj.get_payment_status_display()
         )
-    payment_status_display.short_description = _("حالة الدفع")
-    payment_status_display.admin_order_field = 'payment_status'
+    styled_payment_status.short_description = _("حالة الدفع")
+    styled_payment_status.admin_order_field = 'payment_status'
 
-    # Override changelist_view to add context for the report link
-    def changelist_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-        # Add the URL for the revenue summary report to the context
-        extra_context['revenue_summary_url'] = reverse('payments:revenue-summary')
-        return super().changelist_view(request, extra_context=extra_context)
+    def view_payment_details_button(self, obj):
+        url = reverse('payments:external-payment-detail', args=[obj.pk]) 
+        return format_html(
+            '<a class="button btn btn-info" href="{}" target="_blank">{}</a>',
+            url,
+            _("عرض التفاصيل")
+        )
+    view_payment_details_button.short_description = _("تفاصيل الدفع")
 
-    # --- Custom Report Views & URLs ---
-    def get_urls(self):
-        urls = super().get_urls()
-        # No need to add custom report URLs here as they are now defined in payments/urls.py
-        return urls
+    @admin.action(description=_("تغيير حالة الدفعات المحددة"))
+    def change_payment_status(self, request, queryset):
+        new_status = request.POST.get('new_status')
+        if new_status is None:
+            self.message_user(request, _("يرجى تحديد حالة جديدة للتغيير."), level='warning')
+            return
 
-# Note: Registration happens in payments/admin.py
-# admin_site.register(Payment, PaymentAdmin)
+        updated_count = 0
+        try:
+            with transaction.atomic():
+                for payment in queryset:
+                    payment.payment_status = new_status
+                    payment.save()
+                    updated_count += 1
+            label = dict(Payment.payment_choice).get(int(new_status), new_status)
+            self.message_user(request, _(f"تم تغيير حالة {updated_count} دفعة(ات) إلى '{label}'"))
+        except Exception as e:
+            self.message_user(request, _("حدث خطأ أثناء تحديث الحالة: {}").format(str(e)), level='error')
