@@ -48,19 +48,19 @@ class HotelManagerAdminMixin:
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-            
+
             form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
             form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
             form.base_fields['hotel'].widget.attrs['readonly'] = True
             form.base_fields['hotel'].required = False
-            
+
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
                 form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
-            
+
             if 'created_by' in form.base_fields:
-                
+
                 form.base_fields['created_by'].widget.attrs['disabled'] = True
                 form.base_fields['created_by'].initial = request.user
                 form.base_fields['created_by'].required = False
@@ -83,10 +83,10 @@ class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_filter = ['status']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def get_room_types_count(self, obj):
         return obj.room_types.count()
     get_room_types_count.short_description = _("عدد أنواع الغرف")
@@ -94,7 +94,7 @@ class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
 
 
-class RoomImageInline(admin.TabularInline):  
+class RoomImageInline(admin.TabularInline):
     model = RoomImage
     extra = 1
     fields = ('image', 'is_main', 'caption')
@@ -110,10 +110,10 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_editable = ['is_active', 'base_price']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def get_available_rooms(self, obj):
         today = timezone.now().date()
         availability = Availability.objects.filter(
@@ -175,10 +175,10 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     date_hierarchy = 'availability_date'
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def bulk_create_button(self, obj):
         """عرض زر الإنشاء الجماعي"""
         url = reverse('admin:rooms_availability_bulk_create')
@@ -200,7 +200,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             ),
         ]
         return custom_urls + urls
-    
+
     def bulk_create_view(self, request):
         """عرض نموذج الإنشاء الجماعي"""
         if request.method == 'POST':
@@ -210,10 +210,10 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 end_date = form.cleaned_data['end_date']
                 available_rooms = form.cleaned_data['available_rooms']
                 room_type = form.cleaned_data['room_type']
-                
+
                 current_date = start_date
                 bulk_list = []
-                
+
                 while current_date <= end_date:
                     bulk_list.append(
                         Availability(
@@ -224,17 +224,17 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                         )
                     )
                     current_date += timedelta(days=1)
-                
+
                 try:
                     Availability.objects.bulk_create(bulk_list, ignore_conflicts=True)
                     self.message_user(request, _("تم إنشاء توفر الغرف بنجاح"), messages.SUCCESS)
                 except Exception as e:
                     self.message_user(request, _("حدث خطأ أثناء إنشاء توفر الغرف: {}").format(str(e)), messages.ERROR)
-                
+
                 return redirect('admin:rooms_availability_changelist')
         else:
             form = BulkAvailabilityAdminForm(user=request.user)
-            
+
         context = {
             'form': form,
             'title': _('إنشاء توفر الغرف'),
@@ -245,11 +245,11 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             'is_nav_sidebar_enabled': True,
             'available_apps': self.admin_site.get_app_list(request),
         }
-        
+
         return TemplateResponse(request, 'admin/rooms/availability/bulk_create.html', context)
 
     actions = ['copy_to_next_day']
-    
+
     def copy_to_next_day(self, request, queryset):
         for availability in queryset:
             next_day = availability.availability_date + timedelta(days=1)
@@ -274,7 +274,7 @@ class BulkAvailabilityAdminForm(forms.Form):
         widget=forms.DateInput(attrs={'type': 'date'})
     )
     available_rooms = forms.IntegerField(
-        label=_("عدد الغرف المتوفرة"), 
+        label=_("عدد الغرف المتوفرة"),
         min_value=0
     )
     room_type = forms.ModelChoiceField(
@@ -308,7 +308,7 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
@@ -319,8 +319,8 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             return _("متبقي {} يوم").format(days)
         return _("منتهي")
     get_days_remaining.short_description = _("المدة المتبقية")
-    
-    
+
+
 
 
 class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
@@ -330,7 +330,7 @@ class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_editable = ['is_main', 'caption']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 

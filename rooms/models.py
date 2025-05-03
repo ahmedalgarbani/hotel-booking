@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.db.models import Q
 from users.models import CustomUser
 
- 
+
 class Category(BaseModel):
     status = models.BooleanField(default=True,        verbose_name=_("الحاله")
 )
@@ -54,7 +54,7 @@ class RoomType(BaseModel):
         max_length=100,
         verbose_name=_("اسم نوع الغرفة")
     )
-    
+
     description = models.TextField(
         verbose_name=_("وصف"),
         blank=True,
@@ -109,18 +109,18 @@ class RoomType(BaseModel):
             })
     def get_absolute_url(self):
         return reverse('rooms:room_detail', args=[self.slug])
-    
+
 
     @property
     def available_rooms_count(self):
         """Calculate available rooms dynamically based on active bookings and check-out dates."""
         now = timezone.now()
-        
+
         active_bookings = self.bookings.filter(
-            status='1',  
-            check_in_date__lte=now,  
+            status='1',
+            check_in_date__lte=now,
         ).filter(
-           
+
             Q(actual_check_out_date__isnull=True, check_out_date__gt=now) |
             Q(actual_check_out_date__gt=now)
         ).count()
@@ -195,8 +195,8 @@ class Availability(BaseModel):
         verbose_name=_("نوع الغرفة"),
         related_name='availabilities'
     )
-    
-    availability_date = models.DateField(  
+
+    availability_date = models.DateField(
         verbose_name=_("تاريخ التوفر")
     )
     available_rooms = models.PositiveIntegerField(
@@ -214,7 +214,7 @@ class Availability(BaseModel):
         verbose_name_plural = _("توفر الغرف")
         ordering = ['-availability_date', 'room_type']
 
-    def save(self, *args, **kwargs):        
+    def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -263,4 +263,10 @@ class RoomImage(BaseModel):
         super().clean()
         if self.is_main and RoomImage.objects.filter(room_type=self.room_type, is_main=True).exists():
             raise ValidationError(_("لا يمكن أن تكون هناك أكثر من صورة رئيسية واحدة لكل نوع غرفة"))
+
+    def save(self, *args, **kwargs):
+        # تعيين حقل hotel تلقائيًا من room_type إذا لم يتم تعيينه
+        if not self.hotel_id and self.room_type_id:
+            self.hotel = self.room_type.hotel
+        super().save(*args, **kwargs)
 
