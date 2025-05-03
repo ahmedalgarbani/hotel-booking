@@ -60,7 +60,7 @@ class Guest(BaseModel):
         ordering = ['name']
 
 
-    def save(self, *args, **kwargs): 
+    def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -200,7 +200,7 @@ class Booking(BaseModel):
                 raise ValidationError(_("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول."))
         if self.hotel != self.room.hotel:
             raise ValidationError(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
-        
+
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding
@@ -215,8 +215,27 @@ class Booking(BaseModel):
             super().save(*args, **kwargs)
             print("New CONFIRMED booking: reducing availability")
             self.update_availability(change=-self.rooms_booked)
-            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_("يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="admin/bookings/booking/")
+
+            # إرسال إشعار لمدير الفندق
+            hotel_manager = self.hotel.manager
+            if hotel_manager:
+                booking_details = f"حجز جديد: {self.rooms_booked} غرفة من نوع {self.room.name}"
+                payment_details = f"المبلغ: {self.amount} - من تاريخ {self.check_in_date.strftime('%Y-%m-%d')} إلى {self.check_out_date.strftime('%Y-%m-%d')}"
+                customer_info = f"العميل: {self.user.get_full_name() if self.user else 'غير معروف'}"
+
+                Notifications.objects.create(
+                    sender=self.user if self.user else hotel_manager,
+                    user=hotel_manager,
+                    title=_("حجز جديد في الفندق"),
+                    message=f"{booking_details}\n{payment_details}\n{customer_info}",
+                    notification_type='1',  # تحذير
+                    action_url=f"/admin/bookings/booking/{self.id}/change/",
+                    is_active=True
+                )
+
+            # إرسال إشعار للعميل
             self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
+
             # Schedule end reminder
             if self.check_out_date:
                 print("pass")
@@ -243,13 +262,31 @@ class Booking(BaseModel):
                                      start_date=self.check_in_date,
                                      end_date=self.check_out_date)
 
-        
+
         if original.status != self.status:
             if self.status == Booking.BookingStatus.CONFIRMED:
                 print("Status changed to CONFIRMED: reducing availability")
                 self.update_availability(change=-self.rooms_booked)
+
+                # إرسال إشعار للعميل
                 self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
-                self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_(f"يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="admin/bookings/booking/")
+
+                # إرسال إشعار لمدير الفندق
+                hotel_manager = self.hotel.manager
+                if hotel_manager:
+                    booking_details = f"تم تأكيد الحجز: {self.rooms_booked} غرفة من نوع {self.room.name}"
+                    payment_details = f"المبلغ: {self.amount} - من تاريخ {self.check_in_date.strftime('%Y-%m-%d')} إلى {self.check_out_date.strftime('%Y-%m-%d')}"
+                    customer_info = f"العميل: {self.user.get_full_name() if self.user else 'غير معروف'}"
+
+                    Notifications.objects.create(
+                        sender=self.user if self.user else hotel_manager,
+                        user=hotel_manager,
+                        title=_("تم تأكيد حجز في الفندق"),
+                        message=f"{booking_details}\n{payment_details}\n{customer_info}",
+                        notification_type='2',  # نجاح
+                        action_url=f"/admin/bookings/booking/{self.id}/change/",
+                        is_active=True
+                    )
 
                 if self.check_out_date:
                     print("sss")
@@ -261,7 +298,22 @@ class Booking(BaseModel):
                   original.status == Booking.BookingStatus.CONFIRMED):
                 print("Status changed to CANCELED: restoring availability")
                 self.update_availability(change=self.rooms_booked)
+
+                # إشعار للعميل
                 self.send_cancellation_notification()
+
+                # إشعار لمدير الفندق
+                hotel_manager = self.hotel.manager
+                if hotel_manager:
+                    Notifications.objects.create(
+                        sender=self.user if self.user else hotel_manager,
+                        user=hotel_manager,
+                        title=_("تم إلغاء حجز في الفندق"),
+                        message=f"تم إلغاء الحجز رقم {self.id} للغرفة {self.room.name} من قبل {self.user.get_full_name() if self.user else 'النظام'}",
+                        notification_type='3',  # خطأ
+                        action_url=f"/admin/bookings/booking/{self.id}/change/",
+                        is_active=True
+                    )
 
         if (
             original.status == Booking.BookingStatus.CONFIRMED and
@@ -327,7 +379,7 @@ class BookingDetail(BaseModel):
     def save(self, *args, **kwargs):
         self.total = self.quantity * self.price
         if self.booking:
-            self.id = self.booking.id  
+            self.id = self.booking.id
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -352,7 +404,7 @@ class ExtensionMovement(models.Model):
         ('other', 'أسباب أخرى'),
     ]
     reason = models.CharField(max_length=50, choices=REASON_CHOICES, verbose_name="سبب التمديد")
-    extension_year = models.PositiveIntegerField(editable=False) 
+    extension_year = models.PositiveIntegerField(editable=False)
     duration = models.PositiveIntegerField(verbose_name="مدة التمديد (أيام)", default=0)
 
 
@@ -362,8 +414,8 @@ class ExtensionMovement(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"حركة #{self.movement_number} - حجز {self.booking.id}"    
-    
+        return f"حركة #{self.movement_number} - حجز {self.booking.id}"
+
 
 
 
@@ -471,4 +523,3 @@ class BookingHistory(models.Model):
     def __str__(self):
         return f"History entry for Booking #{self.booking.id} at {self.history_date}"
 
-        
