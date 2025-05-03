@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{% block title %}Trizen - User Dashboard {% endblock %}</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" href="{% static 'images/favicon.png' %}" />
 
@@ -33,12 +33,12 @@
 
 
 
-    
+
     {% block extra_css %}
     {% endblock extra_css %}
   </head>
   <body>
-  
+
 
 
     {% include "admin/hotel_manager_dashboard/components/sidebar.html" %}
@@ -146,7 +146,7 @@
                       </div>
                     </div>
                     <!-- end notification-item -->
-                    <div class="notification-item me-2">
+                    {% comment %} <div class="notification-item me-2">
                       <div class="dropdown">
                         <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" id="messageDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="la la-envelope"></i>
@@ -224,7 +224,7 @@
                         </div>
                         <!-- end dropdown-menu -->
                       </div>
-                    </div>
+                    </div> {% endcomment %}
                     <!-- end notification-item -->
                     <div class="notification-item">
                       <div class="dropdown">
@@ -316,7 +316,7 @@
 
 
 
-        
+
         <!-- end dashboard-nav -->
         <div class="dashboard-content-wrap mb-5">
             <div class="dashboard-bread dashboard-bread-2">
@@ -344,7 +344,7 @@
                           >
                         </li>
                         <li>الصفحات</li>
-                        <li> 
+                        <li>
                     {% block path_title %}
                     لوحة القيادة
                     {% endblock path_title %}
@@ -452,7 +452,7 @@
               </div>
             </div>
             <!-- end dashboard-bread -->
-           
+
             <!-- end dashboard-main-content -->
           </div>
         <!-- Page Content -->
@@ -964,7 +964,10 @@
         </div>
         <!-- end col-lg-6 -->
         <div class="col-lg-3 responsive-column--m">
-          <div class="form-box dashboard-card">
+          <!-- Notifications Widget -->
+          {% include "admin/hotel_manager_dashboard/components/notifications_widget.html" %}
+
+          <div class="form-box dashboard-card mt-4">
             <div class="form-title-wrap">
               <h3 class="title">الزيارات حسب المتصفح</h3>
             </div>
@@ -1067,7 +1070,7 @@
               >
             </p>
           </div>
-          
+
           <!-- end copy-right -->
         </div>
         <!-- end col-lg-7 -->
@@ -1111,11 +1114,13 @@
     <!-- jQuery UI قبل Bootstrap -->
     <script src="{% static 'js/jquery-ui.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    
+    <!-- Notifications JS -->
+    <script src="{% static 'js/notifications.js' %}"></script>
+
     <!-- Essential Plugins -->
     <script src="{% static 'js/moment.min.js' %}"></script>
     <script src="{% static 'js/select2.min.js' %}"></script>
-    
+
     <!-- UI Enhancement Plugins -->
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
@@ -1123,37 +1128,37 @@
     <script src="{% static 'js/jquery.filer.min.js' %}"></script>
     <script src="{% static 'js/jquery.ripples-min.js' %}"></script>
     <script src="{% static 'js/jquery.superslides.min.js' %}"></script>
-    
+
     <!-- Date & Time Plugins -->
     <script src="{% static 'js/daterangepicker.js' %}"></script>
-    
+
     <!-- Custom Scripts -->
     <script src="{% static 'js/animated-headline.js' %}"></script>
     <script src="{% static 'js/quantity-input.js' %}"></script>
     <script src="{% static 'js/superslider-script.js' %}"></script>
-    
+
     <!-- Initialize Scripts -->
     <script src="{% static 'js/main-rtl.js' %}"></script>
 
 
     {% block extra_js %}
-    {% endblock extra_js %}    
+    {% endblock extra_js %}
     <script>
         // حل مشكلة تعارض النوافذ المنبثقة
         $.widget.bridge('uibutton', $.ui.button);
         $.widget.bridge('uitooltip', $.ui.tooltip);
-        
+
         $(document).ready(function() {
             // منع التعارض بين jQuery UI dialog و Bootstrap modal
             $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-            
+
             // تهيئة Select2
             if ($.fn.select2) {
                 $('.select-contain-select').select2({
                     dropdownParent: $('body') // لحل مشكلة ظهور Select2 في النوافذ المنبثقة
                 });
             }
-            
+
             // تهيئة DateRangePicker
             if ($.fn.daterangepicker) {
                 $('input[name="daterange"]').daterangepicker({
@@ -1163,13 +1168,13 @@
                     },
                     autoUpdateInput: false // لمنع التحديث التلقائي للتاريخ
                 });
-                
+
                 // معالجة اختيار التاريخ
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
                     $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
                 });
             }
-            
+
             // تهيئة Owl Carousel
             if ($.fn.owlCarousel) {
                 $('.owl-carousel').owlCarousel({
@@ -1184,7 +1189,7 @@
                     }
                 });
             }
-            
+
             // تهيئة FancyBox للنوافذ المنبثقة
             if ($.fn.fancybox) {
                 $('[data-fancybox]').fancybox({
@@ -1194,13 +1199,13 @@
                     trapFocus: false // لمنع حصر التركيز داخل النافذة
                 });
             }
-            
+
             // تهيئة Bootstrap Modals
             $('.modal').on('shown.bs.modal', function() {
                 $(this).find('[autofocus]').focus();
             });
         });
-        
+
         // دالة مساعدة لفتح النوافذ المنبثقة
         function openModal(modalId) {
             $('#' + modalId).modal({

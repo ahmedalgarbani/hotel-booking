@@ -1,0 +1,210 @@
+{% load static jazzmin %}
+{% get_jazzmin_settings request as jazzmin_settings %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+<!-- عنصر مخفي يحتوي على عدد الإشعارات غير المقروءة -->
+{% if unread_notifications_count %}
+<span id="unread-notifications-count" style="display: none;">{{ unread_notifications_count }}</span>
+<script>
+    // تعريف متغير عام لعدد الإشعارات غير المقروءة
+    window.unreadNotificationsCount = {{ unread_notifications_count }};
+</script>
+{% endif %}
+
+<nav class="main-header navbar navbar-expand {{ jazzmin_ui.navbar_class }} {{ jazzmin_ui.navbar_color }} border-bottom-0">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        {% if jazzmin_settings.show_ui_builder %}
+            <li class="nav-item">
+                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                    <i class="fas fa-th-large"></i>
+                </a>
+            </li>
+        {% endif %}
+        {% if jazzmin_settings.topmenu_links %}
+            {% for link in jazzmin_settings.topmenu_links %}
+                {% if link.name %}
+                    <li class="nav-item d-none d-sm-inline-block">
+                        <a href="{% if link.url %}{{ link.url }}{% else %}#{% endif %}" class="nav-link"
+                           {% if link.new_window %}target="_blank"{% endif %}
+                           {% if link.permissions and not link.permissions|user_has_permission:request.user %}
+                               style="display: none"
+                           {% endif %}
+                        >
+                            {% if link.icon %}<i class="{{ link.icon }}"></i> {% endif %}
+                            {{ link.name }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+        <!-- Notifications Dropdown Menu -->
+        <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#" title="الإشعارات">
+                <i class="fas fa-bell"></i>
+                {% if unread_notifications_count > 0 %}
+                    <span class="badge badge-warning navbar-badge">{{ unread_notifications_count }}</span>
+                {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <div class="dropdown-item dropdown-header d-flex justify-content-between">
+                    <span>{{ unread_notifications_count|default:"0" }} إشعارات غير مقروءة</span>
+                    {% if unread_notifications_count > 0 %}
+                    <a href="#" class="text-sm mark-all-read">تحديد الكل كمقروء</a>
+                    {% endif %}
+                </div>
+                {% if notifications %}
+                    {% for notification in notifications %}
+                        {% if notification.status == '0' %}
+                        <a href="{% url 'notifications:handle_notification' notification.id %}" class="dropdown-item unread" data-notification-id="{{ notification.id }}">
+                            <i class="fas fa-{{ notification.get_icon_class }} mr-2"></i> {{ notification.title }}
+                            <span class="float-right text-muted text-sm">{{ notification.send_time|timesince }}</span>
+                            <p class="text-sm text-muted">{{ notification.message|truncatechars:50 }}</p>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        {% endif %}
+                    {% empty %}
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-info-circle mr-2"></i> لا توجد إشعارات جديدة
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-info-circle mr-2"></i> لا توجد إشعارات جديدة
+                    </a>
+                {% endif %}
+                <a href="{% url 'admin:notifications_notifications_changelist' %}" class="dropdown-item dropdown-footer">عرض كل الإشعارات</a>
+            </div>
+        </li>
+
+        {% if jazzmin_settings.usermenu %}
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                    {% if jazzmin_settings.user_avatar %}
+                        <img src="{% get_user_avatar request.user %}" class="img-circle elevation-1 user-image" alt="{{ request.user }}">
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                    <span class="dropdown-header">{{ request.user }}</span>
+                    <div class="dropdown-divider"></div>
+                    {% if jazzmin_settings.usermenu_links %}
+                        {% for link in jazzmin_settings.usermenu_links %}
+                            <a href="{{ link.url }}" class="dropdown-item">
+                                {% if link.icon %}<i class="{{ link.icon }}"></i>{% endif %} {{ link.name }}
+                            </a>
+                        {% endfor %}
+                        <div class="dropdown-divider"></div>
+                    {% endif %}
+                    <a href="{% url 'admin:password_change' %}" class="dropdown-item">
+                        <i class="fas fa-key"></i> {% trans 'Change password' %}
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'admin:logout' %}" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i> {% trans 'Log out' %}
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+<style>
+    /* تنسيق الإشعارات غير المقروءة */
+    .dropdown-item.unread {
+        background-color: rgba(255, 193, 7, 0.1);
+        font-weight: bold;
+    }
+
+    /* تنسيق زر تحديد الكل كمقروء */
+    .mark-all-read {
+        color: #007bff;
+        cursor: pointer;
+    }
+
+    .mark-all-read:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<!-- إضافة ملف JavaScript للإشعارات -->
+<script src="{% static 'js/notifications.js' %}"></script>
+
+<!-- إضافة شارات الإشعارات مباشرة -->
+<script>
+    // تنفيذ الكود بعد تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Header notification badges script loaded');
+
+        // الحصول على عدد الإشعارات غير المقروءة
+        const unreadCount = '{{ unread_notifications_count }}';
+        if (unreadCount === '0' || unreadCount === '') return;
+
+        console.log('Unread notifications count:', unreadCount);
+
+        // إضافة شارات إلى روابط الإشعارات في القائمة الجانبية
+        setTimeout(function() {
+            // إضافة شارة إلى روابط الإشعارات في القائمة الجانبية
+            const sidebarLinks = document.querySelectorAll('.nav-sidebar a');
+            sidebarLinks.forEach(function(link) {
+                const href = link.getAttribute('href') || '';
+                const text = link.textContent.trim();
+
+                if (href.includes('notifications') || text.includes('إشعارات') || text.includes('الإشعارات')) {
+                    console.log('Found sidebar notification link:', text);
+
+                    // التحقق من عدم وجود شارة بالفعل
+                    if (!link.querySelector('.badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge badge-warning';
+                        badge.textContent = unreadCount;
+                        badge.style.float = 'right';
+                        badge.style.backgroundColor = '#ffc107';
+                        badge.style.color = '#212529';
+                        badge.style.borderRadius = '10px';
+                        badge.style.padding = '2px 6px';
+                        badge.style.fontSize = '0.75rem';
+                        badge.style.marginRight = '10px';
+
+                        link.appendChild(badge);
+                        console.log('Added badge to sidebar link');
+                    }
+                }
+            });
+
+            // إضافة شارة إلى روابط الإشعارات في القائمة العلوية
+            const topMenuLinks = document.querySelectorAll('.navbar-nav a');
+            topMenuLinks.forEach(function(link) {
+                const href = link.getAttribute('href') || '';
+                const text = link.textContent.trim();
+
+                if (href.includes('notifications') || text.includes('إشعارات') || text.includes('الإشعارات')) {
+                    console.log('Found top menu notification link:', text);
+
+                    // التحقق من عدم وجود شارة بالفعل
+                    if (!link.querySelector('.badge:not(.navbar-badge)')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge badge-warning';
+                        badge.textContent = unreadCount;
+                        badge.style.marginLeft = '5px';
+                        badge.style.backgroundColor = '#ffc107';
+                        badge.style.color = '#212529';
+                        badge.style.borderRadius = '10px';
+                        badge.style.padding = '2px 6px';
+                        badge.style.fontSize = '0.75rem';
+
+                        link.appendChild(badge);
+                        console.log('Added badge to top menu link');
+                    }
+                }
+            });
+        }, 1000);
+    });
+</script>

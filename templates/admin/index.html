@@ -31,6 +31,15 @@
 />
 
 <div class="container-fluid py-2">
+
+
+  <!-- Notifications Widget -->
+  <div class="row mb-4">
+    <div class="col-lg-12">
+      {% include "admin/notifications_widget.html" %}
+    </div>
+  </div>
+
    <!-- Reports Section -->
    <div class="row mb-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
@@ -678,5 +687,83 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+<!-- Notifications JS -->
+<script src="{% static 'js/notifications.js' %}"></script>
+
+<!-- Código para agregar badges de notificaciones -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Dashboard notification badges script loaded');
+
+        // Obtener el número de notificaciones no leídas
+        const unreadCount = '{{ unread_notifications_count }}';
+        if (!unreadCount || unreadCount === '0') return;
+
+        console.log('Unread notifications count:', unreadCount);
+
+        // Función para agregar badges a los enlaces
+        function addBadgesToLinks() {
+            // Buscar todos los enlaces que contengan "notifications" o "إشعارات"
+            document.querySelectorAll('a').forEach(function(link) {
+                const href = link.getAttribute('href') || '';
+                const text = link.textContent.trim();
+
+                if (href.includes('notifications') || text.includes('إشعارات') || text.includes('الإشعارات')) {
+                    console.log('Found notification link:', text, href);
+
+                    // Verificar que no tenga ya un badge
+                    if (!link.querySelector('.badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge badge-warning';
+                        badge.textContent = unreadCount;
+                        badge.style.marginRight = '5px';
+                        badge.style.marginLeft = '5px';
+                        badge.style.backgroundColor = '#ffc107';
+                        badge.style.color = '#212529';
+                        badge.style.borderRadius = '10px';
+                        badge.style.padding = '2px 6px';
+                        badge.style.fontSize = '0.75rem';
+
+                        link.appendChild(badge);
+                        console.log('Added badge to link:', text);
+                    }
+                }
+            });
+
+            // Buscar todos los iconos de campana
+            document.querySelectorAll('.fa-bell, .fas.fa-bell').forEach(function(icon) {
+                console.log('Found bell icon');
+
+                const parent = icon.parentElement;
+                if (parent && !parent.querySelector('.badge:not(.navbar-badge)')) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge badge-warning';
+                    badge.textContent = unreadCount;
+                    badge.style.position = 'absolute';
+                    badge.style.top = '0';
+                    badge.style.right = '0';
+                    badge.style.transform = 'translate(50%, -50%)';
+                    badge.style.backgroundColor = '#ffc107';
+                    badge.style.color = '#212529';
+                    badge.style.borderRadius = '10px';
+                    badge.style.padding = '2px 6px';
+                    badge.style.fontSize = '0.75rem';
+
+                    if (window.getComputedStyle(parent).position === 'static') {
+                        parent.style.position = 'relative';
+                    }
+
+                    parent.appendChild(badge);
+                    console.log('Added badge to bell icon parent');
+                }
+            });
+        }
+
+        // Ejecutar la función varias veces para asegurar que se carguen todos los elementos
+        addBadgesToLinks();
+        setTimeout(addBadgesToLinks, 1000);
+        setTimeout(addBadgesToLinks, 3000);
+    });
+</script>
 
 {% endblock content %}

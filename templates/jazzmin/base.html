@@ -36,8 +36,18 @@
     </li>
     {% endwith %}
 
-    <!-- إضافة ملف JavaScript للإشعارات -->
+    <!-- إضافة ملفات JavaScript للإشعارات -->
     <script src="{% static 'js/notifications.js' %}"></script>
+    <script src="{% static 'admin/js/jazzmin-sidebar-notifications.js' %}"></script>
+
+    <!-- إضافة عدد الإشعارات كمتغير عام -->
+    {% if unread_notifications_count %}
+    <span id="unread-notifications-count" style="display: none;">{{ unread_notifications_count }}</span>
+    <script>
+        // تعريف متغير عام لعدد الإشعارات غير المقروءة
+        window.unreadNotificationsCount = {{ unread_notifications_count }};
+    </script>
+    {% endif %}
 
     <style>
         /* تنسيق الإشعارات غير المقروءة */

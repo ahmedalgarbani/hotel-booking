@@ -96,13 +96,14 @@ class Notifications(BaseModel):
             '3': 'danger'
         }
         return type_map.get(self.notification_type, 'info')
-    
+
     @property
     def get_icon_class(self):
+        """الحصول على أيقونة الإشعار بناءً على نوعه"""
         icon_map = {
-            '0': 'info-circle',
-            '1': 'exclamation-triangle',
-            '2': 'check',
-            '3': 'times'
+            '0': 'info-circle',  # معلومة
+            '1': 'exclamation-triangle',  # تحذير
+            '2': 'check-circle',  # نجاح
+            '3': 'times-circle'   # خطأ
         }
-        return icon_map.get(self.notification_type, 'info-circle')
+        return icon_map.get(self.notification_type, 'bell')

@@ -28,10 +28,10 @@ wheels/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-**/static/
-doctors_appointment/static/
-/static/
-/staticfiles/
+# **/static/
+# doctors_appointment/static/
+# /static/
+# /staticfiles/
 
 # IDE - VSCode
 .vscode/*

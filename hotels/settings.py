@@ -123,7 +123,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET  = os.getenv('GOOGLE_CLIENT_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI =("http://127.0.0.1:8000/auth/complete/google-oauth2/")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['profile', 'email', 'openid'] 
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['profile', 'email', 'openid']
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name', 'gender', 'birthday', 'picture']
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:8000",
@@ -341,7 +341,7 @@ JAZZMIN_SETTINGS = {
     # القوائم
     "topmenu_links": [
         {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
-
+        {"name": "الإشعارات", "url": "admin:notifications_notifications_changelist", "icon": "fas fa-bell"},
         {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
@@ -349,6 +349,13 @@ JAZZMIN_SETTINGS = {
 
     # تجميع النماذج
     "models": {
+        # "notifications": {
+        #     "name": "الإشعارات",
+        #     "icon": "fas fa-bell",
+        #     "models": [
+        #         "notifications.Notifications",
+        #     ]
+        # },
         "system_setup": {
             "name": "تهيئة النظام",
             "icon": "fas fa-cogs",
@@ -395,10 +402,10 @@ JAZZMIN_SETTINGS = {
             ]
         },
     },
-    # قائمة المستخدم
-    "usermenu_links": [
-        {"model": "users.CustomUser"}
-    ],
+    # # قائمة المستخدم
+    # "usermenu_links": [
+    #     {"model": "users.CustomUser"}
+    # ],
 
     # القائمة الجانبية
     "show_sidebar": True,
@@ -484,14 +491,14 @@ JAZZMIN_SETTINGS = {
         "home.PaymenPolicy": "fas fa-money-check",
         "home.TermsConditions": "fas fa-file-contract",
 
-        "notifications.Notifications": "fas fa-bell",
+        # "notifications.Notifications": "fas fa-bell",
 
         "accounts.ChartOfAccounts": "fas fa-chart-pie",
         "accounts.JournalEntry": "fas fa-book"
     },
     # تخصيص الواجهة
     "custom_css": "",
-    "custom_js": "",
+    "custom_js": "admin/js/notification-badges-global.js",
     "use_google_fonts_cdn": True,
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
@@ -507,16 +514,18 @@ JAZZMIN_SETTINGS = {
 
     # Custom Links
     "custom_links": {
-        "users": [{
-            "name": "إحصائيات المستخدمين",
-            "url": "admin:users_customuser_changelist",
-            "icon": "fas fa-chart-line"
-        }],
+        # "notifications": [{
+        #     "name": "الإشعارات",
+        #     "url": "admin:notifications_notifications_changelist",
+        #     "icon": "fas fa-bell"
+        # }]
+        # ,
         "hotels": [{
             "name": "إحصائيات الفنادق",
             "url": "admin:HotelManagement_hotel_changelist",
             "icon": "fas fa-chart-bar"
-        }]
+        }],
+        
     },
 }
 
@@ -610,7 +619,7 @@ NAV_MENU_TOP = [
         "name": "الاسعار",
         "url": "/price",
     },
- 
+
         ],
     },
 

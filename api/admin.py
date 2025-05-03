@@ -13,7 +13,7 @@ from reviews.models import HotelReview, RoomReview
 import datetime
 from django.contrib import admin
 from django_celery_beat.models import (
-    IntervalSchedule, 
+    IntervalSchedule,
     CrontabSchedule,
     SolarSchedule,
     ClockedSchedule,
@@ -25,7 +25,7 @@ class CustomAdminSite(admin.AdminSite):
         extra_context = extra_context or {}
         today = timezone.now().date()
         start_of_week = today - timezone.timedelta(days=today.weekday())
-        
+
         # Filter data by hotel for hotel managers
         if request.user.is_superuser:
             booking_filter = {}
@@ -91,6 +91,23 @@ class CustomAdminSite(admin.AdminSite):
             } for payment in payment_transactions
         ]
 
+        # Get notifications for the current user
+        notifications = []
+        unread_notifications_count = 0
+        if request.user.is_authenticated:
+            # Primero contamos las notificaciones no leídas
+            unread_notifications_count = Notifications.objects.filter(
+                user=request.user,
+                is_active=True,
+                status='0'
+            ).count()
+
+            # Luego obtenemos las 10 notificaciones más recientes
+            notifications = Notifications.objects.filter(
+                user=request.user,
+                is_active=True
+            ).order_by('-send_time')[:10]
+
         extra_context.update({
             'total_bookings': Booking.objects.filter(**booking_filter).count(),
             'monthly_users_data': monthly_users_data,
@@ -101,6 +118,8 @@ class CustomAdminSite(admin.AdminSite):
             'users_count': CustomUser.objects.filter(user_type='customer', **user_filter).count(),
             'bookings_data': bookings_data,
             'monthly_payments_data': monthly_payments_data,
+            'notifications': notifications,
+            'unread_notifications_count': unread_notifications_count,
         })
 
         return super().index(request, extra_context=extra_context)
