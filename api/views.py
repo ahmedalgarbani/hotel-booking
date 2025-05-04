@@ -636,17 +636,25 @@ class NotificationsViewSet(viewsets.ModelViewSet):
 class GuestViewSet(viewsets.ModelViewSet):
     """
     API endpoint لإدارة الضيوف (Guest)
-
+    يتيح إنشاء وعرض وتعديل وحذف بيانات الضيوف
+    ويربط الضيوف تلقائيًا بصاحب الحجز
     """
     serializer_class = GuestSerializer
     pagination_class = CustomPagination
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """
-        الحصول على قائمة الضيوف
+        الحصول على قائمة الضيوف حسب صلاحيات المستخدم
         """
-        return Guest.objects.all().order_by('-created_at')
+        user = self.request.user
+
+        # إذا كان المستخدم مديرًا أو مشرفًا، يمكنه رؤية جميع الضيوف
+        if user.is_staff or user.user_type == 'hotel_manager':
+            return Guest.objects.all().order_by('-created_at')
+
+        # المستخدم العادي يرى فقط الضيوف المرتبطين بحجوزاته
+        return Guest.objects.filter(booking__user=user).order_by('-created_at')
 
     def create(self, request, *args, **kwargs):
         """
@@ -654,15 +662,42 @@ class GuestViewSet(viewsets.ModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        # التحقق من أن المستخدم هو صاحب الحجز
+        booking_id = request.data.get('booking')
+        if booking_id:
+            try:
+                booking = Booking.objects.get(id=booking_id)
+                if booking.user != request.user and not request.user.is_staff and not request.user.user_type == 'hotel_manager':
+                    return Response(
+                        {"error": "لا يمكنك إضافة ضيوف لحجز لا يخصك"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+            except Booking.DoesNotExist:
+                return Response(
+                    {"error": "الحجز غير موجود"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         """
-        حفظ بيانات الضيف
+        حفظ بيانات الضيف وربطه بالمستخدم صاحب الحجز
         """
-        serializer.save()
+        guest = serializer.save()
+
+        # تعيين تواريخ الوصول والمغادرة من الحجز إذا لم يتم تحديدها
+        if guest.booking and (not guest.check_in_date or not guest.check_out_date):
+            if not guest.check_in_date and guest.booking.check_in_date:
+                guest.check_in_date = guest.booking.check_in_date
+
+            if not guest.check_out_date and guest.booking.check_out_date:
+                guest.check_out_date = guest.booking.check_out_date
+
+            guest.save()
 
     @action(detail=False, methods=['post'], url_path='create-multiple')
     def create_multiple(self, request):
@@ -678,6 +713,30 @@ class GuestViewSet(viewsets.ModelViewSet):
                 {"error": "يجب إرسال مصفوفة من بيانات الضيوف"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # التحقق من أن المستخدم هو صاحب الحجز لكل عنصر
+        booking_ids = set()
+        for item in data:
+            booking_id = item.get('booking')
+            if booking_id:
+                booking_ids.add(booking_id)
+
+        # التحقق من ملكية الحجوزات
+        user = request.user
+        if not user.is_staff and not user.user_type == 'hotel_manager':
+            for booking_id in booking_ids:
+                try:
+                    booking = Booking.objects.get(id=booking_id)
+                    if booking.user != user:
+                        return Response(
+                            {"error": f"لا يمكنك إضافة ضيوف للحجز رقم {booking_id} لأنه لا يخصك"},
+                            status=status.HTTP_403_FORBIDDEN
+                        )
+                except Booking.DoesNotExist:
+                    return Response(
+                        {"error": f"الحجز رقم {booking_id} غير موجود"},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
 
         # إنشاء سيريالايزر لكل عنصر في المصفوفة
         serializers = []
@@ -698,7 +757,18 @@ class GuestViewSet(viewsets.ModelViewSet):
         # حفظ جميع الضيوف
         created_guests = []
         for serializer in serializers:
-            serializer.save()
+            guest = serializer.save()
+
+            # تعيين تواريخ الوصول والمغادرة من الحجز إذا لم يتم تحديدها
+            if guest.booking and (not guest.check_in_date or not guest.check_out_date):
+                if not guest.check_in_date and guest.booking.check_in_date:
+                    guest.check_in_date = guest.booking.check_in_date
+
+                if not guest.check_out_date and guest.booking.check_out_date:
+                    guest.check_out_date = guest.booking.check_out_date
+
+                guest.save()
+
             created_guests.append(serializer.data)
 
         return Response(created_guests, status=status.HTTP_201_CREATED)
