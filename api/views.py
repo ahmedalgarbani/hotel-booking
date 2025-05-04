@@ -6,14 +6,20 @@ from rest_framework import viewsets
 from HotelManagement.services import get_hotels_query, get_query_params
 from HotelManagement.views import hotel_search
 from api.api_services import call_gemini_api
-from bookings.models import Booking
+from bookings.models import Booking, Guest
 from customer.models import Favourites
 from notifications.models import Notifications
 from payments.models import HotelPaymentMethod, Payment
 from rooms.models import Availability, Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
-from .serializers import BookingSerializer, CategorySerializer, ChangePasswordSerializer, FavouritesSerializer, HotelAvabilitySerializer, HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer, UserSerializer
+from .serializers import (
+    BookingSerializer, CategorySerializer, ChangePasswordSerializer,
+    FavouritesSerializer, GuestSerializer, HotelAvabilitySerializer,
+    HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer,
+    RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer,
+    UserSerializer
+)
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -608,7 +614,7 @@ class BookingViewSet(viewsets.ModelViewSet):
             }
         }, status=status.HTTP_200_OK)
 
-        
+
 
 
 class NotificationsViewSet(viewsets.ModelViewSet):
@@ -625,6 +631,77 @@ class NotificationsViewSet(viewsets.ModelViewSet):
         notification = self.get_object()
         notification.mark_as_read()
         return Response({'status': 'notification marked as read'}, status=status.HTTP_200_OK)
+
+
+class GuestViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint لإدارة الضيوف (Guest)
+
+    """
+    serializer_class = GuestSerializer
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticated]  
+
+    def get_queryset(self):
+        """
+        الحصول على قائمة الضيوف
+        """
+        return Guest.objects.all().order_by('-created_at')
+
+    def create(self, request, *args, **kwargs):
+        """
+        إنشاء ضيف جديد
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        """
+        حفظ بيانات الضيف
+        """
+        serializer.save()
+
+    @action(detail=False, methods=['post'], url_path='create-multiple')
+    def create_multiple(self, request):
+        """
+        إنشاء مجموعة من الضيوف دفعة واحدة
+        يتوقع هذا الإجراء مصفوفة من بيانات الضيوف
+        """
+        data = request.data
+
+        # التحقق من أن البيانات المرسلة هي مصفوفة
+        if not isinstance(data, list):
+            return Response(
+                {"error": "يجب إرسال مصفوفة من بيانات الضيوف"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # إنشاء سيريالايزر لكل عنصر في المصفوفة
+        serializers = []
+        for item in data:
+            serializer = self.get_serializer(data=item)
+            if serializer.is_valid():
+                serializers.append(serializer)
+            else:
+                # إذا كان هناك خطأ في أي عنصر، إرجاع الخطأ مع رقم العنصر
+                return Response(
+                    {
+                        "error": f"خطأ في العنصر رقم {data.index(item) + 1}",
+                        "details": serializer.errors
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # حفظ جميع الضيوف
+        created_guests = []
+        for serializer in serializers:
+            serializer.save()
+            created_guests.append(serializer.data)
+
+        return Response(created_guests, status=status.HTTP_201_CREATED)
 
 
 

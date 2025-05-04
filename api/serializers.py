@@ -48,17 +48,17 @@ class CurrencySerializer(serializers.ModelSerializer):
 
 class PaymentOptionSerializer(serializers.ModelSerializer):
     currency = CurrencySerializer()
-    
+
     class Meta:
         model = PaymentOption
         fields = ['id', 'method_name', 'logo', 'currency']
 
 class HotelPaymentMethodSerializer(serializers.ModelSerializer):
     payment_option = PaymentOptionSerializer()
-    
+
     class Meta:
         model = HotelPaymentMethod
-        fields = '__all__'    
+        fields = '__all__'
 
 
 
@@ -67,8 +67,8 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = [
-            'booking', 'payment_method', 'transfer_image', 'payment_status', 
-            'payment_date', 'payment_subtotal', 'payment_totalamount', 
+            'booking', 'payment_method', 'transfer_image', 'payment_status',
+            'payment_date', 'payment_subtotal', 'payment_totalamount',
             'payment_currency', 'payment_type', 'payment_note', 'payment_discount'
         ]
         extra_kwargs = {
@@ -86,7 +86,7 @@ class BookingDetailSerializer(serializers.ModelSerializer):
         model = BookingDetail
         fields = [
             'id',
-            'booking', 
+            'booking',
             'hotel', 'hotel_name',
             'service', 'service_name',
             'quantity',
@@ -96,14 +96,25 @@ class BookingDetailSerializer(serializers.ModelSerializer):
         ]
 
 class BookingGuestSerializer(serializers.ModelSerializer):
-    # hotel 
-    # booking 
-
-    
-
+    """
+    Serializer para mostrar información básica de huéspedes en las reservas
+    """
     class Meta:
         model = Guest
         fields = ['name', 'phone_number', 'id_card_image', 'gender', 'birthday_date', 'check_in_date', 'check_out_date']
+
+
+class GuestSerializer(serializers.ModelSerializer):
+    """
+    Serializer بسيط للضيوف يركز على البيانات الأساسية
+    """
+    class Meta:
+        model = Guest
+        fields = [
+            'id', 'name', 'phone_number', 'id_card_image', 'gender',
+            'birthday_date', 'check_in_date', 'check_out_date',
+            'hotel', 'booking'
+        ]
 
 
 from django.conf import settings
@@ -118,7 +129,7 @@ class BookingSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField(read_only=True)
     room_name = serializers.SerializerMethodField(read_only=True)
     hotel_image = serializers.SerializerMethodField(read_only=True)
-    
+
     # الحقول المرتبطة بعلاقات
     details = BookingDetailSerializer(many=True, read_only=True)
     guests = BookingGuestSerializer(many=True, read_only=True)
@@ -126,20 +137,20 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = [
-            'id', 
-            'hotel', 
+            'id',
+            'hotel',
             'hotel_name',
-            'hotel_image', 
+            'hotel_image',
             'details',
             'guests',
-            'user', 
-            'user_name', 
-            'room', 
+            'user',
+            'user_name',
+            'room',
             'room_name',
-            'check_in_date', 
+            'check_in_date',
             'check_out_date',
-            'amount', 
-            'status', 
+            'amount',
+            'status',
             'rooms_booked'
         ]
         read_only_fields = [
@@ -189,12 +200,12 @@ class BookingSerializer(serializers.ModelSerializer):
                 check_out = datetime.strptime(check_out_str, '%Y-%m-%d').date()
             except (ValueError, TypeError):
                 raise serializers.ValidationError("تنسيق التاريخ غير صالح. استخدم `YYYY-MM-DD`.")
-            
+
             if check_in >= check_out:
                 raise serializers.ValidationError({
                     "error": f"تاريخ المغادرة ({check_out_str}) يجب أن يكون بعد تاريخ الوصول ({check_in_str})."
                 })
-            
+
             # إضافة التواريخ المحولة إلى البيانات
             data['check_in_date'] = check_in
             data['check_out_date'] = check_out
@@ -203,7 +214,7 @@ class BookingSerializer(serializers.ModelSerializer):
         amount = data.get('amount')
         if amount is not None and amount <= 0:
             raise serializers.ValidationError("المبلغ يجب أن يكون أكبر من الصفر.")
-        
+
         return data
 
 
@@ -211,7 +222,7 @@ class BookingSerializer(serializers.ModelSerializer):
 class RoomsSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
-    
+
 
     class Meta:
         model = RoomType
@@ -234,7 +245,7 @@ class HotelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
         fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms','paymentOption']
-        
+
 
     def get_rooms(self, obj):
         rooms = RoomType.objects.filter(hotel=obj)
@@ -258,7 +269,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'phone', 'first_name', 'last_name', 'image', 'gender', 'birth_date', ]
         extra_kwargs = {'password': {'write_only': True}}
- 
+
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)
@@ -290,7 +301,7 @@ class FavouritesSerializer(serializers.ModelSerializer):
         model = Favourites
         fields = ['hotel','hotel_data']
 
-  
+
 class HotelAvabilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
@@ -314,7 +325,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'phone', 'image', 'gender', 'birth_date', 
+            'phone', 'image', 'gender', 'birth_date',
         ]
         read_only_fields = ['id', 'user_type', 'chield', 'chart']
         # extra_kwargs = {
