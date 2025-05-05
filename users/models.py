@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
+from django.utils import timezone
 
 
 class CustomUser(AbstractUser):
@@ -84,6 +85,28 @@ class CustomUser(AbstractUser):
         verbose_name = _('مستخدم')
         verbose_name_plural = _('المستخدمين')
         ordering = ['-created_at']
+        
+        
+    def is_otp_valid(self, entered_otp):
+        if not self.otp_code or not self.otp_created_at:
+            return False
+        
+        if self.otp_code != entered_otp:
+            return False
+            
+        expiry_time = self.otp_created_at + timezone.timedelta(minutes=5) 
+        if timezone.now() > expiry_time:
+            self.otp_code = None
+            self.otp_created_at = None
+            self.save(update_fields=['otp_code', 'otp_created_at'])
+            return False
+        return True
+
+    def clear_otp(self):
+        self.otp_code = None
+        self.otp_created_at = None
+        self.save(update_fields=['otp_code', 'otp_created_at'])
+
 
     def __str__(self):
         full_name = self.get_full_name()
