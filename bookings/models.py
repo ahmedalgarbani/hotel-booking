@@ -51,7 +51,7 @@ class Guest(BaseModel):
         null=True,
         blank=True
     )
-     = models.DateTimeField(verbose_name=_("تاريخ تسجيل الدخول"), null=True, blank=True)
+    check_in_date = models.DateTimeField(verbose_name=_("تاريخ تسجيل الدخول"), null=True, blank=True)
     check_out_dcheck_in_dateate = models.DateTimeField(verbose_name=_("تاريخ تسجيل الخروج"), null=True, blank=True)
 
     class Meta:

@@ -13,6 +13,10 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+# load_dotenv(os.path.join(BASE_DIR, '.env'))
+
 # This will make sure the tasks are registered when Celery starts
 from .celery import app as celery_app
 
@@ -656,3 +660,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 CELERY_IMPORTS = [
     'bookings.tasks',
 ]
+
+SADEEM_API_SECRET = '43f5360a204233df6fc8c265c9be8ab0b0b9c282' 
+SADEEM_DEVICE_ID = 'a83a8a5ad76466e9'   
+SADEEM_SIM = '1'    
