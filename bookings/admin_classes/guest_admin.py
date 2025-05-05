@@ -11,6 +11,12 @@ class GuestAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'phone_number', 'hotel', 'booking', 'set_checkout_today_toggle']
     list_filter = ['hotel']
     search_fields = ['name', 'phone_number', 'booking__id']
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     # readonly_fields handled by mixin
 
     def set_checkout_today_toggle(self, obj):

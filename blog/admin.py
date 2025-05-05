@@ -12,6 +12,7 @@ class AutoUserTrackMixin:
 class CategoryAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ('name', 'created_at')
     search_fields = ('name',)
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
@@ -24,15 +25,17 @@ class PostAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     search_fields = ('title', 'content')
     date_hierarchy = 'published_at'
     raw_id_fields = ('author',)
+    readonly_fields = ('created_at', 'updated_at','published_at','views', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
-            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+            return ('created_at', 'updated_at', 'published_at','views','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
 class CommentAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ('author', 'post', 'created_at', 'is_approved')
     list_filter = ('is_approved', 'created_at')
     search_fields = ('content', 'author__username', 'post__title')
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
@@ -41,6 +44,7 @@ class CommentAdmin(AutoUserTrackMixin,admin.ModelAdmin):
 class TagAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ('name', 'created_at', 'post_count')
     search_fields = ('name',)
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')

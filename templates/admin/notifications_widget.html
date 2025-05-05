@@ -1,5 +1,71 @@
 {% load static %}
-<div class="notifications-widget">
+
+<style>
+    .notifications-widget {
+        margin-bottom: 20px;
+    }
+    
+    .notifications-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .notification-item.unread {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+    
+    .notification-icon {
+        font-size: 20px;
+        width: 30px;
+        text-align: center;
+    }
+    
+    .notification-title {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .notification-message {
+        color: #666;
+        font-size: 13px;
+    }
+    
+    .notification-meta {
+        font-size: 12px;
+    }
+    
+    .mark-all-read {
+        color: #007bff;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .mark-all-read:hover {
+        text-decoration: underline;
+    }
+    #toggle-notifications-btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#toggle-notifications-btn:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+#toggle-notifications-btn i {
+    font-size: 14px;
+}
+
+   
+</style>
+<!-- Toggle Button -->
+<button id="toggle-notifications-btn" class="btn btn-sm btn-outline-primary shadow-sm d-flex align-items-center gap-2">
+    <i class="fas fa-bell"></i>
+    <span>عرض الإشعارات</span>
+</button>
+
+
+<div class="notifications-widget d-none" >
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">
@@ -66,57 +132,18 @@
     </div>
 </div>
 
-<style>
-    .notifications-widget {
-        margin-bottom: 20px;
-    }
-    
-    .notifications-list {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    
-    .notification-item.unread {
-        background-color: rgba(255, 193, 7, 0.1);
-    }
-    
-    .notification-icon {
-        font-size: 20px;
-        width: 30px;
-        text-align: center;
-    }
-    
-    .notification-title {
-        font-weight: bold;
-        font-size: 14px;
-    }
-    
-    .notification-message {
-        color: #666;
-        font-size: 13px;
-    }
-    
-    .notification-meta {
-        font-size: 12px;
-    }
-    
-    .mark-all-read {
-        color: #007bff;
-        cursor: pointer;
-        font-size: 12px;
-    }
-    
-    .mark-all-read:hover {
-        text-decoration: underline;
-    }
-    
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .card-title {
-        margin-bottom: 0;
-    }
-</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById("toggle-notifications-btn");
+        const widget = document.querySelector(".notifications-widget");
+        const btnText = toggleBtn.querySelector("span");
+        const btnIcon = toggleBtn.querySelector("i");
+
+        toggleBtn.addEventListener("click", function () {
+            widget.classList.toggle("d-none");
+            const isHidden = widget.classList.contains("d-none");
+            btnText.textContent = isHidden ? "عرض الإشعارات" : "إخفاء الإشعارات";
+            btnIcon.className = isHidden ? "fas fa-bell" : "fas fa-times";
+        });
+    });
+</script>

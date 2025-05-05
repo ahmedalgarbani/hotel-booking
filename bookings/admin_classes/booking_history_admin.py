@@ -13,17 +13,13 @@ class BookingHistoryAdmin(admin.ModelAdmin):
         'booking__id', 'booking__hotel__name', 'changed_by__username'
     )
     ordering = ('-history_date',)
-    # Make all fields readonly as history should not be changed via admin
     readonly_fields = [f.name for f in BookingHistory._meta.fields]
 
     def has_add_permission(self, request):
-        # Prevent adding history records manually
         return False
 
     def has_change_permission(self, request, obj=None):
-        # Prevent changing history records
         return False
 
     def has_delete_permission(self, request, obj=None):
-        # Prevent deleting history records
         return False

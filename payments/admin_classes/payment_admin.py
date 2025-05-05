@@ -25,8 +25,12 @@ class PaymentAdmin(admin.ModelAdmin):
     list_filter = ['payment_status', 'payment_type', 'payment_method__hotel', 'payment_date']
     search_fields = ['booking__id', 'user__username', 'user__first_name', 'user__last_name',
                      'payment_method__method_name', 'id']
-    readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency']
+    readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency','created_at', 'updated_at', 'created_by', 'updated_by','deleted_at']
     actions = ['change_payment_status']
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
 
     def booking_link(self, obj):
         if obj.booking:

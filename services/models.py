@@ -12,7 +12,6 @@ class HotelService(BaseModel):
     name = models.CharField(
         max_length=255,
         verbose_name=_("اسم الخدمة"),
-        default="Default Name"
     )
     description = models.TextField(
         max_length=1000,
@@ -49,7 +48,6 @@ class RoomTypeService(BaseModel):
     name = models.CharField(
         max_length=255,
         verbose_name=_("اسم الخدمة"),
-        default="Default Name"
     )
     description = models.TextField(
         max_length=1000,

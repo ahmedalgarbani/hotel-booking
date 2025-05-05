@@ -31,25 +31,20 @@
     </script>
     {% endif %}
 
-    <!-- تضمين ملف JavaScript مباشرة -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Inline notification badges script loaded');
 
-            // البحث عن عدد الإشعارات غير المقروءة
             function findUnreadCount() {
-                // محاولة العثور على العدد في متغير عام
                 if (window.unreadNotificationsCount !== undefined) {
                     return window.unreadNotificationsCount.toString();
                 }
 
-                // محاولة العثور على العدد في شارة الإشعارات الموجودة
                 const navbarBadge = document.querySelector('.navbar-badge');
                 if (navbarBadge && navbarBadge.textContent.trim() !== '') {
                     return navbarBadge.textContent.trim();
                 }
 
-                // محاولة العثور على العدد في عنصر مخفي
                 const hiddenCount = document.getElementById('unread-notifications-count');
                 if (hiddenCount && hiddenCount.textContent.trim() !== '') {
                     return hiddenCount.textContent.trim();
@@ -58,14 +53,12 @@
                 return '0';
             }
 
-            // إضافة شارات الإشعارات
             function addBadges() {
                 const unreadCount = findUnreadCount();
                 if (unreadCount === '0') return;
 
                 console.log('Adding badges with count:', unreadCount);
 
-                // إضافة شارة إلى جميع الروابط التي تحتوي على كلمة "إشعارات" أو "notifications"
                 document.querySelectorAll('a').forEach(function(link) {
                     const href = link.getAttribute('href') || '';
                     const text = link.textContent.trim();
@@ -89,7 +82,6 @@
                     }
                 });
 
-                // إضافة شارة إلى أيقونات الجرس
                 document.querySelectorAll('.fa-bell, .fas.fa-bell').forEach(function(icon) {
                     const parent = icon.parentElement;
                     if (parent && !parent.querySelector('.badge:not(.navbar-badge)')) {
@@ -116,7 +108,6 @@
                 });
             }
 
-            // تنفيذ الدالة عدة مرات للتأكد من تحميل جميع العناصر
             addBadges();
             setTimeout(addBadges, 1000);
             setTimeout(addBadges, 3000);
