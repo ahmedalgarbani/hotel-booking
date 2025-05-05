@@ -299,3 +299,31 @@ def user_dashboard_bookings(request):
 def payment_detail_view(request, pk):
     payment = get_object_or_404(Payment, pk=pk)
     return render(request, 'admin/payments/payment_detail.html', {'payment': payment})
+
+
+from django.utils.translation import gettext as _
+
+@login_required
+def change_payment_status_view(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id)
+
+    if not request.user.is_superuser:
+        hotel_manager = payment.booking.hotel.manager  
+
+        if hotel_manager is None or hotel_manager.id != request.user.id:
+            messages.error(request, _("ليس لديك إذن لتعديل هذه الدفعة."))
+            return redirect('/admin')
+
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        try:
+            with transaction.atomic():
+                payment.payment_status = new_status
+                payment.save()
+            label = dict(Payment.payment_choice).get(int(new_status), new_status)
+            messages.success(request, _(f"تم تغيير حالة الدفعة إلى '{label}'"))
+        except Exception as e:
+            messages.error(request, _("حدث خطأ أثناء تحديث الحالة: {}").format(str(e)))
+
+    return redirect('payments:external-payment-detail', pk=payment.id) 

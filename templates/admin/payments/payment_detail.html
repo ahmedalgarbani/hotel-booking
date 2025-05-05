@@ -16,12 +16,12 @@
             <div class="header-content">
                  <!-- Buttons to Change Payment Status -->
     <div class="payment-status-buttons">
-        {% comment %} <form method="POST" action="{% url 'admin:change_payment_status' payment.id %}"> {% endcomment %}
-        <form method="POST" action="">
-            {% csrf_token %}
-            <button type="submit" name="status" value="1" class="btn btn-paid">تم الدفع</button>
-            <button type="submit" name="status" value="2" class="btn btn-rejected">مرفوض</button>
-        </form>
+       <form method="POST" action="{% url 'payments:change_payment_status' payment.id %}">
+    {% csrf_token %}
+    <button type="submit" name="status" value="1" class="btn btn-paid">تم الدفع</button>
+    <button type="submit" name="status" value="2" class="btn btn-rejected">مرفوض</button>
+</form>
+
     </div>
                 <h1>تفاصيل الدفع</h1>
                 <a href="{% url 'admin:payments_payment_changelist' %}" class="btn btn-back">
