@@ -49,8 +49,8 @@ def create_payment_notification(sender, instance, created, **kwargs):
             )
             
             if instance.user and instance.user != hotel_manager:
-                user_title=''
-                user_message=''
+                user_title = ""
+                user_message = ""
                 if pre_instance:
                     if pre_instance.payment_status in [0,2] and instance.payment_status == 1:
                         user_title = _("تم تأكيد الدفع")
@@ -107,6 +107,7 @@ def create_payment_notification(sender, instance, created, **kwargs):
                             print(instance.payment_status)
                             
                             user_title = _("تم رفض الدفع")
+                            user_message = _(f"تم رفض دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}. يرجى التواصل مع إدارة الفندق")
                             
                             send_whatsapp_via_sadeem(
         phone_number=f"+{instance.user.phone}",
@@ -118,7 +119,6 @@ def create_payment_notification(sender, instance, created, **kwargs):
         )
     )
 
-                    user_message = _(f"تم رفض دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}. يرجى التواصل مع إدارة الفندق")
                 
                 Notifications.objects.create(
                     sender=hotel_manager,

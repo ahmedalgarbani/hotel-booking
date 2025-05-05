@@ -123,10 +123,10 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                     updated_count += 1
                     payment = booking.payments.order_by('-payment_date').first()
                     if payment:
-                        if new_status == Booking.BookingStatus.CONFIRMED and payment.payment_status != 1:
-                            payment.payment_status = 1; payment.save(); payment_updated_count += 1
-                        elif new_status == Booking.BookingStatus.CANCELED and payment.payment_status != 2:
-                            payment.payment_status = 2; payment.save(); payment_updated_count += 1
+                        if new_status == Booking.BookingStatus.CONFIRMED and payment.payment_status != '1':
+                            payment.payment_status = '1'; payment.save(); payment_updated_count += 1
+                        elif new_status == Booking.BookingStatus.CANCELED and payment.payment_status != '2':
+                            payment.payment_status = '2'; payment.save(); payment_updated_count += 1
 
                 status_label = dict(Booking.BookingStatus.choices).get(new_status, new_status)
                 success_message = _("تم تغيير حالة %(count)d حجز(ات) إلى '%(status)s'") % {'count': updated_count, 'status': status_label}

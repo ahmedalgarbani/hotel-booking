@@ -16,8 +16,6 @@ from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 import uuid
-
-from users.utils import send_whatsapp_via_sadeem
 # ------------ Guest ------------
 class Guest(BaseModel):
     hotel = models.ForeignKey(
@@ -170,38 +168,18 @@ class Booking(BaseModel):
                 print(f"[{current}] after: {availability.available_rooms}")
                 current += timedelta(days=1)
 
-    from django.utils.translation import gettext as _
-    from django.urls import reverse
-
-    def send_notification(self, type=None, title=None, receiver=None, messages=None, action=None):
-        """
-        إرسال إشعار للمستخدم + رسالة واتساب (عند الحاجة).
-        """
-        receiver = receiver or self.user
-        title = title or _("إشعار إتمام الحجز")
-        message = messages or _("يرجى إضافة الضيوف لحجزك.")
-        action_url = action or reverse("payments:add_guest", args=[self.room.id])
-        notification_type = '2' if type == 'CONFIRMED' else '1'
-
+    def send_notification(self, type=None, title=None,receiver=None,messages=None,action=None):
+        """إرسال إشعار للمستخدم"""
+        message = messages if messages else  _("يرجى إضافة الضيوف لحجزك.")
+        action_url = action if action else reverse("payments:add_guest", args=[self.room.id])
         Notifications.objects.create(
             sender=self.user,
-            user=receiver,
-            title=title,
+            user=receiver if receiver else self.user,
+            title=title if title else _("اشعار اتمام الحجز"),
             message=message,
-            notification_type=notification_type,
+            notification_type='2' if type == 'CONFIRMED' else '1',
             action_url=action_url,
         )
-
-        if messages is None:
-            send_whatsapp_via_sadeem(
-                phone_number=f"+{receiver.phone}",
-                message=(
-                    f"📢 *تنبيه هام*\n"
-                    f"يرجى إضافة الضيوف لحجزك لإتمام الإجراءات.\n"
-                    f"رقم الحجز: {self.id}\n"
-                )
-            )
-
 
     def send_cancellation_notification(self):
         message = _("تم إلغاء حجزك.")
@@ -211,15 +189,6 @@ class Booking(BaseModel):
             title=_("إلغاء الحجز"),
             message=message,
             notification_type='BOOKING_CANCELED',
-        )
-
-        send_whatsapp_via_sadeem(
-            phone_number=f"+{self.user.phone}",
-            message=(
-                f"❌ *تم إلغاء حجزك*\n"
-                f"رقم الحجز: {self.id}\n\n"
-                f"للمزيد من التفاصيل، يرجى التواصل مع إدارة الفندق."
-            )
         )
 
     def clean(self):
@@ -242,37 +211,12 @@ class Booking(BaseModel):
             except Booking.DoesNotExist:
                 pass
 
-        if is_new and self.status == Booking.BookingStatus.CONFIRMED:
+        if is_new and self.status == Booking.BookingStatus.PENDING:
             super().save(*args, **kwargs)
             print("New CONFIRMED booking: reducing availability")
-
             self.update_availability(change=-self.rooms_booked)
-
-            self.send_notification(
-                type='WARNING',
-                title=_("إشعار بحجز جديد."),
-                receiver=self.hotel.manager,
-                messages=_(
-                    f"📢 يوجد حجز جديد من {self.user.get_full_name()} لغرفة {self.room.name}."
-                ),
-                action="admin/bookings/booking/"
-            )
-
-            self.send_notification(
-                type='CONFIRMED',
-                title=_("تم تأكيد حجزك بنجاح.")
-            )
-
-            send_whatsapp_via_sadeem(
-                phone_number=f"+{self.user.phone}",
-                message=(
-                    f"✅ *تم تأكيد حجزك بنجاح!*\n"
-                    f"رقم الحجز: {self.id}\n"
-                    f"الغرفة: {self.room.name}\n"
-                    f"نشكرك على الحجز ونتمنى لك إقامة ممتعة."
-                )
-            )
-
+            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_("يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="admin/bookings/booking/")
+            self.send_notification(type='WARNING', title=_("تم استلام حجزك بنجاح."))
             # Schedule end reminder
             if self.check_out_date:
                 print("pass")
