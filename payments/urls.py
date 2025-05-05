@@ -18,7 +18,7 @@ urlpatterns = [
     path('reports/revenue-summary/', staff_member_required(revenue_summary_view), name='revenue-summary'),
     path('reports/revenue-summary/export-pdf/', staff_member_required(export_revenue_summary_pdf), name='revenue-summary-export-pdf'),
     path('payment-detail/<int:pk>/', views.payment_detail_view, name='external-payment-detail'),
-
+    path('payments/<int:payment_id>/change-status/', views.change_payment_status_view, name='change_payment_status'),
 ]
 
 

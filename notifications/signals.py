@@ -2,6 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from payments.models import Payment
+from users.utils import send_whatsapp_via_sadeem
 from .models import Notifications
 
 @receiver(post_save, sender=Payment)
@@ -18,19 +19,23 @@ def create_payment_notification(sender, instance, created, **kwargs):
         hotel_manager = instance.booking.hotel.manager
         
         if hotel_manager:
+            
             # تحديد نوع الإشعار ونص الرسالة بناءً على حالة الدفع
-            if instance.payment_status == 1:  # تم الدفع
-                notification_type = '2'  # نجاح
+            if instance.payment_status == '1':  # تم الدفع
+                
+                notification_type = '2'  
                 title = _("تم تأكيد دفعة جديدة")
                 message = _(f"تم تأكيد دفعة بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
-            elif instance.payment_status == 0:  # قيد الانتظار
-                notification_type = '1'  # تحذير
+            elif instance.payment_status == '0':  # قيد الانتظار
+                
+                notification_type = '1'  
                 title = _("دفعة جديدة قيد الانتظار")
                 message = _(f"هناك دفعة جديدة قيد الانتظار بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
             else:  # مرفوض
-                notification_type = '3'  # خطأ
+                notification_type = '3' 
                 title = _("تم رفض دفعة")
                 message = _(f"تم رفض دفعة بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
+            
             
             # إنشاء الإشعار
             Notifications.objects.create(
@@ -39,20 +44,80 @@ def create_payment_notification(sender, instance, created, **kwargs):
                 title=title,
                 message=message,
                 notification_type=notification_type,
-                action_url=f"/admin/payments/payment/{instance.id}/change/",
+                action_url=f"admin/payments/payment-detail/{instance.id}/",
                 is_active=True
             )
             
-            # إرسال إشعار للعميل أيضًا إذا كان موجودًا
             if instance.user and instance.user != hotel_manager:
-                if instance.payment_status == 1:  # تم الدفع
-                    user_title = _("تم تأكيد الدفع")
-                    user_message = _(f"تم تأكيد دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
-                elif instance.payment_status == 0:  # قيد الانتظار
-                    user_title = _("دفعتك قيد المراجعة")
-                    user_message = _(f"دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id} قيد المراجعة")
-                else:  # مرفوض
-                    user_title = _("تم رفض الدفع")
+                user_title=''
+                user_message=''
+                if pre_instance:
+                    if pre_instance.payment_status in [0,2] and instance.payment_status == 1:
+                        user_title = _("تم تأكيد الدفع")
+                        user_message = _(
+                            f"تم تأكيد دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}"
+                        )
+                    
+                        send_whatsapp_via_sadeem(
+    phone_number=f"+{instance.user.phone}",
+    message=(
+        f"✅ *تم تأكيد الدفعة بنجاح!*\n"
+        f"💵 المبلغ: {instance.payment_totalamount} {instance.payment_currency}\n"
+        f"📄 رقم الحجز: {instance.booking.id}\n\n"
+        f"🎉 شكرًا لاختيارك لنا.\n"
+        f"نتمنى لك إقامة رائعة ومليئة بالراحة والمتعة! 🏨✨\n"
+        f"📞 لا تتردد في التواصل معنا لأي استفسار."
+    )
+)   
+                    elif instance.payment_status == '1':
+                        user_title = _("تم تأكيد الدفع")
+                        user_message = _(
+                                    f"تم تأكيد دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}"
+                                )
+                            
+                        send_whatsapp_via_sadeem(
+    phone_number=f"+{instance.user.phone}",
+    message=(
+        f"✅ *تم تأكيد الدفعة بنجاح!*\n"
+        f"💵 المبلغ: {instance.payment_totalamount} {instance.payment_currency}\n"
+        f"📄 رقم الحجز: {instance.booking.id}\n\n"
+        f"🎉 شكرًا لاختيارك لنا.\n"
+        f"نتمنى لك إقامة رائعة ومليئة بالراحة والمتعة! 🏨✨\n"
+        f"📞 لا تتردد في التواصل معنا لأي استفسار."
+    )
+)          
+
+
+
+                    elif instance.payment_status == '0':  # قيد الانتظار
+                            user_title = _("دفعتك قيد المراجعة")
+                            send_whatsapp_via_sadeem(
+            phone_number=f"+{instance.user.phone}",
+        message=(
+            f"⏳ *دفعتك قيد المراجعة*\n"
+            f"المبلغ: {instance.payment_totalamount} {instance.payment_currency}\n"
+            f"رقم الحجز: {instance.booking.id}\n\n"
+            f"سنقوم بإبلاغك فور الانتهاء من المراجعة."
+        )
+    )
+
+                            user_message = _(f"دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id} قيد المراجعة")
+                    else:  # مرفوض
+                            print(instance.payment_status)
+                            print(instance.payment_status)
+                            
+                            user_title = _("تم رفض الدفع")
+                            
+                            send_whatsapp_via_sadeem(
+        phone_number=f"+{instance.user.phone}",
+        message=(
+            f"❌ *تم رفض الدفعة*\n"
+            f"المبلغ: {instance.payment_totalamount} {instance.payment_currency}\n"
+            f"رقم الحجز: {instance.booking.id}\n\n"
+            f"يرجى التواصل مع إدارة الفندق لمزيد من التفاصيل."
+        )
+    )
+
                     user_message = _(f"تم رفض دفعتك بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}. يرجى التواصل مع إدارة الفندق")
                 
                 Notifications.objects.create(
