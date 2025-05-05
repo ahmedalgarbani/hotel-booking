@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models,transaction
 from django.urls import reverse
 from HotelManagement.models import BaseModel
+from bookings.services.helpers import to_date
 from bookings.tasks import send_booking_end_reminders
 from notifications.models import Notifications
 from rooms.models import Availability
@@ -150,8 +151,8 @@ class Booking(BaseModel):
         return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
     def update_availability(self, change, start_date=None, end_date=None):
         """تحديث التوافر بين تاريخين محددين"""
-        start = (start_date or self.check_in_date).date()
-        end = (end_date or self.check_out_date).date()
+        start = to_date(start_date or self.check_in_date)
+        end = to_date(end_date or self.check_out_date)
 
         print(f"update_availability called: change={change}, start={start}, end={end}")
         with transaction.atomic():
@@ -211,11 +212,23 @@ class Booking(BaseModel):
             except Booking.DoesNotExist:
                 pass
 
-        if is_new and self.status == Booking.BookingStatus.PENDING:
+        if is_new and self.status == Booking.BookingStatus.CONFIRMED:
             super().save(*args, **kwargs)
             print("New CONFIRMED booking: reducing availability")
             self.update_availability(change=-self.rooms_booked)
             self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_("يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="admin/bookings/booking/")
+            self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
+            # Schedule end reminder
+            if self.check_out_date:
+                print("pass")
+                # send_booking_end_reminders.apply_async(
+                #     args=[self.id],
+                #     eta=self.check_out_date - timezone.timedelta(hours=5)
+                # )
+            return
+        if is_new and self.status == Booking.BookingStatus.PENDING:
+            super().save(*args, **kwargs)
+            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=self.hotel.manager,messages=_(f"يوجد لديك حجز جديد من {self.user} -  للغرفه   {self.room}"),action="/bookings/booking/")
             self.send_notification(type='WARNING', title=_("تم استلام حجزك بنجاح."))
             # Schedule end reminder
             if self.check_out_date:

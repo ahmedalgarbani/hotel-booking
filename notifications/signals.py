@@ -31,12 +31,15 @@ def create_payment_notification(sender, instance, created, **kwargs):
                 notification_type = '1'  
                 title = _("دفعة جديدة قيد الانتظار")
                 message = _(f"هناك دفعة جديدة قيد الانتظار بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
-            else:  # مرفوض
+            elif instance.payment_status == '2':  # مرفوض
                 notification_type = '3' 
                 title = _("تم رفض دفعة")
                 message = _(f"تم رفض دفعة بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
-            
-            
+            else:
+                notification_type = '0'
+                title = _("دفعة غير معروفة")
+                message = _(f"تم تغيير حالة دفعة غير معروفة للحجز رقم ")
+
             # إنشاء الإشعار
             Notifications.objects.create(
                 sender=instance.user if instance.user else hotel_manager,

@@ -26,7 +26,6 @@ def store_booking_pre_save(sender, instance, **kwargs):
 
             # 1- من مؤكد إلى ملغي
             if previous_status == "1" and current_status == "0":
-                instance.update_availability(-instance.rooms_booked)
                 send_whatsapp_via_sadeem(
                     phone_number=f"+{instance.user.phone}",
                     message=(
@@ -38,7 +37,6 @@ def store_booking_pre_save(sender, instance, **kwargs):
 
             # 2- تسجيل الخروج
             if instance.actual_check_out_date:
-                instance.update_availability(instance.rooms_booked)
                 send_whatsapp_via_sadeem(
                     phone_number=f"+{instance.user.phone}",
                     message=(
@@ -51,7 +49,6 @@ def store_booking_pre_save(sender, instance, **kwargs):
 
             # 3- من أي حالة إلى مكتمل
             if previous_status != "2" and current_status == "2":
-                instance.update_availability(instance.rooms_booked)
                 send_whatsapp_via_sadeem(
                     phone_number=f"+{instance.user.phone}",
                     message=(
