@@ -22,6 +22,10 @@ class HotelReviewAdmin(AutoUserTrackMixin ,admin.ModelAdmin):
     ordering = ['-created_at']
     actions = ['approve_reviews', 'reject_reviews']
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
 
     @admin.action(description="Mark selected reviews as approved")
     def approve_reviews(self, request, queryset):
@@ -77,4 +81,4 @@ class RoomReviewAdmin( AutoUserTrackMixin ,admin.ModelAdmin):
 
 
 admin_site.register(HotelReview, HotelReviewAdmin)
-admin_site.register(RoomReview)
+admin_site.register(RoomReview,RoomReviewAdmin)

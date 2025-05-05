@@ -342,7 +342,6 @@ JAZZMIN_SETTINGS = {
     # "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
     # "user_avatar": None,
 
-    # القوائم
     "topmenu_links": [
         {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
         {"name": "الإشعارات", "url": "admin:notifications_notifications_changelist", "icon": "fas fa-bell"},
@@ -350,6 +349,7 @@ JAZZMIN_SETTINGS = {
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
     ],
+
 
     # تجميع النماذج
     "models": {
@@ -664,3 +664,6 @@ CELERY_IMPORTS = [
 SADEEM_API_SECRET = '43f5360a204233df6fc8c265c9be8ab0b0b9c282' 
 SADEEM_DEVICE_ID = 'a83a8a5ad76466e9'   
 SADEEM_SIM = '1'    
+
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

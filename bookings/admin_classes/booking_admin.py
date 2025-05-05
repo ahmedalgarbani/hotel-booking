@@ -34,7 +34,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
     # Keep only relevant actions for this specific admin class if desired
     actions = ['change_booking_status', 'export_bookings_report']
-    readonly_fields = [  'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at']
+    readonly_fields = [  'created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at']
 
 
     change_form_template = 'admin/bookings/booking.html' # Keep if customized

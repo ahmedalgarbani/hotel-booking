@@ -11,7 +11,13 @@ class BookingDetailAdmin(AutoUserTrackMixin, admin.ModelAdmin):
     list_filter = ['booking__status', 'service', 'booking__hotel'] # Filter by hotel via booking
     search_fields = ['booking__id', 'service__name']
     # Make total calculated field readonly
-    readonly_fields = ('total',) # Add others from mixin via get_readonly_fields if needed
+    readonly_fields =('created_at', 'updated_at','total','created_by', 'updated_by','deleted_at')
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','total', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+
 
     # Inherit get_readonly_fields from AutoUserTrackMixin if it defines tracking fields
     # If HotelManagerAdminMixin is needed for direct filtering (unlikely), add it and its methods

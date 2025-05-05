@@ -72,6 +72,11 @@ class HotelAdmin(admin.ModelAdmin):
     list_filter = [ 'is_verified', 'created_at']
     actions = [export_to_excel, 'export_to_pdf']
     prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     def get_absolute_url_link(self, obj):
         if obj.slug:
             return f'<a href="{obj.get_absolute_url()}">{obj.name}</a>'
@@ -218,7 +223,11 @@ class HotelAdmin(admin.ModelAdmin):
 class LocationAdmin(admin.ModelAdmin):
     list_display = ( 'address', 'city',  'created_at')
     list_filter = ('city',)
-
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
@@ -262,7 +271,11 @@ class PhoneAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'country_code', 'hotel', 'created_at')
     search_fields = ('phone_number', 'hotel__name')
     list_filter = ('hotel',)
-
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
@@ -336,7 +349,11 @@ class ImageAdmin(admin.ModelAdmin):
     # form = ImageAdminForm
     list_display = ('image_path', 'image_url', 'hotel', 'created_at')
     search_fields = ('image_path',)
-
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
@@ -387,7 +404,11 @@ class CityAdmin(admin.ModelAdmin):
     # readonly_fields = ('country')
     search_fields = ( 'state', 'country')
     list_filter = ('state', 'country')
-
+    readonly_fields = ('created_at', 'updated_at','slug', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','slug', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
@@ -405,7 +426,11 @@ class HotelRequestAdmin(admin.ModelAdmin):
     search_fields = ['hotel_name', 'name', 'email']
     readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
     actions = ['approve_requests']
-
+    readonly_fields = ('created_at','updated_at','approved_at','created_by', 'updated_by')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','approved_at', 'created_by', 'updated_by')
+        return self.readonly_fields
     def approve_requests(self, request, queryset):
         for hotel_request in queryset.filter(is_approved=False):
             hotel_request.approve(request.user)

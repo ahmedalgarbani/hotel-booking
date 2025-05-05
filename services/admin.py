@@ -39,6 +39,7 @@ class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
     ordering = ('-created_at',)
     # exclude = ('created_by', 'updated_by','deleted_at')
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    
     def formatted_description(self, obj):
         return format_html(obj.description)
 
