@@ -95,24 +95,7 @@ class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Add
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
-class PaymentOptionAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
-    list_display = ('method_name', 'currency', 'is_active')
-    list_filter = ('is_active', 'currency')
-    search_fields = ('method_name',)
 
-    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
-    def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
-        return self.readonly_fields
-    
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.user_type == 'hotel_manager':
-            return qs.filter(currency__hotel__manager=request.user)
-        elif request.user.user_type == 'hotel_staff':
-            return qs.filter(currency__hotel__manager=request.user.chield)
-        return qs
 
 class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     list_display = ('currency_name', 'currency_symbol', 'hotel')
@@ -179,8 +162,30 @@ class PaymentHistoryAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 
 
+class AutoUserTrackMixin:
+    def save_model(self, request, obj, form, change):
+        if not obj.pk: 
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
 
-
+class PaymentOptionAdmin(AutoUserTrackMixin, admin.ModelAdmin):
+    list_display = ('method_name', 'currency', 'is_active')
+    list_filter = ('is_active', 'currency')
+    search_fields = ('method_name',)
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.user_type == 'hotel_manager':
+            return qs.filter(currency__hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return qs.filter(currency__hotel__manager=request.user.chield)
+        return qs
 
 admin_site.register(Currency,CurrencyAdmin)
 admin_site.register(PaymentHistory,PaymentHistoryAdmin)

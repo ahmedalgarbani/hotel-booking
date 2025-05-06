@@ -35,7 +35,10 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # Keep only relevant actions for this specific admin class if desired
     actions = ['change_booking_status', 'export_bookings_report']
     readonly_fields = [  'created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at']
-
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at','hotel')
+        return self.readonly_fields
 
     change_form_template = 'admin/bookings/booking.html' # Keep if customized
     change_list_template = 'admin/bookings/booking/change_list.html' # Keep custom template reference

@@ -15,7 +15,7 @@ class BookingDetailAdmin(AutoUserTrackMixin, admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','total', 'created_by', 'updated_by','deleted_at')
+            return ('created_at', 'updated_at','total', 'created_by', 'updated_by','deleted_at','hotel')
         return self.readonly_fields
 
 
