@@ -111,6 +111,7 @@ class RoomType(BaseModel):
         return reverse('rooms:room_detail', args=[self.slug])
 
 
+
     @property
     def available_rooms_count(self):
         """Calculate available rooms dynamically based on active bookings and check-out dates."""

@@ -61,7 +61,7 @@ class Guest(BaseModel):
         ordering = ['name']
 
 
-    def save(self, *args, **kwargs): 
+    def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -154,19 +154,39 @@ class Booking(BaseModel):
         start = to_date(start_date or self.check_in_date)
         end = to_date(end_date or self.check_out_date)
 
+        # تم إزالة التأكد من وجود سجلات توافر للفترة المطلوبة
+
         print(f"update_availability called: change={change}, start={start}, end={end}")
         with transaction.atomic():
             current = start
             while current < end:
-                availability = Availability.objects.get(
-                    hotel=self.hotel,
-                    room_type=self.room,
-                    availability_date=current
-                )
-                print(f"[{current}] before: {availability.available_rooms}")
-                availability.available_rooms += change
-                availability.save()
-                print(f"[{current}] after: {availability.available_rooms}")
+                try:
+                    availability = Availability.objects.get(
+                        hotel=self.hotel,
+                        room_type=self.room,
+                        availability_date=current
+                    )
+                    print(f"[{current}] before: {availability.available_rooms}")
+                    availability.available_rooms += change
+                    # التأكد من أن عدد الغرف المتوفرة لا يتجاوز إجمالي عدد الغرف
+                    if availability.available_rooms > self.room.rooms_count:
+                        availability.available_rooms = self.room.rooms_count
+                    # التأكد من أن عدد الغرف المتوفرة لا يقل عن صفر
+                    if availability.available_rooms < 0:
+                        availability.available_rooms = 0
+                    availability.save()
+                    print(f"[{current}] after: {availability.available_rooms}")
+                except Availability.DoesNotExist:
+                    # إنشاء سجل جديد إذا لم يكن موجوداً
+                    available_rooms = max(0, min(self.room.rooms_count + change, self.room.rooms_count))
+                    availability = Availability.objects.create(
+                        hotel=self.hotel,
+                        room_type=self.room,
+                        availability_date=current,
+                        available_rooms=available_rooms,
+                        notes="تم إنشاؤه تلقائياً أثناء الحجز"
+                    )
+                    print(f"[{current}] created: {availability.available_rooms}")
                 current += timedelta(days=1)
 
     def send_notification(self, type=None, title=None,receiver=None,messages=None,action=None):
@@ -201,7 +221,7 @@ class Booking(BaseModel):
                 raise ValidationError(_("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول."))
         if self.hotel != self.room.hotel:
             raise ValidationError(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
-        
+
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding
@@ -256,7 +276,7 @@ class Booking(BaseModel):
                                      start_date=self.check_in_date,
                                      end_date=self.check_out_date)
 
-        
+
         if original.status != self.status:
             if self.status == Booking.BookingStatus.CONFIRMED:
                 print("Status changed to CONFIRMED: reducing availability")
@@ -340,7 +360,7 @@ class BookingDetail(BaseModel):
     def save(self, *args, **kwargs):
         self.total = self.quantity * self.price
         if self.booking:
-            self.id = self.booking.id  
+            self.id = self.booking.id
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -365,7 +385,7 @@ class ExtensionMovement(models.Model):
         ('other', 'أسباب أخرى'),
     ]
     reason = models.CharField(max_length=50, choices=REASON_CHOICES, verbose_name="سبب التمديد")
-    extension_year = models.PositiveIntegerField(editable=False) 
+    extension_year = models.PositiveIntegerField(editable=False)
     duration = models.PositiveIntegerField(verbose_name="مدة التمديد (أيام)", default=0)
 
 
@@ -375,8 +395,8 @@ class ExtensionMovement(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"حركة #{self.movement_number} - حجز {self.booking.id}"    
-    
+        return f"حركة #{self.movement_number} - حجز {self.booking.id}"
+
 
 
 
@@ -484,4 +504,3 @@ class BookingHistory(models.Model):
     def __str__(self):
         return f"History entry for Booking #{self.booking.id} at {self.history_date}"
 
-        

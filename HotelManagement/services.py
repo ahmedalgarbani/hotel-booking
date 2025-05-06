@@ -7,13 +7,13 @@ from django.db.models import OuterRef, Subquery
 from django.db.models import Q
 from .models import *
 
- 
+
 def change_date_format(date_str):
-    date_obj = datetime.strptime(date_str, "%m/%d/%Y")  
+    date_obj = datetime.strptime(date_str, "%m/%d/%Y")
     formatted_date_str = date_obj.strftime("%Y-%m-%d 00:00:00")
     formatted_date = datetime.strptime(formatted_date_str, "%Y-%m-%d 00:00:00")
- 
-    print(formatted_date) 
+
+    print(formatted_date)
     return formatted_date
 
 def parse_check_in_date(check_in_date):
@@ -39,7 +39,7 @@ def get_query_params(request):
             room_number = int(request.GET.get('room_number', 0))
         except ValueError:
             room_number = 0
-        
+
         try:
             adult_number = int(request.GET.get('adult_number', 0))
         except ValueError:
@@ -57,7 +57,7 @@ def get_query_params(request):
             room_number = int(request.POST.get('room_number', 0))
         except ValueError:
             room_number = None
-        
+
         try:
             adult_number = int(request.POST.get('adult_number', 0))
         except ValueError:
@@ -105,7 +105,7 @@ def get_hotels_query(hotel_name, category_type=None, room_number=1, adult_number
     if hotel_name:
         hotels_by_name = Hotel.objects.filter(name__icontains=hotel_name)
         cities = City.objects.filter(
-            Q(state__icontains=hotel_name) | 
+            Q(state__icontains=hotel_name) |
             Q(country__icontains=hotel_name)
         )
         locations = Location.objects.filter(city__in=cities)
@@ -123,9 +123,9 @@ def get_hotels_query(hotel_name, category_type=None, room_number=1, adult_number
         print(e)
     from django.db.models import Count
     if check_in and check_out and check_in != check_out:
-        
+
         total_days = (check_out - check_in).days + 1
-        
+
         avail_room_types = Availability.objects.filter(
             availability_date__range=[check_in, check_out],
             available_rooms__gte=room_number
@@ -171,7 +171,7 @@ def get_hotels_query(hotel_name, category_type=None, room_number=1, adult_number
 
 def check_room_availability_full(room_type, hotel, check_in, check_out, today_date, required_rooms=1):
     """
-    Combines availabi lity validation logic for a specific room type, hotel, and date range.
+    Combines availability validation logic for a specific room type, hotel, and date range.
 
     Checks:
     - Completeness of data
@@ -202,8 +202,12 @@ def check_room_availability_full(room_type, hotel, check_in, check_out, today_da
     if check_out <= check_in:
         return False, "تاريخ الخروج يجب أن يكون بعد تاريخ الدخول"
 
+    # تم إزالة التأكد من وجود سجلات توافر للفترة المطلوبة
 
+    # حساب عدد الأيام في فترة الحجز
     days_count = (check_out - check_in).days
+
+    # التحقق من توافر الغرف لكل يوم في فترة الحجز
     available_days = Availability.objects.filter(
         room_type=room_type,
         hotel=hotel,
@@ -211,7 +215,26 @@ def check_room_availability_full(room_type, hotel, check_in, check_out, today_da
         available_rooms__gte=required_rooms
     ).count()
 
+    # إذا كان عدد الأيام المتوفرة أقل من إجمالي عدد أيام الحجز
     if available_days < days_count:
-        return False, "عدد الغرف المطلوب غير متوفر لكل الأيام المطلوبة"
+        # تحديد الأيام غير المتوفرة
+        all_dates = [(check_in + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days_count)]
+        available_dates = Availability.objects.filter(
+            room_type=room_type,
+            hotel=hotel,
+            availability_date__range=(check_in, check_out),
+            available_rooms__gte=required_rooms
+        ).values_list('availability_date', flat=True)
+        available_dates = [date.strftime('%Y-%m-%d') for date in available_dates]
+
+        unavailable_dates = [date for date in all_dates if date not in available_dates]
+
+        if unavailable_dates:
+            if len(unavailable_dates) <= 3:
+                return False, f"عدد الغرف المطلوب غير متوفر في التواريخ التالية: {', '.join(unavailable_dates)}"
+            else:
+                return False, f"عدد الغرف المطلوب غير متوفر في {len(unavailable_dates)} أيام من الفترة المطلوبة"
+        else:
+            return False, "عدد الغرف المطلوب غير متوفر لكل الأيام المطلوبة"
 
     return True, "الغرف متوفرة لكل الفترة المحددة"

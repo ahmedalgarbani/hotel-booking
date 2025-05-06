@@ -1,6 +1,42 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
 {% block content %}
+<style>
+.card-item-list .card-img-carousel {
+    width: 30%;
+    min-width: 120px;
+    height: 100%; /* إضافة ارتفاع كامل */
+}
+
+.card-item-list .card-img {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-item-list .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center; /* تركيز أفضل للصورة */
+    transition: transform 0.3s ease; /* تأثير تكبير عند الhover */
+}
+
+.card-item-list:hover .card-img img {
+    transform: scale(1.02); /* تفاعل بسيط عند المرور */
+}
+
+/* تعديلات خاصة للهواتف */
+@media (max-width: 480px) {
+    .card-item-list .card-img-carousel {
+        min-width: 100px;
+    }
+    
+    .card-item-list .card-img img {
+        object-position: center 25%; /* تعديل التركيز للصور العمودية */
+    }
+}
+</style>
    <!-- ================================
     START BREADCRUMB AREA
 ================================= -->
@@ -224,13 +260,13 @@ START CARD AREA
               </a>
             </li>
             {% endif %}
-            
+
             {% for num in page_obj.paginator.page_range %}
             <li class="page-item {% if num == page_obj.number %}active{% endif %}">
               <a class="page-link" href="?page={{ num }}">{{ num }}</a>
             </li>
             {% endfor %}
-            
+
             {% if page_obj.has_next %}
             <li class="page-item">
               <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="التالي">

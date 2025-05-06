@@ -1,8 +1,200 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
 {% block extra_css %}
-   
+
     <style>
+    /* تنسيق السلايدر بحجم أصغر */
+    .room-gallery-showcase {
+        padding: 0;
+        margin-bottom: 30px;
+        background-color: #f8f9fa;
+    }
+
+    .gallery-container {
+        max-width: 100%;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .full-width-slider {
+        max-height: 250px; /* تقليل ارتفاع السلايدر أكثر */
+        overflow: hidden;
+    }
+
+    .gallery-slide-item {
+        position: relative;
+        height: 250px;
+    }
+
+    .image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 250px; /* تحديد ارتفاع الصورة ليتوافق مع السلايدر */
+        overflow: hidden;
+    }
+
+    .gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* يحافظ على نسبة العرض إلى الارتفاع دون تشويه */
+        object-position: center;
+        transition: transform 0.5s ease;
+        filter: brightness(0.95);
+        background-color: #f5f5f5; /* خلفية خفيفة للصور */
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .image-wrapper:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .image-wrapper:hover .gallery-image {
+        transform: scale(1.03);
+        filter: brightness(1.05);
+    }
+
+    .zoom-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .zoom-icon i {
+        font-size: 22px;
+        color: #333;
+    }
+
+    .zoom-icon:hover {
+        transform: scale(1);
+        background-color: #fff;
+    }
+
+    .slider-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+    }
+
+    .slider-dots {
+        display: flex;
+        margin: 0 15px;
+        gap: 8px;
+    }
+
+    .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .slider-dot.active {
+        background-color: #fff;
+        transform: scale(1.2);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    }
+
+    .slider-arrows {
+        display: flex;
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        justify-content: space-between;
+        padding: 0 15px;
+        pointer-events: none;
+    }
+
+    .slider-arrows button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        pointer-events: auto;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .slider-arrows button:hover {
+        background-color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+
+    .slider-arrows button.clicked {
+        transform: scale(0.95);
+    }
+
+    .slider-arrows button i {
+        font-size: 18px;
+        color: #333;
+    }
+
+    /* تنسيق للشاشات الصغيرة */
+    @media (max-width: 768px) {
+        .full-width-slider, .image-wrapper, .gallery-slide-item {
+            height: 250px; /* الحفاظ على نفس الارتفاع للتناسق */
+        }
+
+        .slider-controls {
+            bottom: 10px;
+        }
+
+        .slider-arrows button {
+            width: 35px;
+            height: 35px;
+        }
+
+        .slider-arrows {
+            padding: 0 10px;
+        }
+    }
+
+    /* تنسيق للشاشات الكبيرة */
+    @media (min-width: 1200px) {
+        .gallery-container {
+            border-radius: 10px;
+        }
+    }
+
+    /* تنسيق الرسائل */
     .messages .alert {
     padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
     margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
@@ -35,6 +227,389 @@
     background-color: #d1ecf1;
     border-color: #bee5eb;
 }
+
+/* تنسيق حقول التاريخ وعدد الغرف */
+.booking-date-container {
+    margin-bottom: 20px;
+}
+
+.date-field-container {
+    margin-bottom: 15px;
+}
+
+.date-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.label-icon {
+    margin-left: 5px;
+    color: #3498db;
+}
+
+.check-out .label-icon {
+    color: #e74c3c;
+}
+
+.date-input-wrapper {
+    position: relative;
+    height: 45px;
+}
+
+.modern-date-input {
+    width: 100%;
+    height: 45px;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    color: #333;
+    direction: rtl;
+}
+
+.calendar-trigger {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+}
+
+/* تنسيق حقول عدد الغرف والأشخاص */
+.input-box {
+    margin-bottom: 20px;
+}
+
+.label-text {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-control {
+    height: 45px;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    color: #333;
+    width: 100%;
+}
+
+.form-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: #777;
+}
+
+/* تحسين مظهر الحقول عند التركيز */
+.modern-date-input:focus,
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* تنسيق متوافق مع الأجهزة المحمولة */
+@media (min-width: 768px) {
+    .booking-date-container {
+        display: flex;
+        gap: 15px;
+    }
+
+    .date-field-container {
+        flex: 1;
+    }
+}
+
+/* تنسيق قسم المراجعات */
+.comment-forum {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+    border: 1px solid #eaeaea;
+}
+
+.form-title-wrap {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    position: relative;
+}
+
+.form-title-wrap h3 {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+}
+
+.form-title-wrap:after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background-color: #3498db;
+}
+
+/* تنسيق نجوم التقييم */
+.rate-stars-option {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.rate-stars-option input[type="radio"] {
+    display: none;
+}
+
+.rate-stars-option label {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    margin: 0 2px;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px;
+    transition: all 0.2s ease;
+}
+
+.rate-stars-option input[type="radio"]:checked ~ label,
+.rate-stars-option label:hover,
+.rate-stars-option label:hover ~ label {
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ffb700" stroke="%23ffb700" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>');
+    transform: scale(1.05);
+}
+
+.input-box {
+    margin-bottom: 15px;
+}
+
+.label-text {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* تحسين حقل الرسالة */
+.form-group textarea {
+    height: 120px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fafafa;
+    resize: vertical;
+    width: 100%;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.form-group textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+    outline: none;
+    background-color: #fff;
+}
+
+.form-group textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* تحسين زر الإرسال */
+.btn-box .theme-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-box .theme-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+.btn-box .theme-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(52, 152, 219, 0.3);
+}
+
+.btn-box .theme-btn:before {
+    content: '\f1d8';
+    font-family: 'Line Awesome Free';
+    font-weight: 900;
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+/* تحسين عرض المراجعات الحالية */
+.comments-list {
+    margin-top: 25px;
+}
+
+.comment {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    border: 1px solid #eee;
+}
+
+.comment:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    border-color: #ddd;
+}
+
+.comment-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 12px;
+    border: 2px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.avatar__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.comment-body {
+    flex: 1;
+}
+
+.comment__author {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.ratings i {
+    color: #ffb700;
+    font-size: 14px;
+    margin-right: 1px;
+}
+
+.comment__date {
+    color: #999;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.comment-content {
+    margin-top: 10px;
+    color: #666;
+    line-height: 1.5;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 3px solid #eee;
+}
+
+/* تنسيق رسالة عدم وجود مراجعات */
+.no-reviews {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    border: 1px dashed #ddd;
+}
+
+.empty-reviews-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-reviews-message i {
+    font-size: 36px;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.empty-reviews-message p {
+    color: #888;
+    font-size: 14px;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+/* تحسين زر تحميل المزيد */
+.load-more {
+    margin-top: 20px;
+}
+
+.theme-btn-small {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.theme-btn-small:hover {
+    background-color: #e5e5e5;
+    color: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.theme-btn-small:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.theme-btn-small i {
+    font-size: 14px;
+    margin-right: 5px;
+}
 </style>
  {% endblock extra_css %}
 {% block content %}
@@ -42,15 +617,37 @@
     <!-- ================================
     START ROOM DETAIL BREAD
 ================================= -->
-<section class="room-detail-bread">
-  <div class="full-width-slider carousel-action">
-    {% for image in image %}
-    <div class="full-width-slide-item">
-      <img src="{{ image.image.url }}" height=210 alt="{{ room.name }}" />
+<section class="room-gallery-showcase">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+        <div class="gallery-container">
+          <div class="full-width-slider carousel-action">
+            {% for image in image %}
+            <div class="gallery-slide-item">
+              <div class="image-wrapper">
+                <img src="{{ image.image.url }}" alt="{{ room.name }}" class="gallery-image" />
+                <div class="image-overlay">
+                  <span class="zoom-icon">
+                    <i class="la la-search-plus"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Indicators -->
+          <div class="slider-controls">
+            <div class="slider-dots"></div>
+            <div class="slider-arrows">
+              <button class="prev-arrow"><i class="la la-angle-left"></i></button>
+              <button class="next-arrow"><i class="la la-angle-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    {% endfor %}
   </div>
-  <!-- end full-width-slider -->
 </section>
 <!-- end room-detail-bread -->
 <!-- ================================
@@ -229,7 +826,7 @@ START TOUR DETAIL AREA
                           {% if average_rating >= 4.5 %}
                             ممتاز
                           {% elif average_rating >= 3.5 %}
-                            جيد جداً
+                            جيد
                           {% elif average_rating >= 2.5 %}
                             جيد
                           {% elif average_rating >= 1.5 %}
@@ -261,13 +858,21 @@ START TOUR DETAIL AREA
                 <div class="comments-list padding-top-50px">
                   <ul class="list-items">
                     {% for review in reviews %}
-                    <li class="comment">
+                    <li class="comment d-flex">
                       {% if review.user.image %}
                       <div class="comment-avatar">
                         <img
                         class="avatar__img"
                         alt="صورة المستخدم"
-                        src="{{review.user.image.url}}" 
+                        src="{{review.user.image.url}}"
+                        />
+                      </div>
+                      {% else %}
+                      <div class="comment-avatar">
+                        <img
+                        class="avatar__img"
+                        alt="صورة المستخدم"
+                        src="{% static 'images/default-avatar.png' %}"
                         />
                       </div>
                       {% endif %}
@@ -290,13 +895,15 @@ START TOUR DETAIL AREA
                         <p class="comment-content">
                           {{ review.review }}
                         </p>
-                        <!-- يمكنك إضافة قسم "الرد" إذا كنت تريد ميزة الرد على المراجعات -->
                       </div>
                     </li>
                     <!-- end comments -->
                     {% empty %}
-                      <li>
-                        <p>لا يوجد مراجعات حتى الآن.</p>
+                      <li class="no-reviews">
+                        <div class="empty-reviews-message">
+                          <i class="la la-comment-slash"></i>
+                          <p>لا يوجد مراجعات حتى الآن. كن أول من يقيم هذه الغرفة!</p>
+                        </div>
                       </li>
                     {% endfor %}
                   </ul>
@@ -304,13 +911,13 @@ START TOUR DETAIL AREA
                   {% if reviews.has_next %}
                   <div class="btn-box load-more text-center">
                     <button
-                      class="theme-btn theme-btn-small theme-btn-transparent"
+                      class="theme-btn theme-btn-small"
                       type="button"
                       id="load-more-reviews"
                       data-next-page="{{ reviews.next_page_number }}"
                       data-room-id="{{ room.id }}"
                     >
-                      تحميل المزيد من المراجعة
+                      <i class="la la-refresh me-1"></i> تحميل المزيد من المراجعات
                     </button>
                   </div>
                   {% endif %}
@@ -319,7 +926,6 @@ START TOUR DETAIL AREA
                 <!-- end comments-list -->
                 <!-- تم إزالة نموذج التقييم ذو الفئات لأنه لا يتطابق مع نموذج RoomReview الخاص بك -->
                <div class="comment-forum padding-top-40px">
-               
     <div class="form-box">
         <div class="form-title-wrap">
             <h3 class="title">أكتب مراجعة</h3>
@@ -327,41 +933,38 @@ START TOUR DETAIL AREA
         <!-- form-title-wrap -->
         <div class="form-content">
             <div class="contact-form-action">
-                <form method="POST" action='{% url "reviews:room_review_create" room.id %}'> 
-                    {% csrf_token %} 
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="input-box">
-                                    <label class="label-text">تقييم الغرفة</label>
-                                    <div class="rate-stars-option">
-                                        {% for i in stars %}
-                                            <input type="radio" name="rating" value="{{ i }}" id="rating-{{ i }}" {% if i == 5 %}checked{% endif %} >
-                                            <label for="rating-{{ i }}"></label>
-                                            {% endfor %}
-                                          </div>
-                                          {{hotel_id}}
-                                          <input type="hidden" name="hotel" value="{{room.hotel.id}}" >
-                                          <input type="hidden" name="room_type" value="{{room.id}}" >
+                <form method="POST" action='{% url "reviews:room_review_create" room.id %}'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="input-box">
+                                <label class="label-text">تقييم الغرفة</label>
+                                <div class="rate-stars-option">
+                                    {% for i in stars %}
+                                    <input type="radio" name="rating" value="{{ i }}" id="rating-{{ i }}" {% if i == 5 %}checked{% endif %}>
+                                    <label for="rating-{{ i }}" title="{{ i }} نجوم"></label>
+                                    {% endfor %}
                                 </div>
+                                <input type="hidden" name="hotel" value="{{room.hotel.id}}">
+                                <input type="hidden" name="room_type" value="{{room.id}}">
                             </div>
-                            <div class="col-lg-12">
-                                <div class="input-box">
-                                    <label class="label-text">رسالة</label>
-                                    <div class="form-group">
-                                        <span class="la la-pencil form-icon"></span>
-                                        {{ form.review }} <span class="la la-pencil form-icon"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="btn-box">
-                                    <button type="submit" class="theme-btn">
-                                        إرسال المراجعة
-                                    </button>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="input-box">
+                                <label class="label-text">رسالة المراجعة</label>
+                                <div class="form-group">
+                                    {{ form.review }}
                                 </div>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-lg-12">
+                            <div class="btn-box">
+                                <button type="submit" class="theme-btn">
+                                    إرسال المراجعة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <!-- end contact-form-action -->
@@ -388,41 +991,88 @@ START TOUR DETAIL AREA
                 <div class="contact-form-action">
                   <form method="POST" action="{% url 'payments:process_booking' room.id %}" id="bookingForm">
                     {% csrf_token %}
-                    <div class="input-box">
-                      <label class="label-text">تاريخ تسجيل الدخول</label>
-                      <div class="form-group">
-                        <span class="la la-calendar form-icon"></span>
-                        <input
-                          type="text"
-                          id="check_in_datepicker"
-                          name="check_in_date"
-                          value="{{ check_in|date:'Y-m-d' }}"
-                          required
-                          readonly
-                          style="background-color: #f9f9f9; direction: rtl;"
-                        />
+                    <div class="booking-date-container">
+                      <!-- تاريخ تسجيل الدخول -->
+                      <div class="date-field-container check-in">
+                        <label class="date-label">
+                          <i class="las la-sign-in-alt label-icon"></i>
+                          تاريخ تسجيل الدخول
+                        </label>
+                        <div class="date-input-wrapper">
+                          <input
+                            type="text"
+                            id="check_in_datepicker"
+                            name="check_in_date"
+                            value="{{ check_in|date:'Y-m-d' }}"
+                            required
+                            readonly
+                            class="modern-date-input"
+                          />
+                          <div class="calendar-trigger">
+                            <i class="las la-calendar-alt"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- تاريخ تسجيل الخروج -->
+                      <div class="date-field-container check-out">
+                        <label class="date-label">
+                          <i class="las la-sign-out-alt label-icon"></i>
+                          تاريخ تسجيل الخروج
+                        </label>
+                        <div class="date-input-wrapper">
+                          <input
+                            type="text"
+                            id="check_out_datepicker"
+                            name="check_out_date"
+                            value="{{ check_out|date:'Y-m-d' }}"
+                            required
+                            readonly
+                            class="modern-date-input"
+                          />
+                          <div class="calendar-trigger">
+                            <i class="las la-calendar-alt"></i>
+                          </div>
+                        </div>
+                        <input type="hidden" id="room_id" name="room_id" />
                       </div>
                     </div>
-                    <div class="input-box">
-                      <label class="label-text">تاريخ تسجيل الخروج</label>
-                      <div class="form-group">
-                        <span class="la la-calendar form-icon"></span>
-                        <input
-                          type="text"
-                          id="check_out_datepicker"
-                          name="check_out_date"
-                          value="{{ check_out|date:'Y-m-d' }}"
-                          required
-                          readonly
-                          style="background-color: #f9f9f9; direction: rtl;"
-                        />
-                        <input
-                          type="hidden"
-                          id="room_id"
-                          name="room_id"
-                        />
+
+                    <!-- بداية قسم التواريخ المتوفرة -->
+                    <div class="available-dates-section mb-3">
+                      <h4 class="title font-size-16 mb-3">
+                        <i class="la la-calendar-check text-primary mr-2"></i>
+                        تواريخ تسجيل الدخول المتاحة  (  الخروج بعد يوم واحد قابل للتمديد)
+                      </h4>
+                      <div class="available-dates-container">
+                        {% if available_dates %}
+                          <div class="available-dates-list">
+                            {% for date_range in available_dates %}
+                              <div class="available-date-item" data-start="{{ date_range.start_date|date:'Y-m-d' }}" data-end="{{ date_range.end_date|date:'Y-m-d' }}">
+                                <div class="date-range d-flex align-items-center mb-2">
+                                  <span class="date-icon check-in">
+                                    <i class="la la-sign-in-alt"></i>
+                                  </span>
+                                  <span class="date-text">{{ date_range.start_date|date:"Y-m-d" }}</span>
+                                  <span class="ml-2 badge badge-info">
+                                    إقامة ليلة واحدة
+                                  </span>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        {% else %}
+                          <div class="no-dates-available">
+                            <p class="text-muted font-size-14 text-center py-3">
+                              <i class="la la-info-circle mr-1"></i>
+                              لا توجد تواريخ متاحة للحجز حالياً. يرجى التواصل مع إدارة الفندق للاستفسار عن مواعيد الحجز المتاحة.
+                            </p>
+                          </div>
+                        {% endif %}
                       </div>
                     </div>
+                    <!-- نهاية قسم التواريخ المتوفرة -->
+
                     <div class="input-box">
                       <label class="label-text">عدد الغرف</label>
                       <div class="form-group">
@@ -453,7 +1103,7 @@ START TOUR DETAIL AREA
                         />
                       </div>
                     </div>
-                    
+
                     <!-- Extra Services Section -->
                     <div class="sidebar-widget-item py-4">
                       <h3 class="title stroke-shape">خدمات إضافية</h3>
@@ -505,8 +1155,8 @@ START TOUR DETAIL AREA
                         <i class="la la-check-circle mr-2 font-size-18"></i>متابعة الى الدفع
                       </button>
                     </div>
-                   
-                 
+
+
                   </form>
               </div>
               <!-- end sidebar-widget-item -->
@@ -568,9 +1218,9 @@ START RELATE TOUR AREA
                   <img src="{% static 'images/default-room.jpg' %}" alt="Default room image" class="img-fluid">
                 </div>
                 {% endfor %}
-           
-            
-           
+
+
+
           </div>
           <div class="card-body">
             <div class="card-price pb-2">
@@ -658,7 +1308,7 @@ END RELATE TOUR AREA
       document.querySelectorAll(".service-checkbox:checked").forEach((checkbox) => {
 
 
-        selectedServices.push(checkbox.value); 
+        selectedServices.push(checkbox.value);
 
 
       });
@@ -724,7 +1374,7 @@ END RELATE TOUR AREA
         totalPriceInput.value = basePrice.toFixed(2);
 
 
-        updateCartUrl(); 
+        updateCartUrl();
 
 
       });
@@ -754,7 +1404,7 @@ $(document).ready(function() {
             // Set minimum date for checkout datepicker
             let checkInDate = $(this).datepicker('getDate');
             $("#check_out_datepicker").datepicker('option', 'minDate', new Date(checkInDate.getTime() + 24*60*60*1000));
-            
+
             // Reset check-out date if it's before check-in date
             let checkOutDate = $("#check_out_datepicker").datepicker('getDate');
             if (checkOutDate <= checkInDate) {
@@ -805,52 +1455,52 @@ $(document).ready(function() {
     // Handle form submission
     $('#bookingForm').on('submit', function(e) {
         e.preventDefault();
-        
+
         // Get form values
         const checkIn = $("input[name='check_in_date']").val();
         const checkOut = $("input[name='check_out_date']").val();
         const roomNumber = parseInt($('#roomNumber').val());
         const adultNumber = parseInt($('#adultNumber').val());
         const maxCapacity = {{ room.max_capacity }};
-        
+
         // Comprehensive validation
         let errors = [];
-        
+
         if (!checkIn) {
             errors.push("يرجى تحديد تاريخ الدخول");
         }
-        
+
         if (!checkOut) {
             errors.push("يرجى تحديد تاريخ الخروج");
         }
-        
+
         if (checkIn && checkOut) {
             const checkInDate = new Date(checkIn);
             const checkOutDate = new Date(checkOut);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             if (checkInDate < today) {
                 errors.push("لا يمكن اختيار تاريخ دخول في الماضي");
             }
-            
+
             if (checkOutDate <= checkInDate) {
                 errors.push("يجب أن يكون تاريخ الخروج بعد تاريخ الدخول");
             }
         }
-        
+
         if (roomNumber < 1) {
             errors.push("يجب أن يكون عدد الغرف 1 على الأقل");
         }
-        
+
         if (adultNumber < 1) {
             errors.push("يجب أن يكون عدد الأشخاص 1 على الأقل");
         }
-        
+
         if (adultNumber > maxCapacity) {
             errors.push(`السعة القصوى لهذا النوع من الغرف هي ${maxCapacity} أشخاص`);
         }
-        
+
         if (errors.length > 0) {
             alert(errors.join("\n"));
             return false;
@@ -862,10 +1512,811 @@ $(document).ready(function() {
 
     });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // إنشاء نقاط المؤشر بناءً على عدد الصور
+    const slides = document.querySelectorAll('.gallery-slide-item');
+    const dotsContainer = document.querySelector('.slider-dots');
 
+    slides.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.classList.add('slider-dot');
+      if (index === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => goToSlide(index));
+      dotsContainer.appendChild(dot);
+    });
 
-<!-- ... existing code ... -->
+    // أزرار التنقل
+    const prevBtn = document.querySelector('.prev-arrow');
+    const nextBtn = document.querySelector('.next-arrow');
 
+    prevBtn.addEventListener('click', () => navigateSlider('prev'));
+    nextBtn.addEventListener('click', () => navigateSlider('next'));
+
+    // وظائف التنقل (تحتاج إلى تكاملها مع مكتبة السلايدر الخاصة بك)
+    function navigateSlider(direction) {
+      // هنا يمكنك استدعاء وظائف السلايدر الخاص بك
+      console.log('Navigate:', direction);
+    }
+
+    // تفعيل اختيار التواريخ المتاحة
+    const availableDateItems = document.querySelectorAll('.available-date-item');
+    const checkInDatepicker = document.getElementById('check_in_datepicker');
+    const checkOutDatepicker = document.getElementById('check_out_datepicker');
+
+    availableDateItems.forEach(item => {
+      item.addEventListener('click', function() {
+        // إزالة التحديد من جميع العناصر
+        availableDateItems.forEach(el => el.classList.remove('selected'));
+
+        // إضافة تحديد للعنصر المختار
+        this.classList.add('selected');
+
+        // الحصول على تواريخ البداية والنهاية
+        const startDate = this.getAttribute('data-start');
+        const endDate = this.getAttribute('data-end');
+
+        // تعيين التواريخ في حقول الإدخال
+        if (checkInDatepicker && checkOutDatepicker) {
+          checkInDatepicker.value = startDate;
+          checkOutDatepicker.value = endDate;
+
+          // تحديث القيم المخفية
+          const checkInInput = document.querySelector('input[name="check_in_date"]');
+          const checkOutInput = document.querySelector('input[name="check_out_date"]');
+
+          if (checkInInput && checkOutInput) {
+            checkInInput.value = startDate;
+            checkOutInput.value = endDate;
+          }
+
+          // تمرير الأحداث لتحديث أي منطق آخر
+          const changeEvent = new Event('change');
+          checkInDatepicker.dispatchEvent(changeEvent);
+          checkOutDatepicker.dispatchEvent(changeEvent);
+        }
+      });
+    });
+
+    function goToSlide(index) {
+      // هنا يمكنك استدعاء وظيفة الانتقال إلى شريحة محددة
+      console.log('Go to slide:', index);
+
+      // تحديث النقاط النشطة
+      document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // إضافة وظيفة التكبير عند النقر على أيقونة الزوم
+    const zoomIcons = document.querySelectorAll('.zoom-icon');
+    zoomIcons.forEach(icon => {
+      icon.addEventListener('click', function(e) {
+        e.preventDefault();
+        const imgSrc = this.closest('.gallery-slide-item').querySelector('.gallery-image').src;
+        openFullscreenImage(imgSrc);
+      });
+    });
+
+    // فتح الصورة بالحجم الكامل
+    function openFullscreenImage(imgSrc) {
+      const fullscreenView = document.createElement('div');
+      fullscreenView.className = 'fullscreen-view';
+      fullscreenView.innerHTML = `
+        <div class="fullscreen-content">
+          <span class="close-fullscreen">&times;</span>
+          <img src="${imgSrc}" class="fullscreen-image" alt="صورة بالحجم الكامل">
+        </div>
+      `;
+
+      document.body.appendChild(fullscreenView);
+      document.body.style.overflow = 'hidden';
+
+      // إغلاق العرض بالحجم الكامل
+      fullscreenView.querySelector('.close-fullscreen').addEventListener('click', function() {
+        document.body.removeChild(fullscreenView);
+        document.body.style.overflow = '';
+      });
+
+      // إغلاق العرض عند النقر خارج الصورة
+      fullscreenView.addEventListener('click', function(e) {
+        if (e.target === fullscreenView) {
+          document.body.removeChild(fullscreenView);
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+</script>
+<style>
+  .room-gallery-showcase {
+    position: relative;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  .gallery-container {
+    position: relative;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .full-width-slider {
+    position: relative;
+    max-height: 250px; /* تقليل ارتفاع السلايدر */
+    overflow: hidden;
+  }
+
+  .gallery-slide-item {
+    position: relative;
+    height: 250px; /* تحديد ارتفاع العنصر ليتوافق مع السلايدر */
+    overflow: hidden;
+  }
+
+  .image-wrapper {
+    position: relative;
+    height: 250px; /* تحديد ارتفاع الصورة ليتوافق مع السلايدر */
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+
+  .gallery-image {
+    width: 100%;
+    height: 100%; /* استخدام 100% للارتفاع ليتناسب مع الحاوية */
+    object-fit: contain; /* يحافظ على نسبة العرض إلى الارتفاع دون تشويه */
+    object-position: center;
+    transition: transform 0.8s ease;
+    display: block;
+    background-color: #f5f5f5; /* خلفية خفيفة للصور */
+  }
+
+  .image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+  }
+
+  .gallery-slide-item:hover .image-overlay {
+    opacity: 1;
+  }
+
+  .gallery-slide-item:hover .gallery-image {
+    transform: scale(1.05);
+  }
+
+  .zoom-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s ease 0.1s;
+  }
+
+  .gallery-slide-item:hover .zoom-icon {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .zoom-icon i {
+    font-size: 22px;
+    color: #333;
+  }
+
+  /* تصميم أزرار التحكم */
+  .slider-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .slider-dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  .slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .slider-dot.active {
+    background: #fff;
+    transform: scale(1.2);
+  }
+
+  .slider-arrows {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+  }
+
+  .prev-arrow, .next-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+  }
+
+  .prev-arrow:hover, .next-arrow:hover {
+    background: #fff;
+    transform: scale(1.1);
+  }
+
+  .prev-arrow i, .next-arrow i {
+    font-size: 20px;
+    color: #333;
+  }
+
+  /* تأثيرات إضافية */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .gallery-slide-item {
+    animation: fadeIn 0.8s ease;
+  }
+
+  /* تصميم متوافق مع الأجهزة المحمولة */
+  @media (max-width: 768px) {
+    .full-width-slider, .image-wrapper, .gallery-slide-item {
+      height: 250px; /* الحفاظ على نفس الارتفاع للتناسق */
+    }
+
+    .prev-arrow, .next-arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* تصميم متوافق مع الشاشات الكبيرة */
+  @media (min-width: 1200px) {
+    .full-width-slider, .image-wrapper, .gallery-slide-item {
+      height: 250px; /* الحفاظ على نفس الارتفاع للتناسق */
+    }
+  }
+
+  {% comment %} /* عرض الصورة بالحجم الكامل */
+  .fullscreen-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  } {% endcomment %}
+
+  .fullscreen-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+  }
+
+  .fullscreen-image {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border: 2px solid white;
+    border-radius: 4px;
+  }
+
+  .close-fullscreen {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .close-fullscreen:hover {
+    color: #f8f8f8;
+  }
+
+  /* تنسيق قسم التواريخ المتوفرة */
+  .available-dates-section {
+    background-color: rgba(52, 152, 219, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px dashed #3498db;
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .available-dates-section:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(52, 152, 219, 0.05);
+    transform: rotate(45deg);
+    border-top: 1px dashed #3498db;
+    border-left: 1px dashed #3498db;
+  }
+
+  .available-dates-section .title {
+    color: #333;
+    font-weight: 600;
+    border-bottom: 1px dashed #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+
+  .available-dates-container {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+
+  .available-date-item {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    display: block;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .available-date-item:hover {
+    border-color: #3498db;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    cursor: pointer;
+    background-color: #f8f9fa;
+  }
+
+  .available-date-item.selected {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.05);
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.15);
+  }
+
+  .available-date-item.selected:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 24px 24px 0;
+    border-color: transparent #28a745 transparent transparent;
+  }
+
+  .available-date-item.selected:after {
+    content: '\f00c';
+    font-family: 'Line Awesome Free';
+    font-weight: 900;
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    color: white;
+    font-size: 10px;
+  }
+
+  .available-dates-list {
+    display: block;
+  }
+
+  .badge-success {
+    background-color: #28a745;
+    color: white;
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 4px;
+  }
+
+  .no-dates-available {
+    background-color: #f8f9fa;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+  .date-range {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .date-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 3px;
+    font-size: 10px;
+  }
+
+  .date-icon.check-in {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+  }
+
+  .date-icon.check-out {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+  }
+
+  .date-text {
+    font-weight: 500;
+    color: #555;
+    font-size: 12px;
+  }
+
+  .date-separator {
+    color: #aaa;
+    font-weight: 300;
+    margin: 0 3px;
+  }
+
+  .no-dates-available {
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px dashed #ddd;
+  }
+
+  /* تنسيق شريط التمرير */
+  .available-dates-container::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .available-dates-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .available-dates-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+  }
+
+  .available-dates-container::-webkit-scrollbar-thumb:hover {
+    background: #3498db;
+  }
+</style>
+<script>
+  $(document).ready(function() {
+    // تهيئة سلايدر الصور باستخدام Owl Carousel مع إعدادات محسنة
+    var roomSlider = $('.full-width-slider').owlCarousel({
+      rtl: true,
+      items: 1,
+      loop: true,
+      margin: 0,
+      nav: false,
+      dots: false,
+      autoplay: true,
+      autoplayTimeout: 5000,
+      autoplayHoverPause: true,
+      smartSpeed: 800,
+      lazyLoad: true,
+      animateOut: 'fadeOut',
+      animateIn: 'fadeIn',
+      responsive: {
+        0: {
+          items: 1,
+          autoHeight: true
+        },
+        768: {
+          items: 1
+        }
+      }
+    });
+
+    // إيقاف التشغيل التلقائي عند تمرير الماوس فوق السلايدر
+    $('.gallery-container').hover(
+      function() {
+        roomSlider.trigger('stop.owl.autoplay');
+      },
+      function() {
+        roomSlider.trigger('play.owl.autoplay', [5000]);
+      }
+    );
+
+    // ربط أزرار التنقل بالسلايدر مع تأثيرات محسنة
+    $('.next-arrow').click(function() {
+      $(this).addClass('clicked');
+      setTimeout(function() {
+        $('.next-arrow').removeClass('clicked');
+      }, 200);
+      roomSlider.trigger('next.owl.carousel', [400]);
+    });
+
+    $('.prev-arrow').click(function() {
+      $(this).addClass('clicked');
+      setTimeout(function() {
+        $('.prev-arrow').removeClass('clicked');
+      }, 200);
+      roomSlider.trigger('prev.owl.carousel', [400]);
+    });
+
+    // إنشاء نقاط المؤشر بناءً على عدد الصور
+    var totalItems = $('.gallery-slide-item').length;
+    var dotsContainer = $('.slider-dots');
+
+    // إضافة نقاط المؤشر فقط إذا كان هناك أكثر من صورة واحدة
+    if (totalItems > 1) {
+      for (var i = 0; i < totalItems; i++) {
+        var dot = $('<div class="slider-dot"></div>');
+        if (i === 0) dot.addClass('active');
+
+        // إضافة وظيفة النقر للانتقال إلى الشريحة المحددة
+        dot.data('slide', i);
+        dot.click(function() {
+          var slideIndex = $(this).data('slide');
+          roomSlider.trigger('to.owl.carousel', [slideIndex, 300]);
+        });
+
+        dotsContainer.append(dot);
+      }
+
+      // تحديث النقاط النشطة عند تغيير الشريحة
+      roomSlider.on('changed.owl.carousel', function(event) {
+        var currentIndex = event.item.index - event.relatedTarget._clones.length / 2;
+        currentIndex = (currentIndex + totalItems) % totalItems;
+
+        $('.slider-dot').removeClass('active');
+        $('.slider-dot').eq(currentIndex).addClass('active');
+      });
+    } else {
+      // إخفاء أزرار التنقل إذا كانت هناك صورة واحدة فقط
+      $('.slider-controls').hide();
+    }
+
+    // إضافة وظيفة التكبير عند النقر على أيقونة الزوم أو الصورة نفسها
+    $('.zoom-icon, .gallery-image').click(function(e) {
+      e.preventDefault();
+      var imgSrc;
+      if ($(this).hasClass('gallery-image')) {
+        imgSrc = $(this).attr('src');
+      } else {
+        imgSrc = $(this).closest('.gallery-slide-item').find('.gallery-image').attr('src');
+      }
+      openFullscreenImage(imgSrc);
+    });
+
+    // فتح الصورة بالحجم الكامل مع تحسينات
+    function openFullscreenImage(imgSrc) {
+      // إنشاء عناصر عرض الصورة بالحجم الكامل
+      var fullscreenView = $('<div class="fullscreen-view"></div>').css({
+        'position': 'fixed',
+        'top': 0,
+        'left': 0,
+        'width': '100%',
+        'height': '100%',
+        'background-color': 'rgba(0, 0, 0, 0.9)',
+        'z-index': 9999,
+        'display': 'flex',
+        'align-items': 'center',
+        'justify-content': 'center',
+        'opacity': 0,
+        'transition': 'opacity 0.3s ease'
+      });
+
+      var content = $('<div class="fullscreen-content"></div>');
+      var closeBtn = $('<span class="close-fullscreen">&times;</span>');
+
+      // إضافة مؤشر تحميل
+      var loader = $('<div class="fullscreen-loader"></div>').css({
+        'border': '5px solid #f3f3f3',
+        'border-top': '5px solid #3498db',
+        'border-radius': '50%',
+        'width': '50px',
+        'height': '50px',
+        'animation': 'spin 1s linear infinite',
+        'position': 'absolute'
+      });
+
+      content.append(loader);
+
+      // تحميل الصورة مع التحقق من اكتمال التحميل
+      var img = new Image();
+      img.onload = function() {
+        loader.remove();
+        $(img).addClass('fullscreen-image').css({
+          'max-width': '90%',
+          'max-height': '85vh',
+          'object-fit': 'contain',
+          'border': '2px solid white',
+          'border-radius': '4px',
+          'box-shadow': '0 5px 25px rgba(0,0,0,0.5)',
+          'transform': 'scale(0.95)',
+          'transition': 'transform 0.3s ease',
+          'opacity': 0
+        });
+
+        content.append(img);
+
+        // تأثير ظهور الصورة بعد التحميل
+        setTimeout(function() {
+          $(img).css({
+            'transform': 'scale(1)',
+            'opacity': 1
+          });
+        }, 50);
+      };
+      img.src = imgSrc;
+
+      content.append(closeBtn);
+      fullscreenView.append(content);
+      $('body').append(fullscreenView);
+      $('body').css('overflow', 'hidden');
+
+      // تأثير ظهور الخلفية
+      setTimeout(function() {
+        fullscreenView.css('opacity', 1);
+      }, 10);
+
+      // إضافة مفتاح Escape لإغلاق العرض
+      $(document).on('keydown.fullscreen', function(e) {
+        if (e.key === 'Escape') {
+          closeFullscreen();
+        }
+      });
+
+      // إغلاق العرض بالحجم الكامل
+      function closeFullscreen() {
+        fullscreenView.css('opacity', 0);
+        setTimeout(function() {
+          fullscreenView.remove();
+          $('body').css('overflow', '');
+          $(document).off('keydown.fullscreen');
+        }, 300);
+      }
+
+      closeBtn.click(closeFullscreen);
+
+      // إغلاق العرض عند النقر خارج الصورة
+      fullscreenView.click(function(e) {
+        if (e.target === this) {
+          closeFullscreen();
+        }
+      });
+    }
+
+    // إضافة تأثير النقر على أزرار التنقل
+    $('.slider-arrows button').css({
+      'transition': 'transform 0.2s ease, background-color 0.2s ease'
+    });
+
+    $('.slider-arrows button').on('mousedown', function() {
+      $(this).css('transform', 'scale(0.95)');
+    }).on('mouseup mouseleave', function() {
+      $(this).css('transform', 'scale(1)');
+    });
+  });
+
+  // إضافة تأثير دوران للمؤشر
+  $('<style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>').appendTo('head');
+
+  // إنشاء تواريخ متاحة افتراضية للعرض
+  $(document).ready(function() {
+    // التحقق مما إذا كان هناك قسم التواريخ الافتراضية
+    if ($('#demo-available-dates').length > 0) {
+      // إنشاء تواريخ افتراضية (3 أشهر من اليوم)
+      const today = new Date();
+      const demoDatesList = $('#demo-available-dates');
+
+      // إنشاء 5 فترات تاريخ متاحة
+      for (let i = 0; i < 5; i++) {
+        // تاريخ البداية (إضافة أيام عشوائية من 1 إلى 30 يوم من اليوم)
+        const startOffset = Math.floor(Math.random() * 30) + 1 + (i * 5);
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() + startOffset);
+
+        // تاريخ النهاية (إضافة 1-7 أيام إلى تاريخ البداية)
+        const endOffset = Math.floor(Math.random() * 7) + 1;
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + endOffset);
+
+        // تنسيق التواريخ
+        const formattedStartDate = formatDate(startDate);
+        const formattedEndDate = formatDate(endDate);
+
+        // إنشاء عنصر HTML للتاريخ
+        const dateItem = `
+          <div class="available-date-item">
+            <div class="date-range d-flex align-items-center mb-2">
+              <span class="date-icon check-in">
+                <i class="la la-sign-in-alt"></i>
+              </span>
+              <span class="date-text">${formattedStartDate}</span>
+              <span class="date-separator mx-2">→</span>
+              <span class="date-icon check-out">
+                <i class="la la-sign-out-alt"></i>
+              </span>
+              <span class="date-text">${formattedEndDate}</span>
+            </div>
+          </div>
+        `;
+
+        // إضافة العنصر إلى القائمة
+        demoDatesList.append(dateItem);
+      }
+
+      // إضافة وظيفة النقر على التواريخ المتاحة
+      $('.available-date-item').click(function() {
+        const dateTexts = $(this).find('.date-text');
+        const checkInDate = $(dateTexts[0]).text();
+        const checkOutDate = $(dateTexts[1]).text();
+
+        // تعيين التواريخ في نموذج الحجز
+        $('#check_in_datepicker').val(checkInDate).trigger('change');
+        $('#check_out_datepicker').val(checkOutDate).trigger('change');
+
+        // تمييز العنصر المحدد
+        $('.available-date-item').removeClass('selected');
+        $(this).addClass('selected');
+
+        // التمرير إلى أعلى النموذج
+        $('html, body').animate({
+          scrollTop: $('#check_in_datepicker').offset().top - 100
+        }, 500);
+      });
+    }
+
+    // وظيفة تنسيق التاريخ (YYYY-MM-DD)
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+  });
+</script>
 {% endblock extra_js %}
 
 

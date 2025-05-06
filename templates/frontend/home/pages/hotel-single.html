@@ -14,11 +14,11 @@
     display: inline-flex;
     flex-direction: row-reverse;
   }
-  
+
   .star-rating input[type="radio"] {
     display: none;
   }
-  
+
   .star-rating label {
     font-size: 22px; /* تم تكبير الحجم من 18px إلى 22px */
     color: #ccc;
@@ -26,23 +26,23 @@
     transition: color 0.2s ease-in-out;
     padding: 0 3px;
   }
-  
+
   .star-rating input[type="radio"]:checked ~ label,
   .star-rating label:hover,
   .star-rating label:hover ~ label {
     color: #ffc107;
   }
-  
+
   .small-stars label {
     font-size: 25px;
   }
-  
+
   /* ====== تنسيق textarea ====== */
   textarea.form-control {
     resize: none;
     min-height: 100px;
   }
-  
+
   /* ====== زر الإضافة للمفضلة (wishlist) ====== */
   .add-to-wishlist {
 color: #6c757d; /* grey by default */
@@ -51,27 +51,27 @@ color: #6c757d; /* grey by default */
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
   }
-  
+
   .add-to-wishlist .la-heart-o {
 color: #6c757d; /* grey heart */
   }
-  
+
   .add-to-wishlist .la-heart {
 color:red; /* white heart when selected */
 
   }
-  
+
 /* Blue button when added to wishlist */
   .btn-blue {
 background-color: #007bff; /* blue background */
 color: block; /* white text */
   }
-  
+
   .btn-blue .la-heart {
 color: red; /* white heart icon when selected */
 
   }
-  
+
   .custom-checkbox {
     display: flex;
     align-items: center;
@@ -86,7 +86,7 @@ color: red; /* white heart icon when selected */
   .sidebar-category .custom-checkbox {
     margin-bottom: 8px;
   }
-  
+
   /* ====== الرسائل (Alerts) ====== */
   .messages .alert {
     padding: 15px;
@@ -95,32 +95,32 @@ color: red; /* white heart icon when selected */
     border-radius: 8px;
     font-weight: bold;
   }
-  
+
   .messages .alert-success {
     color: #155724;
     background-color: #d4edda;
     border-color: #c3e6cb;
   }
-  
+
   .messages .alert-error {
     color: #721c24;
     background-color: #f8d7da;
     border-color: #f5c6cb;
   }
-  
+
 /* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
   .messages .alert-warning {
     color: #85640a;
     background-color: #fff3cd;
     border-color: #ffeeba;
   }
-  
+
   .messages .alert-info {
     color: #0c5460;
     background-color: #d1ecf1;
     border-color: #bee5eb;
   }
-  
+
   /* ====== تنسيق تنبيه مخصص (custom alert) ====== */
   .custom-alert.warning {
     background: rgb(205, 255, 217);
@@ -130,32 +130,85 @@ color: red; /* white heart icon when selected */
     margin: 1.5rem 0;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
-  
+
   .alert-content {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .alert-icon {
     width: 24px;
     height: 24px;
     color: rgb(7, 255, 32);
     flex-shrink: 0;
   }
-  
+
   .alert-heading {
     color: #856404;
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 600;
   }
-  
+
   .custom-alert p {
     color: #856404;
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.5;
+  }
+
+  /* Estilos para tarjetas de hoteles de tamaño uniforme */
+  .card-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .card-item .card-img {
+    position: relative;
+    width: 100%;
+    height: 220px; /* Altura fija para todas las imágenes */
+    overflow: hidden;
+  }
+
+  .card-item .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción y cubre el área */
+    object-position: center;
+  }
+
+  .card-item .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .card-item .card-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .card-item .card-price {
+    margin-top: auto;
+  }
+
+  /* Estilos para las tarjetas de disponibilidad de habitaciones */
+  .cabin-type-img {
+    width: 200px;
+    height: 150px;
+    overflow: hidden;
+    margin-right: 15px;
+  }
+
+  .cabin-type-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
   </style>
     <!-- ================================
@@ -203,7 +256,7 @@ START BREADCRUMB AREA
               >
                 <i class="la la-video-camera me-2"></i>فيديو
               </a> {% endcomment %}
-              
+
               <a
                 class="theme-btn"
                 data-src="{{hotel.profile_picture.url}}"
@@ -222,7 +275,7 @@ START BREADCRUMB AREA
            data-caption="Showing image - 02"
            data-speed="700"
          ></a>
-           
+
            {% endfor %}
           </div>
           <!-- end breadcrumb-btn -->
@@ -328,14 +381,14 @@ START TOUR DETAIL AREA
                   </p>
                   <p>
                     {% if avg_rating_service %}
-                    
+
                     <span
                     class="badge text-bg-warning text-white font-size-16"
                     >{{avg_rating_service}}</span
                     >
                     {% endif %}
                     {% if  review_count > 0 %}
-                    
+
                     <span>({{review_count}} تعليقات)</span>
                     {% endif %}
                   </p>
@@ -366,7 +419,7 @@ START TOUR DETAIL AREA
                     <!-- end single-tour-feature -->
                   </div>
                   {% endfor %}
-                 
+
                 </div>
                 <!-- end row -->
               </div>
@@ -381,7 +434,7 @@ START TOUR DETAIL AREA
                 <p class="py-3">
                  {{hotel.description}}
                 </p>
-               
+
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
@@ -392,17 +445,17 @@ START TOUR DETAIL AREA
                 class="single-content-item padding-top-40px padding-bottom-30px"
               >
                 <h3 class="title font-size-20">التوفر</h3>
-               
+
                 <!-- end contact-form-action -->
                 <h3 class="title font-size-20">الغرف المتاحة</h3>
                 {% for availability in available_room_types %}
                 <!-- start cabin-type -->
                 <div onClick="window.location.href='{% url 'rooms:room_detail' availability.room_type.id %}';" class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
-                    
+
                     <!-- Wrap the whole div with a link -->
                     <a href="{% url 'rooms:room_detail' availability.room_type.id %}" class="d-flex">
-                    
+
                       <div class="cabin-type-img flex-shrink-0">
                         <!-- Dynamically render the main room image -->
                         {% if availability.room_type.images.all|length > 0 %}
@@ -414,10 +467,10 @@ START TOUR DETAIL AREA
                           <img src="{% static 'images/placeholder.png' %}" alt="No Image Available" />
                         {% endif %}
                       </div>
-                      
+
                       <div class="cabin-type-detail">
                         <a href="{% url 'rooms:room_detail' availability.room_type.id %}" class="title">{{availability.room_type.name}}</a>
-                        
+
                         {% if availability.services %}
                           <div class="row padding-top-20px">
                             {% for service in availability.services %}
@@ -435,7 +488,7 @@ START TOUR DETAIL AREA
                           </div>
                         {% endif %}
                       </div>
-                      
+
                       <div class="cabin-price">
                         <p class="text-uppercase font-size-14">
                           لليلة الواحدة
@@ -445,13 +498,13 @@ START TOUR DETAIL AREA
                         </p>
                       </div>
                     </a> <!-- End of the link wrapping the whole content -->
-              
+
                   </div>
                 </div>
                 <!-- end cabin-type -->
               {% endfor %}
-              
-                
+
+
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
@@ -567,7 +620,7 @@ START TOUR DETAIL AREA
                             <!-- end progress-item -->
                           </div>
                           <!-- end col-lg-6 -->
-                         
+
                           <!-- end col-lg-6 -->
                         </div>
                         <!-- end row -->
@@ -610,13 +663,13 @@ START TOUR DETAIL AREA
                             <i class="la {% if review.rating_service > 2 %} la-star {% else %} la-star-o {% endif %}"></i>
                             <i class="la {% if review.rating_service > 3 %} la-star {% else %} la-star-o {% endif %}"></i>
                             <i class="la {% if review.rating_service > 4 %} la-star {% else %} la-star-o {% endif %}"></i>
-                            
+
                           </span>
                           <p class="comment__date">{{ review.created_at|date:"d M Y" }}</p>
                         </div>
                       </div>
                       <p class="comment-content">{{ review.review }}</p>
-                     
+
                     </div>
                   </div>
                   {% empty %}
@@ -719,7 +772,7 @@ START TOUR DETAIL AREA
                             </small>
                           </div>
                         </div>
-                
+
                         <div class="submit-section">
                           <button type="submit" class="theme-btn btn-primary">إضافة المراجعة</button>
                         </div>
@@ -737,8 +790,8 @@ START TOUR DETAIL AREA
         </div>
         <!-- end col-lg-8 -->
         <div class="col-lg-4">
-          
-           
+
+
             <div class="sidebar-widget single-content-widget">
               <h3 class="title stroke-shape">نوع حساب؟</h3>
               <div class="sidebar-list">
@@ -775,7 +828,7 @@ START TOUR DETAIL AREA
                   <li>
                     <i class="la la-phone icon-element me-2"></i
                     ><a href="#">{{setting.phone}}</a>
-                
+
                   </li>
                   <li>
                     <i class="la la-envelope icon-element me-2"></i
@@ -786,7 +839,7 @@ START TOUR DETAIL AREA
               <!-- end sidebar-list -->
             </div>
             <!-- end sidebar-widget -->
-       
+
             <!-- end sidebar-widget -->
           </div>
           <!-- end sidebar -->
@@ -852,9 +905,9 @@ START RELATE TOUR AREA
             <p class="card-meta">{{hotel.location.city.state}} , {{hotels.location.address}}</p>
             <div class="card-rating">
               {% if average_rating > 0 %}
-              
+
               <span class="badge text-white">{{average_rating}}/5</span>
-              
+
               {% else %}
               <span class="badge text-white">0.0/5</span>
 
@@ -863,7 +916,7 @@ START RELATE TOUR AREA
               <span class="rating__text">({{review_count}} التعليقات)</span>
             </div>
             <div class="card-price d-flex align-items-center justify-content-between">
-              
+
               <a href="{{hotels.get_absolute_url}}" class="btn-text"
               >انظر التفاصيل<i class="la la-angle-right"></i
             ></a>            </div>
@@ -874,7 +927,7 @@ START RELATE TOUR AREA
       {% endfor %}
 
     </div>
-   
+
     <!-- end row -->
   </div>
   <!-- end container -->
@@ -894,7 +947,7 @@ END RELATE TOUR AREA
         var hotelId = this.getAttribute('data-hotel-id');
         var icon = this.querySelector('i');
         var buttonElement = this; // Explicitly reference the button
-        
+
         fetch("{% url 'customer:add_to_favorites' %}", {
           method: 'POST',
           headers: {
