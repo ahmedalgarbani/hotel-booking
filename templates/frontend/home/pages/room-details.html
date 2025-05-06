@@ -1042,7 +1042,7 @@ START TOUR DETAIL AREA
                     <div class="available-dates-section mb-3">
                       <h4 class="title font-size-16 mb-3">
                         <i class="la la-calendar-check text-primary mr-2"></i>
-                        تواريخ تسجيل الدخول المتاحة  (  الخروج بعد يوم واحد قابل للتمديد)
+                        فترات الإقامة المتاحة للحجز
                       </h4>
                       <div class="available-dates-container">
                         {% if available_dates %}
@@ -1054,8 +1054,21 @@ START TOUR DETAIL AREA
                                     <i class="la la-sign-in-alt"></i>
                                   </span>
                                   <span class="date-text">{{ date_range.start_date|date:"Y-m-d" }}</span>
-                                  <span class="ml-2 badge badge-info">
-                                    إقامة ليلة واحدة
+                                  <span class="date-separator mx-2">→</span>
+                                  <span class="date-icon check-out">
+                                    <i class="la la-sign-out-alt"></i>
+                                  </span>
+                                  <span class="date-text">{{ date_range.end_date|date:"Y-m-d" }}</span>
+                                  <span class="ml-2 badge badge-success">
+                                    {% if date_range.nights == 1 %}
+                                      ليلة واحدة
+                                    {% elif date_range.nights == 2 %}
+                                      ليلتان
+                                    {% elif date_range.nights > 2 and date_range.nights <= 10 %}
+                                      {{ date_range.nights }} ليالي
+                                    {% else %}
+                                      {{ date_range.nights }} ليلة
+                                    {% endif %}
                                   </span>
                                 </div>
                               </div>

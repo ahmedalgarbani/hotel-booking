@@ -77,7 +77,7 @@ from django.db import transaction
 def get_available_date_ranges(room_type, min_rooms=1, days_ahead=60):
     """
     استخراج التواريخ المتاحة للغرفة من جدول التوافر مباشرة
-    تاريخ تسجيل الخروج يكون دائماً يوم واحد بعد تاريخ تسجيل الدخول
+    تاريخ تسجيل الخروج يكون آخر تاريخ متاح متتالي + يوم واحد
 
     Args:
         room_type: نوع الغرفة
@@ -102,27 +102,46 @@ def get_available_date_ranges(room_type, min_rooms=1, days_ahead=60):
     if not availabilities:
         return []
 
-    # إنشاء قائمة بالتواريخ المتاحة
+    # تحويل سجلات التوافر إلى قائمة بالتواريخ
+    available_dates = [avail.availability_date for avail in availabilities]
+
+    # تجميع التواريخ المتتالية في فترات
     date_ranges = []
+    start_date = None
+    prev_date = None
 
-    # لكل تاريخ متاح، نضيف فترة تبدأ بهذا التاريخ وتنتهي بعد يوم واحد
-    for avail in availabilities:
-        check_in_date = avail.availability_date
-        check_out_date = check_in_date + timedelta(days=1)
+    for current_date in available_dates:
+        # بداية فترة جديدة
+        if start_date is None:
+            start_date = current_date
+            prev_date = current_date
+        # استمرار الفترة الحالية
+        elif (current_date - prev_date).days == 1:
+            prev_date = current_date
+        # نهاية فترة وبداية فترة جديدة
+        else:
+            # تاريخ الخروج هو اليوم التالي لآخر تاريخ متاح في الفترة
+            check_out_date = prev_date + timedelta(days=1)
 
-        # التحقق من أن تاريخ الخروج متاح أيضاً
-        next_day_available = Availability.objects.filter(
-            room_type=room_type,
-            availability_date=check_out_date,
-            available_rooms__gte=min_rooms
-        ).exists()
-
-        # إضافة الفترة فقط إذا كان اليوم التالي متاحاً أيضاً
-        if next_day_available:
             date_ranges.append({
-                'start_date': check_in_date,
-                'end_date': check_out_date
+                'start_date': start_date,
+                'end_date': check_out_date,
+                'nights': (prev_date - start_date).days + 1  # عدد الليالي
             })
+
+            start_date = current_date
+            prev_date = current_date
+
+    # إضافة الفترة الأخيرة
+    if start_date is not None:
+        # تاريخ الخروج هو اليوم التالي لآخر تاريخ متاح في الفترة
+        check_out_date = prev_date + timedelta(days=1)
+
+        date_ranges.append({
+            'start_date': start_date,
+            'end_date': check_out_date,
+            'nights': (prev_date - start_date).days + 1  # عدد الليالي
+        })
 
     return date_ranges
 
