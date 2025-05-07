@@ -1,0 +1,72 @@
+/* تنسيق الإشعارات في قالب jazzmin */
+.dropdown-menu-lg .dropdown-item {
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-item.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+}
+
+.dropdown-item.notification-item i {
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+    margin-left: 0.75rem;
+}
+
+.dropdown-item.notification-item div {
+    flex: 1;
+}
+
+.dropdown-item.notification-item .text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.dropdown-item.notification-item .text-muted {
+    color: #6c757d !important;
+}
+
+.dropdown-item.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.navbar-badge {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    font-size: 0.6rem;
+    font-weight: 300;
+    padding: 2px 4px;
+    border-radius: 50%;
+}
+
+.dropdown-menu-lg {
+    min-width: 300px;
+    max-width: 350px;
+}
+
+.dropdown-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+}
+
+.dropdown-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.75rem 1rem;
+}
+
+.dropdown-divider {
+    margin: 0;
+}
