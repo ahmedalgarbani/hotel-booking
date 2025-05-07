@@ -186,4 +186,4 @@ def export_revenue_summary_pdf(request):
         available_width * 0.35, available_width * 0.20, available_width * 0.25, available_width * 0.20
     ]
 
-    return generate_pdf_report(report_title, headers, data, col_widths=col_widths)
+    return generate_pdf_report(report_title, headers, data, col_widths=col_widths, rtl=True)

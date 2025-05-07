@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.db.models import Count, Sum, F, Q
+from django.db.models import Count, Sum, F, Q, Max
 from datetime import date, timedelta
 from reportlab.lib.pagesizes import landscape, A4
 
@@ -15,12 +15,13 @@ User = get_user_model()
 
 def get_vip_customers_data(request):
     """
-    Get data for VIP customers report.
+    Get data for VIP customers report with enhanced luxury features.
     """
     today = date.today()
     period = request.GET.get('period', 'yearly')
     sort_by = request.GET.get('sort_by', 'bookings')
     hotel_id = request.GET.get('hotel_id')
+    show_premium = request.GET.get('show_premium', 'yes') == 'yes'
 
     # Define date ranges based on period
     if period == 'monthly':
@@ -57,7 +58,9 @@ def get_vip_customers_data(request):
     # Annotate customers with booking count and total spending
     customers_with_stats = customers_qs.filter(combined_filter).annotate(
         booking_count=Count('bookings', distinct=True),
-        total_spent=Sum('payments__payment_totalamount')
+        total_spent=Sum('payments__payment_totalamount'),
+        avg_booking_value=Sum('payments__payment_totalamount') / Count('bookings', distinct=True),
+        last_booking_date=Max('bookings__check_in_date')
     ).filter(booking_count__gt=0)
 
     # Sort customers based on user preference
@@ -79,11 +82,70 @@ def get_vip_customers_data(request):
             elif request.user.user_type == 'hotel_staff':
                 hotels = hotels.filter(manager=request.user.chield)
 
+    # Calculate loyalty scores and spending trends for each customer
+    from datetime import datetime
+    today_date = datetime.now().date()
+    
+    for customer in customers_with_stats:
+        # Calculate recency score (0-100)
+        if customer.last_booking_date:
+            # Convert datetime to date if needed
+            if hasattr(customer.last_booking_date, 'date'):
+                last_booking_date = customer.last_booking_date.date()
+            else:
+                last_booking_date = customer.last_booking_date
+                
+            days_since_last_booking = (today_date - last_booking_date).days
+            recency_score = max(0, 100 - min(days_since_last_booking, 365) / 3.65)
+        else:
+            recency_score = 0
+            
+        # Calculate frequency score (0-100)
+        frequency_score = min(customer.booking_count * 10, 100)
+        
+        # Calculate monetary score (0-100)
+        monetary_value = float(customer.total_spent) if customer.total_spent else 0
+        monetary_score = min(monetary_value / 100, 100)
+        
+        # Calculate overall loyalty score (0-100)
+        customer.loyalty_score = int((recency_score * 0.35) + (frequency_score * 0.35) + (monetary_score * 0.3))
+        
+        # Determine customer tier based on loyalty score
+        if customer.loyalty_score >= 80:
+            customer.tier = 'platinum'
+            customer.tier_arabic = 'بلاتيني'
+        elif customer.loyalty_score >= 60:
+            customer.tier = 'gold'
+            customer.tier_arabic = 'ذهبي'
+        elif customer.loyalty_score >= 40:
+            customer.tier = 'silver'
+            customer.tier_arabic = 'فضي'
+        elif customer.loyalty_score >= 20:
+            customer.tier = 'bronze'
+            customer.tier_arabic = 'برونزي'
+        else:
+            customer.tier = 'regular'
+            customer.tier_arabic = 'عادي'
+    
     # Prepare data for charts
     customer_names = [f"{c.first_name} {c.last_name}" if c.first_name and c.last_name else c.username for c in customers_with_stats[:10]]
     booking_counts = [c.booking_count for c in customers_with_stats[:10]]
     spending_amounts = [float(c.total_spent) if c.total_spent else 0 for c in customers_with_stats[:10]]
+    loyalty_scores = [c.loyalty_score for c in customers_with_stats[:10]]
 
+    # Calculate average loyalty score and spending
+    avg_loyalty_score = sum(c.loyalty_score for c in customers_with_stats) / len(customers_with_stats) if customers_with_stats else 0
+    total_spending = sum(float(c.total_spent) if c.total_spent else 0 for c in customers_with_stats)
+    
+    # Get tier distribution
+    tier_distribution = {
+        'platinum': len([c for c in customers_with_stats if c.tier == 'platinum']),
+        'gold': len([c for c in customers_with_stats if c.tier == 'gold']),
+        'silver': len([c for c in customers_with_stats if c.tier == 'silver']),
+        'bronze': len([c for c in customers_with_stats if c.tier == 'bronze']),
+        'regular': len([c for c in customers_with_stats if c.tier == 'regular'])
+    }
+    
     return {
         'customers': customers_with_stats,
         'period': period,
@@ -93,8 +155,13 @@ def get_vip_customers_data(request):
         'customer_names': customer_names,
         'booking_counts': booking_counts,
         'spending_amounts': spending_amounts,
+        'loyalty_scores': loyalty_scores,
         'start_date': start_date.strftime('%Y-%m-%d'),
-        'end_date': today.strftime('%Y-%m-%d')
+        'end_date': today.strftime('%Y-%m-%d'),
+        'avg_loyalty_score': int(avg_loyalty_score),
+        'total_spending': total_spending,
+        'tier_distribution': tier_distribution,
+        'show_premium': show_premium
     }
 
 def vip_customers_report_view(request):
@@ -117,7 +184,7 @@ def vip_customers_report_view(request):
     }
 
     context.update({
-        'title': _('تقرير العملاء المميزين'),
+        'title': _('تقرير العملاء المميزين - النسخة الفاخرة'),
         'customers': data['customers'],
         'period': data['period'],
         'sort_by': data['sort_by'],
@@ -126,8 +193,13 @@ def vip_customers_report_view(request):
         'customer_names': data['customer_names'],
         'booking_counts': data['booking_counts'],
         'spending_amounts': data['spending_amounts'],
+        'loyalty_scores': data['loyalty_scores'],
         'start_date': data['start_date'],
         'end_date': data['end_date'],
+        'avg_loyalty_score': data['avg_loyalty_score'],
+        'total_spending': data['total_spending'],
+        'tier_distribution': data['tier_distribution'],
+        'show_premium': data['show_premium'],
         'opts': User._meta,
         'has_view_permission': True,
         'pdf_export_url': reverse('users:vip-customers-report-export-pdf')
@@ -161,26 +233,23 @@ def export_vip_customers_pdf(request):
         _('رقم الهاتف'),
         _('عدد الحجوزات'),
         _('إجمالي الإنفاق'),
-        _('تصنيف العميل')
+        _('درجة الولاء'),
+        _('تصنيف العميل'),
+        _('متوسط قيمة الحجز')
     ]
 
     # Prepare data rows
     data_rows = []
     for i, customer in enumerate(customers, 1):
-        # Determine customer rank
-        if i <= 5:
-            rank = _('ذهبي')
-        elif i <= 15:
-            rank = _('فضي')
-        elif i <= 30:
-            rank = _('برونزي')
-        else:
-            rank = _('عادي')
+        # Use the calculated tier from the loyalty score
+        rank = _(customer.tier_arabic)
 
         # Format customer name
         customer_name = customer.get_full_name() if customer.get_full_name() else customer.username
 
-        # Add row data
+        # Add row data with enhanced information
+        avg_booking_value = customer.avg_booking_value if hasattr(customer, 'avg_booking_value') and customer.avg_booking_value else 0
+        
         data_rows.append([
             str(i),
             customer_name,
@@ -188,11 +257,13 @@ def export_vip_customers_pdf(request):
             customer.phone,
             str(customer.booking_count),
             f"{customer.total_spent or 0:.2f}",
-            rank
+            f"{customer.loyalty_score}/100",
+            rank,
+            f"{avg_booking_value:.2f}"
         ])
 
     # Create report title
-    report_title = _('تقرير العملاء المميزين')
+    report_title = _('تقرير العملاء المميزين - النسخة الفاخرة')
 
     # Add period to title
     period_labels = {
@@ -212,17 +283,19 @@ def export_vip_customers_pdf(request):
     sort_text = sort_labels.get(sort_by, sort_labels['bookings'])
     report_title += f" - {_('ترتيب حسب')}: {sort_text}"
 
-    # Define column widths
+    # Define column widths - more compact to fit all columns properly
     available_width = landscape(A4)[0] - 60  # A4 landscape width minus margins
     col_widths = [
-        available_width * 0.07,  # الترتيب
-        available_width * 0.20,  # اسم العميل
-        available_width * 0.20,  # البريد الإلكتروني
-        available_width * 0.13,  # رقم الهاتف
-        available_width * 0.10,  # عدد الحجوزات
-        available_width * 0.15,  # إجمالي الإنفاق
-        available_width * 0.15   # تصنيف العميل
+        available_width * 0.05,  # الترتيب
+        available_width * 0.15,  # اسم العميل
+        available_width * 0.15,  # البريد الإلكتروني
+        available_width * 0.10,  # رقم الهاتف
+        available_width * 0.08,  # عدد الحجوزات
+        available_width * 0.10,  # إجمالي الإنفاق
+        available_width * 0.08,  # درجة الولاء
+        available_width * 0.08,  # تصنيف العميل
+        available_width * 0.08   # متوسط قيمة الحجز
     ]
 
     # Generate and return the PDF report
-    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths)
+    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths,rtl=True)

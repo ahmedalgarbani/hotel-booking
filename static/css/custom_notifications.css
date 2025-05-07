@@ -1,0 +1,66 @@
+/* Custom Notification Styles for Jazzmin */
+
+.dropdown-menu-lg .dropdown-item {
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-menu-lg .dropdown-item p {
+    margin-bottom: 0;
+    white-space: normal;
+}
+
+.dropdown-menu-lg .dropdown-item .text-sm {
+    font-size: 0.875rem;
+}
+
+.dropdown-menu-lg .dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-menu-lg .dropdown-divider {
+    margin: 0;
+}
+
+.dropdown-menu-lg .dropdown-header {
+    font-weight: bold;
+    text-align: center;
+}
+
+.dropdown-menu-lg .dropdown-footer {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Notification icon colors */
+.fa-info-circle {
+    color: #17a2b8;
+}
+
+.fa-exclamation-triangle {
+    color: #ffc107;
+}
+
+.fa-check {
+    color: #28a745;
+}
+
+.fa-times {
+    color: #dc3545;
+}
+
+/* Badge animation for new notifications */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.badge-warning.navbar-badge {
+    animation: pulse 2s infinite;
+}

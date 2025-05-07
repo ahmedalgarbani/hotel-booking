@@ -2,15 +2,94 @@
 {% load static %}
 {% block content %}
 <style>
+/* Filter Styles */
+.filter-wrap {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.nav-tabs {
+    border: none;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    padding: 8px 16px;
+    color: #666;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    margin: 0 4px;
+    font-size: 14px;
+}
+
+.nav-tabs .nav-link.active {
+    background: #3498db;
+    color: #fff;
+}
+
+/* Card Styles */
+.card-item-list {
+    display: flex;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    height: 200px;
+    position: relative;
+}
+
+/* Ribbon for special offers */
+.ribbon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(52, 152, 219, 0.9);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    z-index: 1;
+    backdrop-filter: blur(5px);
+}
+
+.card-item-list:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #e0e0e0;
+}
+
 .card-item-list .card-img-carousel {
-    width: 30%;
-    min-width: 120px;
-    height: 100%; /* إضافة ارتفاع كامل */
+    width: 32%;
+    min-width: 200px;
+    max-width: 250px;
+    position: relative;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.carousel-indicators {
+    bottom: 0;
+    margin-bottom: 5px;
+}
+
+.carousel-indicators [data-bs-target] {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.7);
+    border: none;
+    margin: 0 4px;
 }
 
 .card-item-list .card-img {
     height: 100%;
-    overflow: hidden;
     position: relative;
 }
 
@@ -18,22 +97,212 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center center; /* تركيز أفضل للصورة */
-    transition: transform 0.3s ease; /* تأثير تكبير عند الhover */
+    transition: transform 0.4s ease;
 }
 
 .card-item-list:hover .card-img img {
-    transform: scale(1.02); /* تفاعل بسيط عند المرور */
+    transform: scale(1.03);
 }
 
-/* تعديلات خاصة للهواتف */
-@media (max-width: 480px) {
-    .card-item-list .card-img-carousel {
-        min-width: 100px;
+.card-item-list .card-body {
+    flex: 1;
+    padding: 16px;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 8px;
+}
+
+/* Price Tag */
+.card-price {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: #2c3e50;
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.1);
+}
+
+.price__from {
+    font-size: 13px;
+    color: #666;
+}
+
+.price__num {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3498db;
+    margin: 0 4px;
+}
+
+.price__text {
+    font-size: 13px;
+    color: #666;
+}
+
+/* Room Title */
+.card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.card-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.card-title a:hover {
+    color: #3498db;
+}
+
+/* Room Description */
+.card-text {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Room Features */
+.card-attributes {
+    display: flex;
+    gap: 15px;
+    margin-top: auto;
+    position: relative;
+    padding-top: 10px;
+}
+
+.card-attributes:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, #eee, transparent);
+}
+
+.card-attributes ul {
+    display: flex;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.card-attributes ul li {
+    display: flex;
+    align-items: center;
+    color: #555;
+    font-size: 13px;
+}
+
+.card-attributes ul li i {
+    color: #3498db;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+/* Room Tags */
+.room-features {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.room-features .badge {
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border: none;
+    transition: transform 0.2s ease;
+}
+
+.room-features .badge:hover {
+    transform: translateY(-1px);
+}
+
+.room-features .badge.bg-success {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.badge i {
+    font-size: 12px;
+}
+
+/* Book Button */
+.theme-btn-transparent {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #3498db;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-btn-transparent:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: 0.5s;
+}
+
+.theme-btn-transparent:hover:before {
+    left: 100%;
+}
+
+.theme-btn-transparent:hover {
+    background: #3498db;
+    color: #fff;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .card-item-list {
+        flex-direction: column;
+        height: auto;
     }
-    
-    .card-item-list .card-img img {
-        object-position: center 25%; /* تعديل التركيز للصور العمودية */
+
+    .card-item-list .card-img-carousel {
+        width: 100%;
+        min-width: 100%;
+        height: 180px;
+    }
+
+    .card-item-list .card-body {
+        padding: 12px;
+    }
+
+    .card-attributes ul {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .card-price {
+        align-self: flex-start;
+    }
+
+    .theme-btn-transparent {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
     }
 }
 </style>
@@ -247,41 +516,111 @@ START CARD AREA
       {% endfor %}
     </div>
 
-    <!-- Pagination -->
-    {% if page_obj.has_other_pages %}
-    <div class="row">
-      <div class="col-lg-12">
-        <nav class="d-flex justify-content-center mt-5">
-          <ul class="pagination">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="السابق">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            {% endif %}
+    <style>
+.pagination-wrap {
+    margin-top: 40px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
-            {% for num in page_obj.paginator.page_range %}
-            <li class="page-item {% if num == page_obj.number %}active{% endif %}">
-              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-            </li>
-            {% endfor %}
+.pagination {
+    gap: 5px;
+}
 
-            {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="التالي">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-            {% endif %}
-          </ul>
-        </nav>
-        <p class="text-center font-size-14 mt-2">
-          عرض {{ page_obj.start_index }} - {{ page_obj.end_index }} من إجمالي {{ paginator.count }} غرفة
-        </p>
-      </div>
+.page-item {
+    margin: 0 2px;
+}
+
+.page-link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    border: none;
+    color: #666;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    background: #f8f9fa;
+}
+
+.page-item:not(.active) .page-link:hover {
+    background: #e3f2fd;
+    color: #3498db;
+    transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.page-item.disabled .page-link {
+    background: #f8f9fa;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.pagination-info strong {
+    color: #3498db;
+    font-weight: 600;
+}
+</style>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="pagination-wrap text-center">
+            <nav class="d-flex justify-content-center">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="السابق">
+                            <i class="la la-angle-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="التالي">
+                            <i class="la la-angle-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="pagination-info">
+                عرض <strong>{{ page_obj.start_index }} - {{ page_obj.end_index }}</strong> من إجمالي <strong>{{ paginator.count }}</strong> غرفة
+            </div>
+        </div>
     </div>
-    {% endif %}
+</div>
+{% endif %}
   </div>
 </section>
 <!-- end card-area -->

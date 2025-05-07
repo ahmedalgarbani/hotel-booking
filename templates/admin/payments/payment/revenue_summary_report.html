@@ -3,36 +3,247 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    {# More refined styles #}
-        <!-- Google Fonts -->
-        <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
-        rel="stylesheet"
-      />
-      {% comment %} <script src="{% static 'assets/css/chat.css' %}"></script> {% endcomment %}
-  
-      <!-- Template CSS Files -->
-      <link rel="stylesheet" href="{% static 'css/bootstrap-rtl.min.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/line-awesome.css' %}" />
-      <!-- jQuery UI CSS قبل Bootstrap لتجنب تعارض النوافذ المنبثقة -->
-      <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
-      <link
-        rel="stylesheet"
-        href="{% static 'css/owl.theme.default.min.css' %}"
-      />
-      <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/jquery.filer.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/style-rtl.css' %}" />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      />
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* الألوان الفاخرة */
+        :root {
+            --luxury-gold: #d4af37;
+            --luxury-dark: #2c3e50;
+            --luxury-light: #f8f9fa;
+            --luxury-accent: #8e44ad;
+            --luxury-success: #27ae60;
+            --luxury-info: #3498db;
+            --luxury-warning: #f39c12;
+            --luxury-danger: #e74c3c;
+        }
+        
+        /* خلفية الصفحة */
+        body {
+            background-color: var(--luxury-light);
+            
+        }
+        
+        /* عنوان التقرير */
+        h1, h2 {
+            color: var(--luxury-dark);
+            border-bottom: 2px solid var(--luxury-gold);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: right;
+        }
+        
+        /* تنسيق الجداول */
+        #result_list {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        
+        #result_list th, #result_list td {
+            padding: 12px;
+            text-align: right;
+            border: 1px solid #e0e0e0;
+        }
+        
+        #result_list th {
+            background-color: var(--luxury-dark);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+        
+        #result_list tr:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+        
+        #result_list tr.row1 {
+            background-color: #f8f8f8;
+        }
+        
+        /* نموذج التصفية */
+        .date-filter-form {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(to left, #ffffff, #f8f9fa);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            text-align: right;
+        }
+        
+        .date-filter-form label {
+            margin-left: 15px;
+            font-weight: bold;
+            color: var(--luxury-dark);
+        }
+        
+        .date-filter-form input[type="date"] {
+            margin-left: 8px;
+            padding: 8px 12px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .date-filter-form input[type="date"]:focus {
+            border-color: var(--luxury-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+            outline: none;
+        }
+        
+        .date-filter-form button {
+            padding: 8px 16px;
+            background-color: var(--luxury-dark);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .date-filter-form button:hover {
+            background-color: #1a2530;
+        }
+        
+        /* ملخص التقرير */
+        .report-summary {
+            background: linear-gradient(to left, var(--luxury-dark), #34495e);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .report-summary h2 {
+            color: var(--luxury-gold);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .report-summary p {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .report-summary strong {
+            color: var(--luxury-gold);
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .report-summary::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        /* قسم النتائج */
+        .results-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .results-section h2 {
+            color: var(--luxury-dark);
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--luxury-gold);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .results-section h2 i {
+            margin-left: 10px;
+            color: var(--luxury-gold);
+        }
+        
+        /* زر التصدير */
+        .export-btn {
+            background: linear-gradient(to left, var(--luxury-gold), #e6c34d);
+            color: var(--luxury-dark);
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(to left, #e6c34d, var(--luxury-gold));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .export-btn i {
+            margin-left: 8px;
+        }
+        
+        /* رسالة عدم وجود نتائج */
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+            display: block;
+        }
+        
+        /* تعديل الأدوات */
+        .object-tools {
+            float: left;
+            margin-top: 0;
+        }
+        
+        .object-tools a.addlink {
+            background: linear-gradient(to left, var(--luxury-gold), #e6c34d);
+            color: var(--luxury-dark);
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .object-tools a.addlink:hover {
+            background: linear-gradient(to left, #e6c34d, var(--luxury-gold));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+    </style>
 {% endblock %}
 
 {% block coltype %}colM{% endblock %}
@@ -40,7 +251,7 @@
 {% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %} {# Added report-container class #}
 
 {% block content_title %}
-    {# Title is now inside the summary box or handled by report-summary h2 #}
+    <h1><i class="fas fa-chart-line" style="color: var(--luxury-gold); margin-left: 10px;"></i>{% trans "تقرير ملخص الإيرادات" %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -54,7 +265,7 @@
                     <li>
                         {# Pass current date filters to the export URL #}
                         <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}" class="addlink">
-                            {% trans "Export as PDF" %}
+                            <i class="fas fa-file-pdf" style="margin-left: 5px;"></i>{% trans "تصدير PDF" %}
                         </a>
                     </li>
                     {% endif %}
@@ -67,34 +278,34 @@
             {# Date Filter Form - Now styled better #}
             <div class="date-filter-form">
                 <form method="get" action="">
-                    <label for="start_date">{% trans "From Date:" %}</label>
+                    <label for="start_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "من تاريخ:" %}</label>
                     <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
 
-                    <label for="end_date">{% trans "To Date:" %}</label>
+                    <label for="end_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "إلى تاريخ:" %}</label>
                     <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
 
-                    <button type="submit" class="button">{% trans "Filter" %}</button>
+                    <button type="submit"><i class="fas fa-filter" style="margin-left: 5px;"></i>{% trans "تصفية" %}</button>
                 </form>
             </div>
 
             {# Revenue Summary Section - Now styled better #}
             <div class="report-summary">
-                <h2>{% trans title %}</h2> {# Moved title here #}
-                <p>{% trans "Period:" %} {{ start_date }} - {{ end_date }}</p>
-                <p>{% trans "Total Confirmed Revenue:" %} <strong>{{ total_revenue|floatformat:2 }}</strong></p>
+                <h2><i class="fas fa-money-bill-wave" style="margin-left: 10px;"></i>{% trans "ملخص الإيرادات" %}</h2>
+                <p><i class="fas fa-calendar-week" style="margin-left: 5px;"></i>{% trans "الفترة:" %} {{ start_date }} - {{ end_date }}</p>
+                <p><i class="fas fa-coins" style="margin-left: 5px;"></i>{% trans "إجمالي الإيرادات المؤكدة:" %} <strong>{{ total_revenue|floatformat:2 }}</strong></p>
             </div>
 
             {# Revenue by Payment Method Table - Now styled better #}
             {% if revenue_by_method %}
-                <div class="results results-section"> {# Added results-section class #}
-                    <h2>{% trans "Revenue by Payment Method" %}</h2>
+                <div class="results results-section">
+                    <h2><i class="fas fa-credit-card" style="margin-left: 10px;"></i>{% trans "الإيرادات حسب طريقة الدفع" %}</h2>
                     <table id="result_list">
                         <thead>
                             <tr>
-                                <th scope="col">{% trans "Payment Method" %}</th>
-                                <th scope="col">{% trans "Number of Payments" %}</th>
-                                <th scope="col">{% trans "Total Revenue" %}</th>
-                                <th scope="col">{% trans "Currency" %}</th>
+                                <th scope="col">{% trans "طريقة الدفع" %}</th>
+                                <th scope="col">{% trans "عدد المدفوعات" %}</th>
+                                <th scope="col">{% trans "إجمالي الإيرادات" %}</th>
+                                <th scope="col">{% trans "العملة" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,7 +321,10 @@
                     </table>
                 </div>
             {% else %}
-                <p>{% trans "No confirmed payments found for the selected period." %}</p>
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>{% trans "لا توجد مدفوعات مؤكدة للفترة المحددة." %}</p>
+                </div>
             {% endif %}
         </div>
     </div>

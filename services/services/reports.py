@@ -195,5 +195,14 @@ def export_additional_services_pdf(request):
         available_width * 0.20   # إجمالي الإيرادات
     ]
     
-    # Generate and return the PDF report
-    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths)
+    # Create metadata for subtitle and statistics
+    metadata = {
+        'subtitle': f"{_('الفترة')}: {period_text} ({start_date} - {end_date})",
+        'statistics': [
+            f"{_('إجمالي الاستخدام')}: {total_usage}",
+            f"{_('إجمالي الإيرادات')}: {total_revenue:.2f}"
+        ]
+    }
+    
+    # Generate and return the PDF report with RTL support
+    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths, rtl=True, metadata=metadata)
