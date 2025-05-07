@@ -5,45 +5,58 @@
     <style>
     /* تنسيق السلايدر بحجم أصغر */
     .room-gallery-showcase {
-        padding: 0;
-        margin-bottom: 30px;
-        background-color: #f8f9fa;
+        padding: 20px 0;
+        margin-bottom: 40px;
+        background-color: #ffffff;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     }
 
     .gallery-container {
-        max-width: 100%;
+        max-width: 95%;
         margin: 0 auto;
         position: relative;
         overflow: hidden;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        background: #fff;
     }
 
     .full-width-slider {
-        max-height: 250px; /* تقليل ارتفاع السلايدر أكثر */
+        max-height: 600px;
         overflow: hidden;
+        background: #f9f9f9;
     }
 
     .gallery-slide-item {
         position: relative;
-        height: 250px;
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .image-wrapper {
         position: relative;
         width: 100%;
-        height: 250px; /* تحديد ارتفاع الصورة ليتوافق مع السلايدر */
+        height: 600px;
         overflow: hidden;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .gallery-image {
         width: 100%;
         height: 100%;
-        object-fit: contain; /* يحافظ على نسبة العرض إلى الارتفاع دون تشويه */
+        object-fit: contain;
         object-position: center;
-        transition: transform 0.5s ease;
-        filter: brightness(0.95);
-        background-color: #f5f5f5; /* خلفية خفيفة للصور */
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: brightness(1);
+        background-color: #f8f9fa;
+        max-height: 100%;
+        margin: auto;
+        display: block;
     }
 
     .image-overlay {
@@ -52,12 +65,13 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
         justify-content: center;
+        backdrop-filter: blur(3px);
     }
 
     .image-wrapper:hover .image-overlay {
@@ -70,22 +84,29 @@
     }
 
     .zoom-icon {
-        width: 50px;
-        height: 50px;
-        background-color: rgba(255, 255, 255, 0.9);
+        width: 60px;
+        height: 60px;
+        background-color: rgba(255, 255, 255, 0.95);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transform: scale(0.8);
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transform: scale(0.8) translateY(20px);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        opacity: 0;
     }
 
     .zoom-icon i {
         font-size: 22px;
         color: #333;
+    }
+
+    .image-wrapper:hover .zoom-icon {
+        transform: scale(1) translateY(0);
+        background-color: #fff;
+        opacity: 1;
     }
 
     .zoom-icon:hover {
@@ -170,7 +191,11 @@
     /* تنسيق للشاشات الصغيرة */
     @media (max-width: 768px) {
         .full-width-slider, .image-wrapper, .gallery-slide-item {
-            height: 250px; /* الحفاظ على نفس الارتفاع للتناسق */
+            height: 500px;
+        }
+        .gallery-container {
+            max-width: 100%;
+            border-radius: 8px;
         }
 
         .slider-controls {
