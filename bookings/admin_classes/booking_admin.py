@@ -24,15 +24,14 @@ User = get_user_model()
 class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # Use the custom form if defined in forms.py
     form = BookingAdminForm
-    action_form = ChangeStatusForm # Re-enabled after fixing inheritance
+    action_form = ChangeStatusForm 
     list_display = [
-        'hotel', 'id', 'room', 'check_in_date', 'check_out_date',
-        'amount', 'status', 'payment_status_display', 'extend_booking_button',
+         'id','hotel', 'room', 'check_in_date', 'check_out_date',
+        'amount', 'status', 'payment_status_display','show_payment_details_button', 'extend_booking_button',
         'set_checkout_today_toggle'
     ]
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
-    # Keep only relevant actions for this specific admin class if desired
     actions = ['change_booking_status', 'export_bookings_report']
     readonly_fields = [  'created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at']
     def get_readonly_fields(self, request, obj=None):
@@ -42,7 +41,24 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
     change_form_template = 'admin/bookings/booking.html' # Keep if customized
     change_list_template = 'admin/bookings/booking/change_list.html' # Keep custom template reference
+    def show_payment_details_button(self, obj):
+        if not obj.pk:
+            return ""
+        url = reverse('admin:booking_payment_details', args=[obj.pk])
+        return format_html(
+            '<a class="button btn btn-primary" href="{}">{}</a>',
+            url, _("عرض تفاصيل الدفع")
+        
+        )
+    show_payment_details_button.short_description = _("تفاصيل الدفع")
+    show_payment_details_button.allow_tags = True
 
+    def payment_details_view(self, request, booking_id):
+        booking = get_object_or_404(self.model, pk=booking_id)
+        payment = booking.payments.get(booking = booking) 
+        return render(request, 'admin/payments/payment_detail.html', {
+            'payment': payment,
+        })
     def payment_status_display(self, obj):
         payment = obj.payments.order_by('-payment_date').first()
         if not payment:
@@ -102,7 +118,6 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         if not checkout_date_part or checkout_date_part < current_date or obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
             return format_html('<span style="color:red; font-weight:bold;">✘ {}</span>', _("غير قابل للتمديد"))
         url = reverse('admin:booking-extend', args=[obj.pk])
-        # Ensure the popup function exists in your admin JS
         return format_html(
             '<a class="button btn btn-success" href="{}" onclick="return showExtensionPopup(this.href);">{}</a>',
             url, _("تمديد الحجز")
@@ -161,11 +176,15 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # --- Custom Report Views & URLs ---
     def get_urls(self):
         urls = super().get_urls()
-        # Ensure self.admin_site is available, might need to be passed or set if using custom admin site
         admin_view = self.admin_site.admin_view if hasattr(self, 'admin_site') else admin.site.admin_view
 
         custom_urls = [
             path('<path:object_id>/extend/', admin_view(self.extend_booking), name='booking-extend'),
+            path(
+                '<int:booking_id>/payment-details/',
+                self.admin_site.admin_view(self.payment_details_view),
+                name='booking_payment_details',
+            ),
             path('<int:pk>/set-checkout/', admin_view(self.set_actual_check_out_date_view), name='set_actual_check_out_date'),
         ]
         return custom_urls + urls

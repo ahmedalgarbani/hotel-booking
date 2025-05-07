@@ -23,8 +23,6 @@ class HotelManagerAdminMixin:
         qs = super().get_queryset(request)
         if request.user.user_type == 'hotel_manager':
             qs = qs.filter(hotel__manager=request.user)
-        elif request.user.user_type == 'hotel_staff':
-            return qs.filter(hotel__manager=request.user.chield)
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -34,8 +32,7 @@ class HotelManagerAdminMixin:
             elif db_field.name == "room_type":
                 kwargs["queryset"] = RoomType.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
 
-            elif db_field.name == "category":
-                kwargs["queryset"] = Category.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
+       
             elif db_field.name == "room_price":
                 kwargs["queryset"] = RoomPrice.objects.filter(Q(hotel__manager=request.user) | Q(hotel__manager=request.user.chield))
             elif db_field.name == "room_image":
@@ -77,7 +74,7 @@ class HotelManagerAdminMixin:
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
 
-class CategoryAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'status', 'description', 'get_room_types_count']
     search_fields = ['name', 'status']
     list_filter = ['status']

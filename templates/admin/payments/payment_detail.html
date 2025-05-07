@@ -14,12 +14,11 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                 <!-- Buttons to Change Payment Status -->
     <div class="payment-status-buttons">
-       <form method="POST" action="{% url 'payments:change_payment_status' payment.id %}">
+    <form method="POST" action="{% url 'payments:change_payment_status' payment.id %}">
     {% csrf_token %}
-    <button type="submit" name="status" value="1" class="btn btn-paid">تم الدفع</button>
-    <button type="submit" name="status" value="2" class="btn btn-rejected">مرفوض</button>
+    <button type="submit" name="status" value="1" class="btn badge badge-paid" >تاكيد الدفع </button>
+    <button type="submit" name="status" value="2" class="btn badge badge-rejected">رفض</button>
 </form>
 
     </div>

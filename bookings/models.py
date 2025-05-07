@@ -228,7 +228,7 @@ class Booking(BaseModel):
             super().save(*args, **kwargs)
             print("New CONFIRMED booking: reducing availability")
             self.update_availability(change=-self.rooms_booked)
-            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_("يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="admin/bookings/booking/")
+            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_(f"يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="bookings/booking/")
             self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
             # Schedule end reminder
             if self.check_out_date:
@@ -240,8 +240,8 @@ class Booking(BaseModel):
             return
         if is_new and self.status == Booking.BookingStatus.PENDING:
             super().save(*args, **kwargs)
-            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=self.hotel.manager,messages=_(f"يوجد لديك حجز جديد من {self.user} -  للغرفه   {self.room}"),action="/bookings/booking/")
-            self.send_notification(type='WARNING', title=_("تم استلام حجزك بنجاح."))
+            self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=self.hotel.manager,messages=_(f"يوجد لديك حجز جديد من {self.user} -  للغرفه   {self.room}"),action="bookings/booking/")
+            self.send_notification(type='WARNING', title=_(" استلام حجزك بنجاح."),messages=_("يرجى الانتظار الى حين مراحعه حجزك"))
             # Schedule end reminder
             if self.check_out_date:
                 print("pass")
@@ -274,7 +274,6 @@ class Booking(BaseModel):
                 print("Status changed to CONFIRMED: reducing availability")
                 self.update_availability(change=-self.rooms_booked)
                 self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
-                self.send_notification(type='WARNING', title=_("اشعار بحجز جديد."),receiver=original.hotel.manager,messages=_(f"يوجد لديك حجز جديد من {original.user} -  للغرفه   {original.room}"),action="admin/bookings/booking/")
 
                 if self.check_out_date:
                     print("sss")

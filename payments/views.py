@@ -303,17 +303,16 @@ def payment_detail_view(request, pk):
 
 from django.utils.translation import gettext as _
 
+
 @login_required
 def change_payment_status_view(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id)
 
     if not request.user.is_superuser:
-        hotel_manager = payment.booking.hotel.manager  
-
+        hotel_manager = payment.booking.hotel.manager
         if hotel_manager is None or hotel_manager.id != request.user.id:
             messages.error(request, _("ليس لديك إذن لتعديل هذه الدفعة."))
             return redirect('/admin')
-
 
     if request.method == 'POST':
         new_status = request.POST.get('status')
@@ -321,9 +320,19 @@ def change_payment_status_view(request, payment_id):
             with transaction.atomic():
                 payment.payment_status = new_status
                 payment.save()
+
+                if int(new_status) == 1:  
+                    payment.booking.status = Booking.BookingStatus.CONFIRMED
+                    payment.booking.save()
+                if int(new_status) == 2:  
+                    payment.booking.status = Booking.BookingStatus.CANCELED
+                    payment.booking.save()
+
             label = dict(Payment.payment_choice).get(int(new_status), new_status)
             messages.success(request, _(f"تم تغيير حالة الدفعة إلى '{label}'"))
+
         except Exception as e:
             messages.error(request, _("حدث خطأ أثناء تحديث الحالة: {}").format(str(e)))
 
-    return redirect('payments:external-payment-detail', pk=payment.id) 
+    return redirect('payments:external-payment-detail', pk=payment.id)
+

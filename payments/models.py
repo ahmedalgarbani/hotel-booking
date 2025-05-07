@@ -152,8 +152,7 @@ class Payment(BaseModel):
         null=True,
         blank=True
        )
-
-
+    
     class Meta:
         verbose_name = _("دفعة")
         verbose_name_plural = _("الدفعات")
