@@ -348,7 +348,7 @@ def room_search_result(request):
 def room_list(request):
     categories = Category.objects.prefetch_related('room_types').all()
     all_rooms = RoomType.objects.filter(is_active=True).select_related('category', 'hotel')
-    paginator = Paginator(all_rooms, 10)  
+    paginator = Paginator(all_rooms, 5)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
