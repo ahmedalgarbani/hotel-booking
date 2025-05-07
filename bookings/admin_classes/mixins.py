@@ -160,10 +160,11 @@ def generate_pdf_report(title, headers, data, col_widths=None, rtl=False, metada
     luxury_accent = colors.Color(142/255, 68/255, 173/255)   # #8e44ad
     luxury_success = colors.Color(39/255, 174/255, 96/255)   # #27ae60
     
+    # Increase top margin to accommodate logo
     doc = SimpleDocTemplate(
         response,
         pagesize=landscape(A4),
-        rightMargin=30, leftMargin=30, topMargin=60, bottomMargin=30
+        rightMargin=30, leftMargin=30, topMargin=80, bottomMargin=30
     )
 
     # Register Arabic font
@@ -332,9 +333,33 @@ def generate_pdf_report(title, headers, data, col_widths=None, rtl=False, metada
          elements.append(Paragraph(get_display(arabic_reshaper.reshape(_("لا توجد بيانات لعرضها في التقرير."))), styles['Normal']))
 
 
-    # Add footer with page numbers
+    # Add header and footer with page numbers and logo
     def add_page_number(canvas, doc):
         canvas.saveState()
+        
+        # Add logo at top
+        logo_path = 'static/images/logo.png'
+        try:
+            # Position the logo at the top right corner for RTL, top left for LTR
+            logo_width = 120  # Width of the logo in points
+            logo_height = 60  # Height of the logo in points
+            
+            # Calculate position based on RTL setting
+            if rtl:
+                logo_x = landscape(A4)[0] - 30 - logo_width  # Right aligned for RTL
+            else:
+                logo_x = 30  # Left aligned for LTR
+                
+            canvas.drawImage(logo_path, logo_x, landscape(A4)[1] - 50, width=logo_width, height=logo_height, preserveAspectRatio=True)
+            
+            # Add a gold line under the header area
+            canvas.setStrokeColor(luxury_gold)
+            canvas.setLineWidth(1)
+            canvas.line(30, landscape(A4)[1] - 60, landscape(A4)[0] - 30, landscape(A4)[1] - 60)
+        except Exception as e:
+            print(f"Warning: Could not add logo. Error: {e}")
+        
+        # Footer settings
         canvas.setFont(base_font_name, 8)
         canvas.setFillColor(colors.grey)
         
