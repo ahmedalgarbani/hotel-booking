@@ -167,7 +167,7 @@ def export_daily_report_pdf(request):
         available_width * 0.08
     ]
 
-    return generate_pdf_report(report_title, headers, data, col_widths=col_widths)
+    return generate_pdf_report(report_title, headers, data, col_widths=col_widths, rtl=True)
 
 
 def export_bookings_report(queryset):

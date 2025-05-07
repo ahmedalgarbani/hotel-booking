@@ -204,7 +204,7 @@ def export_occupancy_report_pdf(request):
             f"{entry['rate']}%"
         ])
 
-    # Create report title
+    # Create report title - keep it simple and clean
     report_title = _('تقرير معدل الإشغال')
 
     # Add period to title
@@ -215,10 +215,14 @@ def export_occupancy_report_pdf(request):
         'yearly': _('سنوي')
     }
     period_text = period_labels.get(period, period_labels['monthly'])
-    report_title += f" ({period_text}: {start_date} - {end_date})"
-
-    # Add summary statistics
-    report_title += f"\n{_('متوسط معدل الإشغال')}: {avg_rate:.2f}% | {_('أعلى معدل إشغال')}: {max_rate:.2f}%"
+    report_title += f" ({period_text})"
+    
+    # Format date range separately to be added as a subtitle in the PDF
+    date_range = f"{start_date} - {end_date}"
+    
+    # Format statistics to be added as separate elements in the PDF
+    avg_rate_text = f"{_('متوسط معدل الإشغال')}: {avg_rate:.2f}%"
+    max_rate_text = f"{_('أعلى معدل إشغال')}: {max_rate:.2f}%"
 
     # Define column widths
     available_width = landscape(A4)[0] - 60  # A4 landscape width minus margins
@@ -229,5 +233,14 @@ def export_occupancy_report_pdf(request):
         available_width * 0.25   # معدل الإشغال
     ]
 
-    # Generate and return the PDF report
-    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths)
+    # Create metadata dictionary for additional information
+    metadata = {
+        'subtitle': date_range,
+        'statistics': [
+            avg_rate_text,
+            max_rate_text
+        ]
+    }
+    
+    # Generate and return the PDF report with RTL support, luxury styling and additional metadata
+    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths, rtl=True, metadata=metadata)

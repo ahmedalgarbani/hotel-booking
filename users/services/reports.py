@@ -298,4 +298,4 @@ def export_vip_customers_pdf(request):
     ]
 
     # Generate and return the PDF report
-    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths)
+    return generate_pdf_report(report_title, headers, data_rows, col_widths=col_widths,rtl=True)
