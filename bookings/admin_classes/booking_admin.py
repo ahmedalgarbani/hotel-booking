@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django import forms
 from datetime import datetime, timedelta
-
+from django.core.exceptions import ValidationError
 # Import models and forms
 from bookings.models import Booking, ExtensionMovement
 from bookings.forms import BookingAdminForm, BookingExtensionForm
@@ -176,34 +176,35 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
     def extend_booking(self, request, object_id):
         original_booking = get_object_or_404(Booking, pk=object_id)
-        
+
         if request.method == 'POST':
             form = BookingExtensionForm(request.POST, booking=original_booking)
             if form.is_valid():
                 try:
-                    from datetime import datetime  
+                    from datetime import datetime
 
                     new_check_out = form.cleaned_data['new_check_out']
-
                     if isinstance(new_check_out, datetime):
                         new_check_out = new_check_out.date()
 
+                    # Determine original departure date
                     latest_extension = ExtensionMovement.objects.filter(
                         booking=original_booking
                     ).order_by('-extension_date').first()
 
                     if latest_extension:
-                        original_departure = latest_extension.new_departure  
+                        original_departure = latest_extension.new_departure
                     else:
-                        original_departure = original_booking.check_out_date.date() 
+                        original_departure = original_booking.check_out_date.date()
 
                     if isinstance(original_departure, datetime):
                         original_departure = original_departure.date()
 
                     additional_nights = (new_check_out - original_departure).days
-                    additional_price = additional_nights * get_room_price(original_booking.room)
-                    new_total = original_booking.amount + additional_price  
+                    additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
+                    new_total = original_booking.amount + additional_price
 
+                    # Create extension object but do not save yet
                     new_extension = ExtensionMovement(
                         booking=original_booking,
                         original_departure=original_departure,
@@ -211,25 +212,12 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                         duration=additional_nights,
                         reason=form.cleaned_data['reason']
                     )
+
+                    # Call full_clean to trigger availability checks
+                    new_extension.full_clean()
+
+                    # Save and apply availability changes
                     new_extension.save()
-
-                    today = timezone.now().date()
-                    latest_availability = Availability.objects.filter(
-                        hotel=original_booking.hotel,
-                        room_type=original_booking.room
-                    ).order_by('-created_at').first()
-
-                    current_available = latest_availability.available_rooms if latest_availability else original_booking.room.rooms_count
-
-                    availability, created = Availability.objects.update_or_create(
-                        hotel=original_booking.hotel,
-                        room_type=original_booking.room,
-                        availability_date=today,
-                        defaults={
-                            "available_rooms": max(0, current_available + original_booking.rooms_booked),
-                            "notes": f"تم التحديث بسبب تمديد الحجز #{new_extension.movement_number}",
-                        }
-                    )
 
                     return JsonResponse({
                         'success': True,
@@ -237,9 +225,10 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                         'additional_nights': additional_nights,
                         'additional_price': additional_price,
                         'new_total': new_total,
-                        'redirect_url': '/admin/'  
+                        'redirect_url': '/admin/'
                     })
-
+                except ValidationError as e:
+                    return JsonResponse({'success': False, 'message': e.messages[0]})
                 except Exception as e:
                     return JsonResponse({'success': False, 'message': f'حدث خطأ: {str(e)}'})
 
@@ -260,18 +249,16 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 'new_check_out': initial_new_check_out,
             }, booking=original_booking)
 
-        additional_nights = 1 
+        additional_nights = 1
         additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
-        print(original_booking.rooms_booked)
-        new_total = original_booking.amount + additional_price 
-        print(additional_price)
+        new_total = original_booking.amount + additional_price
 
         context = self.admin_site.each_context(request)
-        room_price = get_room_price(original_booking.room)  
+        room_price = get_room_price(original_booking.room)
         context.update({
             'form': form,
             'original': original_booking,
-            'check_out':initial_new_check_out,
+            'check_out': initial_new_check_out,
             'additional_nights': additional_nights,
             'additional_price': additional_price,
             'new_total': new_total,

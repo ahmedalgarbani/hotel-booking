@@ -177,15 +177,7 @@ class Booking(BaseModel):
                     availability.save()
                     print(f"[{current}] after: {availability.available_rooms}")
                 except Availability.DoesNotExist:
-                    # إنشاء سجل جديد إذا لم يكن موجوداً
-                    available_rooms = max(0, min(self.room.rooms_count + change, self.room.rooms_count))
-                    availability = Availability.objects.create(
-                        hotel=self.hotel,
-                        room_type=self.room,
-                        availability_date=current,
-                        available_rooms=available_rooms,
-                        notes="تم إنشاؤه تلقائياً أثناء الحجز"
-                    )
+                    
                     print(f"[{current}] created: {availability.available_rooms}")
                 current += timedelta(days=1)
 
@@ -388,11 +380,60 @@ class ExtensionMovement(models.Model):
     extension_year = models.PositiveIntegerField(editable=False)
     duration = models.PositiveIntegerField(verbose_name="مدة التمديد (أيام)", default=0)
 
+    from django.core.exceptions import ValidationError
+    from datetime import timedelta
+
+
+    def clean(self):
+        super().clean()
+
+        if self.new_departure <= self.original_departure:
+            raise ValidationError(_("تاريخ المغادرة الجديد يجب أن يكون بعد التاريخ الأصلي."))
+
+        booking = self.booking
+        hotel = booking.hotel
+        room = booking.room
+        rooms_needed = booking.rooms_booked
+
+        current_date = self.original_departure
+        while current_date < self.new_departure:
+            try:
+                availability = Availability.objects.get(
+                    hotel=hotel,
+                    room_type=room,
+                    availability_date=current_date
+                )
+                if availability.available_rooms < rooms_needed:
+                    raise ValidationError(
+                        _(f"لا توجد غرف كافية في تاريخ {current_date.strftime('%Y-%m-%d')}. المتاح: {availability.available_rooms}, المطلوب: {rooms_needed}")
+                    )
+            except Availability.DoesNotExist:
+                raise ValidationError(
+                    _(f"لا توجد بيانات توافر ليوم {current_date.strftime('%Y-%m-%d')}.")
+                )
+            current_date += timedelta(days=1)
 
     def save(self, *args, **kwargs):
-        self.extension_duration = (self.new_departure - self.original_departure).days
         self.extension_year = self.extension_date.year
+        is_new = self._state.adding
+
+        if not is_new:
+            original = ExtensionMovement.objects.get(pk=self.pk)
+            if original.new_departure != self.new_departure:
+                self.booking.update_availability(
+                    change=-self.booking.rooms_booked,
+                    start_date=self.original_departure,
+                    end_date=self.new_departure
+                )
+        else:
+            self.booking.update_availability(
+                change=-self.booking.rooms_booked,
+                start_date=self.original_departure,
+                end_date=self.new_departure
+            )
+
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"حركة #{self.movement_number} - حجز {self.booking.id}"

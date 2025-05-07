@@ -28,6 +28,7 @@ router.register(r'guests', GuestViewSet, basename='guest')
 # router.register(r'user-profile', UserProfileView,basename='user-profile')
 # router.register(r'hotel_availability', HotelAvailabilityViewSet,basename='hotel_availability')
 
+
 urlpatterns = [
 
     path('', include(router.urls)),
