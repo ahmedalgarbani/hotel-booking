@@ -71,8 +71,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'rest_framework.authtoken',
     'social_django',
-    'oauth2_provider',
-    'reports'
+    'oauth2_provider'
 
 
 
