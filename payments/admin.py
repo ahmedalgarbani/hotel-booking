@@ -11,6 +11,7 @@ from django import forms
 from .admin_classes.payment_admin import PaymentAdmin
 from django.db import transaction
 from django.utils.html import format_html
+from django.core.exceptions import ValidationError 
 
 
 class PaymentManagerAdminMixin:
@@ -97,16 +98,44 @@ class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Add
 
 
 
-class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
-    list_display = ('currency_name', 'currency_symbol', 'hotel')
-    list_filter = ('hotel',)
+class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): 
+    list_display = ('currency_name', 'currency_symbol', 'hotel', 'is_local_currency', 'exchange_rate_to_local', 'created_at') 
+    list_filter = ('hotel', 'is_local_currency')
     search_fields = ('currency_name', 'currency_symbol')
-
+    list_editable = ('is_local_currency', 'exchange_rate_to_local') 
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+    
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
-        return self.readonly_fields
+        readonly = list(super().get_readonly_fields(request, obj)) 
+        if not request.user.is_superuser:
+            # readonly.extend(['is_local_currency', 'exchange_rate_to_local'])
+            pass 
+        
+        # جعل سعر الصرف للقراءة فقط إذا كانت العملة هي العملة المحلية
+        if obj and obj.is_local_currency:
+            if 'exchange_rate_to_local' not in readonly:
+                readonly.append('exchange_rate_to_local')
+        return tuple(readonly) # أعد تحويلها إلى tuple
+    
+    def clean(self): # هذا يجب أن يكون في ModelForm الخاص بـ CurrencyAdmin إذا كنت تستخدم واحدًا، أو في نموذج Currency نفسه
+        cleaned_data = super().clean()
+        is_local = cleaned_data.get('is_local_currency')
+        hotel = cleaned_data.get('hotel')
+        instance_pk = self.instance.pk if self.instance else None
+
+        if is_local and hotel:
+            # تحقق مما إذا كان هناك بالفعل عملة محلية أخرى لنفس الفندق
+            # باستثناء الكائن الحالي إذا كنا نقوم بالتعديل
+            query = Currency.objects.filter(hotel=hotel, is_local_currency=True)
+            if instance_pk:
+                query = query.exclude(pk=instance_pk)
+            
+            if query.exists():
+                existing_local = query.first()
+                raise ValidationError(
+                    _("لا يمكن تحديد أكثر من عملة محلية واحدة للفندق الواحد. العملة المحلية الحالية هي: %(currency_name)s") % {'currency_name': existing_local.currency_name}
+                )
+        return cleaned_data
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)

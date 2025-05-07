@@ -173,6 +173,15 @@ class Hotel(BaseModel):
         limit_choices_to={'user_type': 'hotel_manager'},
         verbose_name=_("مدير الفندق")
     )
+    default_currency = models.ForeignKey(
+        'payments.Currency',  # استخدم السلسلة لتجنب مشاكل الاستيراد الدائري
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("العملة الافتراضية للفندق"),
+        help_text=_("العملة التي يستخدمها الفندق بشكل أساسي في معاملاته وأسعاره."),
+        related_name='hotels_with_default_currency'  
+    )
 
     class Meta:
         verbose_name = _("فندق")
@@ -196,6 +205,7 @@ class Hotel(BaseModel):
 
     def get_absolute_url(self):
         return reverse('home:hotel_detail', args=[self.slug])
+    
 
 # -------------------- Phone ----------------------------
 class Phone(BaseModel):

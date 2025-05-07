@@ -5,6 +5,7 @@ from django.utils import timezone
 from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError 
 
 from users.models import CustomUser
 
@@ -19,6 +20,18 @@ class Currency(BaseModel):
         verbose_name=_("الفندق"),
         related_name='currencies'
     )
+    exchange_rate_to_local = models.DecimalField(
+        max_digits=12,
+        decimal_places=4, # يمكنك زيادة الدقة إذا لزم الأمر
+        verbose_name=_("سعر الصرف إلى العملة المحلية"),
+        help_text=_("كم تساوي وحدة واحدة من هذه العملة بالعملة المحلية الأساسية. مثال: إذا كانت العملة المحلية هي الريال، وهذه العملة هي الدولار، أدخل سعر صرف الدولار مقابل الريال."),
+        default=1.0000 # القيمة الافتراضية للعملة المحلية نفسها أو إذا لم يتم تحديد سعر صرف
+    )
+    is_local_currency = models.BooleanField(
+        default=False,
+        verbose_name=_("هل هي العملة المحلية الأساسية؟"),
+        help_text=_("حدد هذا الخيار إذا كانت هذه هي العملة المحلية الأساسية للنظام/الفندق.")
+    )
 
     class Meta:
         verbose_name = _("عملة")
@@ -26,8 +39,29 @@ class Currency(BaseModel):
         ordering = ['currency_name']
 
     def __str__(self):
-        return f"{self.currency_name} ({self.currency_symbol})"
+        local_status = _(" (محلية)") if self.is_local_currency else ""
+        return f"{self.currency_name} ({self.currency_symbol}){local_status}"
 
+    def save(self, *args, **kwargs):
+        # إذا تم تحديد هذه العملة كمحلية، تأكد من عدم وجود عملات محلية أخرى لنفس الفندق
+        if self.is_local_currency:
+            # إذا كان هذا الكائن جديدًا أو تم تغيير is_local_currency إلى True
+            if self._state.adding or (Currency.objects.get(pk=self.pk).is_local_currency == False and self.is_local_currency == True):
+                # تحقق مما إذا كان هناك بالفعل عملة محلية أخرى لنفس الفندق
+                existing_local = Currency.objects.filter(hotel=self.hotel, is_local_currency=True).exclude(pk=self.pk).first()
+                if existing_local:
+                    # يمكنك هنا إما رفع ValidationError أو تغيير العملة المحلية القديمة تلقائيًا
+                    # الخيار 1: رفع خطأ (مفضل لمزيد من التحكم اليدوي)
+                    raise ValidationError(
+                        _("لا يمكن تحديد أكثر من عملة محلية واحدة للفندق الواحد. العملة المحلية الحالية هي: %(currency_name)s") % {'currency_name': existing_local.currency_name}
+                    )
+                    # الخيار 2: تغيير العملة المحلية القديمة تلقائيًا (يتطلب حذرًا)
+                    # existing_local.is_local_currency = False
+                    # existing_local.save(update_fields=['is_local_currency'])
+
+            # سعر صرف العملة المحلية إلى نفسها هو دائمًا 1
+            self.exchange_rate_to_local = 1.0000
+        super().save(*args, **kwargs)
 
 
 
