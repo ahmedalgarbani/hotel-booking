@@ -520,14 +520,7 @@ class BookingHistory(models.Model):
         verbose_name=_("عدد الغرف المحجوزة"),
         validators=[MinValueValidator(1)]
     )
-    parent_booking = models.ForeignKey(
-        Booking,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name=_("الحجز الأصلي"),
-        related_name='+'
-    )
+   
 
     class Meta:
         verbose_name = _("سجل الحجز")

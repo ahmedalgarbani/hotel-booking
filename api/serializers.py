@@ -238,7 +238,7 @@ class RoomsSerializer(serializers.ModelSerializer):
 
 
 from datetime import datetime
-from django.db.models import Count
+from django.db.models import Count,Sum
 
 class HotelSerializer(serializers.ModelSerializer):
     rooms = serializers.SerializerMethodField()
@@ -250,10 +250,12 @@ class HotelSerializer(serializers.ModelSerializer):
         model = Hotel
         fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms', 'paymentOption']
 
+    
     def get_rooms(self, obj):
         check_in = self.context.get('check_in')
         check_out = self.context.get('check_out')
         room_number = self.context.get('room_number')
+        adult_number = self.context.get('adult_number')
 
         rooms = RoomType.objects.filter(hotel=obj)
 
@@ -273,12 +275,19 @@ class HotelSerializer(serializers.ModelSerializer):
                  .values_list('room_type', flat=True)
 
                 rooms = rooms.filter(id__in=available_room_ids)
+            except Exception:
+                rooms = RoomType.objects.none()
 
+        if adult_number:
+            try:
+                adult_number = int(adult_number)
+                rooms = rooms.annotate(
+                    total_capacity=Sum('default_capacity')
+                ).filter(total_capacity__gte=adult_number)
             except Exception:
                 rooms = RoomType.objects.none()
 
         return RoomsSerializer(rooms, many=True, context=self.context).data
-
     def get_services(self, obj):
         return HotelServiceSerializer(obj.hotel_services.all(), many=True).data
 

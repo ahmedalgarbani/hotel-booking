@@ -42,13 +42,28 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     change_form_template = 'admin/bookings/booking.html' 
     change_list_template = 'admin/bookings/booking/change_list.html' 
     def show_payment_details_button(self, obj):
+        payment = obj.payments.order_by('-payment_date').first()
         if not obj.pk:
+            
             return ""
+        if not payment:
+            return format_html(
+    '<div style="color: #6c757d; font-style: italic; display: flex; align-items: center;">'
+    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" '
+    'class="bi bi-info-circle" viewBox="0 0 16 16" style="margin-right: 5px;">'
+    '<path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>'
+    '<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .876-.252 1.007-.598l.088-.416c.066-.3.122-.507.23-.58.107-.072.268-.1.482-.122l.088-.416c.27-1.284.362-1.493-.64-1.574l-.088-.416.861-.108-.088-.416zm-1.498-.733c-.246 0-.45.178-.45.4s.204.4.45.4.45-.178.45-.4-.204-.4-.45-.4z"/>'
+    '</svg>'
+    '{}'
+    '</div>',
+    _("لا توجد تفاصيل للدفعات")
+)
         url = reverse('admin:booking_payment_details', args=[obj.pk])
         return format_html(
             '<a class="button btn btn-primary" href="{}">{}</a>',
             url, _("عرض تفاصيل الدفع")
         )
+            
     show_payment_details_button.short_description = _("تفاصيل الدفع")
     show_payment_details_button.allow_tags = True
 

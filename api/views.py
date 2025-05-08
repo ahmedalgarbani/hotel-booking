@@ -131,7 +131,8 @@ class HotelsViewSet(viewsets.ModelViewSet):
                 'request': request,
                 'check_in': check_in,
                 'check_out': check_out,
-                'room_number': room_number
+                'room_number': room_number,
+                'adult_number':adult_number
             }
         )
         return self.get_paginated_response(serializer.data)
