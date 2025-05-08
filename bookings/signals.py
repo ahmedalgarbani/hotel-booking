@@ -82,8 +82,7 @@ def create_booking_history_on_change(sender, instance, created, **kwargs):
     """
     Log changes to Booking in BookingHistory without modifying availability.
     """
-    if instance.parent_booking is not None:
-        return
+    
 
     pre = getattr(instance, '_pre_save_instance', None)
     if not pre:
@@ -110,7 +109,6 @@ def create_booking_history_on_change(sender, instance, created, **kwargs):
             amount=instance.amount,
             account_status=instance.account_status,
             rooms_booked=instance.rooms_booked,
-            parent_booking=instance.parent_booking
         )
 
 

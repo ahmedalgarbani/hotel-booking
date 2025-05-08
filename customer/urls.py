@@ -24,5 +24,7 @@ urlpatterns = [
     path('cancel-payment/<int:payment_id>/', views.cancel_payment, name='cancel_payment'),
 
     path('notifications/mark-all-as-read/', views.mark_all_notifications_as_read, name='mark_all_notifications_as_read'),
+    path('user-dashboard/booking/<int:booking_id>/detail/', views.user_booking_detail, name='user_booking_detail'),
+    path('guest/<int:guest_id>/delete/', views.delete_guest, name='delete_guest'),
 
 ]

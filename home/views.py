@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from HotelManagement.models import Hotel
+from HotelManagement.models import Hotel, Phone
 from django.shortcuts import render, get_object_or_404
 from api.views import get_best_hotels_by_gemini
 from blog.models import Post
@@ -319,11 +319,12 @@ def hotel_detail(request, slug):
         )
 
     setting = Setting.objects.order_by('-id').first()
-
+    phones = Phone.objects.filter(hotel=hotel)
     context = {
         'hotel': hotel,
         'coupon': coupon,
         'setting': setting,
+        "phones":phones,
         'available_room_types': filtered_available_rooms,
         'hotel_services': hotel_services,
         'reviews': reviews,

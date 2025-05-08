@@ -818,21 +818,23 @@ START TOUR DETAIL AREA
             </div>
             <!-- end sidebar-widget -->
             <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">احصل على سؤال؟</h3>
+              <h3 class="title stroke-shape"> تواصل مع الفندق </h3>
               <p class="font-size-14 line-height-24">
                 لا تتردد في الاتصال بنا. نحن فريق من الخبراء ويسعدنا التحدث
                 إليكم.
               </p>
               <div class="sidebar-list pt-3">
                 <ul class="list-items">
+                  {% for phones in phones %}
                   <li>
                     <i class="la la-phone icon-element me-2"></i
-                    ><a href="#">{{setting.phone}}</a>
+                    ><a href="#">{{phones.country_code}} {{phones.country_code}}</a>
 
                   </li>
+                  {% endfor %}
                   <li>
                     <i class="la la-envelope icon-element me-2"></i
-                    ><a href="mailto:info@trizen.com">{{setting.email}}</a>
+                    ><a href="mailto:info@trizen.com">{{hotel.email}}</a>
                   </li>
                 </ul>
               </div>

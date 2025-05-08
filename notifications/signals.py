@@ -39,17 +39,16 @@ def create_payment_notification(sender, instance, created, **kwargs):
                 notification_type = '0'
                 title = _("دفعة غير معروفة")
                 message = _(f"تم تغيير حالة دفعة غير معروفة للحجز رقم ")
-
-            # إنشاء الإشعار
-            Notifications.objects.create(
-                sender=instance.user if instance.user else hotel_manager,
-                user=hotel_manager,
-                title=title,
-                message=message,
-                notification_type=notification_type,
-                action_url=f"admin/payments/payment-detail/{instance.id}/",
-                is_active=True
-            )
+            if not created:
+                Notifications.objects.create(
+                    sender=instance.user if instance.user else hotel_manager,
+                    user=hotel_manager,
+                    title=title,
+                    message=message,
+                    notification_type=notification_type,
+                    action_url=f"admin/payments/payment-detail/{instance.id}/",
+                    is_active=True
+                )
             
             if instance.user and instance.user != hotel_manager:
                 user_title = ""

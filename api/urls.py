@@ -3,9 +3,9 @@ from django.views import View
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    BookingViewSet, CategoriesViewSet, ChangePasswordView, FavouritesViewSet,
+    BookingViewSet, CategoriesViewSet, ChangePasswordView, CheckOTPView, FavouritesViewSet,
     GuestViewSet, HotelAvailabilityViewSet, HotelPaymentMethodViewSet, HotelsViewSet,
-    LoginView, LogoutView, NotificationsViewSet, PaymentViewSet, RegisterView,
+    LoginView, LogoutView, NotificationsViewSet, PaymentViewSet, RegisterView, SendSMSView,
     UserProfileView, call_gemini_chat_bot, get_best_hotels_by_gemini, usage
 )
 from rest_framework_simplejwt.views import (
@@ -27,6 +27,7 @@ router.register(r'categories', CategoriesViewSet,basename='categories')
 router.register(r'guests', GuestViewSet, basename='guest')
 # router.register(r'user-profile', UserProfileView,basename='user-profile')
 # router.register(r'hotel_availability', HotelAvailabilityViewSet,basename='hotel_availability')
+
 
 urlpatterns = [
 
@@ -53,6 +54,8 @@ urlpatterns = [
     path('get_best_hotels_by_gemini/', get_best_hotels_by_gemini, name='get_best_hotels_by_gemini'),
     path('create-guest/', GuestViewSet.as_view({'post': 'create'}), name='create-guest'),
     path('create-multiple-guests/', GuestViewSet.as_view({'post': 'create_multiple'}), name='create-multiple-guests'),
+    path('check-otp/', CheckOTPView.as_view(), name='check_otp'),
+    path('send-sms/', SendSMSView.as_view(), name='send_sms'),
 ]
 
 

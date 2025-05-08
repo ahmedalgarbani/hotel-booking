@@ -77,8 +77,7 @@ class HotelManagerAdminMixin:
                     kwargs["queryset"] = RoomType.objects.filter(hotel__in=allowed_hotels)
                 elif db_field.name == "user":
                     kwargs["queryset"] = CustomUser.objects.filter(hotel__in=allowed_hotels)
-                elif db_field.name == "parent_booking":
-                    kwargs["queryset"] = Booking.objects.filter(hotel__in=allowed_hotels)
+                
                 # Add other fields like 'guest', 'bookingdetail' if they need filtering by hotel
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

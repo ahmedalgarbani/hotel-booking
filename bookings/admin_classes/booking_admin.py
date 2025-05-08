@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django import forms
 from datetime import datetime, timedelta
-
+from django.core.exceptions import ValidationError
 # Import models and forms
 from bookings.models import Booking, ExtensionMovement
 from bookings.forms import BookingAdminForm, BookingExtensionForm
@@ -24,25 +24,55 @@ User = get_user_model()
 class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # Use the custom form if defined in forms.py
     form = BookingAdminForm
-    action_form = ChangeStatusForm # Re-enabled after fixing inheritance
+    action_form = ChangeStatusForm 
     list_display = [
-        'hotel', 'id', 'room', 'check_in_date', 'check_out_date',
-        'amount', 'status', 'payment_status_display', 'extend_booking_button',
+         'id','hotel', 'room', 'check_in_date', 'check_out_date',
+        'amount', 'status', 'payment_status_display','show_payment_details_button', 'extend_booking_button',
         'set_checkout_today_toggle'
     ]
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
-    # Keep only relevant actions for this specific admin class if desired
     actions = ['change_booking_status', 'export_bookings_report']
-    readonly_fields = [  'created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at']
+    readonly_fields = [  'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at']
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at','hotel')
+            return ('created_at', 'updated_at','created_by', 'updated_by', 'deleted_at','hotel')
         return self.readonly_fields
 
-    change_form_template = 'admin/bookings/booking.html' # Keep if customized
-    change_list_template = 'admin/bookings/booking/change_list.html' # Keep custom template reference
+    change_form_template = 'admin/bookings/booking.html' 
+    change_list_template = 'admin/bookings/booking/change_list.html' 
+    def show_payment_details_button(self, obj):
+        payment = obj.payments.order_by('-payment_date').first()
+        if not obj.pk:
+            
+            return ""
+        if not payment:
+            return format_html(
+    '<div style="color: #6c757d; font-style: italic; display: flex; align-items: center;">'
+    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" '
+    'class="bi bi-info-circle" viewBox="0 0 16 16" style="margin-right: 5px;">'
+    '<path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>'
+    '<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .876-.252 1.007-.598l.088-.416c.066-.3.122-.507.23-.58.107-.072.268-.1.482-.122l.088-.416c.27-1.284.362-1.493-.64-1.574l-.088-.416.861-.108-.088-.416zm-1.498-.733c-.246 0-.45.178-.45.4s.204.4.45.4.45-.178.45-.4-.204-.4-.45-.4z"/>'
+    '</svg>'
+    '{}'
+    '</div>',
+    _("لا توجد تفاصيل للدفعات")
+)
+        url = reverse('admin:booking_payment_details', args=[obj.pk])
+        return format_html(
+            '<a class="button btn btn-primary" href="{}">{}</a>',
+            url, _("عرض تفاصيل الدفع")
+        )
+            
+    show_payment_details_button.short_description = _("تفاصيل الدفع")
+    show_payment_details_button.allow_tags = True
 
+    def payment_details_view(self, request, booking_id):
+        booking = get_object_or_404(self.model, pk=booking_id)
+        payment = booking.payments.get(booking = booking) 
+        return render(request, 'admin/payments/payment_detail.html', {
+            'payment': payment,
+        })
     def payment_status_display(self, obj):
         payment = obj.payments.order_by('-payment_date').first()
         if not payment:
@@ -102,7 +132,6 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         if not checkout_date_part or checkout_date_part < current_date or obj.actual_check_out_date is not None or obj.status == Booking.BookingStatus.CANCELED:
             return format_html('<span style="color:red; font-weight:bold;">✘ {}</span>', _("غير قابل للتمديد"))
         url = reverse('admin:booking-extend', args=[obj.pk])
-        # Ensure the popup function exists in your admin JS
         return format_html(
             '<a class="button btn btn-success" href="{}" onclick="return showExtensionPopup(this.href);">{}</a>',
             url, _("تمديد الحجز")
@@ -161,11 +190,15 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # --- Custom Report Views & URLs ---
     def get_urls(self):
         urls = super().get_urls()
-        # Ensure self.admin_site is available, might need to be passed or set if using custom admin site
         admin_view = self.admin_site.admin_view if hasattr(self, 'admin_site') else admin.site.admin_view
 
         custom_urls = [
             path('<path:object_id>/extend/', admin_view(self.extend_booking), name='booking-extend'),
+            path(
+                '<int:booking_id>/payment-details/',
+                self.admin_site.admin_view(self.payment_details_view),
+                name='booking_payment_details',
+            ),
             path('<int:pk>/set-checkout/', admin_view(self.set_actual_check_out_date_view), name='set_actual_check_out_date'),
         ]
         return custom_urls + urls
@@ -176,34 +209,35 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
     def extend_booking(self, request, object_id):
         original_booking = get_object_or_404(Booking, pk=object_id)
-        
+
         if request.method == 'POST':
             form = BookingExtensionForm(request.POST, booking=original_booking)
             if form.is_valid():
                 try:
-                    from datetime import datetime  
+                    from datetime import datetime
 
                     new_check_out = form.cleaned_data['new_check_out']
-
                     if isinstance(new_check_out, datetime):
                         new_check_out = new_check_out.date()
 
+                    # Determine original departure date
                     latest_extension = ExtensionMovement.objects.filter(
                         booking=original_booking
                     ).order_by('-extension_date').first()
 
                     if latest_extension:
-                        original_departure = latest_extension.new_departure  
+                        original_departure = latest_extension.new_departure
                     else:
-                        original_departure = original_booking.check_out_date.date() 
+                        original_departure = original_booking.check_out_date.date()
 
                     if isinstance(original_departure, datetime):
                         original_departure = original_departure.date()
 
                     additional_nights = (new_check_out - original_departure).days
-                    additional_price = additional_nights * get_room_price(original_booking.room)
-                    new_total = original_booking.amount + additional_price  
+                    additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
+                    new_total = original_booking.amount + additional_price
 
+                    # Create extension object but do not save yet
                     new_extension = ExtensionMovement(
                         booking=original_booking,
                         original_departure=original_departure,
@@ -211,25 +245,12 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                         duration=additional_nights,
                         reason=form.cleaned_data['reason']
                     )
+
+                    # Call full_clean to trigger availability checks
+                    new_extension.full_clean()
+
+                    # Save and apply availability changes
                     new_extension.save()
-
-                    today = timezone.now().date()
-                    latest_availability = Availability.objects.filter(
-                        hotel=original_booking.hotel,
-                        room_type=original_booking.room
-                    ).order_by('-created_at').first()
-
-                    current_available = latest_availability.available_rooms if latest_availability else original_booking.room.rooms_count
-
-                    availability, created = Availability.objects.update_or_create(
-                        hotel=original_booking.hotel,
-                        room_type=original_booking.room,
-                        availability_date=today,
-                        defaults={
-                            "available_rooms": max(0, current_available + original_booking.rooms_booked),
-                            "notes": f"تم التحديث بسبب تمديد الحجز #{new_extension.movement_number}",
-                        }
-                    )
 
                     return JsonResponse({
                         'success': True,
@@ -237,9 +258,10 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                         'additional_nights': additional_nights,
                         'additional_price': additional_price,
                         'new_total': new_total,
-                        'redirect_url': '/admin/'  
+                        'redirect_url': '/admin/'
                     })
-
+                except ValidationError as e:
+                    return JsonResponse({'success': False, 'message': e.messages[0]})
                 except Exception as e:
                     return JsonResponse({'success': False, 'message': f'حدث خطأ: {str(e)}'})
 
@@ -260,18 +282,16 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 'new_check_out': initial_new_check_out,
             }, booking=original_booking)
 
-        additional_nights = 1 
+        additional_nights = 1
         additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
-        print(original_booking.rooms_booked)
-        new_total = original_booking.amount + additional_price 
-        print(additional_price)
+        new_total = original_booking.amount + additional_price
 
         context = self.admin_site.each_context(request)
-        room_price = get_room_price(original_booking.room)  
+        room_price = get_room_price(original_booking.room)
         context.update({
             'form': form,
             'original': original_booking,
-            'check_out':initial_new_check_out,
+            'check_out': initial_new_check_out,
             'additional_nights': additional_nights,
             'additional_price': additional_price,
             'new_total': new_total,
