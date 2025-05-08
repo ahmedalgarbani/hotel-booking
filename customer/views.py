@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage
 from HotelManagement.models import Hotel
-from bookings.models import Booking
+from bookings.models import Booking , Guest
 from customer.models import Favourites  
 from notifications.models import Notifications
 from reviews.models import HotelReview, RoomReview
@@ -15,6 +15,9 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from payments.models import Payment
 from django.db.models import Sum
+import logging 
+from django.db.models import Exists, OuterRef,Count 
+
 
 
 
@@ -74,42 +77,107 @@ def mark_all_notifications_as_read(request):
     return JsonResponse({'success': True})
 
 
+
+
+@login_required(login_url='/users/login')
+def user_booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    guests = Guest.objects.filter(booking=booking)
+    payments = booking.payments.all().order_by('-payment_date')
+    max_capacity_for_booking = booking.room.max_capacity * booking.rooms_booked
+    context = {
+        'booking': booking,
+        'guests': guests,
+        'payments': payments,
+        'title': f'تفاصيل الحجز رقم {booking.id}',
+        'max_capacity_for_booking': max_capacity_for_booking,
+    }
+    return render(request, 'admin/user_dashboard/pages/user-booking-detail.html', context)
+
+logger = logging.getLogger(__name__)
+
 @login_required(login_url='/users/login')
 def user_dashboard_bookings(request):
-    bookings = Booking.objects.filter(user=request.user).order_by('-check_in_date')
+    logger.debug(f"--- Executing user_dashboard_bookings for user: {request.user.username} ---")
+    now = timezone.now()
+    bookings_list = Booking.objects.filter(user=request.user).select_related(
+        'hotel', 'room', 'hotel__location', 'hotel__location__city'
+    ).annotate(
+        has_guests=Exists(Guest.objects.filter(booking=OuterRef('pk'))),
+        guest_count=Count('guests')
+    ).order_by('-created_at')
 
-    page_number = request.GET.get('page', 1)  
+    logger.debug(f"Initial bookings count for user {request.user.id}: {bookings_list.count()}")
 
-    try:
-        page_number = int(page_number)
-        if page_number < 1:
-            page_number = 1  
-    except (ValueError, TypeError):
-        page_number = 1 
+    bookings_processed = []
+    for booking in bookings_list:
+        can_manage_guests = False
+        can_add_more_guests = False
+        has_guests_annotated = booking.has_guests
+        guest_count_annotated = booking.guest_count
+        max_capacity_for_booking = booking.room.max_capacity * booking.rooms_booked
 
-    paginator = Paginator(bookings, 10) 
+        if booking.status == Booking.BookingStatus.CONFIRMED and booking.actual_check_out_date is None:
+            can_manage_guests = True
+            if guest_count_annotated < max_capacity_for_booking:
+                can_add_more_guests = True
 
+        logger.debug(
+            f"Booking ID: {booking.id} | Status: {booking.status} | Checkout: {booking.actual_check_out_date} | "
+            f"Has Guests: {has_guests_annotated} | Guest Count: {guest_count_annotated} | "
+            f"Max Capacity: {max_capacity_for_booking} | Can Manage: {can_manage_guests} | "
+            f"Can Add More: {can_add_more_guests}"
+        )
+
+        bookings_processed.append({
+            'booking': booking,
+            'can_manage_guests': can_manage_guests,
+            'can_add_more_guests': can_add_more_guests,
+            'has_guests': has_guests_annotated,
+            'guest_count': guest_count_annotated,
+            'max_capacity': max_capacity_for_booking,
+            'hotel_location': booking.hotel.location.address if booking.hotel.location else '',
+            'city_name': booking.hotel.location.city.state if booking.hotel.location and booking.hotel.location.city else '',
+        })
+
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(bookings_processed, 10)
     try:
         page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    bookings_with_location = []
-    for booking in page_obj:
-        hotel_location = booking.hotel.location.address  
-        city_name = booking.hotel.location.city 
-        bookings_with_location.append({
-            'booking': booking,
-            'hotel_location': hotel_location,
-            'city_name': city_name, 
-        })
+    context = {
+        'page_obj': page_obj,
+        'paginator': paginator
+    }
+    return render(request, 'admin/user_dashboard/pages/user-bookings.html', context)
 
-    return render(request, 'admin/user_dashboard/pages/user-bookings.html', {
-        'bookings_with_location': bookings_with_location,
-        'page_obj': page_obj
-    })
+@login_required(login_url='/users/login')
+@require_POST
+def delete_guest(request, guest_id):
+    guest = get_object_or_404(Guest, id=guest_id)
 
+    if guest.booking.user != request.user:
+        messages.error(request, "ليس لديك الصلاحية لحذف هذا الضيف.")
+        return redirect('customer:user_booking_detail', booking_id=guest.booking.id)
 
+    if guest.booking.actual_check_out_date is not None or guest.booking.status == Booking.BookingStatus.CANCELED:
+         messages.warning(request, "لا يمكن حذف ضيوف من حجز منتهي أو ملغي.")
+         return redirect('customer:user_booking_detail', booking_id=guest.booking.id)
+
+    booking_id_redirect = guest.booking.id
+    guest_name = guest.name
+
+    try:
+        guest.delete()
+        messages.success(request, f"تم حذف الضيف '{guest_name}' بنجاح.")
+    except Exception as e:
+        messages.error(request, f"حدث خطأ أثناء حذف الضيف: {e}")
+
+    return redirect('customer:user_booking_detail', booking_id=booking_id_redirect)
 
 @login_required(login_url='/users/login')
 def user_dashboard_settings(request):

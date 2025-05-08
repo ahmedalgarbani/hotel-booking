@@ -114,43 +114,78 @@ def process_booking(request, room_id):
 
 
 # Later
-def add_guest(request, room_id):
-    room = get_object_or_404(RoomType, id=room_id)
-    hotel = room.hotel
+@login_required(login_url='/users/login') 
+def add_guest(request, booking_id): 
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    hotel = booking.hotel
+    room = booking.room
+    max_guests_allowed = room.max_capacity * booking.rooms_booked 
 
-    try:
-        booking = Booking.objects.filter(room=room, user=request.user, status='1').latest('id')
-    except Booking.DoesNotExist:
-        return redirect(reverse("rooms:room_detail", args=[room_id]))
 
     if request.method == "POST":
         guests_data = request.POST
-        id_card_images = request.FILES.getlist('id_card_image[]', [])  # Default to an empty list if no files are uploaded
+        id_card_images = request.FILES.getlist('id_card_image[]', [])
 
-        guests_list = []
-        for i in range(len(guests_data.getlist('name[]'))):
+        names = guests_data.getlist('name[]')
+        phone_numbers = guests_data.getlist('phone_number[]')
+        genders = guests_data.getlist('gender[]')
+        birthday_dates = guests_data.getlist('birthday_date[]')
+
+        num_guests_submitted = len(names)
+
+        if num_guests_submitted > max_guests_allowed:
+            messages.error(request, f"لا يمكنك إضافة أكثر من {max_guests_allowed} ضيف لهذا الحجز.")
+            context = {
+                "booking": booking,
+                "room": room,
+                "hotel": hotel,
+                "max_guests": max_guests_allowed,
+    
+            }
+            return render(request, "frontend/home/pages/add_guest.html", context)
+
+        guests_to_create = []
+        for i in range(num_guests_submitted):
+           
+            # ... (أضف التحقق هنا إذا لزم الأمر) ...
+
             guest = Guest(
                 hotel=hotel,
                 booking=booking,
-                name=guests_data.getlist('name[]')[i],
-                phone_number=guests_data.getlist('phone_number[]')[i],
-                gender=guests_data.getlist('gender[]')[i],
-                birthday_date=guests_data.getlist('birthday_date[]')[i],
-                id_card_image=id_card_images[i] if i < len(id_card_images) else None,  # Handle missing files
+                name=names[i],
+                phone_number=phone_numbers[i],
+                gender=genders[i],
+                birthday_date=birthday_dates[i] if birthday_dates[i] else None, 
+                id_card_image=id_card_images[i] if i < len(id_card_images) else None,
                 check_in_date=booking.check_in_date,
-                check_out_date=booking.check_out_date
+                check_out_date=booking.check_out_date,
+                created_by=request.user, 
+                updated_by=request.user 
             )
-            guests_list.append(guest)
+            guests_to_create.append(guest)
 
-        Guest.objects.bulk_create(guests_list)
-        return redirect(reverse("customer:user_dashboard_index"))
+        try:
+            Guest.objects.bulk_create(guests_to_create)
+            messages.success(request, f"تم إضافة {num_guests_submitted} ضيف بنجاح.")
+            return redirect(reverse("customer:user_dashboard_bookings"))
+        except Exception as e:
+            messages.error(request, f"حدث خطأ أثناء حفظ الضيوف: {e}")
+            context = {
+                "booking": booking,
+                "room": room,
+                "hotel": hotel,
+                "max_guests": max_guests_allowed,
+            }
+            return render(request, "frontend/home/pages/add_guest.html", context)
 
-    return render(request, "frontend/home/pages/add_guest.html", {
+
+    context = {
         "booking": booking,
         "room": room,
         "hotel": hotel,
-    })
-
+        "max_guests": max_guests_allowed, 
+    }
+    return render(request, "frontend/home/pages/add_guest.html", context)
 
 
 
