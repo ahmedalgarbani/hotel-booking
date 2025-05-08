@@ -33,14 +33,14 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
     actions = ['change_booking_status', 'export_bookings_report']
-    readonly_fields = [  'created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at']
+    readonly_fields = [  'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at']
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','parent_booking', 'created_by', 'updated_by', 'deleted_at','hotel')
+            return ('created_at', 'updated_at','created_by', 'updated_by', 'deleted_at','hotel')
         return self.readonly_fields
 
-    change_form_template = 'admin/bookings/booking.html' # Keep if customized
-    change_list_template = 'admin/bookings/booking/change_list.html' # Keep custom template reference
+    change_form_template = 'admin/bookings/booking.html' 
+    change_list_template = 'admin/bookings/booking/change_list.html' 
     def show_payment_details_button(self, obj):
         if not obj.pk:
             return ""
@@ -48,7 +48,6 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         return format_html(
             '<a class="button btn btn-primary" href="{}">{}</a>',
             url, _("عرض تفاصيل الدفع")
-        
         )
     show_payment_details_button.short_description = _("تفاصيل الدفع")
     show_payment_details_button.allow_tags = True

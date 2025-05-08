@@ -1,3 +1,4 @@
+import random
 import re
 from django.shortcuts import get_object_or_404, redirect, render
 from httpx import request
@@ -13,6 +14,7 @@ from payments.models import HotelPaymentMethod, Payment
 from rooms.models import Availability, Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
+from users.utils import send_sms_via_sadeem
 from .serializers import (
     BookingSerializer, CategorySerializer, ChangePasswordSerializer,
     FavouritesSerializer, GuestSerializer, HotelAvabilitySerializer,
@@ -33,7 +35,7 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Sum
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from django.db.models import Sum, Count, Subquery,OuterRef
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -49,12 +51,8 @@ class CustomPagination(PageNumberPagination):
     max_page_size = 50
 
 class HotelsViewSet(viewsets.ModelViewSet):
-    queryset = Hotel.objects.filter(is_verified=True)
+    queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
-    pagination_class = CustomPagination
-    filterset_fields = ['location', 'services__name']
-    search_fields = ['name', 'description', 'location__address']
-    ordering_fields = ['name', 'created_at']
 
     @action(detail=False, methods=['get'])
     def search(self, request):
@@ -63,10 +61,14 @@ class HotelsViewSet(viewsets.ModelViewSet):
         adult_number = request.query_params.get('adult_number', '').strip()
         check_in = request.query_params.get('check_in', '').strip()
         check_out = request.query_params.get('check_out', '').strip()
-        room_number = request.query_params.get('room_number', 1)
         category_type = request.query_params.get('category_type', '').strip()
+        
+        try:
+            room_number = int(request.query_params.get('room_number', 1))
+        except ValueError:
+            return Response({'error': 'Invalid room number format'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not any([hotel_name, location, adult_number, room_number,category_type,check_in,check_out]):
+        if not any([hotel_name, location, adult_number, room_number, category_type, check_in, check_out]):
             return Response({'error': 'Provide at least one search parameter'}, status=status.HTTP_400_BAD_REQUEST)
 
         queryset = Hotel.objects.all()
@@ -88,9 +90,8 @@ class HotelsViewSet(viewsets.ModelViewSet):
                 ).filter(total_capacity__gte=adult_number)
             except ValueError:
                 return Response({'error': 'Invalid adult number format'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            room_number = int(room_number)
 
+        try:
             if check_in and check_out:
                 check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
                 check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
@@ -120,11 +121,22 @@ class HotelsViewSet(viewsets.ModelViewSet):
                 ).filter(latest_avail__gte=room_number)
 
         except ValueError:
-            return Response({'error': 'Invalid date or room number format'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid date format'}, status=status.HTTP_400_BAD_REQUEST)
 
         paginated_queryset = self.paginate_queryset(queryset.distinct())
-        serializer = HotelSerializer(paginated_queryset, many=True, context={'request': request})
+        serializer = HotelSerializer(
+            paginated_queryset,
+            many=True,
+            context={
+                'request': request,
+                'check_in': check_in,
+                'check_out': check_out,
+                'room_number': room_number
+            }
+        )
         return self.get_paginated_response(serializer.data)
+
+
 
 
 
@@ -968,6 +980,65 @@ class ChangePasswordView(APIView):
             return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+from django.utils import timezone
+from datetime import timedelta
+class SendSMSView(APIView):
+    def post(self, request):
+        phone_number = request.data.get('phone_number')
+        if not phone_number:
+            return Response({'error': 'phone_number is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        otp_code = ''.join(random.choices('0123456789', k=6))
+        otp_created_at = timezone.now()
+        message = f"Your verification code is: {otp_code}"
+        success = send_sms_via_sadeem(phone_number, message)
+
+        if success:
+            request.session['otp_details'] = {
+                'code': otp_code,
+                'created_at': otp_created_at.isoformat(),
+                'phone': phone_number
+            }
+            request.session.modified = True 
+            return Response({'success': True, 'message': 'OTP sent via SMS.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'success': False, 'message': 'Failed to send SMS.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CheckOTPView(APIView):
+    def post(self, request):
+        phone_number = request.data.get('phone_number')
+        otp_code = request.data.get('otp_code')
+
+        if not phone_number or not otp_code:
+            return Response({'error': 'phone_number and otp_code are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        session_data = request.session.get('otp_details')
+        if not session_data:
+            return Response({'success': False, 'message': 'No OTP found. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        stored_code = session_data.get('code')
+        stored_phone = session_data.get('phone')
+        created_at_str = session_data.get('created_at')
+
+        try:
+            created_at = timezone.datetime.fromisoformat(created_at_str).replace(tzinfo=timezone.utc)
+        except Exception:
+            return Response({'success': False, 'message': 'Invalid OTP data in session.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if timezone.now() > created_at + timedelta(minutes=5):
+            return Response({'success': False, 'message': 'OTP expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if phone_number != stored_phone or otp_code != stored_code:
+            return Response({'success': False, 'message': 'Invalid OTP or phone number.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        del request.session['otp_details']
+        return Response({'success': True, 'message': 'OTP verified successfully.'}, status=status.HTTP_200_OK)
+
+
 
 
 

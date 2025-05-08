@@ -6,7 +6,7 @@ from customer.models import Favourites
 from hotels import settings
 from notifications.models import Notifications
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
-from rooms.models import Category, RoomType,RoomImage
+from rooms.models import Availability, Category, RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
 from django.core.exceptions import ValidationError
 
@@ -236,6 +236,10 @@ class RoomsSerializer(serializers.ModelSerializer):
         services = obj.room_services.all()
         return RoomServiceSerializer(services, many=True).data
 
+
+from datetime import datetime
+from django.db.models import Count
+
 class HotelSerializer(serializers.ModelSerializer):
     rooms = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
@@ -244,22 +248,45 @@ class HotelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Hotel
-        fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms','paymentOption']
-
+        fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms', 'paymentOption']
 
     def get_rooms(self, obj):
+        check_in = self.context.get('check_in')
+        check_out = self.context.get('check_out')
+        room_number = self.context.get('room_number')
+
         rooms = RoomType.objects.filter(hotel=obj)
+
+        if check_in and check_out and room_number:
+            try:
+                check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
+                check_out_date = datetime.strptime(check_out, "%Y-%m-%d").date()
+                total_days = (check_out_date - check_in_date).days + 1
+
+                available_room_ids = Availability.objects.filter(
+                    availability_date__range=(check_in_date, check_out_date),
+                    room_type__hotel=obj,
+                    available_rooms__gte=room_number
+                ).values('room_type') \
+                 .annotate(day_count=Count('id')) \
+                 .filter(day_count=total_days) \
+                 .values_list('room_type', flat=True)
+
+                rooms = rooms.filter(id__in=available_room_ids)
+
+            except Exception:
+                rooms = RoomType.objects.none()
+
         return RoomsSerializer(rooms, many=True, context=self.context).data
 
     def get_services(self, obj):
         return HotelServiceSerializer(obj.hotel_services.all(), many=True).data
+
     def get_paymentOption(self, obj):
         return HotelPaymentMethodSerializer(obj.payment_methods.all(), many=True).data
 
-
     def get_location(self, obj):
         return obj.location.address if obj.location else None
-
 
 
 class RegisterSerializer(serializers.ModelSerializer):

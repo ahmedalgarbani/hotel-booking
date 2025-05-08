@@ -133,14 +133,7 @@ class Booking(BaseModel):
         default=1,
         validators=[MinValueValidator(1)]
     )
-    parent_booking = models.ForeignKey(
-        'self',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name=_("الحجز الأصلي"),
-        related_name='extensions'
-    )
+    
 
     class Meta:
         verbose_name = _("حجز")
