@@ -50,7 +50,14 @@ class Setting(models.Model):
     )
     description = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    default_currency = models.CharField(max_length=100)
+    default_currency = models.ForeignKey(
+    'payments.Currency',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    verbose_name=_("العملة الافتراضية"),
+    related_name='default_for_Site'  
+)
     color = models.CharField(max_length=100)
     currency_icon = models.CharField(max_length=10)
     default_language = models.CharField(max_length=100)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.helpers import ActionForm
 from HotelManagement.models import Hotel
-from .models import Currency, HotelPaymentMethod, PaymentHistory, PaymentOption, Payment
+from .models import Currency, CurrencyExchangeRate, HotelPaymentMethod, PaymentHistory, PaymentOption, Payment
 from django.db.models import Q
 from bookings.models import Booking
 from api.admin import admin_site
@@ -98,8 +98,8 @@ class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Add
 
 
 class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
-    list_display = ('currency_name', 'currency_symbol', 'hotel')
-    list_filter = ('hotel',)
+    list_display = ('currency_name', 'currency_symbol')
+    list_filter = ('currency_name',)
     search_fields = ('currency_name', 'currency_symbol')
 
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
@@ -187,7 +187,23 @@ class PaymentOptionAdmin(AutoUserTrackMixin, admin.ModelAdmin):
             return qs.filter(currency__hotel__manager=request.user.chield)
         return qs
 
+
+
+class CurrencyExchangeRateAdmin(admin.ModelAdmin):
+    list_display = ('from_currency', 'to_currency', 'rate', 'updated_at')
+    list_filter = ('from_currency', 'to_currency')
+    search_fields = ('from_currency__code', 'to_currency__code')
+    ordering = ('from_currency', 'to_currency')
+    readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:  
+            return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+
+
 admin_site.register(Currency,CurrencyAdmin)
+admin_site.register(CurrencyExchangeRate,CurrencyExchangeRateAdmin)
 admin_site.register(PaymentHistory,PaymentHistoryAdmin)
 admin_site.register(PaymentOption,PaymentOptionAdmin)
 admin_site.register(HotelPaymentMethod,HotelPaymentMethodAdmin)

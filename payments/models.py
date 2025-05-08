@@ -13,13 +13,7 @@ from users.models import CustomUser
 class Currency(BaseModel):
     currency_name = models.CharField(max_length=50, verbose_name=_("اسم العملة"))
     currency_symbol = models.CharField(max_length=10, verbose_name=_("رمز العملة"))
-    hotel = models.ForeignKey(
-        Hotel,
-        on_delete=models.CASCADE,
-        verbose_name=_("الفندق"),
-        related_name='currencies'
-    )
-
+    
     class Meta:
         verbose_name = _("عملة")
         verbose_name_plural = _("العملات")
@@ -52,6 +46,19 @@ class PaymentOption(BaseModel):
         verbose_name_plural = _("طرق الدفع")
 
 # ------------HotelPaymentMethod-------------
+class CurrencyExchangeRate(BaseModel):
+    from_currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='exchange_from')
+    to_currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='exchange_to')
+    rate = models.DecimalField(max_digits=12, decimal_places=6, verbose_name=_("سعر التحويل"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("آخر تحديث"))
+
+    class Meta:
+        unique_together = ('from_currency', 'to_currency')
+        verbose_name = _("سعر صرف العملة")
+        verbose_name_plural = _("أسعار صرف العملات")
+
+    def __str__(self):
+        return f"{self.from_currency} ➜ {self.to_currency} : {self.rate}"
 
 
 class HotelPaymentMethod(BaseModel):
@@ -92,6 +99,13 @@ class Payment(BaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("الحجز"),
         related_name='payments'
+    )
+    converted_amount = models.DecimalField(
+    max_digits=10,
+    decimal_places=2,
+    verbose_name=_("المبلغ المحول للعملة المحلية"),
+    null=True,
+    blank=True
     )
     payment_method = models.ForeignKey(
         HotelPaymentMethod,
@@ -160,6 +174,34 @@ class Payment(BaseModel):
 
     def __str__(self):
         return f"دفعة #{self.id} لحجز {self.id}"
+
+    def save(self, *args, **kwargs):
+        hotel_currency = self.payment_method.payment_option.currency
+        if self.payment_currency != hotel_currency.currency_symbol:
+            try:
+                from_currency = Currency.objects.get(currency_symbol=self.payment_currency)
+                rate = CurrencyExchangeRate.objects.get(from_currency=from_currency, to_currency=hotel_currency).rate
+                self.converted_amount = round(self.payment_totalamount * rate, 2)
+            except CurrencyExchangeRate.DoesNotExist:
+                self.converted_amount = None
+        else:
+            self.converted_amount = self.payment_totalamount
+
+        super().save(*args, **kwargs)
+
+    @property
+    def amount_in_hotel_currency(self):
+        hotel_currency = self.payment_method.payment_option.currency
+        if self.payment_currency == hotel_currency.currency_symbol:
+            return self.payment_totalamount
+
+        try:
+            from_currency = Currency.objects.get(currency_symbol=self.payment_currency)
+            to_currency = hotel_currency
+            rate = CurrencyExchangeRate.objects.get(from_currency=from_currency, to_currency=to_currency).rate
+            return round(self.payment_totalamount * rate, 2)
+        except CurrencyExchangeRate.DoesNotExist:
+            return None  # أو سجل خطأ
 
     @property
     def get_status_class(self):

@@ -125,6 +125,14 @@ class Hotel(BaseModel):
         verbose_name=_("موقع الفندق"),
         on_delete=models.CASCADE
     )
+    default_currency = models.ForeignKey(
+    'payments.Currency',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    verbose_name=_("العملة الافتراضية"),
+    related_name='hotels_using_currency'  
+    )
     name = models.CharField(
         max_length=255,
         blank=True,
@@ -304,6 +312,14 @@ class HotelRequest(models.Model):
         related_name='updated_hotel_requests',
         verbose_name=_("تم التحديث بواسطة")
     )
+    default_currency = models.ForeignKey(
+    'payments.Currency',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    verbose_name=_("العملة الافتراضية"),
+    related_name='hotel_requests_using_currency'  
+        )
 
     def __str__(self):
         return f"{self.hotel_name} - {self.name}"

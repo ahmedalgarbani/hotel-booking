@@ -7,6 +7,7 @@ from django.http import JsonResponse
 
 from HotelManagement.services import get_hotels_query, get_query_params
 from customer.models import Favourites
+from payments.models import Currency
 from .models import HotelRequest, Hotel, City, Image
 from .forms import HotelRequestForm
 import json
@@ -31,7 +32,8 @@ def add_hotel_request(request):
                 country = request.POST.get('new_country', '')
             if state == 'new':
                 state = request.POST.get('new_state', '')
-            
+            if not hotel_request.default_currency:
+                hotel_request.default_currency = Currency.objects.first()
             # التحقق من أن القيم غير فارغة
             if not country or not state:
                 messages.error(request, _('يرجى اختيار أو إدخال الدولة والمحافظة'))
@@ -70,10 +72,12 @@ def add_hotel_request(request):
     
     # جلب جميع المدن الفريدة
     cities = City.objects.values('country', 'state').distinct()
+    currency = Currency.objects.all()
     
     context = {
         'form': form,
         'cities': cities,
+        'currency':currency,
         'title': _('طلب إضافة فندق جديد')
     }
     return render(request, 'frontend/hotel/add_hotel.html', context)

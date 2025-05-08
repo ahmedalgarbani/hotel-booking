@@ -169,6 +169,20 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-6">
+                                            <div class="input-box">
+                                                <label class="label-text">العملة الافتراضية</label>
+                                                <div class="form-group">
+                                                    <select name="currency" id="currencySelect" class="form-control" required>
+                                                        <option value="">-- اختر العملة --</option>
+                                                        {% for currency in currency %}
+                                                            <option value="{{ currency.id }}">{{ currency.currency_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <input type="text" name="new_state" id="newStateInput" class="form-control mt-2" style="display: none;" placeholder="أدخل اسم المحافظة الجديدة">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
