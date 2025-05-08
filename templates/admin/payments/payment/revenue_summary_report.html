@@ -6,28 +6,27 @@
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* الألوان الفاخرة */
+        /* الألوان الرئيسية - محدودة لتحسين تجربة المستخدم */
         :root {
-            --luxury-gold: #d4af37;
-            --luxury-dark: #2c3e50;
-            --luxury-light: #f8f9fa;
-            --luxury-accent: #8e44ad;
-            --luxury-success: #27ae60;
-            --luxury-info: #3498db;
-            --luxury-warning: #f39c12;
-            --luxury-danger: #e74c3c;
+            --primary-color: #1e3a8a;    /* أزرق غامق */
+            --accent-color: #d4af37;     /* ذهبي */
+            --light-color: #f8f9fa;      /* أبيض فاتح */
+            --dark-color: #1e293b;       /* رمادي غامق */
+            --text-primary: #1e293b;     /* لون النص الرئيسي */
+            --text-secondary: #64748b;   /* لون النص الثانوي */
+            --border-color: #e2e8f0;     /* لون الحدود */
         }
         
         /* خلفية الصفحة */
         body {
-            background-color: var(--luxury-light);
-            
+            background-color: var(--light-color);
+            color: var(--text-primary);
         }
         
         /* عنوان التقرير */
         h1, h2 {
-            color: var(--luxury-dark);
-            border-bottom: 2px solid var(--luxury-gold);
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 10px;
             margin-bottom: 20px;
             font-size: 24px;
@@ -38,27 +37,28 @@
         #result_list {
             width: 100%;
             border-collapse: collapse;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
             background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         #result_list th, #result_list td {
             padding: 12px;
             text-align: right;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-color);
         }
         
         #result_list th {
-            background-color: var(--luxury-dark);
+            background-color: var(--primary-color);
             color: white;
             font-weight: bold;
-            text-transform: uppercase;
-            font-size: 13px;
+            font-size: 14px;
         }
         
         #result_list tr:hover {
-            background-color: rgba(212, 175, 55, 0.1);
+            background-color: rgba(212, 175, 55, 0.05);
         }
         
         #result_list tr.row1 {
@@ -69,91 +69,161 @@
         .date-filter-form {
             margin-bottom: 25px;
             padding: 20px;
-            background: linear-gradient(to left, #ffffff, #f8f9fa);
-            border: 1px solid #e0e0e0;
+            background-color: white;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             text-align: right;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-left: 15px;
         }
         
         .date-filter-form label {
-            margin-left: 15px;
-            font-weight: bold;
-            color: var(--luxury-dark);
+            margin-left: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
         }
         
         .date-filter-form input[type="date"] {
             margin-left: 8px;
-            padding: 8px 12px;
-            border: 1px solid #d1d1d1;
-            border-radius: 4px;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-            transition: border-color 0.3s, box-shadow 0.3s;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: none;
+            transition: all 0.3s;
+            font-size: 14px;
         }
         
         .date-filter-form input[type="date"]:focus {
-            border-color: var(--luxury-gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
             outline: none;
         }
         
         .date-filter-form button {
-            padding: 8px 16px;
-            background-color: var(--luxury-dark);
+            padding: 10px 18px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-            font-weight: bold;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 42px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .actions-group {
+            display: flex;
+            gap: 10px;
         }
         
         .date-filter-form button:hover {
-            background-color: #1a2530;
+            background-color: #15326d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        /* ملخص التقرير */
-        .report-summary {
-            background: linear-gradient(to left, var(--luxury-dark), #34495e);
-            color: white;
-            padding: 20px;
+        /* زر التصدير */
+        .export-btn {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 42px;
+        }
+        
+        .export-btn:hover {
+            background-color: #c9a430;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* بطاقة ملخص الإيرادات */
+        .revenue-summary-card {
+            background-color: white;
             border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             margin-bottom: 25px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            position: relative;
             overflow: hidden;
+            border-right: 4px solid var(--accent-color);
         }
         
-        .report-summary h2 {
-            color: var(--luxury-gold);
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            font-size: 22px;
+        .summary-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
         }
         
-        .report-summary p {
-            margin-bottom: 8px;
-            font-size: 16px;
+        .summary-icon {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-left: 15px;
         }
         
-        .report-summary strong {
-            color: var(--luxury-gold);
-            font-size: 20px;
+        .summary-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .summary-content {
+            padding: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .summary-label i {
+            margin-left: 8px;
+            color: var(--accent-color);
+        }
+        
+        .summary-value {
+            font-weight: 600;
+        }
+        
+        .summary-value.highlight {
+            color: var(--accent-color);
+            font-size: 24px;
             font-weight: bold;
-        }
-        
-        .report-summary::after {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 100px;
-            height: 100px;
-            background-color: rgba(212, 175, 55, 0.1);
-            border-radius: 50%;
-            z-index: 1;
         }
         
         /* قسم النتائج */
@@ -163,13 +233,14 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            border-top: 3px solid var(--primary-color);
         }
         
         .results-section h2 {
-            color: var(--luxury-dark);
+            color: var(--primary-color);
             font-size: 18px;
             margin-bottom: 15px;
-            border-bottom: 2px solid var(--luxury-gold);
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 8px;
             display: flex;
             align-items: center;
@@ -177,31 +248,7 @@
         
         .results-section h2 i {
             margin-left: 10px;
-            color: var(--luxury-gold);
-        }
-        
-        /* زر التصدير */
-        .export-btn {
-            background: linear-gradient(to left, var(--luxury-gold), #e6c34d);
-            color: var(--luxury-dark);
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            transition: all 0.3s;
-            border: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .export-btn:hover {
-            background: linear-gradient(to left, #e6c34d, var(--luxury-gold));
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        
-        .export-btn i {
-            margin-left: 8px;
+            color: var(--accent-color);
         }
         
         /* رسالة عدم وجود نتائج */
@@ -210,23 +257,24 @@
             padding: 30px;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-top: 20px;
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-size: 16px;
+            border-top: 3px solid var(--accent-color);
         }
         
         .no-results i {
             font-size: 48px;
             margin-bottom: 15px;
-            color: #bdc3c7;
+            color: var(--accent-color);
             display: block;
+            opacity: 0.5;
         }
         
         /* تعديل الأدوات */
         .object-tools {
-            float: left;
-            margin-top: 0;
+            display: none; /* نخفي الأدوات الأصلية ونستخدم زر التصدير المخصص */
         }
         
         .object-tools a.addlink {
@@ -277,22 +325,45 @@
 
             {# Date Filter Form - Now styled better #}
             <div class="date-filter-form">
-                <form method="get" action="">
-                    <label for="start_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "من تاريخ:" %}</label>
-                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+                <form method="get" action="" style="display: flex; flex-wrap: wrap; align-items: center; width: 100%; gap: 15px;">
+                    <div class="filter-group">
+                        <label for="start_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "من تاريخ:" %}</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+                    </div>
 
-                    <label for="end_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "إلى تاريخ:" %}</label>
-                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+                    <div class="filter-group">
+                        <label for="end_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "إلى تاريخ:" %}</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+                    </div>
 
-                    <button type="submit"><i class="fas fa-filter" style="margin-left: 5px;"></i>{% trans "تصفية" %}</button>
+                    <div class="actions-group">
+                        <button type="submit"><i class="fas fa-filter" style="margin-left: 5px;"></i>{% trans "تصفية" %}</button>
+                        
+                        {% if pdf_export_url %}
+                        <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}" class="export-btn">
+                            <i class="fas fa-file-pdf" style="margin-left: 5px;"></i>{% trans "تصدير PDF" %}
+                        </a>
+                        {% endif %}
+                    </div>
                 </form>
             </div>
-
-            {# Revenue Summary Section - Now styled better #}
-            <div class="report-summary">
-                <h2><i class="fas fa-money-bill-wave" style="margin-left: 10px;"></i>{% trans "ملخص الإيرادات" %}</h2>
-                <p><i class="fas fa-calendar-week" style="margin-left: 5px;"></i>{% trans "الفترة:" %} {{ start_date }} - {{ end_date }}</p>
-                <p><i class="fas fa-coins" style="margin-left: 5px;"></i>{% trans "إجمالي الإيرادات المؤكدة:" %} <strong>{{ total_revenue|floatformat:2 }}</strong></p>
+<
+            {# Revenue Summary Card - Now positioned better #}
+            <div class="revenue-summary-card">
+                <div class="summary-header">
+                    <i class="fas fa-chart-line summary-icon"></i>
+                    <h3>{% trans "ملخص الإيرادات" %}</h3>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <div class="summary-label"><i class="fas fa-calendar-week"></i> {% trans "الفترة:" %}</div>
+                        <div class="summary-value">{{ start_date }} - {{ end_date }}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label"><i class="fas fa-coins"></i> {% trans "إجمالي الإيرادات المؤكدة:" %}</div>
+                        <div class="summary-value highlight">{{ total_revenue|floatformat:2 }}</div>
+                    </div>
+                </div>
             </div>
 
             {# Revenue by Payment Method Table - Now styled better #}
