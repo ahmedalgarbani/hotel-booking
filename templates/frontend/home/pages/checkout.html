@@ -279,7 +279,7 @@
                     <div class="services-list">
                       {% for service in booking_data.extra_services %}
                         <div class="service-row">
-                          <span class="service-price">${{ service.price }}</span>
+                          <span class="service-price">ريال{{ service.price }}</span>
                           <span class="service-name">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small success">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -297,24 +297,24 @@
                 <div class="price-summary">
                   <div class="price-list">
                     <div class="price-row">
-                      <span class="price-value">${{ booking_data.room_price }}</span>
+                      <span class="price-value">ريال{{ booking_data.room_price }}</span>
                       <span class="price-label">سعر الغرفة:</span>
                     </div>
                     <div class="price-row">
-                      <span class="price-value">${{ booking_data.extra_services_total }}</span>
+                      <span class="price-value">ريال{{ booking_data.extra_services_total }}</span>
                       <span class="price-label">إجمالي الخدمات الإضافية:</span>
                     </div>
                     <div class="price-row">
-                      <span class="price-value">${{ booking_data.total_price }}</span>
+                      <span class="price-value">ريال{{ booking_data.total_price }}</span>
                       <span class="price-label">السعر قبل الخصم:</span>
                     </div>
                     <div class="price-row">
-                      <span class="price-value" id="discount">$0</span>
+                      <span class="price-value" id="discount">ريال0</span>
                       <span class="price-label">قيمه الخصم:</span>
                     </div>
                     <div class="price-divider"></div>
                     <div class="price-row total">
-                      <span class="price-value total-price" id="finalTotal">${{ booking_data.grand_total }}</span>
+                      <span class="price-value total-price" id="finalTotal">ريال{{ booking_data.grand_total }}</span>
                       <span class="price-label">السعر الاجمالي:</span>
                     </div>
                     <div class="container1">

@@ -41,7 +41,7 @@ def hotel_review_create(request):
             review=request.POST.get('review'),
         )
         
-        messages.success(request, "Your review has been submitted successfully.")
+        messages.success(request, "تم اضافه تعليقك")
         return redirect('home:hotel_detail', slug=hotel.slug)
     
     else:

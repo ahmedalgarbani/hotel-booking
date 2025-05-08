@@ -6,6 +6,7 @@ from customer.models import Favourites
 from hotels import settings
 from notifications.models import Notifications
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
+from reviews.models import RoomReview
 from rooms.models import Availability, Category, RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
 from django.core.exceptions import ValidationError
@@ -296,6 +297,36 @@ class HotelSerializer(serializers.ModelSerializer):
 
     def get_location(self, obj):
         return obj.location.address if obj.location else None
+
+
+
+
+
+
+class RoomReviewSerializer(serializers.ModelSerializer):
+    user_name = serializers.SerializerMethodField()
+    profile_picture = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RoomReview
+        fields = ["id", "user_name","hotel","room_type","profile_picture" ,"rating", "review", "created_at"]
+   
+    
+    def get_user_name(self, obj):
+        return f"{obj.user.user.first_name} {obj.user.user.last_name}"
+    
+    def get_profile_picture(self, obj):
+        if obj.user.user.profile_picture:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.user.user.profile_picture.url)
+            return obj.user.user.profile_picture.url
+        return None 
+    def validate(self, data):
+        if not data.get('room_type'):
+            raise serializers.ValidationError("يجب تحديد غرفه.")
+        return data
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):

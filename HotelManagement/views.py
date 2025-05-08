@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
 
 from HotelManagement.services import get_hotels_query, get_query_params
+from bookings.models import Booking
 from customer.models import Favourites
 from .models import HotelRequest, Hotel, City, Image
 from .forms import HotelRequestForm
@@ -137,14 +138,14 @@ from datetime import datetime
 from django.db.models import Case, When, BooleanField
 
 from django.shortcuts import render
-from django.db.models import Count, Avg, Case, When, BooleanField
+from django.db.models import Count, Avg, Q, Case, When, BooleanField, Value
 from datetime import datetime
 import json
 
 def hotel_search(request):
     def annotate_hotels(queryset, favorite_ids):
         return queryset.annotate(
-            review_count=Count('hotel_reviews'),
+            review_count=Count('hotel_reviews', distinct=True),
             average_rating=Avg('hotel_reviews__rating_service'),
             is_favorite=Case(
                 When(id__in=favorite_ids, then=True),
@@ -199,13 +200,34 @@ def hotel_search(request):
     for hotel in hotels_query:
         hotel.is_favorite = hotel.id in favorite_hotel_ids
 
+    
+    from django.db.models import Subquery, OuterRef
+    
+    top_hotel_ids = Hotel.objects.filter(is_verified=True)\
+        .annotate(confirmed_bookings_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED)))\
+        .filter(confirmed_bookings_count__gt=0) \
+        .order_by('-confirmed_bookings_count')\
+        .values_list('id', flat=True)[:10]
+
+    top_hotel_ids_list = list(top_hotel_ids)
+    print("Top hotel IDs:", top_hotel_ids_list)
+
+    hotels = hotels_query.annotate(
+        best_seller=Case(
+            When(id__in=top_hotel_ids_list, then=True),
+            default=False,
+            output_field=BooleanField()
+        ),
+        booking_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED))
+    )
+
     ctx = {
         'adult_number': adult_number,
         'check_in_start': check_in.strftime('%m/%d/%Y') if check_in else '',
         'check_out_start': check_out.strftime('%m/%d/%Y') if check_out else '',
-        'hotels': hotels_query,
+        'hotels': hotels,
         'error_message': error_message,
     }
-
+    
     return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
 

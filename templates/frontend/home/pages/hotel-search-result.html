@@ -256,6 +256,9 @@ START CARD AREA
                   <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
                 </a>
                  {% endif %}
+                {% if hotel.best_seller %}
+            <span class="badge " style="margin:20px 0 0 10px">الأكثر مبيعا</span>
+            {% endif %}
                  <div
                  class="add-to-wishlist icon-element {% if hotel.is_favorite %}btn-blue{% endif %}"
                  data-bs-toggle="tooltip"
@@ -275,18 +278,23 @@ START CARD AREA
                   <h3 class="card-title">
                     <a href="{{hotel.get_absolute_url}}">{{hotel.name}}</a>
                   </h3>
+                  <h6 class="mb-2">
+                    <p> عدد الحجوزات ({{hotel.booking_count}})</p>
+                  </h6>
+                
                   <p class="card-meta">{{hotel.location}},{{hotel.location.city.state}}</p>
                   <div class="card-rating">
-                    {% if average_rating > 0 %}
+               
+                    {% if hotel.average_rating > 0 %}
 
-                    <span class="badge text-white">{{average_rating}}/5</span>
+                    <span class="badge text-white">{{hotel.average_rating}}/5</span>
 
                     {% else %}
                     <span class="badge text-white">0.0/5</span>
 
                     {% endif %}
                     <span class="review__text">معدل</span>
-                    <span class="rating__text">({{review_count}} التعليقات)</span>
+                    <span class="rating__text">({{hotel.review_count}} التعليقات)</span>
                   </div>
                   <div
                     class="card-price d-flex align-items-center justify-content-between"

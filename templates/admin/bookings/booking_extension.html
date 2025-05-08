@@ -222,7 +222,7 @@
 
                 <div class="detail-group">
                     <div class="detail-label">السعر</div>
-                    <div class="detail-value">${{ original.amount|floatformat:2 }}</div>
+                    <div class="detail-value">ريال{{ original.amount|floatformat:2 }}</div>
                 </div>
             </div>
         </div>
@@ -254,13 +254,12 @@
                         عدد الليالي: <span id="nights-display">{{ additional_nights }}</span>
                     </div>
                     <div class="summary-item">
-                        التكلفة الإضافية: $<span id="additional-price-display">0.00</span>
+                        التكلفة الإضافية: ريال<span id="additional-price-display">0.00</span>
                     </div>
                     <div class="summary-item">
-                        المبلغ النهائي: $<span id="total-price-display">{{ additional_price|floatformat:2 }}</span>
+                        المبلغ النهائي: ريال<span id="total-price-display">{{ additional_price|floatformat:2 }}</span>
                     </div>
                 </div>
-
                 <button type="submit" class="submit-button">تأكيد التمديد</button>
             </form>
         </div>

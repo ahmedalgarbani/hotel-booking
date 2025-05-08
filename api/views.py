@@ -11,6 +11,7 @@ from bookings.models import Booking, Guest
 from customer.models import Favourites
 from notifications.models import Notifications
 from payments.models import HotelPaymentMethod, Payment
+from reviews.models import RoomReview
 from rooms.models import Availability, Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
@@ -18,7 +19,7 @@ from users.utils import send_sms_via_sadeem
 from .serializers import (
     BookingSerializer, CategorySerializer, ChangePasswordSerializer,
     FavouritesSerializer, GuestSerializer, HotelAvabilitySerializer,
-    HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer,
+    HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomReviewSerializer,
     RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer,
     UserSerializer
 )
@@ -136,6 +137,15 @@ class HotelsViewSet(viewsets.ModelViewSet):
             }
         )
         return self.get_paginated_response(serializer.data)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = RoomReview.objects.filter(status=True)
+    serializer_class = RoomReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 

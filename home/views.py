@@ -139,8 +139,7 @@ def pricing(request):
 
 
 
-from django.db.models import Count, Q, Case, When, BooleanField
-
+from django.db.models import Count, Avg, Q, Case, When, BooleanField, Value
 def hotels(request):
     # Get search parameters
     search_query = request.GET.get('search', '')
@@ -215,16 +214,42 @@ def hotels(request):
     if request.user.is_authenticated:
         favorite_hotel_ids = Favourites.objects.filter(user=request.user).values_list('hotel_id', flat=True)
         hotels = hotels.annotate(
-            review_count=Count('hotel_reviews'),
-        average_rating=Avg('hotel_reviews__rating_service'),
+            review_count=Count('hotel_reviews', distinct=True),
+            average_rating=Avg('hotel_reviews__rating_service'),
             is_favorite=Case(
                 When(id__in=favorite_hotel_ids, then=True),
                 default=False,
                 output_field=BooleanField()
             )
         )
+    else:
+        hotels = hotels.annotate(
+            review_count=Count('hotel_reviews'),
+            average_rating=Avg('hotel_reviews__rating_service'),
+            is_favorite=Value(False, output_field=BooleanField())
+        )
 
-  
+    # Fix for best_seller annotation
+    from django.db.models import Subquery, OuterRef
+    
+    top_hotel_ids = Hotel.objects.filter(is_verified=True)\
+        .annotate(confirmed_bookings_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED)))\
+        .filter(confirmed_bookings_count__gt=0) \
+        .order_by('-confirmed_bookings_count')\
+        .values_list('id', flat=True)[:10]
+
+    top_hotel_ids_list = list(top_hotel_ids)
+    print("Top hotel IDs:", top_hotel_ids_list)
+
+    hotels = hotels.annotate(
+        best_seller=Case(
+            When(id__in=top_hotel_ids_list, then=True),
+            default=False,
+            output_field=BooleanField()
+        ),
+        booking_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED))
+    )
+
     ctx = {
         'hotels': hotels,
         'search_query': search_query,
@@ -242,21 +267,30 @@ def hotels(request):
         return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
     return render(request, 'frontend/home/pages/hotel-sidebar.html', ctx)
 
-
-
-from django.db.models import Count, Avg, Q, F, Subquery, OuterRef
 from django.utils.timezone import now
 
 def hotel_detail(request, slug):
     today = now().date()
+    top_hotel_ids = Hotel.objects.filter(is_verified=True)\
+        .annotate(confirmed_bookings_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED)))\
+        .filter(confirmed_bookings_count__gt=0) \
+        .order_by('-confirmed_bookings_count')\
+        .values_list('id', flat=True)[:10]
+    top_hotel_ids_list = list(top_hotel_ids)
 
     hotel = get_object_or_404(
         Hotel.objects.annotate(
-            review_count=Count('hotel_reviews', filter=Q(hotel_reviews__status=True)),
-            avg_rating_service=Avg('hotel_reviews__rating_service', filter=Q(hotel_reviews__status=True)),
-            avg_rating_location=Avg('hotel_reviews__rating_location', filter=Q(hotel_reviews__status=True)),
-            avg_rating_value_for_money=Avg('hotel_reviews__rating_value_for_money', filter=Q(hotel_reviews__status=True)),
-            avg_rating_cleanliness=Avg('hotel_reviews__rating_cleanliness', filter=Q(hotel_reviews__status=True))
+            review_count=Count('hotel_reviews', filter=Q(hotel_reviews__status=True), distinct=True ),
+            avg_rating_service=Avg('hotel_reviews__rating_service', filter=Q(hotel_reviews__status=True), distinct=True),
+            avg_rating_location=Avg('hotel_reviews__rating_location', filter=Q(hotel_reviews__status=True), distinct=True),
+            avg_rating_value_for_money=Avg('hotel_reviews__rating_value_for_money', filter=Q(hotel_reviews__status=True), distinct=True),
+            avg_rating_cleanliness=Avg('hotel_reviews__rating_cleanliness', filter=Q(hotel_reviews__status=True), distinct=True),
+            booking_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED)),
+            best_seller=Case(
+                When(id__in=top_hotel_ids_list, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
         ),
         slug=slug
     )
@@ -269,7 +303,7 @@ def hotel_detail(request, slug):
 
     external_hotels = Hotel.objects.exclude(id=hotel.id)[:6]
 
-    reviews = HotelReview.objects.filter(status=True)
+    reviews = HotelReview.objects.filter(status=True,hotel=hotel)
 
     latest_availability = Availability.objects.filter(
         hotel=hotel,
@@ -320,6 +354,7 @@ def hotel_detail(request, slug):
 
     setting = Setting.objects.order_by('-id').first()
     phones = Phone.objects.filter(hotel=hotel)
+    
     context = {
         'hotel': hotel,
         'coupon': coupon,

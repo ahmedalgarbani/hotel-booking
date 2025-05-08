@@ -168,7 +168,7 @@ START CARD AREA
                 ><i class="la la-th-large"></i
               ></a>
               <a
-                href="hotel-list.html"
+                href="javascript:;"
                 data-bs-toggle="tooltip"
                 data-placement="top"
                 title="عرض القائمة"
@@ -195,24 +195,45 @@ START CARD AREA
                   <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
                 </a>
                  {% endif %}
+
+
+              
+{% if hotel.best_seller %}
+            <span class="badge " style="margin:20px 0 0 10px">الأكثر مبيعا</span>
+            {% endif %}
+
                  <a class="add-to-wishlist icon-element {% if hotel.is_favorite %}btn-blue{% endif %}"
                  data-bs-toggle="tooltip"
                  data-placement="top"
                  data-hotel-id={{hotel.id}}
                  title="المرجعية">
+
                  <i class="la la-heart{% if hotel.is_favorite %} {% else %}-o{% endif %}"></i>
+                 
               </a>
+            
 
                 </div>
+                
                 <div class="card-body">
                   <h3 class="card-title">
                     <a href="{{hotel.get_absolute_url}}">{{hotel.name}}</a>
                   </h3>
+                  <h6 class="">
+                    <p> عدد الحجوزات ({{hotel.booking_count}})</p>
+                  </h6>
                   <p class="card-meta">{{hotel.location}},{{hotel.location.city.state}}</p>
                   <div class="card-rating">
-                    <span class="badge text-white">4.4/5</span>
+                    {% if hotel.average_rating > 0 %}
+
+                    <span class="badge text-white">{{hotel.average_rating}}/5</span>
+
+                    {% else %}
+                    <span class="badge text-white">0.0/5</span>
+
+                    {% endif %}
                     <span class="review__text">معدل</span>
-                    <span class="rating__text">(30 التعليقات)</span>
+                    <span class="rating__text">({{hotel.review_count}} التعليقات)</span>
                   </div>
                   <div
                     class="card-price d-flex align-items-center justify-content-between"

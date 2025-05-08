@@ -493,7 +493,7 @@ START TOUR DETAIL AREA
                         <p class="text-uppercase font-size-14">
                           لليلة الواحدة
                           <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
-                            ${{ availability.price }}
+                            ريال{{ availability.price }}
                           </strong>
                         </p>
                       </div>
@@ -767,9 +767,7 @@ START TOUR DETAIL AREA
                           <label class="mb-2">رسالتك</label>
                           <textarea id="review_desc" name="review" class="form-control" maxlength="100" placeholder="اكتب رسالتك"></textarea>
                           <div class="d-flex justify-content-between mt-3">
-                            <small class="text-muted">
-                              <span id="chars">100</span> حرف متبقي
-                            </small>
+                           
                           </div>
                         </div>
 
@@ -792,30 +790,39 @@ START TOUR DETAIL AREA
         <div class="col-lg-4">
 
 
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">نوع حساب؟</h3>
-              <div class="sidebar-list">
-                <ul class="list-items">
-                  <li>
-                    <i class="la la-dollar icon-element me-2"></i> ضمان أفضل
-                    الأسعار بدون متاعب
-                  </li>
-                  <li>
-                    <i class="la la-microphone icon-element me-2"></i> خدمة
-                    العملاء متوفرة 24/7
-                  </li>
-                  <li>
-                    <i class="la la-thumbs-up icon-element me-2"></i> جولات
-                    وأنشطة منتقاة بعناية
-                  </li>
-                  <li>
-                    <i class="la la-file-text icon-element me-2"></i> تأمين
-                    سفر مجاني
-                  </li>
-                </ul>
-              </div>
-              <!-- end sidebar-list -->
-            </div>
+            <div class="sidebar-widget single-content-widget border rounded shadow-sm p-3 mb-4">
+  <h3 class="title stroke-shape mb-3">معلومات الفندق</h3>
+
+  {% if hotel.best_seller %}
+  <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
+    <i class="la la-star icon-element me-2 fs-4 text-warning"></i>
+    <div>
+      هذا الفندق من بين <strong>الأكثر حجزًا</strong>!
+    </div>
+  </div>
+  {% endif %}
+
+  <ul class="list-group list-group-flush mb-3">
+    <li class="list-group-item d-flex align-items-center">
+      <i class="la la-book icon-element me-2 text-primary"></i>
+      عدد الحجوزات المؤكدة: <strong class="ms-1">{{ hotel.booking_count }}</strong>
+    </li>
+  </ul>
+
+  <h5 class="mb-2">لماذا تحجز معنا؟</h5>
+  <ul class="list-unstyled ps-3">
+    <li class="mb-2">
+      <i class="la la-dollar icon-element me-2 text-success"></i>
+      ضمان أفضل الأسعار بدون متاعب
+    </li>
+    <li class="mb-2">
+      <i class="la la-microphone icon-element me-2 text-info"></i>
+      خدمة العملاء متوفرة 24/7
+    </li>
+  
+  </ul>
+</div>
+
             <!-- end sidebar-widget -->
             <div class="sidebar-widget single-content-widget">
               <h3 class="title stroke-shape"> تواصل مع الفندق </h3>
@@ -906,16 +913,16 @@ START RELATE TOUR AREA
             </h3>
             <p class="card-meta">{{hotel.location.city.state}} , {{hotels.location.address}}</p>
             <div class="card-rating">
-              {% if average_rating > 0 %}
+              {% if hotels.average_rating > 0 %}
 
-              <span class="badge text-white">{{average_rating}}/5</span>
+              <span class="badge text-white">{{hotels.average_rating}}/5</span>
 
               {% else %}
               <span class="badge text-white">0.0/5</span>
 
               {% endif %}
               <span class="review__text">معدل</span>
-              <span class="rating__text">({{review_count}} التعليقات)</span>
+              <span class="rating__text">({{hotels.review_count}} التعليقات)</span>
             </div>
             <div class="card-price d-flex align-items-center justify-content-between">
 
