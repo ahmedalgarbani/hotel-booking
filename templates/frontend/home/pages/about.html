@@ -53,7 +53,7 @@ START INFO AREA
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
           <div class="card-img">
-            <img src="{% static 'images\diar.jpg' %}" alt="عن ديار" />
+            <img src="{% static 'images\img21.jpg' %}" alt="عن ديار" />
           </div>
           <div class="card-body">
             <h3 class="card-title mb-2">من نحن؟</h3>
@@ -67,7 +67,7 @@ START INFO AREA
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
           <div class="card-img">
-            <img src="{% static 'images\diar2.jpg' %}" alt="ماذا نفعل" />
+            <img src="{% static 'images\img22.jpg' %}" alt="ماذا نفعل" />
           </div>
           <div class="card-body">
             <h3 class="card-title mb-2">ماذا نقدم؟</h3>
@@ -81,7 +81,7 @@ START INFO AREA
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
           <div class="card-img">
-            <img src="{% static 'images\diar3.jpg' %}" alt="مهمتنا" />
+            <img src="{% static 'images\img23.jpg' %}" alt="مهمتنا" />
           </div>
           <div class="card-body">
             <h3 class="card-title mb-2">مهمتنا</h3>
@@ -99,10 +99,7 @@ START INFO AREA
 <!-- ================================
 END INFO AREA
 ================================= -->
-
-<!-- ================================
-START ABOUT AREA
-================================= -->
+<!-- ================================> START ABOUT AREA -->
 <section class="about-area padding-bottom-90px overflow-hidden">
   <div class="container">
     <div class="row">
@@ -126,22 +123,26 @@ START ABOUT AREA
             <br><strong>ديار — لأن راحتك تبدأ من هنا.</strong>
           </p>
         </div>
-        
         <!-- end section-heading -->
       </div>
       <!-- end col-lg-6 -->
+
       <div class="col-lg-5 ms-auto">
-        <div class="image-box about-img-box">
+        <div class="image-box about-img-box position-relative">
           <img
             src="{% static 'images/img24.jpg' %}"
             alt="about-img"
             class="imgitem imgitem-1"
+            style="width: 500px; height: 500px; object-fit: cover; border-radius: 10px; border: 2px solid white;"
           />
-          <img
-            src="{% static 'images/img25.jpg' %}"
-            alt="about-img"
-            class="imgitem imgitem-2"
-          />
+          <div class="position-absolute bottom-0 end-12" style="border: 2px solid white; border-radius: 50%;">
+            <img
+              src="{% static 'images/img22.jpg' %}"
+              alt="about-img"
+              class="imgitem imgitem-2"
+              style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;"
+            />
+          </div>
         </div>
       </div>
       <!-- end col-lg-5 -->
@@ -150,6 +151,8 @@ START ABOUT AREA
   </div>
   <!-- end container -->
 </section>
+<!-- ================================> END ABOUT AREA -->
+
 <!-- end about-area -->
 <!-- ================================
 END ABOUT AREA
