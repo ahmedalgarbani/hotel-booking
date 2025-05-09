@@ -6,7 +6,7 @@ from customer.models import Favourites
 from hotels import settings
 from notifications.models import Notifications
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
-from reviews.models import RoomReview
+from reviews.models import HotelReview, RoomReview
 from rooms.models import Availability, Category, RoomType,RoomImage
 from services.models import HotelService, RoomTypeService
 from django.core.exceptions import ValidationError
@@ -223,7 +223,7 @@ class BookingSerializer(serializers.ModelSerializer):
 class RoomsSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
-
+    reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = RoomType
@@ -236,6 +236,10 @@ class RoomsSerializer(serializers.ModelSerializer):
     def get_services(self, obj):
         services = obj.room_services.all()
         return RoomServiceSerializer(services, many=True).data
+    
+    def get_reviews(self, obj):
+        reviews = obj.room_reviews.filter(status=True)
+        return RoomReviewSerializer(reviews, many=True).data
 
 
 from datetime import datetime
@@ -246,10 +250,12 @@ class HotelSerializer(serializers.ModelSerializer):
     services = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
     paymentOption = serializers.SerializerMethodField()
+    reviews = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Hotel
-        fields = ['id', 'name', 'profile_picture', 'description', 'location', 'services', 'rooms', 'paymentOption']
+        fields = ['id', 'name', 'profile_picture', 'description', 'location','reviews', 'services', 'rooms', 'paymentOption']
 
     
     def get_rooms(self, obj):
@@ -297,6 +303,10 @@ class HotelSerializer(serializers.ModelSerializer):
 
     def get_location(self, obj):
         return obj.location.address if obj.location else None
+    
+    def get_reviews(self, obj):
+        reviews = obj.hotel_reviews.filter(status=True)
+        return HotelReviewSerializer(reviews, many=True).data
 
 
 
@@ -305,27 +315,52 @@ class HotelSerializer(serializers.ModelSerializer):
 
 class RoomReviewSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField()
-    profile_picture = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = RoomReview
-        fields = ["id", "user_name","hotel","room_type","profile_picture" ,"rating", "review", "created_at"]
-   
+        fields = ["id", "user_name","hotel","room_type","image" ,"rating", "review", "created_at"]
     
     def get_user_name(self, obj):
-        return f"{obj.user.user.first_name} {obj.user.user.last_name}"
+        return f"{obj.user.first_name} {obj.user.last_name}"
     
-    def get_profile_picture(self, obj):
-        if obj.user.user.profile_picture:
+    def get_image(self, obj):
+        if obj.user.image:
             request = self.context.get("request")
             if request:
-                return request.build_absolute_uri(obj.user.user.profile_picture.url)
-            return obj.user.user.profile_picture.url
+                return request.build_absolute_uri(obj.user.image.url)
+            return obj.user.image.url
         return None 
     def validate(self, data):
         if not data.get('room_type'):
             raise serializers.ValidationError("يجب تحديد غرفه.")
         return data
+
+
+class HotelReviewSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    class Meta:
+        model = HotelReview
+        fields = [
+            'id', 'hotel', 'user','image',
+            'rating_service', 'rating_location',
+            'rating_value_for_money', 'rating_cleanliness',
+            'review', 'status', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at', 'user']
+    
+    def get_image(self, obj):
+        if obj.user.image:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.user.image.url)
+            return obj.user.image.url
+        return None 
+    def validate(self, data):
+        if not data.get('hotel'):
+            raise serializers.ValidationError("يجب تحديد غرفه.")
+        return data    
+
 
 
 

@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     BookingViewSet, CategoriesViewSet, ChangePasswordView, CheckOTPView, FavouritesViewSet,
-    GuestViewSet, HotelAvailabilityViewSet, HotelPaymentMethodViewSet, HotelsViewSet,
-    LoginView, LogoutView, NotificationsViewSet, PaymentViewSet, RegisterView, ReviewViewSet, SendSMSView,
+    GuestViewSet, HotelAvailabilityViewSet, HotelPaymentMethodViewSet, HotelReviewViewSet, HotelsViewSet,
+    LoginView, LogoutView, NotificationsViewSet, PaymentViewSet, RegisterView, RoomReviewViewSet, SendSMSView,
     UserProfileView, call_gemini_chat_bot, get_best_hotels_by_gemini, usage
 )
 from rest_framework_simplejwt.views import (
@@ -25,7 +25,8 @@ router.register(r'bookings', BookingViewSet,basename='booking')
 router.register(r'notifications', NotificationsViewSet,basename='notification')
 router.register(r'categories', CategoriesViewSet,basename='categories')
 router.register(r'guests', GuestViewSet, basename='guest')
-router.register(r'reviews', ReviewViewSet, basename='review')
+router.register(r'RoomReview', RoomReviewViewSet, basename='review')
+router.register(r'hotel-reviews', HotelReviewViewSet, basename='hotel-review')
 
 # router.register(r'user-profile', UserProfileView,basename='user-profile')
 # router.register(r'hotel_availability', HotelAvailabilityViewSet,basename='hotel_availability')
