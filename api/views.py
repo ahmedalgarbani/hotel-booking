@@ -863,13 +863,9 @@ class HotelAvailabilityViewSet(APIView):
 @api_view(['POST'])
 def call_gemini_chat_bot(request):
     prompt = request.data.get('prompt')
-
     if not prompt:
         return Response({"message": "Prompt is required."}, status=400)
-
     message = call_gemini_api(prompt=prompt)
-
-
     if message:
         return Response({
             "message": message,
