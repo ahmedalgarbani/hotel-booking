@@ -41,6 +41,9 @@ class ExtensionMovementAdmin(admin.ModelAdmin):
             if db_field.name == "booking":
                 if hasattr(user, 'hotel') and user.hotel:
                     kwargs["queryset"] = db_field.related_model.objects.filter(hotel=user.hotel)
+            elif db_field.name == "payment_receipt":
+                if hasattr(user, 'hotel') and user.hotel:
+                    kwargs["queryset"] = db_field.related_model.objects.filter(booking__hotel=user.hotel)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     fieldsets = (
