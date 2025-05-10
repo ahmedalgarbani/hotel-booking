@@ -338,6 +338,8 @@ class HotelRequest(models.Model):
                 first_name=self.name,
                 user_type="hotel_manager",
                 is_staff=True,
+                # إضافة رقم الهاتف
+                phone=f"{self.country_code}{self.phone_number}"
             )
 
             # تعيين كلمة مرور عشوائية
@@ -365,7 +367,11 @@ class HotelRequest(models.Model):
             if not email_sent:
                 print(f"فشل في إرسال البريد الإلكتروني إلى {hotel_manager.email}")
         else:
+            # إذا كان المستخدم موجودًا بالفعل، قم بتحديث رقم الهاتف إذا لم يكن موجودًا
             hotel_manager = User.objects.get(email=self.email)
+            if not hotel_manager.phone:
+                hotel_manager.phone = f"{self.country_code}{self.phone_number}"
+                hotel_manager.save()
 
         # إنشاء سجل المدينة إذا لم تكن موجودة
         city, created = City.objects.get_or_create(
