@@ -128,6 +128,21 @@ class RoomType(BaseModel):
 
         return max(self.rooms_count - active_bookings, 0)
 
+    def get_current_price(self):
+        """
+        الحصول على سعر الغرفة الحالي من جدول أسعار الغرف
+        إذا لم يكن هناك سعر محدد، يتم استخدام السعر الأساسي
+        """
+        today = timezone.now().date()
+        room_price = self.prices.filter(
+            date_from__lte=today,
+            date_to__gte=today
+        ).order_by('-is_special_offer').first()
+
+        if room_price:
+            return room_price.price
+        return None
+
 
 class RoomPrice(BaseModel):
     hotel = models.ForeignKey(

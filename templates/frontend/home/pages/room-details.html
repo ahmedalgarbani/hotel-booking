@@ -858,7 +858,7 @@ START TOUR DETAIL AREA
                   >وسائل الراحة</a
                 >
               </li>
-              
+
               <li>
                 <a data-scroll="reviews" href="#reviews" class="scroll-link"
                   >المراجعات</a
@@ -1285,7 +1285,7 @@ START TOUR DETAIL AREA
                           <label class="d-flex justify-content-between align-items-center">
                             {{ service.name }}
                             <span class="text-black font-weight-regular">ريال{{ service.additional_price }}</span>
-                            
+
                           </label>
                         </div>
                         {% endif %}
@@ -1462,7 +1462,15 @@ START RELATE TOUR AREA
             <div class="card-price pb-2">
               <p>
                 <span class="price__from">من عند</span>
-                <span class="price__num">{{external_rooms.base_price}}</span>
+                <span class="price__num">
+                  {% with today=external_rooms.get_current_price %}
+                    {% if today %}
+                      {{ today }}
+                    {% else %}
+                      {{ external_rooms.base_price }}
+                    {% endif %}
+                  {% endwith %}
+                </span>
               </p>
             </div>
             <h3 class="title font-size-26">
