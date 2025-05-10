@@ -43,12 +43,12 @@ def index(request):
     try:
         setting = Setting.objects.latest('id')
     except Setting.DoesNotExist:
-        setting = None  # or provide a default value
+        setting = None  
     
     try:
         heroSlider = HeroSlider.objects.filter(is_active=True).latest('id')
     except HeroSlider.DoesNotExist:
-        heroSlider = None  # or provide a default value
+        heroSlider = None  
     
     socialMediaLink = SocialMediaLink.objects.filter(status=True)
     hotels = Hotel.objects.filter(is_verified=True).annotate(
@@ -152,8 +152,12 @@ def hotels(request):
     ratings = request.GET.getlist('rating')  
     services = request.GET.getlist('services')  
     
+    print("-------------------------------")
     all_services = HotelService.objects.filter(is_active=True).values('id', 'name').distinct().order_by('name')
+    print(all_services)
+    print(all_services)
     all_services = list({service['name']: service for service in all_services}.values())
+
 
     hotels = Hotel.objects.filter(is_verified=True)
 

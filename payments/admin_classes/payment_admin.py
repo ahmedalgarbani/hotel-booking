@@ -3,20 +3,12 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
+from django.shortcuts import render
 
 from payments.models import Payment
-from django.contrib.admin.helpers import ActionForm 
 from django import forms
 
-class ChangeStatusForm(ActionForm): 
-    new_status = forms.ChoiceField(
-        choices=[('', '-- اختر الحالة --')] + list(Payment.payment_choice),
-        required=True, 
-        label=_("الحالة الجديدة")
-    )
-
 class PaymentAdmin(admin.ModelAdmin):
-    action_form = ChangeStatusForm
     list_display = [
         'id', 'booking_link', 'user_link', 'payment_method', 'payment_totalamount',
         'payment_currency', 'styled_payment_status', 'payment_date', 'payment_type',
@@ -28,7 +20,7 @@ class PaymentAdmin(admin.ModelAdmin):
     readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency','created_at', 'updated_at', 'created_by', 'updated_by','deleted_at']
     actions = ['change_payment_status']
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
@@ -67,7 +59,7 @@ class PaymentAdmin(admin.ModelAdmin):
     styled_payment_status.admin_order_field = 'payment_status'
 
     def view_payment_details_button(self, obj):
-        url = reverse('payments:external-payment-detail', args=[obj.pk]) 
+        url = reverse('payments:external-payment-detail', args=[obj.pk])
         return format_html(
             '<a class="button btn btn-info" href="{}" target="_blank">{}</a>',
             url,
@@ -77,19 +69,50 @@ class PaymentAdmin(admin.ModelAdmin):
 
     @admin.action(description=_("تغيير حالة الدفعات المحددة"))
     def change_payment_status(self, request, queryset):
-        new_status = request.POST.get('new_status')
-        if new_status is None:
-            self.message_user(request, _("يرجى تحديد حالة جديدة للتغيير."), level='warning')
-            return
+        # إنشاء نموذج مخصص للإجراء
+        class StatusChangeForm(forms.Form):
+            new_status = forms.ChoiceField(
+                choices=Payment.payment_choice,
+                label=_("الحالة الجديدة"),
+                required=True
+            )
 
-        updated_count = 0
-        try:
-            with transaction.atomic():
-                for payment in queryset:
-                    payment.payment_status = new_status
-                    payment.save()
-                    updated_count += 1
-            label = dict(Payment.payment_choice).get(int(new_status), new_status)
-            self.message_user(request, _(f"تم تغيير حالة {updated_count} دفعة(ات) إلى '{label}'"))
-        except Exception as e:
-            self.message_user(request, _("حدث خطأ أثناء تحديث الحالة: {}").format(str(e)), level='error')
+        # إذا كان هذا طلب POST وبيانات النموذج صالحة، قم بمعالجة الإجراء
+        if 'apply' in request.POST:
+            form = StatusChangeForm(request.POST)
+            if form.is_valid():
+                new_status = form.cleaned_data['new_status']
+                updated_count = 0
+                try:
+                    with transaction.atomic():
+                        for payment in queryset:
+                            payment.payment_status = int(new_status)
+                            payment.save()
+
+                            # إذا تم تغيير حالة الدفع إلى "تم الدفع"، قم بتحديث حالة الحجز إلى "مؤكد"
+                            if int(new_status) == 1 and payment.booking.status != '1':
+                                payment.booking.status = '1'  # تأكيد الحجز
+                                payment.booking.save()
+
+                            # إذا تم تغيير حالة الدفع إلى "مرفوض"، قم بتحديث حالة الحجز إلى "ملغي"
+                            elif int(new_status) == 2 and payment.booking.status != '2':
+                                payment.booking.status = '2'  # إلغاء الحجز
+                                payment.booking.save()
+
+                            updated_count += 1
+
+                    label = dict(Payment.payment_choice).get(int(new_status), new_status)
+                    self.message_user(request, _(f"تم تغيير حالة {updated_count} دفعة(ات) إلى '{label}'"))
+                except Exception as e:
+                    self.message_user(request, _("حدث خطأ أثناء تحديث الحالة: {}").format(str(e)), level='error')
+                return None
+
+        # إذا كان هذا طلب GET أو النموذج غير صالح، اعرض النموذج
+        form = StatusChangeForm()
+        context = {
+            'title': _('تغيير حالة الدفعات'),
+            'queryset': queryset,
+            'form': form,
+            'action_checkbox_name': admin.helpers.ACTION_CHECKBOX_NAME,
+        }
+        return render(request, 'admin/payment_status_change_form.html', context)

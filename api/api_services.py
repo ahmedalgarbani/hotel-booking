@@ -1,9 +1,12 @@
 import json
+import os
 import requests
 from django.conf import settings
 
+from home.models import PaymenPolicy, PrivacyPolicy, Setting, SocialMediaLink, TermsConditions
+
 def call_gemini_api(prompt, text=None):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={settings.GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={os.getenv("GEMINI_API_KEY")}"
     
     headers = {
         "Content-Type": "application/json",
@@ -48,13 +51,18 @@ The JSON format must be exactly:
             ]
         }
     else:
-        # Normal chat prompt
-        chat_prompt = f"""
-أنت مساعد افتراضي ذكي يعمل كموظف خدمة عملاء رسمي لفندق [طرزان]. مهمتك الأساسية هي الرد على استفسارات الضيوف والمستخدمين المتعلقة فقط بالفندق وخدماته.
+        setting = Setting.objects.latest('id')
+        info1 = TermsConditions.objects.latest('id')
+        info2 = PaymenPolicy.objects.latest('id')
+        info3 = PrivacyPolicy.objects.latest('id')
+        info4 = SocialMediaLink.objects.all()
 
-رسالة المستخدم:
-{prompt}
-"""
+        chat_prompt = f"""
+                        أنت مساعد افتراضي ذكي يعمل كموظف خدمة عملاء رسمي لمصنه الحجز الفندقيه المحليه اليمنيه [ديار]. مهمتك الأساسية هي الرد على استفسارات الضيوف والمستخدمين المتعلقة فقط بالفندق وخدماته.
+                        بنا على هذه المعلومات 
+                        
+                        
+                        """
         data = {
             "contents": [
                 {
@@ -67,6 +75,7 @@ The JSON format must be exactly:
             ]
         }
 
+  
     try:
         response = requests.post(url, headers=headers, json=data)
         if response.status_code == 200:
@@ -77,8 +86,7 @@ The JSON format must be exactly:
                 message = message.strip()
 
                 if text:
-                    # Hotel Matching Mode
-                    # Clean if it starts with ```json or ```
+                  
                     if message.startswith('```json'):
                         message = message[7:].strip()
                     if message.startswith('```'):
@@ -94,7 +102,6 @@ The JSON format must be exactly:
                         print(f"Error decoding JSON: {e}\nMessage content: {message}")
                         return None
                 else:
-                    # Normal Chat Mode
                     return message
             else:
                 print("Error: No candidates found in the response.")

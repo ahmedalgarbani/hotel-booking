@@ -14,7 +14,7 @@ urlpatterns = [
 #    path('payment_complete/<int:hotel_id>/', views.payment_complete, name='payment_complete'),
 
     path('add_guest/<int:booking_id>/', views.add_guest, name='add_guest'),
-    path('payment-detail/<int:booking_id>/', views.payment_detail_view, name='external-payment-detail'),
+    path('payment-detail/<int:pk>/', views.payment_detail_view, name='external-payment-detail'),
     
     # Report URLs
     path('reports/revenue-summary/', staff_member_required(revenue_summary_view), name='revenue-summary'),

@@ -298,8 +298,8 @@ def user_dashboard_wishlist(request):
 @login_required(login_url='/users/login')
 def user_dashboard_reviews(request):
     # جلب المراجعات من قاعدة البيانات
-    hotel_reviews = HotelReview.objects.all()  # جلب جميع مراجعات الفنادق
-    room_reviews = RoomReview.objects.all()  # جلب جميع مراجعات الغرف
+    hotel_reviews = HotelReview.objects.filter(status=True,user=request.user)  # جلب جميع مراجعات الفنادق
+    room_reviews = RoomReview.objects.filter(status=True,user=request.user)  # جلب جميع مراجعات الغرف
 
     # تمرير قائمة النجوم بناءً على التقييم
     for review in hotel_reviews:

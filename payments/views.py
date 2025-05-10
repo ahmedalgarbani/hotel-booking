@@ -13,7 +13,7 @@ from datetime import datetime
 import random
 from decimal import Decimal
 from django.core.serializers.json import DjangoJSONEncoder
-from bookings.models import Booking, Guest
+from bookings.models import Booking, BookingDetail, Guest
 from payments.models import Payment,HotelPaymentMethod
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
@@ -196,7 +196,8 @@ class DecimalEncoder(DjangoJSONEncoder):
         if isinstance(obj, Decimal):
             return float(obj)
         return super().default(obj)
-
+    
+@login_required(login_url='/users/login')
 def checkout(request, room_id):
     room = get_object_or_404(RoomType, id=room_id)
     hotel = room.hotel
@@ -253,7 +254,6 @@ def save_guests(request, room_id):
 
 logger = logging.getLogger(__name__)
 
-@login_required(login_url='/users/login')
 def hotel_confirm_payment(request):
     if request.method != 'POST':
         return redirect("payments:checkout", room_id=request.session.get("booking_data", {}).get("room_id", 1))
@@ -287,6 +287,24 @@ def hotel_confirm_payment(request):
                 status=pending_status,
                 rooms_booked=booking_data["room_number"],
             )
+            for service_detail in booking_data.get("extra_services", []):
+                service_id = service_detail["id"]
+                quantity = booking_data["room_number"] * booking_data["days"]
+                price = service_detail["price"]
+
+                try:
+                    service = RoomTypeService.objects.get(id=service_id)
+                except RoomTypeService.DoesNotExist:
+                    continue  
+
+                BookingDetail.objects.create(
+                    booking=booking,
+                    hotel_id=booking_data["hotel_id"],
+                    service=service,
+                    quantity=quantity,
+                    price=price,
+                    notes=f"خدمة إضافية للحجز - {service.name}"
+                )
 
             payment = Payment.objects.create(
                 payment_method=payment_method,

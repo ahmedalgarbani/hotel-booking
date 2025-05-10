@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from HotelManagement.services import get_hotels_query, get_query_params
 from bookings.models import Booking
 from customer.models import Favourites
+from services.models import HotelService
 from .models import HotelRequest, Hotel, City, Image
 from .forms import HotelRequestForm
 import json
@@ -220,13 +221,18 @@ def hotel_search(request):
         ),
         booking_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED))
     )
-
+    print("-------------------------------")
+    all_services = HotelService.objects.filter(is_active=True).values('id', 'name').distinct().order_by('name')
+    print(all_services)
+    print(all_services)
+    all_services = list({service['name']: service for service in all_services}.values())
     ctx = {
         'adult_number': adult_number,
         'check_in_start': check_in.strftime('%m/%d/%Y') if check_in else '',
         'check_out_start': check_out.strftime('%m/%d/%Y') if check_out else '',
         'hotels': hotels,
         'error_message': error_message,
+        "all_services":all_services
     }
     
     return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)

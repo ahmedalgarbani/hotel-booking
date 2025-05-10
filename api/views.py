@@ -11,7 +11,7 @@ from bookings.models import Booking, Guest
 from customer.models import Favourites
 from notifications.models import Notifications
 from payments.models import HotelPaymentMethod, Payment
-from reviews.models import RoomReview
+from reviews.models import HotelReview, RoomReview
 from rooms.models import Availability, Category, RoomType
 from HotelManagement.models import Hotel
 from users.models import CustomUser
@@ -19,7 +19,7 @@ from users.utils import send_sms_via_sadeem
 from .serializers import (
     BookingSerializer, CategorySerializer, ChangePasswordSerializer,
     FavouritesSerializer, GuestSerializer, HotelAvabilitySerializer,
-    HotelPaymentMethodSerializer, NotificationsSerializer, PaymentSerializer, RoomReviewSerializer,
+    HotelPaymentMethodSerializer, HotelReviewSerializer, NotificationsSerializer, PaymentSerializer, RoomReviewSerializer,
     RoomsSerializer, HotelSerializer, RegisterSerializer, UserProfileSerializer,
     UserSerializer
 )
@@ -139,7 +139,7 @@ class HotelsViewSet(viewsets.ModelViewSet):
         return self.get_paginated_response(serializer.data)
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class RoomReviewViewSet(viewsets.ModelViewSet):
     queryset = RoomReview.objects.filter(status=True)
     serializer_class = RoomReviewSerializer
     permission_classes = [IsAuthenticated]
@@ -148,7 +148,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class HotelReviewViewSet(viewsets.ModelViewSet):
+    queryset = HotelReview.objects.filter(status=True)
+    serializer_class = HotelReviewSerializer
+    permission_classes = [IsAuthenticated]
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class HotelPaymentMethodViewSet(viewsets.ModelViewSet):
@@ -857,13 +863,9 @@ class HotelAvailabilityViewSet(APIView):
 @api_view(['POST'])
 def call_gemini_chat_bot(request):
     prompt = request.data.get('prompt')
-
     if not prompt:
         return Response({"message": "Prompt is required."}, status=400)
-
     message = call_gemini_api(prompt=prompt)
-
-
     if message:
         return Response({
             "message": message,
@@ -1024,7 +1026,7 @@ class SendSMSView(APIView):
 
         otp_code = ''.join(random.choices('0123456789', k=6))
         otp_created_at = timezone.now()
-        message = f"Your verification code is: {otp_code}"
+        message = f"رمز التحقق الخاص بك لتسجيل حساب ديار هو: {otp_code}"
         success = send_sms_via_sadeem(phone_number, message)
 
         if success:

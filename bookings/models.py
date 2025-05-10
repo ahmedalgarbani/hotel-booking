@@ -133,7 +133,7 @@ class Booking(BaseModel):
         default=1,
         validators=[MinValueValidator(1)]
     )
-    
+
 
     class Meta:
         verbose_name = _("حجز")
@@ -170,7 +170,7 @@ class Booking(BaseModel):
                     availability.save()
                     print(f"[{current}] after: {availability.available_rooms}")
                 except Availability.DoesNotExist:
-                    
+
                     print(f"[{current}] created: {availability.available_rooms}")
                 current += timedelta(days=1)
 
@@ -184,7 +184,6 @@ class Booking(BaseModel):
             title=title if title else _("اشعار اتمام الحجز"),
             message=message,
             notification_type='2' if type == 'CONFIRMED' else '1',
-            action_url=action_url,
         )
 
     def send_cancellation_notification(self):
@@ -204,8 +203,10 @@ class Booking(BaseModel):
                 raise ValidationError(_("يجب تحديد تاريخ الوصول والمغادرة."))
             if self.check_out_date <= self.check_in_date:
                 raise ValidationError(_("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول."))
-        if self.hotel != self.room.hotel:
-            raise ValidationError(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
+        # التحقق من أن الفندق والغرفة من نفس الفندق فقط إذا تم تعيين كلاهما
+        if hasattr(self, 'hotel') and hasattr(self, 'room') and self.hotel and self.room:
+            if self.hotel != self.room.hotel:
+                raise ValidationError(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
 
 
     def save(self, *args, **kwargs):
@@ -216,6 +217,10 @@ class Booking(BaseModel):
                 original = Booking.objects.get(pk=self.pk)
             except Booking.DoesNotExist:
                 pass
+
+        # تعيين الفندق تلقائيًا من الغرفة إذا لم يتم تعيينه
+        if not self.hotel_id and self.room_id:
+            self.hotel = self.room.hotel
 
         if is_new and self.status == Booking.BookingStatus.CONFIRMED:
             super().save(*args, **kwargs)
@@ -520,7 +525,7 @@ class BookingHistory(models.Model):
         verbose_name=_("عدد الغرف المحجوزة"),
         validators=[MinValueValidator(1)]
     )
-   
+
 
     class Meta:
         verbose_name = _("سجل الحجز")
