@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-$&gp2^!(w4%x2zo)1ohk&xk@$10kcw=3w15(t_q(x6$!6gec(p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34","192.168.60.34"]
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34","192.168.60.34","192.168.0.105"]
 
 # Load environment variables from .env file
 load_dotenv()
