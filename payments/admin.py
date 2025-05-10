@@ -26,36 +26,36 @@ class PaymentManagerAdminMixin:
         if not request.user.is_superuser:
             if db_field.name == "booking":
                 kwargs["queryset"] = Booking.objects.filter(
-                    Q(hotel__manager=request.user) | 
+                    Q(hotel__manager=request.user) |
                     Q(hotel__manager=request.user.chield)
                 )
             elif db_field.name == "payment_method":
                 kwargs["queryset"] = HotelPaymentMethod.objects.filter(
-                    Q(hotel__manager=request.user) | 
+                    Q(hotel__manager=request.user) |
                     Q(hotel__manager=request.user.chield)
                 )
             elif db_field.name == "currency":
                 kwargs["queryset"] = Currency.objects.filter(
-                    Q(hotel__manager=request.user) | 
+                    Q(hotel__manager=request.user) |
                     Q(hotel__manager=request.user.chield)
                 )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-            
+
             form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
             form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
             form.base_fields['hotel'].widget.attrs['readonly'] = True
             form.base_fields['hotel'].required = False
-            
+
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
                 form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
-            
+
             if 'created_by' in form.base_fields:
-                
+
                 form.base_fields['created_by'].widget.attrs['disabled'] = True
                 form.base_fields['created_by'].initial = request.user
                 form.base_fields['created_by'].required = False
@@ -74,7 +74,7 @@ class PaymentManagerAdminMixin:
 
 
 
-class ChangePaymentStatusForm(ActionForm):  
+class ChangePaymentStatusForm(ActionForm):
     new_status = forms.ChoiceField(
         choices=[('', '-- اختر الحالة --')] + list(Payment.payment_choice),
         required=False,
@@ -91,7 +91,7 @@ class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Add
     search_fields = ('hotel__name', 'account_name')
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
@@ -104,10 +104,10 @@ class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
 
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.user_type == 'hotel_manager':
@@ -122,9 +122,9 @@ class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
 
 
 class AutoUserTrackMixin:
-    
+
     def save_model(self, request, obj, form, change):
-        if not obj.pk: 
+        if not obj.pk:
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
@@ -161,10 +161,34 @@ class PaymentHistoryAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     )
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Si el usuario es un gerente de hotel, filtrar por su hotel
+        if request.user.user_type == 'hotel_manager' and hasattr(request.user, 'hotel') and request.user.hotel:
+            return qs.filter(payment__booking__hotel=request.user.hotel)
+        return qs
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        # Permitir a los superusuarios eliminar cualquier registro de historial
+        if request.user.is_superuser:
+            return True
+
+        # Permitir a los gerentes de hotel eliminar registros de historial de su propio hotel
+        if request.user.user_type == 'hotel_manager' and hasattr(request.user, 'hotel') and request.user.hotel:
+            return True
+
+        return False
+
 
 class AutoUserTrackMixin:
     def save_model(self, request, obj, form, change):
-        if not obj.pk: 
+        if not obj.pk:
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
@@ -175,10 +199,10 @@ class PaymentOptionAdmin(AutoUserTrackMixin, admin.ModelAdmin):
     search_fields = ('method_name',)
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.user_type == 'hotel_manager':

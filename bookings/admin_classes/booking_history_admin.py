@@ -22,4 +22,15 @@ class BookingHistoryAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
+        # Permitir a los superusuarios eliminar cualquier registro de historial
+        if request.user.is_superuser:
+            return True
+
+        # Permitir a los gerentes de hotel eliminar registros de historial de su propio hotel
+        if request.user.user_type == 'hotel_manager' and hasattr(request.user, 'hotel') and request.user.hotel:
+            if obj is None:  # Al mostrar la lista
+                return True
+            # Verificar si el registro pertenece al hotel del gerente
+            return obj.hotel == request.user.hotel
+
         return False
