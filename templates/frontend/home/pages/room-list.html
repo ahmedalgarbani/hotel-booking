@@ -407,7 +407,7 @@ START CARD AREA
                 <div class="card-price pb-2">
                   <p>
                     <span class="price__from">من عند</span>
-                    <span class="price__num">ر.س{{ room_type.base_price }}</span>
+                    <span class="price__num">ر.س{{ room_type.price_temp }}</span>
                     <span class="price__text">/ليلة</span>
                   </p>
                 </div>
@@ -452,7 +452,7 @@ START CARD AREA
       {% for category in categories %}
       <div class="tab-pane fade" id="cat-{{ category.id }}" role="tabpanel">
         <div class="row">
-          {% for room_type in category.room_types.all %}
+          {% for room_type in category.room_types.all  %}
           <div class="col-lg-12 mb-4">
             <!-- Replicate the same card structure as in 'all' tab -->
             <div class="card-item card-item-list room-card">
@@ -473,8 +473,8 @@ START CARD AREA
                 <div class="card-price pb-2">
                   <p>
                     <span class="price__from">من عند</span>
-                    <span class="price__num">ر.س{{ room_type.base_price }}</span>
-                    <span class="price__text">/ليلة</span>
+                        <span class="price__num">ر.ي{{ room_type.price_temp|default:room_type.base_price }}</span>
+                   <span class="price__text">/ليلة</span>
                   </p>
                 </div>
                 <h3 class="card-title font-size-26">
@@ -623,192 +623,5 @@ START CARD AREA
 {% endif %}
   </div>
 </section>
-<!-- end card-area -->
-<!-- ================================
-END CARD AREA
-================================= -->
-
-<!-- ================================
-START CHECK AVAILABILITY AREA
-================================= -->
-{% comment %} <section class="check-availability-area section-bg section-padding">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-12">
-        <div class="check-availability-content">
-          <div class="section-heading text-center">
-            <h2 class="sec__title">احجز إقامتك</h2>
-          </div>
-          <!-- end section-heading -->
-          <div class="contact-form-action padding-top-40px">
-            <form action="#">
-              <div class="row">
-                <div class="col-lg-3">
-                  <div class="input-box">
-                    <label class="label-text">تحقق في</label>
-                    <div class="form-group">
-                      <span class="la la-calendar form-icon"></span>
-                      <input
-                        class="date-picker-single form-control"
-                        type="text"
-                        name="date"
-                        readonly
-                      />
-                    </div>
-                  </div>
-                </div>
-                <!-- end col-lg-3 -->
-                <div class="col-lg-3">
-                  <div class="input-box">
-                    <label class="label-text">الدفع</label>
-                    <div class="form-group">
-                      <span class="la la-calendar form-icon"></span>
-                      <input
-                        class="date-picker-single form-control"
-                        type="text"
-                        name="date"
-                        readonly
-                      />
-                    </div>
-                  </div>
-                </div>
-                <!-- end col-lg-3 -->
-                <div class="col-lg-3">
-                  <div class="input-box">
-                    <label class="label-text">غرف</label>
-                    <div class="form-group">
-                      <div
-                        class="select-contain select2-container-wrapper w-auto"
-                      >
-                        <select class="select-contain-select">
-                          <option value="0">حدد الغرف</option>
-                          <option value="1" selected>1 غرفة</option>
-                          <option value="2">2 غرف</option>
-                          <option value="3">3 غرف</option>
-                          <option value="4">4 غرف</option>
-                          <option value="5">5 غرف</option>
-                          <option value="6">6 غرف</option>
-                          <option value="7">7 غرف</option>
-                          <option value="8">8 غرف</option>
-                          <option value="9">9 غرف</option>
-                          <option value="10">10 غرف</option>
-                          <option value="11">11 غرف</option>
-                          <option value="12">12 غرف</option>
-                          <option value="13">13 غرف</option>
-                          <option value="14">14 غرف</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- end col-lg-3 -->
-                <div class="col-lg-3">
-                  <div class="input-box">
-                    <label class="label-text">ضيوف</label>
-                    <div class="form-group">
-                      <div class="dropdown dropdown-contain">
-                        <a
-                          class="dropdown-toggle dropdown-btn"
-                          href="#"
-                          data-bs-toggle="dropdown"
-                        >
-                          <span
-                            >إجمالي الضيوف
-                            <span class="qtyTotal guestTotal">0</span></span
-                          >
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-wrap">
-                          <div class="dropdown-item">
-                            <div
-                              class="qty-box d-flex align-items-center justify-content-between"
-                            >
-                              <label>الكبار</label>
-                              <div class="qtyBtn d-flex align-items-center">
-                                <div class="qtyDec">
-                                  <i class="la la-minus"></i>
-                                </div>
-                                <input
-                                  type="text"
-                                  name="qtyInput"
-                                  value="0"
-                                />
-                                <div class="qtyInc">
-                                  <i class="la la-plus"></i>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- end dropdown-item -->
-                          <div class="dropdown-item">
-                            <div
-                              class="qty-box d-flex align-items-center justify-content-between"
-                            >
-                              <label>الأطفال <span>2-12 سنة</span></label>
-                              <div class="qtyBtn d-flex align-items-center">
-                                <div class="qtyDec">
-                                  <i class="la la-minus"></i>
-                                </div>
-                                <input
-                                  type="text"
-                                  name="qtyInput"
-                                  value="0"
-                                />
-                                <div class="qtyInc">
-                                  <i class="la la-plus"></i>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- end dropdown-item -->
-                          <div class="dropdown-item">
-                            <div
-                              class="qty-box d-flex align-items-center justify-content-between"
-                            >
-                              <label>الرضع <span>0-2 سنة</span></label>
-                              <div class="qtyBtn d-flex align-items-center">
-                                <div class="qtyDec">
-                                  <i class="la la-minus"></i>
-                                </div>
-                                <input
-                                  type="text"
-                                  name="qtyInput"
-                                  value="0"
-                                />
-                                <div class="qtyInc">
-                                  <i class="la la-plus"></i>
-                                </div>
-                              </div>
-                            </div>
-                            <!-- end qty-box -->
-                          </div>
-                          <!-- end dropdown-item -->
-                        </div>
-                      </div>
-                      <!-- end dropdown -->
-                    </div>
-                  </div>
-                </div>
-                <!-- end col-lg-3 -->
-                <div class="col-lg-12">
-                  <div class="btn-box text-center pt-2">
-                    <a href="#" class="theme-btn">التحقق من الصلاحية</a>
-                  </div>
-                </div>
-                <!-- end col-lg-3 -->
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <!-- end col-lg-12 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section> {% endcomment %}
-<!-- end check-availability-area -->
-<!-- ================================
-END CHECK AVAILABILITY AREA
-================================= -->
 
 {% endblock content %}

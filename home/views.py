@@ -15,6 +15,7 @@ from rooms.models import Availability, Category, RoomImage, RoomPrice, RoomType
 from datetime import datetime
 from django.db.models import Q, Count, Avg,Min
 from django.shortcuts import get_object_or_404, render
+from rooms.services import get_room_price
 from services.models import Coupon, HotelService
 from .models import TeamMember, Partner, Testimonial
 from .models import PricingPlan
@@ -383,25 +384,25 @@ def room_search_result(request):
     return render(request,'frontend/home/pages/room-search-result.html',ctx)
 
 
-
-
+from rooms.services import get_room_price
+from django.db.models import Prefetch
 def room_list(request):
-    categories = Category.objects.prefetch_related('room_types').all()
-    all_rooms = RoomType.objects.filter(is_active=True).select_related('category', 'hotel')
-    paginator = Paginator(all_rooms, 5)  
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    context = {
+    rooms = RoomType.objects.filter(is_active=True).select_related('category', 'hotel').prefetch_related('images')
+
+    for room in rooms:
+        room.price_temp = get_room_price(room) or room.base_price
+
+    paginator = Paginator(rooms, 5)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    categories = Category.objects.filter(room_types__in=rooms).distinct().prefetch_related(
+            Prefetch('room_types', queryset=rooms, to_attr='active_room_types')
+        )
+
+    return render(request, 'frontend/home/pages/room-list.html', {
         'categories': categories,
         'page_obj': page_obj,
-        'paginator': paginator,
-    }
-    return render(request, 'frontend/home/pages/room-list.html', context)
-
-
-
-
+    })
 
 
 def contact(request):
