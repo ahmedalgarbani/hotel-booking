@@ -85,8 +85,27 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     show_payment_details_button.allow_tags = True
 
     def payment_details_view(self, request, booking_id):
-        booking = get_object_or_404(self.model, pk=booking_id)
-        payment = booking.payments.get(booking = booking)
+        # Verificar si el usuario es un administrador o un gerente de hotel
+        user = request.user
+
+        # Obtener la reserva y verificar permisos
+        if user.is_superuser or user.user_type == 'admin':
+            # Los administradores pueden ver todas las reservas
+            booking = get_object_or_404(self.model, pk=booking_id)
+        elif user.user_type == 'hotel_manager':
+            # Los gerentes de hotel solo pueden ver las reservas de su propio hotel
+            if hasattr(user, 'hotel') and user.hotel:
+                booking = get_object_or_404(self.model, pk=booking_id, hotel=user.hotel)
+            else:
+                # Si el gerente no está vinculado a ningún hotel, mostrar error
+                self.message_user(request, _("ليس لديك صلاحية للوصول إلى هذا الحجز"), level='error')
+                return redirect('admin:bookings_booking_changelist')
+        else:
+            # Otros usuarios no tienen acceso
+            self.message_user(request, _("ليس لديك صلاحية للوصول إلى هذا الحجز"), level='error')
+            return redirect('admin:bookings_booking_changelist')
+
+        payment = booking.payments.get(booking=booking)
         return render(request, 'admin/payments/payment_detail.html', {
             'payment': payment,
         })
@@ -219,6 +238,12 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
     # --- PDF Export Action ---
     def export_bookings_report(self, request, queryset):
+        # Verificar si el usuario es un gerente de hotel
+        user = request.user
+        if user.user_type == 'hotel_manager' and hasattr(user, 'hotel') and user.hotel:
+            # Filtrar el queryset para incluir solo las reservas del hotel del gerente
+            queryset = queryset.filter(hotel=user.hotel)
+
         # Import the report function from the services module
         from bookings.services.reports import export_bookings_report
         # Pass the queryset to the service function
@@ -246,7 +271,23 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 
 
     def extend_booking(self, request, object_id):
-        original_booking = get_object_or_404(Booking, pk=object_id)
+        # Verificar si el usuario es un administrador o un gerente de hotel
+        user = request.user
+
+        # Obtener la reserva y verificar permisos
+        if user.is_superuser or user.user_type == 'admin':
+            # Los administradores pueden ver todas las reservas
+            original_booking = get_object_or_404(Booking, pk=object_id)
+        elif user.user_type == 'hotel_manager':
+            # Los gerentes de hotel solo pueden ver las reservas de su propio hotel
+            if hasattr(user, 'hotel') and user.hotel:
+                original_booking = get_object_or_404(Booking, pk=object_id, hotel=user.hotel)
+            else:
+                # Si el gerente no está vinculado a ningún hotel, mostrar error
+                return JsonResponse({'success': False, 'message': 'ليس لديك صلاحية للوصول إلى هذا الحجز'})
+        else:
+            # Otros usuarios no tienen acceso
+            return JsonResponse({'success': False, 'message': 'ليس لديك صلاحية للوصول إلى هذا الحجز'})
 
         if request.method == 'POST':
             form = BookingExtensionForm(request.POST, booking=original_booking)
@@ -316,7 +357,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             else:
                 initial_new_check_out = original_booking.check_out_date
 
-            from datetime import datetime, timedelta
+            from datetime import datetime
             if isinstance(initial_new_check_out, datetime):
                 initial_new_check_out = initial_new_check_out.date()
 
@@ -349,13 +390,32 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         return render(request, 'admin/bookings/booking_extension.html', context)
 
     def set_actual_check_out_date_view(self, request, pk):
-         booking = get_object_or_404(Booking, pk=pk)
-         if booking.actual_check_out_date is None and booking.status != Booking.BookingStatus.CANCELED:
-             booking.actual_check_out_date = timezone.now()
-             # Optionally update status
-             # booking.status = Booking.BookingStatus.CHECKED_OUT
-             booking.save()
-             self.message_user(request, _("تم تسجيل تاريخ المغادرة الفعلي للحجز رقم {} بنجاح.").format(pk))
-         else:
-             self.message_user(request, _("لا يمكن تسجيل المغادرة لهذا الحجز."), level='warning')
-         return redirect('admin:bookings_booking_changelist')
+        # Verificar si el usuario es un administrador o un gerente de hotel
+        user = request.user
+
+        # Obtener la reserva y verificar permisos
+        if user.is_superuser or user.user_type == 'admin':
+            # Los administradores pueden ver todas las reservas
+            booking = get_object_or_404(Booking, pk=pk)
+        elif user.user_type == 'hotel_manager':
+            # Los gerentes de hotel solo pueden ver las reservas de su propio hotel
+            if hasattr(user, 'hotel') and user.hotel:
+                booking = get_object_or_404(Booking, pk=pk, hotel=user.hotel)
+            else:
+                # Si el gerente no está vinculado a ningún hotel, mostrar error
+                self.message_user(request, _("ليس لديك صلاحية للوصول إلى هذا الحجز"), level='error')
+                return redirect('admin:bookings_booking_changelist')
+        else:
+            # Otros usuarios no tienen acceso
+            self.message_user(request, _("ليس لديك صلاحية للوصول إلى هذا الحجز"), level='error')
+            return redirect('admin:bookings_booking_changelist')
+
+        if booking.actual_check_out_date is None and booking.status != Booking.BookingStatus.CANCELED:
+            booking.actual_check_out_date = timezone.now()
+            # Optionally update status
+            # booking.status = Booking.BookingStatus.CHECKED_OUT
+            booking.save()
+            self.message_user(request, _("تم تسجيل تاريخ المغادرة الفعلي للحجز رقم {} بنجاح.").format(pk))
+        else:
+            self.message_user(request, _("لا يمكن تسجيل المغادرة لهذا الحجز."), level='warning')
+        return redirect('admin:bookings_booking_changelist')
