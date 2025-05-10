@@ -40,3 +40,27 @@ class HotelRequestForm(forms.ModelForm):
         self.fields['business_license_number'].required = True
         self.fields['document_path'].required = True
         self.fields['address'].required = True
+        self.fields['country_code'].required = True
+        self.fields['phone_number'].required = True
+        self.fields['role'].required = True
+
+        # تعيين القيم الافتراضية
+        self.fields['country_code'].initial = '+967'
+        self.fields['role'].initial = 'مدير فندق'
+
+        # جعل حقل الدور للقراءة فقط
+        self.fields['role'].widget.attrs['readonly'] = True
+
+    def clean_phone_number(self):
+        """التحقق من أن رقم الهاتف يتكون من 9 أرقام فقط"""
+        phone_number = self.cleaned_data.get('phone_number')
+
+        if phone_number:
+            # إزالة أي أحرف غير رقمية
+            phone_number = ''.join(filter(str.isdigit, phone_number))
+
+            # التحقق من الطول
+            if len(phone_number) != 9:
+                raise forms.ValidationError(_('يجب أن يتكون رقم الهاتف من 9 أرقام فقط'))
+
+        return phone_number

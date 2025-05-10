@@ -23,32 +23,33 @@ def add_hotel_request(request):
         form = HotelRequestForm(request.POST, request.FILES)
         if form.is_valid():
             hotel_request = form.save(commit=False)
-            
-            # التحقق من الدولة والمحافظة
-            country = request.POST.get('country', '')
+
+            # التحقق من المحافظة
+            country = "اليمن"  # تعيين الدولة إلى اليمن دائمًا
             state = request.POST.get('state', '')
-            
-            # إذا تم اختيار "إضافة جديد"
-            if country == 'new':
-                country = request.POST.get('new_country', '')
+
+            # إذا تم اختيار "إضافة جديد" للمحافظة
             if state == 'new':
                 state = request.POST.get('new_state', '')
-            
-            # التحقق من أن القيم غير فارغة
-            if not country or not state:
-                messages.error(request, _('يرجى اختيار أو إدخال الدولة والمحافظة'))
+
+            # التحقق من أن المحافظة غير فارغة
+            if not state:
+                messages.error(request, _('يرجى اختيار أو إدخال المحافظة'))
                 return render(request, 'frontend/hotel/add_hotel.html', {'form': form, 'cities': City.objects.values('country', 'state').distinct()})
-            
+
             # حفظ المدينة الجديدة إذا لم تكن موجودة
             city, created = City.objects.get_or_create(
                 country=country,
                 state=state
             )
-            
+
             hotel_request.country = country
             hotel_request.state = state
             hotel_request.user = request.user
-            
+
+            # التأكد من أن الدور هو دائمًا "مدير فندق"
+            hotel_request.role = "مدير فندق"
+
             # معالجة الصور الإضافية
             additional_images = []
             if request.FILES.getlist('additional_images'):
@@ -61,18 +62,18 @@ def add_hotel_request(request):
                     with open(f'media/hotels/images/{image.name}', 'wb+') as destination:
                         for chunk in image.chunks():
                             destination.write(chunk)
-                            
+
             hotel_request.additional_images = json.dumps(additional_images)
             hotel_request.save()
-            
+
             messages.success(request, _('تم إرسال طلب إضافة الفندق بنجاح. سيتم مراجعته من قبل الإدارة.'))
             return redirect('home:index')
     else:
         form = HotelRequestForm()
-    
+
     # جلب جميع المدن الفريدة
     cities = City.objects.values('country', 'state').distinct()
-    
+
     context = {
         'form': form,
         'cities': cities,
@@ -93,17 +94,59 @@ def hotel_requests_list(request):
 
 @login_required(login_url='/users/login')
 @user_passes_test(is_admin)
+def hotel_request_detail(request, request_id):
+    """عرض تفاصيل طلب إضافة فندق"""
+    hotel_request = get_object_or_404(HotelRequest, id=request_id)
+
+    # معالجة الصور الإضافية
+    additional_images = []
+    if hotel_request.additional_images:
+        try:
+            images_data = json.loads(hotel_request.additional_images)
+            for image_data in images_data:
+                image_path = image_data.get('image_path')
+                if image_path:
+                    additional_images.append({
+                        'url': f'/media/{image_path}'
+                    })
+        except json.JSONDecodeError:
+            pass
+
+    context = {
+        'hotel_request': hotel_request,
+        'additional_images': additional_images,
+        'title': _('تفاصيل طلب الفندق')
+    }
+
+    return render(request, 'admin/HotelManagement/hotel_request_detail.html', context)
+
+@login_required(login_url='/users/login')
+@user_passes_test(is_admin)
 def approve_hotel_request(request, request_id):
     """الموافقة على طلب إضافة فندق"""
     hotel_request = get_object_or_404(HotelRequest, id=request_id)
-    
-    try:
-        hotel = hotel_request.approve(request.user)
-        messages.success(request, _(f'تمت الموافقة على طلب إضافة الفندق {hotel.name} بنجاح'))
-    except Exception as e:
-        messages.error(request, str(e))
-    
-    return redirect('hotel:requests_list')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'approve':
+            try:
+                hotel = hotel_request.approve(request.user)
+                messages.success(request, _(f'تمت الموافقة على طلب إضافة الفندق {hotel.name} بنجاح'))
+                return redirect('admin:HotelManagement_hotelrequest_changelist')
+            except Exception as e:
+                messages.error(request, str(e))
+
+        elif action == 'reject':
+            try:
+                hotel_request.delete()
+                messages.success(request, _('تم رفض طلب إضافة الفندق'))
+                return redirect('admin:HotelManagement_hotelrequest_changelist')
+            except Exception as e:
+                messages.error(request, str(e))
+
+    # إذا لم يتم تقديم نموذج POST أو حدث خطأ، قم بإعادة التوجيه إلى صفحة التفاصيل
+    return redirect('HotelManagement:hotel_request_detail', request_id=request_id)
 
 @login_required(login_url='/users/login')
 @user_passes_test(is_admin)
@@ -112,7 +155,7 @@ def reject_hotel_request(request, request_id):
     hotel_request = get_object_or_404(HotelRequest, id=request_id)
     hotel_request.delete()
     messages.success(request, _('تم رفض طلب إضافة الفندق'))
-    return redirect('hotel:requests_list')
+    return redirect('admin:HotelManagement_hotelrequest_changelist')
 
 
 
@@ -134,7 +177,7 @@ def notifications_context(request):
 
 
 
- 
+
 from datetime import datetime
 from django.db.models import Case, When, BooleanField
 
@@ -183,7 +226,7 @@ def hotel_search(request):
                 return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
 
         except json.JSONDecodeError:
-            pass  
+            pass
 
     hotel_name, check_in, check_out, adult_number, room_number, category_type = get_query_params(request)
 
@@ -201,9 +244,9 @@ def hotel_search(request):
     for hotel in hotels_query:
         hotel.is_favorite = hotel.id in favorite_hotel_ids
 
-    
+
     from django.db.models import Subquery, OuterRef
-    
+
     top_hotel_ids = Hotel.objects.filter(is_verified=True)\
         .annotate(confirmed_bookings_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED)))\
         .filter(confirmed_bookings_count__gt=0) \
@@ -234,6 +277,6 @@ def hotel_search(request):
         'error_message': error_message,
         "all_services":all_services
     }
-    
+
     return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
 

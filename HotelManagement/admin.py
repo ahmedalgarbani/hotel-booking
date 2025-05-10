@@ -43,24 +43,24 @@ User = get_user_model()
 def export_to_excel(modeladmin, request, queryset):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="hotels_report.xls"'
-    
+
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Hotels Report')
-    
+
     # العناوين
     row_num = 0
     columns = ['اسم الفندق', 'الموقع', 'المدينة', 'البريد الإلكتروني', 'حالة التحقق', 'تاريخ الإنشاء']
-    
+
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num])
-        
+
     # البيانات
     rows = queryset.values_list('name', 'is_verified', 'created_at')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
             ws.write(row_num, col_num, str(row[col_num]))
-            
+
     wb.save(response)
     return response
 
@@ -74,7 +74,7 @@ class HotelAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
     def get_absolute_url_link(self, obj):
@@ -102,7 +102,7 @@ class HotelAdmin(admin.ModelAdmin):
         elif request.user.user_type == 'hotel_staff':
             return queryset.filter(manager=request.user.chield)
         return queryset.none()
-    
+
     def changelist_view(self, request, extra_context=None):
         if not extra_context:
             extra_context = {}
@@ -130,16 +130,16 @@ class HotelAdmin(admin.ModelAdmin):
                         'city': hotel.location.city.state if hotel.location and hotel.location.city else '',
                         'address': hotel.location.address if hotel.location else '',
                     },
-                 
+
                     'total_images': Image.objects.filter(hotel_id=hotel).count(),
-                    'user_type': 'hotel_manager' 
+                    'user_type': 'hotel_manager'
                 }
             else:
                 stats = {
                     'message': 'لا يوجد فندق مرتبط بحسابك',
                     'user_type': 'hotel_manager'
                 }
-        
+
         extra_context['stats'] = stats
         return super().changelist_view(request, extra_context=extra_context)
 
@@ -209,13 +209,13 @@ class HotelAdmin(admin.ModelAdmin):
         ]))
 
         elements.append(table)
-        
+
         # إنشاء المستند
         doc.build(elements)
         return response
 
     export_to_pdf.short_description = "تصدير المحدد إلى PDF"
-    
+
 # ---------- Hotel -------------
 
 
@@ -225,7 +225,7 @@ class LocationAdmin(admin.ModelAdmin):
     list_filter = ('city',)
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
     def get_queryset(self, request):
@@ -233,20 +233,20 @@ class LocationAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.user_type == 'admin':
             return queryset
         elif request.user.user_type == 'hotel_manager':
-           
+
             return queryset.filter(hotel__manager=request.user)
         return queryset.none()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-           
+
             form.base_fields['city'].queryset = City.objects.filter(location__hotel__manager=request.user)
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
                 form.base_fields['updated_by'].widget.attrs['readonly'] = False
                 form.base_fields['updated_by'].required = False
-            
+
             if 'created_by' in form.base_fields:
                 form.base_fields['created_by'].initial = request.user
                 form.base_fields['created_by'].widget.attrs['readonly'] = True
@@ -255,7 +255,7 @@ class LocationAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if not obj.pk and request.user.user_type == 'hotel_manager':
-           
+
             obj.save()
             hotel = Hotel.objects.get(manager=request.user)
             obj.hotel = hotel
@@ -273,7 +273,7 @@ class PhoneAdmin(admin.ModelAdmin):
     list_filter = ('hotel',)
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
     def get_queryset(self, request):
@@ -287,17 +287,17 @@ class PhoneAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-            
+
             hotel = Hotel.objects.get(manager=request.user)
             form.base_fields['hotel'].queryset = Hotel.objects.filter(id=hotel.id)
             form.base_fields['hotel'].initial = hotel
             form.base_fields['hotel'].widget.attrs['readonly'] = True
-            
+
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
                 form.base_fields['updated_by'].widget.attrs['readonly'] = True
                 form.base_fields['updated_by'].required = False
-            
+
             if 'created_by' in form.base_fields:
                 form.base_fields['created_by'].initial = request.user
                 form.base_fields['created_by'].widget.attrs['readonly'] = True
@@ -305,18 +305,18 @@ class PhoneAdmin(admin.ModelAdmin):
         return form
 
     def save_model(self, request, obj, form, change):
-        if not change: 
+        if not change:
             if request.user.user_type == 'hotel_manager':
                 obj.hotel = Hotel.objects.get(manager=request.user)
             obj.created_by = request.user
             obj.updated_by = request.user
-        else:  
+        else:
             if request.user.user_type == 'hotel_manager':
-                
+
                 if not obj.hotel:
                     obj.hotel = Hotel.objects.get(manager=request.user)
             obj.updated_by = request.user
-        
+
         super().save_model(request, obj, form, change)
 
 # ----------- Image --------------
@@ -329,17 +329,17 @@ class ImageAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
-        
+
         if request and hasattr(request, 'user') and request.user.user_type == 'hotel_manager':
             hotel = Hotel.objects.get(manager=request.user)
             self.fields['hotel_id'].initial = request.user
             self.fields['hotel_id'].disabled = True
-            
+
             if 'updated_by' in self.fields:
                 self.fields['updated_by'].initial = request.user
                 self.fields['updated_by'].disabled = True
                 self.fields['updated_by'].required = False
-            
+
             if 'created_by' in self.fields:
                 self.fields['created_by'].initial = request.user
                 self.fields['created_by'].disabled = True
@@ -351,35 +351,35 @@ class ImageAdmin(admin.ModelAdmin):
     search_fields = ('image_path',)
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
-            
+
             form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
             form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
             form.base_fields['hotel'].widget.attrs['readonly'] = True
             form.base_fields['hotel'].required = False
-            
+
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
                 form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
-            
+
             if 'created_by' in form.base_fields:
-                
+
                 form.base_fields['created_by'].widget.attrs['disabled'] = True
                 form.base_fields['created_by'].initial = request.user
                 form.base_fields['created_by'].required = False
         return form
 
     def save_model(self, request, obj, form, change):
-        
-        
+
+
         if not obj.pk and request.user.user_type == 'hotel_manager':
-           
+
             obj.hotel = Hotel.objects.filter(manager=request.user).first()
             obj.created_by = request.user
             obj.updated_by = request.user
@@ -393,9 +393,9 @@ class ImageAdmin(admin.ModelAdmin):
             return queryset
         elif request.user.user_type == 'hotel_manager':
              return queryset.filter(hotel_id__manager=request.user)
-        
+
         return queryset.none()
-       
+
 
 # ----------- City --------------
 
@@ -406,7 +406,7 @@ class CityAdmin(admin.ModelAdmin):
     list_filter = ('state', 'country')
     readonly_fields = ('created_at', 'updated_at','slug', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','slug', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
     def get_queryset(self, request):
@@ -414,23 +414,35 @@ class CityAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.user_type == 'admin':
             return queryset
         elif request.user.user_type == 'hotel_manager':
-           
+
             return queryset.filter(location__hotel__manager=request.user)
         return queryset.none()
 
 # ----------- HotelRequest --------------
 
 class HotelRequestAdmin(admin.ModelAdmin):
-    list_display = ['hotel_name', 'name', 'email', 'created_at', 'is_approved']
+    list_display = ['hotel_name', 'name', 'email', 'created_at', 'is_approved', 'view_details_button']
     list_filter = ['is_approved', 'created_at']
     search_fields = ['hotel_name', 'name', 'email']
-    readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
+    readonly_fields = ('created_at', 'updated_at', 'approved_at', 'created_by', 'updated_by')
     actions = ['approve_requests']
-    readonly_fields = ('created_at','updated_at','approved_at','created_by', 'updated_by')
+
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at','approved_at', 'created_by', 'updated_by')
+        if not request.user.is_superuser:
+            return ('created_at', 'updated_at', 'approved_at', 'created_by', 'updated_by')
         return self.readonly_fields
+
+    def view_details_button(self, obj):
+        """زر لعرض تفاصيل طلب الفندق"""
+        url = f'/HotelManagement/requests/{obj.id}/detail/'
+        return format_html(
+            '<a href="{}" class="button" style="background-color: #3498db; color: white; '
+            'padding: 5px 10px; border-radius: 4px; text-decoration: none;">'
+            '<i class="fas fa-eye"></i> عرض التفاصيل</a>',
+            url
+        )
+    view_details_button.short_description = "التفاصيل"
+
     def approve_requests(self, request, queryset):
         for hotel_request in queryset.filter(is_approved=False):
             hotel_request.approve(request.user)
@@ -456,7 +468,7 @@ class HotelRequestAdmin(admin.ModelAdmin):
 
 # -------------------------
 from api.admin import admin_site
- 
+
 # Hotel -----
 
 admin_site.register(Hotel,HotelAdmin)

@@ -158,6 +158,68 @@ color: red; /* white heart icon when selected */
     line-height: 1.5;
   }
 
+  /* ====== تنسيق معلومات الفندق المحسنة ====== */
+  .hotel-highlight-box .highlight-content {
+    background: linear-gradient(135deg, #2c3e50, #4a6491);
+    transition: transform 0.3s ease;
+  }
+
+  .hotel-highlight-box .highlight-content:hover {
+    transform: translateY(-3px);
+  }
+
+  .booking-stats-box {
+    transition: all 0.3s ease;
+  }
+
+  .booking-stats-box:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-2px);
+  }
+
+  .stats-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .why-book-item {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .why-book-item:hover {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    transform: translateX(-5px);
+  }
+
+  .why-book-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bg-success-light {
+    background-color: rgba(40, 167, 69, 0.15);
+  }
+
+  .bg-info-light {
+    background-color: rgba(23, 162, 184, 0.15);
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+  }
+
+  .hover-shadow:hover {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+
   /* Estilos para tarjetas de hoteles de tamaño uniforme */
   .card-item {
     height: 100%;
@@ -767,7 +829,7 @@ START TOUR DETAIL AREA
                           <label class="mb-2">رسالتك</label>
                           <textarea id="review_desc" name="review" class="form-control" maxlength="100" placeholder="اكتب رسالتك"></textarea>
                           <div class="d-flex justify-content-between mt-3">
-                           
+
                           </div>
                         </div>
 
@@ -790,37 +852,60 @@ START TOUR DETAIL AREA
         <div class="col-lg-4">
 
 
-            <div class="sidebar-widget single-content-widget border rounded shadow-sm p-3 mb-4">
-  <h3 class="title stroke-shape mb-3">معلومات الفندق</h3>
+            <div class="sidebar-widget single-content-widget border rounded shadow-sm p-4 mb-4">
+  <h3 class="title stroke-shape mb-4">معلومات الفندق</h3>
 
   {% if hotel.best_seller %}
-  <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
-    <i class="la la-star icon-element me-2 fs-4 text-warning"></i>
-    <div>
-      هذا الفندق من بين <strong>الأكثر حجزًا</strong>!
+  <div class="hotel-highlight-box mb-4">
+    <div class="highlight-content bg-gradient-primary text-white p-3 rounded-lg">
+      <div class="d-flex align-items-center">
+        <div class="highlight-icon me-3">
+          <i class="la la-crown fs-1 text-warning"></i>
+        </div>
+        <div class="highlight-text">
+          <h5 class="mb-0 fw-bold">هذا الفندق من بين <span class="text-warning">الأكثر حجزًا</span>!</h5>
+          <p class="mb-0 mt-1 small">اختيار مميز من قبل ضيوفنا</p>
+        </div>
+      </div>
     </div>
   </div>
   {% endif %}
 
-  <ul class="list-group list-group-flush mb-3">
-    <li class="list-group-item d-flex align-items-center">
-      <i class="la la-book icon-element me-2 text-primary"></i>
-      عدد الحجوزات المؤكدة: <strong class="ms-1">{{ hotel.booking_count }}</strong>
-    </li>
-  </ul>
+  <div class="booking-stats-box mb-4 p-3 bg-light rounded-lg">
+    <div class="d-flex align-items-center">
+      <div class="stats-icon bg-primary text-white rounded-circle p-2 me-3">
+        <i class="la la-book fs-3"></i>
+      </div>
+      <div class="stats-content">
+        <h6 class="mb-1 text-muted">عدد الحجوزات المؤكدة</h6>
+        <h3 class="mb-0 text-primary fw-bold">{{ hotel.booking_count }}</h3>
+      </div>
+    </div>
+  </div>
 
-  <h5 class="mb-2">لماذا تحجز معنا؟</h5>
-  <ul class="list-unstyled ps-3">
-    <li class="mb-2">
-      <i class="la la-dollar icon-element me-2 text-success"></i>
-      ضمان أفضل الأسعار بدون متاعب
-    </li>
-    <li class="mb-2">
-      <i class="la la-microphone icon-element me-2 text-info"></i>
-      خدمة العملاء متوفرة 24/7
-    </li>
-  
-  </ul>
+  <div class="why-book-box">
+    <h5 class="mb-3 fw-bold border-bottom pb-2">لماذا تحجز معنا؟</h5>
+    <div class="why-book-items">
+      <div class="why-book-item d-flex align-items-center mb-3 p-2 rounded hover-shadow">
+        <div class="why-book-icon bg-success-light p-2 rounded-circle me-3">
+          <i class="la la-dollar fs-4 text-success"></i>
+        </div>
+        <div class="why-book-text">
+          <h6 class="mb-0 fw-bold">ضمان أفضل الأسعار</h6>
+          <p class="mb-0 small text-muted">بدون متاعب أو رسوم إضافية</p>
+        </div>
+      </div>
+      <div class="why-book-item d-flex align-items-center mb-2 p-2 rounded hover-shadow">
+        <div class="why-book-icon bg-info-light p-2 rounded-circle me-3">
+          <i class="la la-headset fs-4 text-info"></i>
+        </div>
+        <div class="why-book-text">
+          <h6 class="mb-0 fw-bold">خدمة العملاء متوفرة 24/7</h6>
+          <p class="mb-0 small text-muted">دعم متواصل طوال اليوم</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
             <!-- end sidebar-widget -->
