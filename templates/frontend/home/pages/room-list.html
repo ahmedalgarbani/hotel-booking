@@ -157,6 +157,22 @@
     color: #3498db;
 }
 
+/* Hotel Name Badge */
+.hotel-name .badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border: none;
+    box-shadow: 0 2px 4px rgba(23, 162, 184, 0.2);
+    transition: all 0.3s ease;
+}
+
+.hotel-name .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(23, 162, 184, 0.3);
+}
+
 /* Room Description */
 .card-text {
     color: #666;
@@ -414,6 +430,11 @@ START CARD AREA
                 <h3 class="card-title font-size-26">
                   <a href="{% url 'rooms:room_detail' room_type.id %}">{{ room_type.name }}</a>
                 </h3>
+                <div class="hotel-name mb-2">
+                  <span class="badge bg-info text-white">
+                    <i class="la la-hotel me-1"></i> {{ room_type.hotel.name }}
+                  </span>
+                </div>
                 <p class="card-text pt-2">{{ room_type.description|truncatechars:150|default:"لا يوجد وصف متوفر" }}</p>
                 <div class="card-attributes pt-3 pb-4">
                   <ul class="d-flex align-items-center">
@@ -480,6 +501,11 @@ START CARD AREA
                 <h3 class="card-title font-size-26">
                   <a href="{% url 'rooms:room_detail' room_type.id %}">{{ room_type.name }}</a>
                 </h3>
+                <div class="hotel-name mb-2">
+                  <span class="badge bg-info text-white">
+                    <i class="la la-hotel me-1"></i> {{ room_type.hotel.name }}
+                  </span>
+                </div>
                 <p class="card-text pt-2">{{ room_type.description|truncatechars:150|default:"لا يوجد وصف متوفر" }}</p>
                 <div class="card-attributes pt-3 pb-4">
                   <ul class="d-flex align-items-center">

@@ -23,9 +23,9 @@ class CouponAdminForm(forms.ModelForm):
         fields = '__all__'
 
 class AutoUserTrackMixin:
-    
+
     def save_model(self, request, obj, form, change):
-        if not obj.pk: 
+        if not obj.pk:
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
@@ -34,19 +34,19 @@ class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
     form = CouponAdminForm
     list_display = ('name', 'code', 'hotel', 'quantity', 'min_purchase_amount', 'expired_date', 'formatted_description',
                     'discount_type', 'discount', 'status', 'created_at', 'updated_at')
-    search_fields = ('name', 'code', 'hotel__name')  
-    list_filter = ('status', 'discount_type', 'hotel')  
+    search_fields = ('name', 'code', 'hotel__name')
+    list_filter = ('status', 'discount_type', 'hotel')
     ordering = ('-created_at',)
     # exclude = ('created_by', 'updated_by','deleted_at')
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
-    
+
     def formatted_description(self, obj):
         return format_html(obj.description)
 
     formatted_description.allow_tags = True
     formatted_description.short_description = "الوصف"
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
         return self.readonly_fields
     def get_queryset(self, request):
@@ -65,11 +65,14 @@ class HotelServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_filter = ("is_active", "hotel")
     search_fields = ("name", "description")
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at','icon_display')
+
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
+            if request.user.user_type == 'hotel_manager':
+                return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at', 'hotel')
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
- 
+
     def icon_display(self, obj):
         if obj.icon:
             return format_html('<img src="{}" style="width: 30px; height: 30px;" />', obj.icon.url)
@@ -85,6 +88,22 @@ class HotelServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
         elif request.user.user_type == 'hotel_staff':
             return queryset.filter(hotel__manager=request.user.chield)
         return queryset.none()
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            if hasattr(request.user, 'hotel') and request.user.hotel and 'hotel' in form.base_fields:
+                # Establecer el hotel del gerente como valor predeterminado y único
+                form.base_fields['hotel'].queryset = form.base_fields['hotel'].queryset.filter(id=request.user.hotel.id)
+                form.base_fields['hotel'].initial = request.user.hotel
+                form.base_fields['hotel'].widget.attrs['readonly'] = True
+        return form
+
+    def save_model(self, request, obj, form, change):
+        if not change and request.user.user_type == 'hotel_manager':  # Si es una nueva entrada y el usuario es gerente de hotel
+            if hasattr(request.user, 'hotel') and request.user.hotel:
+                obj.hotel = request.user.hotel
+        super().save_model(request, obj, form, change)
 
 
 class RoomTypeServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
@@ -92,8 +111,11 @@ class RoomTypeServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_filter = ("is_active", "room_type", "hotel")
     search_fields = ("name", "description")
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
+            if request.user.user_type == 'hotel_manager':
+                return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at', 'hotel')
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
@@ -112,6 +134,27 @@ class RoomTypeServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
         elif request.user.user_type == 'hotel_staff':
             return queryset.filter(hotel__manager=request.user.chield)
         return queryset.none()
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            if hasattr(request.user, 'hotel') and request.user.hotel:
+                # Establecer el hotel del gerente como valor predeterminado y único
+                if 'hotel' in form.base_fields:
+                    form.base_fields['hotel'].queryset = form.base_fields['hotel'].queryset.filter(id=request.user.hotel.id)
+                    form.base_fields['hotel'].initial = request.user.hotel
+                    form.base_fields['hotel'].widget.attrs['readonly'] = True
+
+                # Filtrar room_type para mostrar solo los tipos de habitación del hotel del gerente
+                if 'room_type' in form.base_fields:
+                    form.base_fields['room_type'].queryset = form.base_fields['room_type'].queryset.filter(hotel=request.user.hotel)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        if not change and request.user.user_type == 'hotel_manager':  # Si es una nueva entrada y el usuario es gerente de hotel
+            if hasattr(request.user, 'hotel') and request.user.hotel:
+                obj.hotel = request.user.hotel
+        super().save_model(request, obj, form, change)
 
 
 class OfferAdmin(AutoUserTrackMixin,admin.ModelAdmin):
@@ -120,24 +163,18 @@ class OfferAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     search_fields = ("offer_name", "offer_description")
     date_hierarchy = "offer_start_date"
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
+
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
+            if request.user.user_type == 'hotel_manager':
+                return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
             return ('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
     def hotel_name(self, obj):
-        return obj.hotel.name 
+        return obj.hotel.name
     hotel_name.short_description = "Hotel Name"
 
-    def save_model(self, request, obj, form, change):
-        if not obj.pk:  
-            obj.created_by = request.user
-        obj.updated_by = request.user
-        super().save_model(request, obj, form, change)
-    def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
-            return ('created_at', 'updated_at', 'created_by', 'updated_by','hotel','deleted_at')
-        return self.readonly_fields
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         if request.user.is_superuser or request.user.user_type == 'admin':
@@ -146,7 +183,24 @@ class OfferAdmin(AutoUserTrackMixin,admin.ModelAdmin):
             return queryset.filter(hotel__manager=request.user)
         elif request.user.user_type == 'hotel_staff':
             return queryset.filter(hotel__manager=request.user.chield)
-        return queryset.none()    
+        return queryset.none()
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
+            if hasattr(request.user, 'hotel') and request.user.hotel:
+                # Establecer el hotel del gerente como valor predeterminado y único
+                if 'hotel' in form.base_fields:
+                    form.base_fields['hotel'].queryset = form.base_fields['hotel'].queryset.filter(id=request.user.hotel.id)
+                    form.base_fields['hotel'].initial = request.user.hotel
+                    form.base_fields['hotel'].widget.attrs['readonly'] = True
+        return form
+
+    def save_model(self, request, obj, form, change):
+        if not change and request.user.user_type == 'hotel_manager':  # Si es una nueva entrada y el usuario es gerente de hotel
+            if hasattr(request.user, 'hotel') and request.user.hotel:
+                obj.hotel = request.user.hotel
+        super().save_model(request, obj, form, change)
 
 
 
