@@ -92,8 +92,8 @@
                   <ul class="dropdown-menu" aria-labelledby="userDropdown">
                     {% if request.user.is_customer %}
                     <li><a class="dropdown-item" href="{% url 'customer:user_dashboard_index' %}"><i class="la la-user-circle me-2"></i>الملف الشخصي</a></li>
-                    {% endif %}
                     <li><a class="dropdown-item" href="{% url 'customer:user_dashboard_bookings' %}"><i class="la la-hotel me-2"></i>حجوزاتي</a></li>
+                    {% endif %}
                     {% if request.user.is_staff %}
                     <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="la la-cog me-2"></i>لوحة التحكم</a></li>
                     {% endif %}
