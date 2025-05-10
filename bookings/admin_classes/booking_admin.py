@@ -24,7 +24,7 @@ User = get_user_model()
 class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     # Use the custom form if defined in forms.py
     form = BookingAdminForm
-    action_form = ChangeStatusForm 
+    action_form = ChangeStatusForm
     list_display = [
          'id','hotel', 'room', 'check_in_date', 'check_out_date',
         'amount', 'status', 'payment_status_display','show_payment_details_button', 'extend_booking_button',
@@ -34,17 +34,36 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
     actions = ['change_booking_status', 'export_bookings_report']
     readonly_fields = [  'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at']
+
+    # تعديل ترتيب الحقول في نموذج الإضافة
+    fieldsets = [
+        (_('معلومات الحجز الأساسية'), {
+            'fields': [
+                'room', 'hotel', 'user', 'status', 'rooms_booked',
+                ('check_in_date', 'check_out_date'), 'amount', 'account_status'
+            ],
+            'description': _('اختر الغرفة أولاً وسيتم تعيين الفندق تلقائيًا.')
+        }),
+        (_('معلومات النظام'), {
+            'fields': ['created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'],
+            'classes': ['collapse']
+        }),
+    ]
+
+    # إضافة ملفات JavaScript
+    class Media:
+        js = ('admin/js/booking_form.js',)
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by', 'deleted_at','hotel')
         return self.readonly_fields
 
-    change_form_template = 'admin/bookings/booking.html' 
-    change_list_template = 'admin/bookings/booking/change_list.html' 
+    change_form_template = 'admin/bookings/booking.html'
+    change_list_template = 'admin/bookings/booking/change_list.html'
     def show_payment_details_button(self, obj):
         payment = obj.payments.order_by('-payment_date').first()
         if not obj.pk:
-            
+
             return ""
         if not payment:
             return format_html(
@@ -63,13 +82,13 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             '<a class="button btn btn-primary" href="{}">{}</a>',
             url, _("عرض تفاصيل الدفع")
         )
-            
+
     show_payment_details_button.short_description = _("تفاصيل الدفع")
     show_payment_details_button.allow_tags = True
 
     def payment_details_view(self, request, booking_id):
         booking = get_object_or_404(self.model, pk=booking_id)
-        payment = booking.payments.get(booking = booking) 
+        payment = booking.payments.get(booking = booking)
         return render(request, 'admin/payments/payment_detail.html', {
             'payment': payment,
         })
@@ -89,9 +108,9 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 )
 
         status_colors = {
-            0: '#fff3cd',  
-            1: '#d4edda',  
-            2: '#f8d7da',  
+            0: '#fff3cd',
+            1: '#d4edda',
+            2: '#f8d7da',
         }
         text_colors = {
             0: '#856404',
@@ -151,7 +170,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             with transaction.atomic():
                 for booking in queryset:
                     booking.status = new_status
-                    booking.save() 
+                    booking.save()
                     updated_count += 1
                     payment = booking.payments.order_by('-payment_date').first()
                     if payment:
@@ -274,9 +293,9 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             ).order_by('-extension_date').first()
 
             if latest_extension:
-                initial_new_check_out = latest_extension.new_departure 
+                initial_new_check_out = latest_extension.new_departure
             else:
-                initial_new_check_out = original_booking.check_out_date 
+                initial_new_check_out = original_booking.check_out_date
 
             from datetime import datetime, timedelta
             if isinstance(initial_new_check_out, datetime):
@@ -290,9 +309,9 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         room_price = get_room_price(original_booking.room)
         services = BookingDetail.objects.filter(booking=original_booking)
         total_services_price = sum(service.price for service in services) if services else 0
-        initial_price_services = (sum(service.price for service in services) if services else 0) * original_booking.rooms_booked 
+        initial_price_services = (sum(service.price for service in services) if services else 0) * original_booking.rooms_booked
         additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked + initial_price_services
-        new_total = original_booking.amount + additional_price 
+        new_total = original_booking.amount + additional_price
 
         context = self.admin_site.each_context(request)
         context.update({
@@ -315,8 +334,8 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
          if booking.actual_check_out_date is None and booking.status != Booking.BookingStatus.CANCELED:
              booking.actual_check_out_date = timezone.now()
              # Optionally update status
-             # booking.status = Booking.BookingStatus.CHECKED_OUT 
-             booking.save() 
+             # booking.status = Booking.BookingStatus.CHECKED_OUT
+             booking.save()
              self.message_user(request, _("تم تسجيل تاريخ المغادرة الفعلي للحجز رقم {} بنجاح.").format(pk))
          else:
              self.message_user(request, _("لا يمكن تسجيل المغادرة لهذا الحجز."), level='warning')

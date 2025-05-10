@@ -1,11 +1,12 @@
 from datetime import datetime
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from HotelManagement.services import check_room_availability_full
-from rooms.services import change_date_format, change_date_format2
+from rooms.models import RoomType
+from rooms.services import change_date_format2
 from .models import Booking, Availability, ExtensionMovement
-from django.utils.translation import gettext_lazy as _
 
 
 # class BookingAdminForm(forms.ModelForm):
@@ -30,7 +31,7 @@ from django.utils.translation import gettext_lazy as _
 
 #         if rooms_booked > available_rooms:
 #             raise ValidationError(f"Cannot book {rooms_booked} rooms. Only {available_rooms} rooms are available.")
-        
+
 #         return cleaned_data
 
 class BookingAdminForm(forms.ModelForm):
@@ -38,11 +39,33 @@ class BookingAdminForm(forms.ModelForm):
         model = Booking
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # إذا كان هناك غرفة محددة، قم بتعيين الفندق تلقائيًا
+        if 'room' in self.initial and self.initial['room']:
+            try:
+                room = RoomType.objects.get(pk=self.initial['room'])
+                self.initial['hotel'] = room.hotel.pk
+            except RoomType.DoesNotExist:
+                pass
+
+        # إضافة تعليمات للمستخدم
+        self.fields['room'].help_text = _("عند اختيار الغرفة، سيتم تعيين الفندق تلقائيًا.")
+
+        # تعديل ترتيب الحقول لجعل الغرفة قبل الفندق
+        self.fields['room'].widget.attrs['onchange'] = 'updateHotelField()'
+
+        # إضافة JavaScript لتحديث حقل الفندق عند تغيير الغرفة
+        self.Media = type('Media', (), {
+            'js': ('admin/js/booking_form.js',),
+        })
+
     def clean(self):
         cleaned_data = super().clean()
         hotel = cleaned_data.get('hotel')
         room = cleaned_data.get('room')
-        rooms_booked = cleaned_data.get('rooms_booked')
+        rooms_booked = cleaned_data.get('rooms_booked', 1)
         status = cleaned_data.get('status')
         check_in = cleaned_data.get('check_in_date')
         check_out = cleaned_data.get('check_out_date')
@@ -54,16 +77,23 @@ class BookingAdminForm(forms.ModelForm):
 
         errors = []
 
+        # التحقق من تواريخ الحجز إذا كان الحجز مؤكدًا
         if status == Booking.BookingStatus.CONFIRMED:
             if not check_in or not check_out:
                 errors.append(_("يجب تحديد تاريخ الوصول والمغادرة."))
             elif check_out <= check_in:
                 errors.append(_("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول."))
 
-        if hotel and room and hotel != room.hotel:
-            errors.append(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
+        # التحقق من أن الغرفة والفندق من نفس الفندق
+        if room and hotel:
+            if room.hotel != hotel:
+                errors.append(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
+        elif room and not hotel:
+            # إذا تم تحديد غرفة ولم يتم تحديد فندق، قم بتعيين الفندق تلقائيًا
+            cleaned_data['hotel'] = room.hotel
 
-        if hotel and room and rooms_booked and check_in and check_out:
+        # التحقق من توافر الغرف
+        if hotel and room and rooms_booked and check_in and check_out and status == Booking.BookingStatus.CONFIRMED:
             today_date = datetime.now().date()
             is_available, message = check_room_availability_full(
                 today_date=today_date,
@@ -118,7 +148,7 @@ class BookingExtensionForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         if self.booking:
-            available_rooms = self.get_available_rooms()  
+            available_rooms = self.get_available_rooms()
 
     def get_available_rooms(self):
         latest_availability = (
