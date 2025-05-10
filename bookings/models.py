@@ -184,7 +184,6 @@ class Booking(BaseModel):
             title=title if title else _("اشعار اتمام الحجز"),
             message=message,
             notification_type='2' if type == 'CONFIRMED' else '1',
-            action_url=action_url,
         )
 
     def send_cancellation_notification(self):

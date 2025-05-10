@@ -11,7 +11,7 @@ from django import forms
 from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
 # Import models and forms
-from bookings.models import Booking, ExtensionMovement
+from bookings.models import Booking, BookingDetail, ExtensionMovement
 from bookings.forms import BookingAdminForm, BookingExtensionForm
 from rooms.models import Availability
 from rooms.services import get_room_price
@@ -274,20 +274,27 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             ).order_by('-extension_date').first()
 
             if latest_extension:
-                initial_new_check_out = latest_extension.new_departure + timedelta(days=1)
+                initial_new_check_out = latest_extension.new_departure 
             else:
-                initial_new_check_out = original_booking.check_out_date + timedelta(days=1)
+                initial_new_check_out = original_booking.check_out_date 
+
+            from datetime import datetime, timedelta
+            if isinstance(initial_new_check_out, datetime):
+                initial_new_check_out = initial_new_check_out.date()
 
             form = BookingExtensionForm(initial={
                 'new_check_out': initial_new_check_out,
             }, booking=original_booking)
 
         additional_nights = 1
-        additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked
-        new_total = original_booking.amount + additional_price
+        room_price = get_room_price(original_booking.room)
+        services = BookingDetail.objects.filter(booking=original_booking)
+        total_services_price = sum(service.price for service in services) if services else 0
+        initial_price_services = (sum(service.price for service in services) if services else 0) * original_booking.rooms_booked 
+        additional_price = additional_nights * get_room_price(original_booking.room) * original_booking.rooms_booked + initial_price_services
+        new_total = original_booking.amount + additional_price 
 
         context = self.admin_site.each_context(request)
-        room_price = get_room_price(original_booking.room)
         context.update({
             'form': form,
             'original': original_booking,
@@ -296,9 +303,11 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
             'additional_price': additional_price,
             'new_total': new_total,
             'opts': self.model._meta,
+            "services":services,
+            "initial_price_services":initial_price_services,
+            'total_services_price':total_services_price,
             'room_price': room_price
         })
-
         return render(request, 'admin/bookings/booking_extension.html', context)
 
     def set_actual_check_out_date_view(self, request, pk):
@@ -306,7 +315,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
          if booking.actual_check_out_date is None and booking.status != Booking.BookingStatus.CANCELED:
              booking.actual_check_out_date = timezone.now()
              # Optionally update status
-             # booking.status = Booking.BookingStatus.CHECKED_OUT # If you add this status
+             # booking.status = Booking.BookingStatus.CHECKED_OUT 
              booking.save() 
              self.message_user(request, _("تم تسجيل تاريخ المغادرة الفعلي للحجز رقم {} بنجاح.").format(pk))
          else:

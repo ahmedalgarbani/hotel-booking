@@ -1,10 +1,37 @@
+from datetime import datetime
 from django import forms
 from django.core.exceptions import ValidationError
 
+from HotelManagement.services import check_room_availability_full
 from rooms.services import change_date_format, change_date_format2
 from .models import Booking, Availability, ExtensionMovement
 from django.utils.translation import gettext_lazy as _
 
+
+# class BookingAdminForm(forms.ModelForm):
+#     class Meta:
+#         model = Booking
+#         fields = '__all__'
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+
+#         hotel = cleaned_data.get('hotel')
+#         room = cleaned_data.get('room')
+#         rooms_booked = cleaned_data.get('rooms_booked')
+
+#         latest_availability = (
+#             Availability.objects.filter(hotel=hotel, room_type=room)
+#             .order_by('-availability_date')
+#             .first()
+#         )
+
+#         available_rooms = latest_availability.available_rooms if latest_availability else room.rooms_count
+
+#         if rooms_booked > available_rooms:
+#             raise ValidationError(f"Cannot book {rooms_booked} rooms. Only {available_rooms} rooms are available.")
+        
+#         return cleaned_data
 
 class BookingAdminForm(forms.ModelForm):
     class Meta:
@@ -13,22 +40,48 @@ class BookingAdminForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-
         hotel = cleaned_data.get('hotel')
         room = cleaned_data.get('room')
         rooms_booked = cleaned_data.get('rooms_booked')
+        status = cleaned_data.get('status')
+        check_in = cleaned_data.get('check_in_date')
+        check_out = cleaned_data.get('check_out_date')
 
-        latest_availability = (
-            Availability.objects.filter(hotel=hotel, room_type=room)
-            .order_by('-availability_date')
-            .first()
-        )
+        if isinstance(check_in, datetime):
+            check_in = check_in.date()
+        if isinstance(check_out, datetime):
+            check_out = check_out.date()
 
-        available_rooms = latest_availability.available_rooms if latest_availability else room.rooms_count
+        errors = []
 
-        if rooms_booked > available_rooms:
-            raise ValidationError(f"Cannot book {rooms_booked} rooms. Only {available_rooms} rooms are available.")
-        
+        if status == Booking.BookingStatus.CONFIRMED:
+            if not check_in or not check_out:
+                errors.append(_("يجب تحديد تاريخ الوصول والمغادرة."))
+            elif check_out <= check_in:
+                errors.append(_("تاريخ المغادرة يجب أن يكون بعد تاريخ الوصول."))
+
+        if hotel and room and hotel != room.hotel:
+            errors.append(_("الغرفة و الفندق يجب أن يكونا من نفس الفندق."))
+
+        if hotel and room and rooms_booked and check_in and check_out:
+            today_date = datetime.now().date()
+            is_available, message = check_room_availability_full(
+                today_date=today_date,
+                hotel=hotel,
+                room_type=room,
+                required_rooms=rooms_booked,
+                check_in=check_in,
+                check_out=check_out
+            )
+            if not is_available:
+                errors.append(message)
+
+        if errors:
+            raise ValidationError(errors)
+
+        cleaned_data['check_in_date'] = check_in
+        cleaned_data['check_out_date'] = check_out
+
         return cleaned_data
 
 

@@ -254,8 +254,26 @@
                         عدد الليالي: <span id="nights-display">{{ additional_nights }}</span>
                     </div>
                     <div class="summary-item">
-                        التكلفة الإضافية: ريال<span id="additional-price-display">0.00</span>
+                        عدد الغرف: <span id="nights-display">{{ original.rooms_booked }}</span>
                     </div>
+
+
+                    <div class="summary-item">
+    التكلفة الإضافية: ريال
+    {% if services %}
+        {% for service in services %}
+            <div>
+                <span>{{ service.name }}</span> -
+                <span>لكل ليله: {{ service.price }}</span>
+            </div>
+        {% endfor %}
+        الإجمالي :
+        <span id="additional-price-display"> {{ initial_price_services|default:0 }}</span> 
+    {% else %}
+        <span id="additional-price-display">0.00</span>
+    {% endif %}
+</div>
+                   
                     <div class="summary-item">
                         المبلغ النهائي: ريال<span id="total-price-display">{{ additional_price|floatformat:2 }}</span>
                     </div>
@@ -298,15 +316,18 @@
         const pricePerNight = parseFloat("{{ room_price }}"); 
         const originalPrice = parseFloat("{{ original.amount }}");
         const rooms_booked = parseFloat("{{ original.rooms_booked }}");
+        const additional_services = {{ total_services_price|default:0 }};
+        
 
         if (selectedDate > originalCheckOutDate) {
             const timeDifference = selectedDate - originalCheckOutDate;
             const nights = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) ; 
-            const additionalPrice = nights * pricePerNight * rooms_booked ;
+            const additionalPrice = nights * (pricePerNight + additional_services) * rooms_booked ;
             const totalPrice =  additionalPrice;
+            const additional_services_display =  nights *   additional_services * rooms_booked;
 
             document.getElementById('nights-display').textContent = nights;
-            document.getElementById('additional-price-display').textContent = '0.00';
+            document.getElementById('additional-price-display').textContent = additional_services_display.toFixed(2);
             document.getElementById('total-price-display').textContent = totalPrice.toFixed(2);
         } else {
             document.getElementById('nights-display').textContent = 0;
