@@ -1,11 +1,14 @@
+from django import forms
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 from .models import Category, Post, Comment, Tag
+from .forms import PostAdminForm
 
 # Register your models here.
 class AutoUserTrackMixin:
-    
+
     def save_model(self, request, obj, form, change):
-        if not obj.pk: 
+        if not obj.pk:
             obj.created_by = request.user
         obj.updated_by = request.user
         super().save_model(request, obj, form, change)
@@ -14,12 +17,13 @@ class CategoryAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     search_fields = ('name',)
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-   
+
 
 class PostAdmin(AutoUserTrackMixin,admin.ModelAdmin):
+    form = PostAdminForm
     list_display = ('title', 'author', 'category', 'published_at', 'is_published', 'views')
     list_filter = ('is_published', 'category', 'created_at')
     search_fields = ('title', 'content')
@@ -27,7 +31,7 @@ class PostAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     raw_id_fields = ('author',)
     readonly_fields = ('created_at', 'updated_at','published_at','views', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'published_at','views','created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
@@ -37,7 +41,7 @@ class CommentAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     search_fields = ('content', 'author__username', 'post__title')
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
 
@@ -46,10 +50,10 @@ class TagAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     search_fields = ('name',)
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:  
+        if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
         return self.readonly_fields
-    
+
     def post_count(self, obj):
         return obj.posts.count()
     post_count.short_description = 'عدد المقالات'
