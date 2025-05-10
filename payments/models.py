@@ -1,6 +1,7 @@
 from pyexpat import model
 from django.db import models
 from django.conf import settings
+from django.forms import ValidationError
 from django.utils import timezone
 from HotelManagement.models import BaseModel, Hotel
 from django.utils.translation import gettext_lazy as _
@@ -160,7 +161,12 @@ class Payment(BaseModel):
 
     def __str__(self):
         return f"دفعة #{self.id} لحجز {self.id}"
-
+    def clean(self):
+        super().clean()
+        if self.booking.hotel != self.payment_method.hotel:
+            raise ValidationError({
+                        'payment_method': _("يجب ان تكون طريقه الدفع مرتبطه بنفس الفندق ")
+                    })
     @property
     def get_status_class(self):
         status_map = {

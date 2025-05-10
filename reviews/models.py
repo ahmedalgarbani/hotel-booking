@@ -129,7 +129,12 @@ class RoomReview(BaseModel):
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.room_type.name if self.room_type else 'No Room'} ({self.rating} نجوم)"
-
+    def clean(self):
+        super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
 
 
 # class RoomReview(BaseModel):

@@ -66,6 +66,12 @@ class Guest(BaseModel):
 
     def __str__(self):
         return f"{self.name} - {self.id}"
+    def clean(self):
+        super().clean()
+        if self.hotel != self.booking.hotel:
+            raise ValidationError({
+                        'booking': _("يجب ان يكون الحجز مرتبط الفندق المحدد")
+                    })
 
 
 
@@ -198,6 +204,10 @@ class Booking(BaseModel):
 
     def clean(self):
         super().clean()
+        if self.hotel != self.room.hotel:
+            raise ValidationError({
+                        'room': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
         if self.status == Booking.BookingStatus.CONFIRMED:
             if not self.check_in_date or not self.check_out_date:
                 raise ValidationError(_("يجب تحديد تاريخ الوصول والمغادرة."))
@@ -354,7 +364,16 @@ class BookingDetail(BaseModel):
 
     def __str__(self):
         return f"{self.service} - {self.id}"
-
+    def clean(self):
+        super().clean()
+        if self.hotel != self.booking.hotel:
+            raise ValidationError({
+                        'booking': _("يجب ان يكون الحجز مرتبط الفندق المحدد")
+                    })
+        if self.hotel != self.service:
+            raise ValidationError({
+                        'service': _("يجب ان يكون الخدمات مرتبط الفندق المحدد")
+                    })
 
 
 

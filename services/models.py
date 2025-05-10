@@ -42,7 +42,7 @@ class HotelService(BaseModel):
     def __str__(self):
         return self.name
 
-
+    
 
 class RoomTypeService(BaseModel):
     name = models.CharField(
@@ -87,6 +87,12 @@ class RoomTypeService(BaseModel):
 
     def __str__(self):
         return self.name
+    def clean(self):
+        super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
 
 
 
@@ -136,6 +142,7 @@ class Offer(BaseModel):
         return self.offer_name
 
     def clean(self):
+        
         if self.offer_end_date < self.offer_start_date:
             raise ValidationError(_("تاريخ نهاية العرض يجب أن يكون بعد تاريخ البداية"))
         

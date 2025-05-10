@@ -10,8 +10,9 @@ from users.models import CustomUser
 
 
 class Category(BaseModel):
-    status = models.BooleanField(default=True,        verbose_name=_("الحاله")
-)
+    status = models.BooleanField(default=True,        
+                                 verbose_name=_("الحاله")
+                                )
     name = models.CharField(
         max_length=100,
         verbose_name=_("اسم التصنيف")
@@ -190,6 +191,10 @@ class RoomPrice(BaseModel):
 
     def clean(self):
         super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
         if self.date_to and self.date_from:
             if self.date_to <= self.date_from:
                 raise ValidationError({
@@ -235,7 +240,12 @@ class Availability(BaseModel):
 
     def __str__(self):
         return f"{self.room_type.name} - {self.available_rooms} rooms available on {self.availability_date}"
-
+    def clean(self):
+        super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
 
 
 class RoomImage(BaseModel):
@@ -277,6 +287,10 @@ class RoomImage(BaseModel):
 
     def clean(self):
         super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
         if self.is_main and RoomImage.objects.filter(room_type=self.room_type, is_main=True).exists():
             raise ValidationError(_("لا يمكن أن تكون هناك أكثر من صورة رئيسية واحدة لكل نوع غرفة"))
 
