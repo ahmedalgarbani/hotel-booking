@@ -184,6 +184,7 @@ class Booking(BaseModel):
         """إرسال إشعار للمستخدم"""
         message = messages if messages else  _("يرجى إضافة الضيوف لحجزك.")
         action_url = action if action else reverse("payments:add_guest", args=[self.room.id])
+        print(f"sssss-------------- {message}")
         Notifications.objects.create(
             sender=self.user,
             user=receiver if receiver else self.user,

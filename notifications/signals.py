@@ -22,20 +22,23 @@ def create_payment_notification(sender, instance, created, **kwargs):
             
             # تحديد نوع الإشعار ونص الرسالة بناءً على حالة الدفع
             if instance.payment_status == '1':  # تم الدفع
+                print("hi ahmed signals status 1")
                 
                 notification_type = '2'  
                 title = _("تم تأكيد دفعة جديدة")
                 message = _(f"تم تأكيد دفعة بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
             elif instance.payment_status == '0':  # قيد الانتظار
-                
+                print("hi ahmed signals status 0")
                 notification_type = '1'  
                 title = _("دفعة جديدة قيد الانتظار")
                 message = _(f"هناك دفعة جديدة قيد الانتظار بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
             elif instance.payment_status == '2':  # مرفوض
+                print("hi ahmed signals status 2")
                 notification_type = '3' 
                 title = _("تم رفض دفعة")
                 message = _(f"تم رفض دفعة بقيمة {instance.payment_totalamount} {instance.payment_currency} للحجز رقم {instance.booking.id}")
             else:
+                print("hi ahmed signals status else")
                 notification_type = '0'
                 title = _("دفعة غير معروفة")
                 message = _(f"تم تغيير حالة دفعة غير معروفة للحجز رقم ")
@@ -121,13 +124,13 @@ def create_payment_notification(sender, instance, created, **kwargs):
         )
     )
 
-                
-                Notifications.objects.create(
-                    sender=hotel_manager,
-                    user=instance.user,
-                    title=user_title,
-                    message=user_message,
-                    notification_type=notification_type,
-                    action_url=f"/bookings/details/{instance.booking.id}/",
-                    is_active=True
-                )
+                if user_message :
+                    Notifications.objects.create(
+                        sender=hotel_manager,
+                        user=instance.user,
+                        title=user_title,
+                        message=user_message,
+                        notification_type=notification_type,
+                        action_url=f"/bookings/details/{instance.booking.id}/",
+                        is_active=True
+                    )
