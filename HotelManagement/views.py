@@ -211,7 +211,7 @@ def hotel_search(request):
             result_list = json.loads(result_list)
             if result_list:
                 hotel_ids = [hot['id'] for hot in result_list]
-                hotels_query = Hotel.objects.filter(id__in=hotel_ids)
+                hotels_query = Hotel.objects.filter(id__in=hotel_ids,is_verified=True)
                 hotels_query = annotate_hotels(hotels_query, favorite_hotel_ids)
 
                 for hotel in hotels_query:
