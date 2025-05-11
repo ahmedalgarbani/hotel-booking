@@ -871,6 +871,14 @@ def call_gemini_chat_bot(request):
             "message": message,
         }, status=200)
     else:
+        print("aaaaaaaaaaaaaa")
+        print(message)
+        print(message)
+        print(message)
+        print(message)
+        print(message)
+        print(message)
+        print(message)
         return Response({"message": "Failed to get response from Gemini API."}, status=500)
 
 

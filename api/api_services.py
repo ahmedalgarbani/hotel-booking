@@ -51,18 +51,53 @@ The JSON format must be exactly:
             ]
         }
     else:
-        setting = Setting.objects.latest('id')
-        info1 = TermsConditions.objects.latest('id')
-        info2 = PaymenPolicy.objects.latest('id')
-        info3 = PrivacyPolicy.objects.latest('id')
-        info4 = SocialMediaLink.objects.all()
+        setting = Setting.objects.order_by('-id').first() or ""
+        info1 = TermsConditions.objects.order_by('-id').first() or ""
+        info2 = PaymenPolicy.objects.order_by('-id').first() or ""
+        info3 = PrivacyPolicy.objects.order_by('-id').first() or ""
+        info4 = SocialMediaLink.objects.all() or ""
+
+        def model_to_text(instance):
+            if not instance:
+                return ""
+            return "\n".join([f"{field.name}: {getattr(instance, field.name, '')}" for field in instance._meta.fields])
+
+        def queryset_to_text(queryset):
+            if not queryset:
+                return ""
+            return "\n\n".join([model_to_text(obj) for obj in queryset])
+        
+        setting_text = model_to_text(setting)
+        info1_text = model_to_text(info1)
+        info2_text = model_to_text(info2)
+        info3_text = model_to_text(info3)
+        info4_text = queryset_to_text(info4) 
+
 
         chat_prompt = f"""
-                        أنت مساعد افتراضي ذكي يعمل كموظف خدمة عملاء رسمي لمصنه الحجز الفندقيه المحليه اليمنيه [ديار]. مهمتك الأساسية هي الرد على استفسارات الضيوف والمستخدمين المتعلقة فقط بالفندق وخدماته.
-                        بنا على هذه المعلومات 
-                        
-                        
+                        أنت مساعد افتراضي ذكي يعمل كموظف خدمة عملاء رسمي لمصنه الحجز الفندقيه المحليه اليمنيه [ديار].
+                        مهمتك الأساسية هي الرد على استفسارات الضيوف والمستخدمين المتعلقة فقط بالفندق وخدماته.
+
+                        بناءً على هذه المعلومات:
+                        إعدادات النظام:
+                        {setting_text}
+
+                        شروط الاستخدام:
+                        {info1_text}
+
+                        سياسة الدفع:
+                        {info2_text}
+
+                        سياسة الخصوصية:
+                        {info3_text}
+
+                        روابط التواصل الاجتماعي:
+                        {info4_text}
+
+                        قم بالرد على رسالة المستخدم:
+                        {prompt}
                         """
+
         data = {
             "contents": [
                 {
