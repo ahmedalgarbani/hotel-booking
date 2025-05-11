@@ -10,7 +10,9 @@
 .dashboard .module table td {
     white-space: nowrap;
 }
-
+.dashboard .module {
+    background-color: #8B0000; /* لون فخم */
+}
 .dashboard .module table td a {
     display: block;
     padding-right: .6em;
