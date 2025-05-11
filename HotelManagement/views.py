@@ -211,7 +211,7 @@ def hotel_search(request):
             result_list = json.loads(result_list)
             if result_list:
                 hotel_ids = [hot['id'] for hot in result_list]
-                hotels_query = Hotel.objects.filter(id__in=hotel_ids,is_verified=True)
+                hotels_query = Hotel.objects.filter(id__in=hotel_ids, is_verified=True)  # تحقق من is_verified=True هنا
                 hotels_query = annotate_hotels(hotels_query, favorite_hotel_ids)
 
                 for hotel in hotels_query:
@@ -237,8 +237,10 @@ def hotel_search(request):
         hotels_query, error_message = get_hotels_query(
             hotel_name, category_type, room_number, adult_number, today, check_out, check_in
         )
+        hotels_query = hotels_query.filter(is_verified=True)  # تحقق من is_verified=True هنا
         print(hotels_query)
         print(error_message)
+
     hotels_query = annotate_hotels(hotels_query, favorite_hotel_ids)
 
     for hotel in hotels_query:
@@ -247,10 +249,10 @@ def hotel_search(request):
 
     from django.db.models import Subquery, OuterRef
 
-    top_hotel_ids = Hotel.objects.filter(is_verified=True)\
-        .annotate(confirmed_bookings_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED)))\
+    top_hotel_ids = Hotel.objects.filter(is_verified=True) \
+        .annotate(confirmed_bookings_count=Count('bookings', filter=Q(bookings__status=Booking.BookingStatus.CONFIRMED))) \
         .filter(confirmed_bookings_count__gt=0) \
-        .order_by('-confirmed_bookings_count')\
+        .order_by('-confirmed_bookings_count') \
         .values_list('id', flat=True)[:10]
 
     top_hotel_ids_list = list(top_hotel_ids)
@@ -267,7 +269,6 @@ def hotel_search(request):
     print("-------------------------------")
     all_services = HotelService.objects.filter(is_active=True).values('id', 'name').distinct().order_by('name')
     print(all_services)
-    print(all_services)
     all_services = list({service['name']: service for service in all_services}.values())
     ctx = {
         'adult_number': adult_number,
@@ -275,8 +276,7 @@ def hotel_search(request):
         'check_out_start': check_out.strftime('%m/%d/%Y') if check_out else '',
         'hotels': hotels,
         'error_message': error_message,
-        "all_services":all_services
+        "all_services": all_services
     }
 
     return render(request, 'frontend/home/pages/hotel-search-result.html', ctx)
-
