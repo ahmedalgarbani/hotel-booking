@@ -148,6 +148,30 @@ class Booking(BaseModel):
 
     def __str__(self):
         return f"Booking #{self.id} - {self.room.name} ({self.rooms_booked} rooms)"
+    
+
+    def check_availability(self, start_date=None, end_date=None):
+        start = to_date(start_date or self.check_in_date)
+        end = to_date(end_date or self.check_out_date)
+
+        current = start
+        while current < end:
+            try:
+                availability = Availability.objects.get(
+                    hotel=self.hotel,
+                    room_type=self.room,
+                    availability_date=current
+                )
+                if availability.available_rooms < self.rooms_booked:
+                    raise ValidationError(
+                        _(f"لا توجد غرف كافية متاحة في {current}. فقط {availability.available_rooms} غرف متاحة.")
+                    )
+            except Availability.DoesNotExist:
+                raise ValidationError({
+                  'room':  _(f"لا تتوفر بيانات توافر في {current}.")
+                })
+            current += timedelta(days=1)
+
     def update_availability(self, change, start_date=None, end_date=None):
         """تحديث التوافر بين تاريخين محددين"""
         start = to_date(start_date or self.check_in_date)
@@ -209,7 +233,8 @@ class Booking(BaseModel):
             raise ValidationError({
                         'room': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
                     })
-        if self.status == Booking.BookingStatus.CONFIRMED:
+        self.check_availability()
+        if self.status == Booking.BookingStatus.CONFIRMED or self.status == Booking.BookingStatus.PENDING:
             if not self.check_in_date or not self.check_out_date:
                 raise ValidationError(_("يجب تحديد تاريخ الوصول والمغادرة."))
             if self.check_out_date <= self.check_in_date:
@@ -222,6 +247,7 @@ class Booking(BaseModel):
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding
+      
         original = None
         if not is_new:
             try:
@@ -269,6 +295,7 @@ class Booking(BaseModel):
             self.status == Booking.BookingStatus.CONFIRMED and
             (original.check_in_date != self.check_in_date or original.check_out_date != self.check_out_date)
         ):
+            self.check_availability(start_date=self.check_in_date, end_date=self.check_out_date)
             print("Date change on confirmed booking: resetting availability")
             self.update_availability(change=original.rooms_booked,
                                      start_date=original.check_in_date,
@@ -292,6 +319,7 @@ class Booking(BaseModel):
                     # )
             elif (self.status == Booking.BookingStatus.CANCELED and
                   original.status == Booking.BookingStatus.CONFIRMED):
+                
                 print("Status changed to CANCELED: restoring availability")
                 self.update_availability(change=self.rooms_booked)
                 self.send_cancellation_notification()

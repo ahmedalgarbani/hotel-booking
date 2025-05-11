@@ -17,4 +17,7 @@ urlpatterns = [
     # تقارير
     path('reports/daily/', staff_member_required(daily_report_view), name='daily-report'),
     path('reports/daily/export-pdf/', staff_member_required(export_daily_report_pdf), name='daily-report-export-pdf'),
+
+
+        path('get-room-price/', views.get_room_price_total, name='get_room_price_total'),
 ]

@@ -1,11 +1,41 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from payments.models import Currency, HotelPaymentMethod, Payment, PaymentOption
+from rooms.models import RoomPrice, RoomType
+from rooms.services import calculate_total_cost
 from .models import Booking, ExtensionMovement, Guest
 from django.utils import timezone
 from pyexpat.errors import messages
 from django.shortcuts import render, redirect
-# Create your views here.
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from datetime import timedelta, datetime
+
+@require_GET
+def get_room_price_total(request):
+    room_id = request.GET.get('room_id')
+    check_in = request.GET.get('check_in')
+    check_out = request.GET.get('check_out')
+    room_number = request.GET.get('room_number')  
+    room_number = int(room_number)
+
+    if not all([room_id, check_in, check_out]):
+        return JsonResponse({'error': 'Missing parameters.'}, status=400)
+
+    try:
+        room = RoomType.objects.get(id=room_id)
+        check_in_date = datetime.strptime(check_in, '%Y-%m-%d').date()
+        check_out_date = datetime.strptime(check_out, '%Y-%m-%d').date()
+    except Exception as e:
+        return JsonResponse({'error': 'Invalid data.'}, status=400)
+
+    try:
+        total, subtotal = calculate_total_cost(room, check_in_date, check_out_date, room_number)
+        print("Total:", total, "Subtotal:", subtotal)
+        return JsonResponse({'total': int(total), 'subtotal': float(subtotal)})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
 
 def booking_list(request):
     bookings = Booking.objects.all()

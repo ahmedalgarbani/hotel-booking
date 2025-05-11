@@ -15,6 +15,8 @@ from bookings.models import Booking, BookingDetail, ExtensionMovement
 from bookings.forms import BookingAdminForm, BookingExtensionForm
 from rooms.models import Availability
 from rooms.services import get_room_price
+from django.utils.safestring import mark_safe
+
 
 # Import shared components
 from .mixins import HotelManagerAdminMixin, HotelUserFilter
@@ -55,6 +57,15 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         if not request.user.is_superuser:
             return ('created_at', 'updated_at','created_by', 'updated_by', 'deleted_at','hotel')
         return self.readonly_fields
+    class Media:
+        js = ('admin/js/booking_price_calc.js',)
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        # Inject button through help_text
+        form.base_fields['amount'].help_text = mark_safe(
+            '<button type="button" id="calcPriceBtn" style="margin-top:5px;">احسب السعر</button>'
+        )
+        return form
 
     change_form_template = 'admin/bookings/booking.html'
     change_list_template = 'admin/bookings/booking/change_list.html'
