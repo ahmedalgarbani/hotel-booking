@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const roomSelect = document.getElementById('id_room');
         const checkInDate = document.getElementById('id_check_in_date_0');
         const checkOutDate = document.getElementById('id_check_out_date_0');
+        const roomNumberSelect = document.getElementById('id_rooms_booked');
         const amountInput = document.getElementById('id_amount');
 
         if (!roomSelect.value || !checkInDate.value || !checkOutDate.value) {
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const roomId = roomSelect.value;
         const checkIn = checkInDate.value;
         const checkOut = checkOutDate.value;
-        const roomNumber = 1; 
+        const roomNumber = roomNumberSelect.value; 
 
         fetch(`/bookings/get-room-price/?room_id=${roomId}&check_in=${checkIn}&check_out=${checkOut}&room_number=${roomNumber}`)
             .then(response => response.json())

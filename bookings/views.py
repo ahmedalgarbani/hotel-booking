@@ -16,7 +16,7 @@ def get_room_price_total(request):
     room_id = request.GET.get('room_id')
     check_in = request.GET.get('check_in')
     check_out = request.GET.get('check_out')
-    room_number = request.GET.get('room_number')  
+    room_number = request.GET.get('room_number',1)  
     room_number = int(room_number)
 
     if not all([room_id, check_in, check_out]):
@@ -31,6 +31,7 @@ def get_room_price_total(request):
 
     try:
         total, subtotal = calculate_total_cost(room, check_in_date, check_out_date, room_number)
+        print(f"Total:{total}")
         print("Total:", total, "Subtotal:", subtotal)
         return JsonResponse({'total': int(total), 'subtotal': float(subtotal)})
     except Exception as e:
