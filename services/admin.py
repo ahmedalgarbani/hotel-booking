@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
+from bookings.admin_classes.mixins import HotelUserFilter, RoomTypeFilter
 from bookings.models import Booking
 from .models import HotelService, RoomTypeService, Offer
 from api.admin import admin_site
@@ -35,7 +36,7 @@ class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
     list_display = ('name', 'code', 'hotel', 'quantity', 'min_purchase_amount', 'expired_date', 'formatted_description',
                     'discount_type', 'discount', 'status', 'created_at', 'updated_at')
     search_fields = ('name', 'code', 'hotel__name')
-    list_filter = ('status', 'discount_type', 'hotel')
+    list_filter = ('status', 'discount_type', HotelUserFilter)
     ordering = ('-created_at',)
     # exclude = ('created_by', 'updated_by','deleted_at')
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
@@ -62,7 +63,7 @@ class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
 
 class HotelServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ("name", "hotel", "is_active", "icon_display")
-    list_filter = ("is_active", "hotel")
+    list_filter = ("is_active", HotelUserFilter)
     search_fields = ("name", "description")
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at','icon_display')
 
@@ -108,7 +109,7 @@ class HotelServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
 
 class RoomTypeServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ("name", "room_type", "hotel", "is_active", "additional_fee", "icon_display")
-    list_filter = ("is_active", "room_type", "hotel")
+    list_filter = ("is_active", RoomTypeFilter, HotelUserFilter)
     search_fields = ("name", "description")
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 
@@ -159,7 +160,7 @@ class RoomTypeServiceAdmin(AutoUserTrackMixin,admin.ModelAdmin):
 
 class OfferAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ("offer_name", "hotel_name", "offer_start_date", "offer_end_date",)
-    list_filter = ("offer_start_date", "offer_end_date", "hotel")
+    list_filter = ("offer_start_date", "offer_end_date", HotelUserFilter)
     search_fields = ("offer_name", "offer_description")
     date_hierarchy = "offer_start_date"
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')

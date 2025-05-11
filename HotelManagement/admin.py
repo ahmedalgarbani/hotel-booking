@@ -7,6 +7,7 @@ from django.conf import settings
 import os
 from django.template.loader import render_to_string
 from io import BytesIO
+from bookings.admin_classes.mixins import HotelUserFilter
 from users.models import CustomUser
 from .models import Hotel, Location, Phone, Image, City, HotelRequest
 from django.contrib.auth import get_user_model
@@ -270,7 +271,7 @@ class LocationAdmin(admin.ModelAdmin):
 class PhoneAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'country_code', 'hotel', 'created_at')
     search_fields = ('phone_number', 'hotel__name')
-    list_filter = ('hotel',)
+    list_filter = (HotelUserFilter,)
     readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:

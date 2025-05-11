@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 # Import models
+from bookings.admin_classes.mixins import HotelUserFilter
 from bookings.models import BookingHistory
 
 class BookingHistoryAdmin(admin.ModelAdmin):
     list_display = (
         'booking', 'history_date', 'changed_by', 'previous_status', 'new_status'
     )
-    list_filter = ('new_status', 'history_date', 'booking__hotel') # Filter by hotel via booking
+    list_filter = ('new_status', 'history_date', HotelUserFilter) # Filter by hotel via booking
     search_fields = (
         'booking__id', 'booking__hotel__name', 'changed_by__username'
     )

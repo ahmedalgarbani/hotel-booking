@@ -15,6 +15,7 @@ from django.shortcuts import redirect
 from HotelManagement.admin import ImageAdmin
 from HotelManagement.models import Hotel
 from api.admin import admin_site
+from bookings.admin_classes.mixins import HotelUserFilter, RoomTypeFilter
 from .models import RoomType, Category, Availability, RoomPrice, RoomImage
 
 class HotelManagerAdminMixin:
@@ -103,7 +104,7 @@ class RoomTypeAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     inlines = [RoomImageInline]
     list_display = ['name', 'hotel', 'category', 'default_capacity', 'max_capacity', 'rooms_count', 'base_price', 'is_active', 'get_available_rooms', 'preview_image']
     search_fields = ['name', 'hotel__name']
-    list_filter = ['hotel', 'category', 'is_active']
+    list_filter = [HotelUserFilter, 'category', 'is_active']
     list_editable = ['is_active', 'base_price']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
@@ -167,7 +168,7 @@ class AvailabilityAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     change_list_template = 'admin/rooms/availability/change_list.html'
     list_display = ['room_type', 'hotel', 'availability_date', 'available_rooms',  'bulk_create_button']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'availability_date', 'room_type']
+    list_filter = [HotelUserFilter, 'availability_date', RoomTypeFilter]
     list_editable = ['available_rooms']
     date_hierarchy = 'availability_date'
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
@@ -300,7 +301,7 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     form = RoomPriceAdminForm
     list_display = ['room_type', 'hotel', 'price', 'date_from', 'date_to', 'is_special_offer', 'get_days_remaining']
     search_fields = ['room_type__name', 'hotel__name']
-    list_filter = ['hotel', 'room_type', 'is_special_offer']
+    list_filter = [HotelUserFilter, RoomTypeFilter, 'is_special_offer']
     list_editable = ['price', 'is_special_offer']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 
@@ -323,7 +324,7 @@ class RoomPriceAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
 class RoomImageAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['room_type', 'hotel', 'preview_image', 'is_main', 'caption']
     search_fields = ['room_type__name', 'hotel__name', 'caption']
-    list_filter = ['hotel', 'room_type', 'is_main']
+    list_filter = [HotelUserFilter, RoomTypeFilter, 'is_main']
     list_editable = ['is_main', 'caption']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from django.shortcuts import render
 
+from bookings.admin_classes.mixins import HotelUserFilter
 from payments.models import Payment
 from django import forms
 
@@ -14,7 +15,7 @@ class PaymentAdmin(admin.ModelAdmin):
         'payment_currency', 'styled_payment_status', 'payment_date', 'payment_type',
         'view_payment_details_button',
     ]
-    list_filter = ['payment_status', 'payment_type', 'payment_method__hotel', 'payment_date']
+    list_filter = ['payment_status', 'payment_type', HotelUserFilter, 'payment_date']
     search_fields = ['booking__id', 'user__username', 'user__first_name', 'user__last_name',
                      'payment_method__method_name', 'id']
     readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency','created_at', 'updated_at', 'created_by', 'updated_by','deleted_at']

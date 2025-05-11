@@ -5,11 +5,11 @@ from django.utils.translation import gettext_lazy as _
 
 # Import models and shared components
 from bookings.models import Guest
-from .mixins import HotelManagerAdminMixin
+from .mixins import HotelManagerAdminMixin, HotelUserFilter
 
 class GuestAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     list_display = ['name', 'phone_number', 'hotel', 'booking', 'set_checkout_today_toggle']
-    list_filter = ['hotel']
+    list_filter = [HotelUserFilter]
     search_fields = ['name', 'phone_number', 'booking__id']
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
 

@@ -19,10 +19,62 @@ from HotelManagement.models import Hotel
 from rooms.models import RoomType
 from bookings.models import Booking
 from users.models import CustomUser # Import Booking for ChangeStatusForm choices
+from django.contrib.admin import SimpleListFilter
 
 User = get_user_model()
 
 # --- Mixins ---
+
+
+
+class HotelUserFilter(SimpleListFilter):
+    title = 'الفنادق'
+    parameter_name = 'hotel'
+
+    def lookups(self, request, model_admin):
+        user = request.user
+        hotels = Hotel.objects.none()
+
+        if user.is_superuser or user.user_type == 'admin':
+            hotels = Hotel.objects.all()
+        elif user.user_type == 'hotel_manager':
+            hotels = Hotel.objects.filter(manager=user)
+        elif user.user_type == 'hotel_staff' and hasattr(user, 'chield'):
+            hotels = Hotel.objects.filter(manager=user.chield)
+
+        return [(hotel.pk, hotel.name) for hotel in hotels]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(hotel__pk=self.value())
+        return queryset
+class RoomTypeFilter(SimpleListFilter):
+    title = 'نوع الغرفة'
+    parameter_name = 'room_type'
+
+    def lookups(self, request, model_admin):
+        user = request.user
+        room_types = RoomType.objects.none()
+
+        if user.is_superuser or user.user_type == 'admin':
+            room_types = RoomType.objects.all()
+        elif user.user_type == 'hotel_manager':
+            if hasattr(user, 'hotel'):
+                room_types = RoomType.objects.filter(hotel=user.hotel)
+        elif user.user_type == 'hotel_staff':
+            if hasattr(user, 'chield'):
+                room_types = RoomType.objects.filter(hotel__manager=user.chield)
+
+        return [(rt.pk, rt.name) for rt in room_types]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(room__room_type__pk=self.value())
+        return queryset
+
+
+
+
 
 class AutoUserTrackMixin:
     """Automatically sets created_by and updated_by fields."""
@@ -40,89 +92,81 @@ class HotelManagerAdminMixin:
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         user = request.user
+
         if user.is_superuser or user.user_type == 'admin':
-             return qs
+            return qs
+
         elif user.user_type == 'hotel_manager':
-             # Check if the user is linked to a hotel via the OneToOneField reverse relation ('hotel')
-             if hasattr(user, 'hotel') and user.hotel:
-                 return qs.filter(hotel=user.hotel)
-             else:
-                 # If the manager is not linked to any hotel, show no bookings
-                 return qs.none()
+            hotel = Hotel.objects.filter(manager=user).first()
+            if hotel:
+                return qs.filter(hotel=hotel)
+            return qs.none()
+
         elif user.user_type == 'hotel_staff':
-             # Adjust logic based on how staff are linked to hotels
-             if hasattr(user, 'assigned_hotel'): # Example: Direct link
-                 return qs.filter(hotel=user.assigned_hotel)
-             # Add other potential linking logic here if needed
-             else:
-                 return qs.none()
+            if hasattr(user, 'chield'):
+                hotel = Hotel.objects.filter(manager=user.chield).first()
+                if hotel:
+                    return qs.filter(hotel=hotel)
+            return qs.none()
+
         return qs.none()
+
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         user = request.user
+
         if not user.is_superuser and user.user_type != 'admin':
-            hotel_query = Q()
-            # Determine the hotel(s) the user manages or is assigned to
+            hotel = None
+
             if user.user_type == 'hotel_manager':
-                if hasattr(user, 'hotel') and user.hotel:
-                    # Filter hotel field
-                    if db_field.name == "hotel":
-                        kwargs["queryset"] = Hotel.objects.filter(pk=user.hotel.pk)
-                    # Filter user field to show only users who have made bookings at this hotel
-                    elif db_field.name == "user":
-                        kwargs["queryset"] = User.objects.filter(bookings__hotel=user.hotel).distinct()
-                    # Filter room field to show only rooms from this hotel
-                    elif db_field.name == "room":
-                        kwargs["queryset"] = RoomType.objects.filter(hotel=user.hotel)
+                hotel = Hotel.objects.filter(manager=user).first()
+
             elif user.user_type == 'hotel_staff':
-                 if hasattr(user, 'assigned_hotel'):
-                     hotel_query = Q(pk=user.assigned_hotel.pk)
-                 # Add other linking logic if needed
+                if hasattr(user, 'chield'):
+                    hotel = Hotel.objects.filter(manager=user.chield).first()
 
-            # Filter relevant fields based on the determined hotel(s)
-            if hotel_query: # Only filter if a hotel context is found
-                allowed_hotels = Hotel.objects.filter(hotel_query)
+            if hotel:
                 if db_field.name == "hotel":
-                    kwargs["queryset"] = allowed_hotels
-                elif db_field.name == "room":
-                    kwargs["queryset"] = RoomType.objects.filter(hotel__in=allowed_hotels)
+                    kwargs["queryset"] = Hotel.objects.filter(pk=hotel.pk)
                 elif db_field.name == "user":
-                    kwargs["queryset"] = CustomUser.objects.filter(hotel__in=allowed_hotels)
+                    kwargs["queryset"] = CustomUser.objects.filter(user_type='customer').distinct()
+                elif db_field.name == "room":
+                    kwargs["queryset"] = RoomType.objects.filter(hotel=hotel)
 
-                # Add other fields like 'guest', 'bookingdetail' if they need filtering by hotel
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         user = request.user
-        # Auto-select and disable hotel field for non-admins
+
         if not user.is_superuser and user.user_type != 'admin':
-            if 'hotel' in form.base_fields:
-                 hotel_qs = Hotel.objects.none()
-                 # Determine user's hotel
-                 if user.user_type == 'hotel_manager':
-                     if hasattr(user, 'hotel_set') and user.hotel_set.exists():
-                         hotel_qs = Hotel.objects.filter(pk=user.hotel_set.first().pk)
-                 elif user.user_type == 'hotel_staff':
-                     if hasattr(user, 'assigned_hotel'):
-                         hotel_qs = Hotel.objects.filter(pk=user.assigned_hotel.pk)
-                     # Add other linking logic if needed
+            hotel = None
 
-                 if hotel_qs.exists():
-                     form.base_fields['hotel'].queryset = hotel_qs
-                     form.base_fields['hotel'].initial = hotel_qs.first()
-                     form.base_fields['hotel'].widget.attrs['disabled'] = True
-                     form.base_fields['hotel'].required = False
+            if user.user_type == 'hotel_manager':
+                hotel = Hotel.objects.filter(manager=user).first()
 
-            # Disable tracking fields
+            elif user.user_type == 'hotel_staff':
+                if hasattr(user, 'chield'):
+                    hotel = Hotel.objects.filter(manager=user.chield).first()
+
+            if hotel and 'hotel' in form.base_fields:
+                form.base_fields['hotel'].queryset = Hotel.objects.filter(pk=hotel.pk)
+                form.base_fields['hotel'].initial = hotel
+                form.base_fields['hotel'].widget.attrs['disabled'] = True
+                form.base_fields['hotel'].required = False
+
+            # إعداد الحقول الخاصة بالتتبع
             if 'updated_by' in form.base_fields:
-                form.base_fields['updated_by'].initial = request.user # Pre-fill current user
+                form.base_fields['updated_by'].initial = user
                 form.base_fields['updated_by'].widget.attrs['disabled'] = True
                 form.base_fields['updated_by'].required = False
+
             if 'created_by' in form.base_fields:
-                if obj: # Disable only when editing
-                     form.base_fields['created_by'].widget.attrs['disabled'] = True
+                form.base_fields['created_by'].initial = user
+                if obj:  # فقط عند التعديل
+                    form.base_fields['created_by'].widget.attrs['disabled'] = True
                 form.base_fields['created_by'].required = False
 
         return form

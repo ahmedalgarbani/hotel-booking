@@ -2,6 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from api.admin import admin_site
+from bookings.admin_classes.mixins import HotelUserFilter
 from customer.models import Favourites
 
 
@@ -17,7 +18,7 @@ class AutoUserTrackMixin:
 class FavouritesAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ('user', 'hotel') 
     search_fields = ('user__username', 'hotel__name') 
-    list_filter = ('hotel',)  
+    list_filter = (HotelUserFilter,)  
     readonly_fields = ('created_at', 'updated_at', 'created_by','hotel', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:  

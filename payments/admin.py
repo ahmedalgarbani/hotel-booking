@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.helpers import ActionForm
 from HotelManagement.models import Hotel
+from bookings.admin_classes.mixins import HotelUserFilter
 from .models import Currency, HotelPaymentMethod, PaymentHistory, PaymentOption, Payment
 from django.db.models import Q
 from bookings.models import Booking
@@ -42,12 +43,30 @@ class PaymentManagerAdminMixin:
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if not request.user.is_superuser and request.user.user_type == 'hotel_manager':
 
-            form.base_fields['hotel'].queryset = Hotel.objects.filter(manager=request.user)
-            form.base_fields['hotel'].initial = Hotel.objects.filter(manager=request.user).first()
-            form.base_fields['hotel'].widget.attrs['readonly'] = True
-            form.base_fields['hotel'].required = False
+        if not request.user.is_superuser:
+            if request.user.user_type == 'hotel_manager':
+                hotel_qs = Hotel.objects.filter(manager=request.user)
+                hotel = hotel_qs.first()
+                form.base_fields['hotel'].queryset = hotel_qs
+                form.base_fields['hotel'].initial = hotel
+                form.base_fields['hotel'].widget.attrs['readonly'] = True
+                form.base_fields['hotel'].required = False
+
+                if 'booking' in form.base_fields:
+                    form.base_fields['booking'].queryset = Booking.objects.filter(hotel__manager=request.user)
+
+            elif request.user.user_type == 'hotel_staff':
+                if hasattr(request.user, 'chield'):
+                    hotel_qs = Hotel.objects.filter(manager=request.user.chield)
+                    hotel = hotel_qs.first()
+                    form.base_fields['hotel'].queryset = hotel_qs
+                    form.base_fields['hotel'].initial = hotel
+                    form.base_fields['hotel'].widget.attrs['readonly'] = True
+                    form.base_fields['hotel'].required = False
+
+                    if 'booking' in form.base_fields:
+                        form.base_fields['booking'].queryset = Booking.objects.filter(hotel__manager=request.user.chield)
 
             if 'updated_by' in form.base_fields:
                 form.base_fields['updated_by'].initial = request.user
@@ -55,11 +74,12 @@ class PaymentManagerAdminMixin:
                 form.base_fields['updated_by'].required = False
 
             if 'created_by' in form.base_fields:
-
                 form.base_fields['created_by'].widget.attrs['disabled'] = True
                 form.base_fields['created_by'].initial = request.user
                 form.base_fields['created_by'].required = False
+
         return form
+
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # If the object exists (i.e., we are editing it)
@@ -87,7 +107,7 @@ class ChangePaymentStatusForm(ActionForm):
 
 class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Added newline before class
     list_display = ('hotel', 'payment_option', 'account_name', 'is_active')
-    list_filter = ('is_active', 'hotel', 'payment_option')
+    list_filter = ('is_active', HotelUserFilter, 'payment_option')
     search_fields = ('hotel__name', 'account_name')
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')
     def get_readonly_fields(self, request, obj=None):
@@ -99,7 +119,7 @@ class HotelPaymentMethodAdmin(PaymentManagerAdminMixin, admin.ModelAdmin): # Add
 
 class CurrencyAdmin(PaymentManagerAdminMixin, admin.ModelAdmin):
     list_display = ('currency_name', 'currency_symbol', 'hotel')
-    list_filter = ('hotel',)
+    list_filter = (HotelUserFilter,)
     search_fields = ('currency_name', 'currency_symbol')
 
     readonly_fields =('created_at', 'updated_at','created_by', 'updated_by','deleted_at')

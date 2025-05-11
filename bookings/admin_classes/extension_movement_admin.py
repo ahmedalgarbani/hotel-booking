@@ -3,13 +3,15 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from bookings.admin_classes.mixins import HotelUserFilter
+
 
 class ExtensionMovementAdmin(admin.ModelAdmin):
     list_display = (
         'movement_number', 'booking', 'original_departure', 'new_departure',
         'extension_date', 'duration', 'reason', 'payment_button'
     )
-    list_filter = ('extension_date', 'reason', 'booking__hotel')
+    list_filter = ('extension_date', 'reason', HotelUserFilter)
     search_fields = ('booking__id', 'movement_number')
     readonly_fields = ('movement_number', 'extension_date', 'duration', 'extension_year')
     date_hierarchy = 'extension_date'

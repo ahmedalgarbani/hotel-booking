@@ -17,7 +17,7 @@ from rooms.models import Availability
 from rooms.services import get_room_price
 
 # Import shared components
-from .mixins import HotelManagerAdminMixin
+from .mixins import HotelManagerAdminMixin, HotelUserFilter
 
 User = get_user_model()
 
@@ -29,7 +29,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         'amount', 'status', 'payment_status_display','show_payment_details_button', 'extend_booking_button',
         'set_checkout_today_toggle'
     ]
-    list_filter = ['status', 'hotel', 'check_in_date', 'check_out_date']
+    list_filter = ['status', HotelUserFilter, 'check_in_date', 'check_out_date']
     search_fields = ['guests__name', 'hotel__name', 'room__name', 'user__username', 'user__first_name', 'user__last_name']
     readonly_fields = [  'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at']
 
@@ -88,11 +88,10 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         # Verificar si el usuario es un administrador o un gerente de hotel
         user = request.user
 
-        # Obtener la reserva y verificar permisos
         if user.is_superuser or user.user_type == 'admin':
             # Los administradores pueden ver todas las reservas
             booking = get_object_or_404(self.model, pk=booking_id)
-        elif user.user_type == 'hotel_manager':
+        elif user.user_type == 'hotel_manager' or user.user_type == 'hotel_staff':
             # Los gerentes de hotel solo pueden ver las reservas de su propio hotel
             if hasattr(user, 'hotel') and user.hotel:
                 booking = get_object_or_404(self.model, pk=booking_id, hotel=user.hotel)
@@ -186,7 +185,6 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
                 required=True
             )
 
-        # If this is a POST request and the form data is valid, process the action
         if 'apply' in request.POST:
             form = StatusChangeForm(request.POST)
             if form.is_valid():
@@ -240,7 +238,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
     def export_bookings_report(self, request, queryset):
         # Verificar si el usuario es un gerente de hotel
         user = request.user
-        if user.user_type == 'hotel_manager' and hasattr(user, 'hotel') and user.hotel:
+        if user.user_type == 'hotel_manager' or user.user_type == 'hotel_staff' and hasattr(user, 'hotel') and user.hotel:
             # Filtrar el queryset para incluir solo las reservas del hotel del gerente
             queryset = queryset.filter(hotel=user.hotel)
 
@@ -278,7 +276,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         if user.is_superuser or user.user_type == 'admin':
             # Los administradores pueden ver todas las reservas
             original_booking = get_object_or_404(Booking, pk=object_id)
-        elif user.user_type == 'hotel_manager':
+        elif user.user_type == 'hotel_manager' or user.user_type == 'hotel_staff':
             # Los gerentes de hotel solo pueden ver las reservas de su propio hotel
             if hasattr(user, 'hotel') and user.hotel:
                 original_booking = get_object_or_404(Booking, pk=object_id, hotel=user.hotel)
@@ -397,7 +395,7 @@ class BookingAdmin(HotelManagerAdminMixin, admin.ModelAdmin):
         if user.is_superuser or user.user_type == 'admin':
             # Los administradores pueden ver todas las reservas
             booking = get_object_or_404(Booking, pk=pk)
-        elif user.user_type == 'hotel_manager':
+        elif user.user_type == 'hotel_manager' or user.user_type == 'hotel_staff':
             # Los gerentes de hotel solo pueden ver las reservas de su propio hotel
             if hasattr(user, 'hotel') and user.hotel:
                 booking = get_object_or_404(Booking, pk=pk, hotel=user.hotel)
