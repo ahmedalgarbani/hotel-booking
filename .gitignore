@@ -50,12 +50,12 @@ hotels/static/
 .idea_modules/
 *.
 # Virtual Environment
-venv/
-ENV/
-env/
-.env
-.env/
-.venv
+# venv/
+# ENV/
+# env/
+# .env
+# .env/
+# .venv
 env.bak/
 venv.bak/
 
