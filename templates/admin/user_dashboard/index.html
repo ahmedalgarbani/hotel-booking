@@ -1,849 +1,923 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="author" content="TechyDevs" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>{% block title %}Trizen - User Dashboard {% endblock %}</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="{% static 'images/favicon.png' %}" />
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="TechyDevs" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>{% block title %}Trizen - User Dashboard {% endblock %}</title>
 
-    <!-- Template CSS Files -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap-rtl.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/line-awesome.css' %}" />
-    <!-- jQuery UI CSS قبل Bootstrap لتجنب تعارض النوافذ المنبثقة -->
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/jquery.filer.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/style-rtl.css' %}" />
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'images/favicon.png' %}" />
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+    rel="stylesheet" />
 
-
-
-    
-    {% block extra_css %}
-    {% endblock extra_css %}
-  </head>
-  <body>
-  
+  <!-- Template CSS Files -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap-rtl.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/line-awesome.css' %}" />
+  <!-- jQuery UI CSS قبل Bootstrap لتجنب تعارض النوافذ المنبثقة -->
+  <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/jquery.filer.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style-rtl.css' %}" />
 
 
-    {% include "admin/user_dashboard/components/sidebar.html" %}
 
-    <section class="dashboard-area">
-        <div class="dashboard-nav">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="menu-wrapper">
-                  <div class="logo me-5">
-                    <a href="index.html"><img src="{% static 'images/logo2.png' %}" alt="logo"></a>
-                    <div class="menu-toggler">
-                      <i class="la la-bars"></i>
-                      <i class="la la-times"></i>
+
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --text-color: #1f2937;
+      --gray-light: #f3f4f6;
+      --gray-medium: #9ca3af;
+      --gray-dark: #4b5563;
+      --white: #ffffff;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      line-height: 1.5;
+      color: var(--text-color);
+      background-color: var(--gray-light);
+    }
+
+    .header {
+      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      color: var(--white);
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .notifications-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .notification-list {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: start;
+      transition: background-color 0.2s;
+      cursor: pointer;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item:hover {
+      background-color: var(--gray-light);
+    }
+
+    .notification-item.unread {
+      background-color: #f0f7ff;
+    }
+
+    .notification-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .icon-booking {
+      background-color: #e0f2fe;
+      color: var(--primary-color);
+    }
+
+    .icon-success {
+      background-color: #dcfce7;
+      color: var(--success-color);
+    }
+
+    .icon-warning {
+      background-color: #fef3c7;
+      color: var(--warning-color);
+    }
+
+    .icon-danger {
+      background-color: #fee2e2;
+      color: var(--danger-color);
+    }
+
+    .notification-content {
+      flex-grow: 1;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-message {
+      color: var(--gray-dark);
+      font-size: 0.875rem;
+    }
+
+    .notification-time {
+      color: var(--gray-medium);
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      padding: 0.25rem;
+      cursor: pointer;
+      color: var(--gray-dark);
+      transition: color 0.2s;
+    }
+
+    .action-btn:hover {
+      color: var(--primary-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-dark);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-medium);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .notifications-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .filter-buttons {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .notification-item {
+        grid-template-columns: auto 1fr;
+      }
+
+      .notification-time {
+        grid-column: 2;
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+
+  {% block extra_css %}
+  {% endblock extra_css %}
+</head>
+
+<body>
+
+
+
+  {% include "admin/user_dashboard/components/sidebar.html" %}
+
+  <section class="dashboard-area">
+    <div class="dashboard-nav">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="menu-wrapper">
+              <div class="logo me-5">
+                <a href="{% url 'customer:user_dashboard_index' %}"><img src="{% static 'images/logo2.png' %}"
+                    alt="logo"></a>
+                <div class="menu-toggler">
+                  <i class="la la-bars"></i>
+                  <i class="la la-times"></i>
+                </div>
+                <!-- end menu-toggler -->
+                <div class="user-menu-open">
+                  <i class="la la-user"></i>
+                </div>
+                <!-- end user-menu-open -->
+              </div>
+              <div class="dashboard-search-box">
+                <div class="contact-form-action">
+                  <form action="#">
+                    <div class="form-group mb-0">
+                      <input class="form-control" type="text" name="text" placeholder="ابحث هنا">
+                      <button class="search-btn">
+                        <i class="la la-search"></i>
+                      </button>
                     </div>
-                    <!-- end menu-toggler -->
-                    <div class="user-menu-open">
-                      <i class="la la-user"></i>
-                    </div>
-                    <!-- end user-menu-open -->
-                  </div>
-                  <div class="dashboard-search-box">
-                    <div class="contact-form-action">
-                      <form action="#">
-                        <div class="form-group mb-0">
-                          <input class="form-control" type="text" name="text" placeholder="ابحث هنا">
-                          <button class="search-btn">
-                            <i class="la la-search"></i>
-                          </button>
+                  </form>
+                </div>
+              </div>
+              <div class="nav-btn ms-auto">
+                <div class="notification-wrap d-flex align-items-center">
+
+
+                  <div class="notification-item me-2">
+                    <div class="dropdown">
+                      <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" id="notificationDropdownMenu"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="la la-bell"></i>
+                        <span class="noti-count">{{ unread_notifications_count }}</span>
+                        <!-- عرض عدد الإشعارات غير المقروءة -->
+                      </a>
+                      <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
+                        <div class="dropdown-header drop-reveal-header">
+                          <h6 class="title">
+                            لديك
+                            <strong class="text-black">{{ unread_notifications_count }}</strong> إشعارات غير مقروءة
+                          </h6>
                         </div>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="nav-btn ms-auto">
-                    <div class="notification-wrap d-flex align-items-center">
-                      <div class="notification-item me-2">
-                        <div class="dropdown">
-                          <a href="#" class="dropdown-toggle drop-reveal-toggle-icon" id="notificationDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="la la-bell"></i>
-                            <span class="noti-count">4</span>
-                          </a>
-                          <div class="dropdown-menu dropdown-reveal dropdown-menu-xl dropdown-menu-right">
-                            <div class="dropdown-header drop-reveal-header">
-                              <h6 class="title">
-                                لديك
-                                <strong class="text-black"> 4 </strong> إشعارات
-                              </h6>
-                            </div>
-                            <div class="list-group drop-reveal-list">
-                              <a href="#" class="list-group-item list-group-item-action">
-                                <div class="msg-body d-flex align-items-center">
-                                  <div class="icon-element flex-shrink-0 me-3 ms-0">
-                                    <i class="la la-bell"></i>
-                                  </div>
-                                  <div class="msg-content w-100">
-                                    <h3 class="title pb-1">تم ارسال طلبك</h3>
-                                    <p class="msg-text">قبل دقيقتين</p>
-                                  </div>
-                                </div>
-                                <!-- end msg-body -->
-                              </a>
-                           
-                            </div>
-                            <a href="#" class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
-                          </div>
-                          <!-- end dropdown-menu -->
-                        </div>
-                      </div>
-                      <!-- end notification-item -->
-                      <div class="notification-item">
-                        <div class="dropdown">
-                          <a href="#" class="dropdown-toggle" id="userDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="d-flex align-items-center">
-                              <div class="avatar avatar-sm flex-shrink-0 me-2">
-                                <img src="{% static 'images/team8.jpg' %}" alt="team-img">
+                        <div class="list-group drop-reveal-list">
+                          {% for notification in notifications %}
+                          {% if notification.status == '0' %} <!-- عرض فقط الإشعارات غير المقروءة -->
+                          <a href="{% url 'notifications:handle_notification' notification.id %}"
+                            class="list-group-item list-group-item-action unread">
+                            <div class="msg-body d-flex align-items-center">
+                              <div class="icon-element flex-shrink-0 me-3 ms-0">
+                                <i class="la la-bell"></i>
                               </div>
-                              <span class="font-size-14 font-weight-bold"> احمد الجرباني</span>
+                              <div class="msg-content w-100">
+                                <h3 class="title pb-1">{{ notification.message }}</h3>
+                                <p class="msg-text">من: {{ notification.sender.get_full_name }}</p>
+                                <!-- عرض اسم المرسل -->
+                                <p class="msg-text">{{ notification.send_time|timesince }} مضت</p>
+
+                                <!-- تحديد نوع الإشعار وعرضه -->
+                                <p class="msg-type">
+                                  {% if notification.notification_type == '0' %}
+                                  <span class="badge bg-info">معلومة</span>
+                                  {% elif notification.notification_type == '1' %}
+                                  <span class="badge bg-warning">تحذير</span>
+                                  {% elif notification.notification_type == '2' %}
+                                  <span class="badge bg-success">نجاح</span>
+                                  {% elif notification.notification_type == '3' %}
+                                  <span class="badge bg-danger">خطأ</span>
+                                  {% endif %}
+                                </p>
+                              </div>
                             </div>
                           </a>
-                          <div class="dropdown-menu dropdown-reveal dropdown-menu-md dropdown-menu-right">
-                            <div class="dropdown-item drop-reveal-header user-reveal-header">
-                              <h6 class="title text-uppercase">أهلا بك!</h6>
-                            </div>
-                            <div class="list-group drop-reveal-list user-drop-reveal-list">
-                              <a href="user-dashboard-profile.html" class="list-group-item list-group-item-action">
-                                <div class="msg-body">
-                                  <div class="msg-content">
-                                    <h3 class="title">
-                                      <i class="la la-user me-2"></i>ملفي
-                                    </h3>
-                                  </div>
-                                </div>
-                                <!-- end msg-body -->
-                              </a>
-                              <a href="user-dashboard-booking.html" class="list-group-item list-group-item-action">
-                                <div class="msg-body">
-                                  <div class="msg-content">
-                                    <h3 class="title">
-                                      <i class="la la-shopping-cart me-2"></i>الحجز
-                                    </h3>
-                                  </div>
-                                </div>
-                                <!-- end msg-body -->
-                              </a>
-                              <a href="user-dashboard-reviews.html" class="list-group-item list-group-item-action">
-                                <div class="msg-body">
-                                  <div class="msg-content">
-                                    <h3 class="title">
-                                      <i class="la la-heart me-2"></i>تعليقاتي
-                                    </h3>
-                                  </div>
-                                </div>
-                                <!-- end msg-body -->
-                              </a>
-                              <a href="user-dashboard-settings.html" class="list-group-item list-group-item-action">
-                                <div class="msg-body">
-                                  <div class="msg-content">
-                                    <h3 class="title">
-                                      <i class="la la-gear me-2"></i>الإعدادات
-                                    </h3>
-                                  </div>
-                                </div>
-                                <!-- end msg-body -->
-                              </a>
-                              <div class="section-block"></div>
-                              <a href="index.html" class="list-group-item list-group-item-action">
-                                <div class="msg-body">
-                                  <div class="msg-content">
-                                    <h3 class="title">
-                                      <i class="la la-power-off me-2"></i>تسجيل
-                                      خروج
-                                    </h3>
-                                  </div>
-                                </div>
-                                <!-- end msg-body -->
-                              </a>
-                            </div>
+                          {% endif %}
+                          {% endfor %}
+                        </div>
+                        <a href="{% url 'notifications:all_notifications' user.id %}"
+                          class="dropdown-item drop-reveal-btn text-center">مشاهدة الكل</a>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <!-- end notification-item -->
+                  <div class="notification-item">
+                    <div class="dropdown">
+                      <a href="#" class="dropdown-toggle" id="userDropdownMenu" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <div class="d-flex align-items-center">
+                          {% if user.image %}
+
+                          <div class="avatar avatar-sm flex-shrink-0 me-2">
+                            <img src="{{ user.image.url }}" alt="team-img">
                           </div>
-                          <!-- end dropdown-menu -->
+                          {% endif %}
+                          <span class="font-size-14 font-weight-bold"> {{ user.first_name }} {{ user.last_name }}</span>
+                        </div>
+                      </a>
+                      <div class="dropdown-menu dropdown-reveal dropdown-menu-md dropdown-menu-right">
+                        <div class="dropdown-item drop-reveal-header user-reveal-header">
+                          <h6 class="title text-uppercase">أهلا بك!</h6>
+                        </div>
+                        <div class="list-group drop-reveal-list user-drop-reveal-list">
+                          <a href="{% url 'customer:user_dashboard_profile' %}"
+                            class="list-group-item list-group-item-action">
+                            <div class="msg-body">
+                              <div class="msg-content">
+                                <h3 class="title">
+                                  <i class="la la-user me-2"></i>ملفي
+                                </h3>
+                              </div>
+                            </div>
+                            <!-- end msg-body -->
+                          </a>
+                          <a href="{% url 'customer:user_dashboard_bookings' %}"
+                            class="list-group-item list-group-item-action">
+                            <div class="msg-body">
+                              <div class="msg-content">
+                                <h3 class="title">
+                                  <i class="la la-shopping-cart me-2"></i>الحجز
+                                </h3>
+                              </div>
+                            </div>
+                            <!-- end msg-body -->
+                          </a>
+                          <a href="{% url 'customer:user_dashboard_reviews' %}"
+                            class="list-group-item list-group-item-action">
+                            <div class="msg-body">
+                              <div class="msg-content">
+                                <h3 class="title">
+                                  <i class="la la-heart me-2"></i>تعليقاتي
+                                </h3>
+                              </div>
+                            </div>
+                            <!-- end msg-body -->
+                          </a>
+                          <a href="{% url 'customer:user_dashboard_settings' %}"
+                            class="list-group-item list-group-item-action">
+                            <div class="msg-body">
+                              <div class="msg-content">
+                                <h3 class="title">
+                                  <i class="la la-gear me-2"></i>الإعدادات
+                                </h3>
+                              </div>
+                            </div>
+                            <!-- end msg-body -->
+                          </a>
+                          <div class="section-block"></div>
+                          <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action">
+                            <div class="msg-body">
+                              <div class="msg-content">
+                                <h3 class="title">
+                                  <i class="la la-power-off me-2"></i>تسجيل
+                                  خروج
+                                </h3>
+                              </div>
+                            </div>
+                            <!-- end msg-body -->
+                          </a>
                         </div>
                       </div>
-                      <!-- end notification-item -->
+                      <!-- end dropdown-menu -->
                     </div>
                   </div>
-                  <!-- end nav-btn -->
+                  <!-- end notification-item -->
                 </div>
-                <!-- end menu-wrapper -->
               </div>
-              <!-- end col-lg-12 -->
+              <!-- end nav-btn -->
             </div>
-            <!-- end row -->
+            <!-- end menu-wrapper -->
           </div>
-          <!-- end container-fluid -->
+          <!-- end col-lg-12 -->
         </div>
-        <!-- end dashboard-nav -->
-        <div class="dashboard-content-wrap">
-          <div class="dashboard-bread dashboard--bread">
-            <div class="container-fluid">
-              <div class="row align-items-center">
-                <div class="col-lg-6">
-                  <div class="breadcrumb-content">
-                    <div class="section-heading">
-                      <h2 class="sec__title font-size-30 text-white">{% block section_title %}مرحبا بك احمد الجرباني{% endblock section_title %}</h2>
-                    </div>
-                  </div>
-                  <!-- end breadcrumb-content -->
+        <!-- end row -->
+      </div>
+      <!-- end container-fluid -->
+    </div>
+    <!-- end dashboard-nav -->
+    <div class="dashboard-content-wrap">
+      <div class="dashboard-bread dashboard--bread">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-lg-6">
+              <div class="breadcrumb-content">
+                <div class="section-heading">
+                  <h2 class="sec__title font-size-30 text-white">{% block section_title %}مرحبا بك
+                    {{request.user.first_name}} {% endblock section_title %}</h2>
                 </div>
-                <!-- end col-lg-6 -->
-                <div class="col-lg-6">
-                  <div class="breadcrumb-list text-end">
-                    <ul class="list-items">
-                      <li>
-                        <a href="index.html" class="text-white">الصفحة الرئيسية</a>
-                      </li>
-                      <li>لوحة القيادة</li>
-                      <li>{% block path_title %}
-                        لوحه تحكم المستخدم
-                        {% endblock path_title %}</li>
-                    </ul>
-                  </div>
-                  <!-- end breadcrumb-list -->
-                </div>
-                <!-- end col-lg-6 -->
               </div>
+              <!-- end breadcrumb-content -->
+            </div>
+            <!-- end col-lg-6 -->
+            <div class="col-lg-6">
+              <div class="breadcrumb-list text-end">
+                <ul class="list-items">
+                  <li>
+                    <a href="index.html" class="text-white">الصفحة الرئيسية</a>
+                  </li>
+                  <li>لوحة التحكم</li>
+                  <li>{% block path_title %}
+                    لوحه تحكم المستخدم
+                    {% endblock path_title %}</li>
+                </ul>
+              </div>
+              <!-- end breadcrumb-list -->
+            </div>
+            <!-- end col-lg-6 -->
+          </div>
+          <!-- end row -->
+        </div>
+      </div>
+      <!-- end dashboard-bread -->
+
+      <!-- Page Content -->
+      {% block content %}
+      <div class="dashboard-content-wrap">
+        <div class="dashboard-bread dashboard--bread">
+          <div class="container-fluid">
+            <div class="row align-items-center">
               <!-- end row -->
-            </div>
-          </div>
-          <!-- end dashboard-bread -->
-         
-<!-- Page Content -->
-{% block content %}
-<div class="dashboard-main-content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-6 responsive-column--m">
-        <div class="form-box">
-          <div class="form-title-wrap">
-            <h3 class="title">نتائج احصائيات</h3>
-          </div>
-          <div class="form-content">
-            <canvas id="bar-chart"></canvas>
-          </div>
-        </div>
-        <!-- end form-box -->
-      </div>
-      <!-- end col-lg-6 -->
-      <div class="col-lg-6 responsive-column--m">
-        <div class="form-box dashboard-card">
-          <div class="form-title-wrap">
-            <div
-              class="d-flex justify-content-between align-items-center"
-            >
-              <h3 class="title">إشعارات</h3>
-              <button
-                type="button"
-                class="icon-element mark-as-read-btn ms-auto me-0"
-                data-bs-toggle="tooltip"
-                data-placement="left"
-                title="اشر عليها بانها قرات"
-              >
-                <i class="la la-check-square"></i>
-              </button>
-            </div>
-          </div>
-          <div class="form-content p-0">
-            <div class="list-group drop-reveal-list">
-              <a
-                href="#"
-                class="list-group-item list-group-item-action border-top-0"
-              >
-                <div class="msg-body d-flex align-items-center">
-                  <div class="icon-element flex-shrink-0 me-3 ms-0">
-                    <i class="la la-bell"></i>
-                  </div>
-                  <div class="msg-content w-100">
-                    <h3 class="title pb-1">رحلة جماعية - متوفرة</h3>
-                    <p class="msg-text">قبل دقيقتين</p>
-                  </div>
-                  <span
-                    class="icon-element mark-as-read-btn flex-shrink-0 ms-auto me-0"
-                    data-bs-toggle="tooltip"
-                    data-placement="left"
-                    title="ضع إشارة مقروء"
-                  >
-                    <i class="la la-check-square"></i>
-                  </span>
-                </div>
-                <!-- end msg-body -->
-              </a>
-              <a
-                href="#"
-                class="list-group-item list-group-item-action"
-              >
-                <div class="msg-body d-flex align-items-center">
-                  <div
-                    class="icon-element bg-1 flex-shrink-0 me-3 ms-0"
-                  >
-                    <i class="la la-bell"></i>
-                  </div>
-                  <div class="msg-content w-100">
-                    <h3 class="title pb-1">عرض خصم 50٪</h3>
-                    <p class="msg-text">قبل دقيقتين</p>
-                  </div>
-                  <span
-                    class="icon-element mark-as-read-btn flex-shrink-0 ms-auto me-0"
-                    data-bs-toggle="tooltip"
-                    data-placement="left"
-                    title="ضع إشارة مقروء"
-                  >
-                    <i class="la la-check-square"></i>
-                  </span>
-                </div>
-                <!-- end msg-body -->
-              </a>
-              <a
-                href="#"
-                class="list-group-item list-group-item-action"
-              >
-                <div class="msg-body d-flex align-items-center">
-                  <div
-                    class="icon-element bg-2 flex-shrink-0 me-3 ms-0"
-                  >
-                    <i class="la la-check"></i>
-                  </div>
-                  <div class="msg-content w-100">
-                    <h3 class="title pb-1">لقد تم إنشاء حسابك</h3>
-                    <p class="msg-text">1 منذ يوم</p>
-                  </div>
-                  <span
-                    class="icon-element mark-as-read-btn flex-shrink-0 ms-auto me-0"
-                    data-bs-toggle="tooltip"
-                    data-placement="left"
-                    title="ضع إشارة مقروء"
-                  >
-                    <i class="la la-check-square"></i>
-                  </span>
-                </div>
-                <!-- end msg-body -->
-              </a>
-              <a
-                href="#"
-                class="list-group-item list-group-item-action"
-              >
-                <div class="msg-body d-flex align-items-center">
-                  <div
-                    class="icon-element bg-3 flex-shrink-0 me-3 ms-0"
-                  >
-                    <i class="la la-user"></i>
-                  </div>
-                  <div class="msg-content w-100">
-                    <h3 class="title pb-1">تم تحديث حسابك</h3>
-                    <p class="msg-text">قبل ساعتين</p>
-                  </div>
-                  <span
-                    class="icon-element mark-as-read-btn flex-shrink-0 ms-auto me-0"
-                    data-bs-toggle="tooltip"
-                    data-placement="left"
-                    title="ضع إشارة مقروء"
-                  >
-                    <i class="la la-check-square"></i>
-                  </span>
-                </div>
-                <!-- end msg-body -->
-              </a>
-              <a
-                href="#"
-                class="list-group-item list-group-item-action"
-              >
-                <div class="msg-body d-flex align-items-center">
-                  <div
-                    class="icon-element bg-4 flex-shrink-0 me-3 ms-0"
-                  >
-                    <i class="la la-lock"></i>
-                  </div>
-                  <div class="msg-content w-100">
-                    <h3 class="title pb-1">
-                      تم تغيير كلمة المرور الخاصة بك
-                    </h3>
-                    <p class="msg-text">في الامس</p>
-                  </div>
-                  <span
-                    class="icon-element mark-as-read-btn flex-shrink-0 ms-auto me-0"
-                    data-bs-toggle="tooltip"
-                    data-placement="left"
-                    title="ضع إشارة مقروء"
-                  >
-                    <i class="la la-check-square"></i>
-                  </span>
-                </div>
-                <!-- end msg-body -->
-              </a>
-            </div>
-          </div>
-        </div>
-        <!-- end form-box -->
-      </div>
-      <!-- end col-lg-6 -->
-      <div class="col-lg-6 responsive-column--m">
-        <div class="form-box dashboard-card">
-          <div class="form-title-wrap">
-            <h3 class="title">مهام</h3>
-          </div>
-          <div class="form-content">
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>تم إجراء حجزك
-              <a href="#" class="alert-link"> من شيملا إلى غوا </a>!
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>أرسل بريدًا إلكترونيًا إلى
-              <strong> dev@gmail.com </strong>
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>تم استلام بريد إلكتروني من
-              <strong> tripstar@yahoo.com </strong>
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>دفعتك معلقة في جولة
-              <a href="#" class="alert-link"> منالي </a>!
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>رد شخص ما على تعليقك على
-              جولة <a href="#" class="alert-link"> رحلة لندن </a>!
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>لقد ألغيت
-              <a href="#" class="alert-link"> رحلة دبي إلى لندن </a>
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              <i class="la la-check me-2"></i>لقد قدمت تعليقًا على
-              <span class="شارة تحذير النص الأبيض"> 4.5 </span>
-              <a href="#" class="alert-link"> EnVision Hotel Boston </a>
-              <button
-                type="button"
-                class="btn-close close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- end form-box -->
-      </div>
-      <!-- end col-lg-6 -->
-      <div class="col-lg-6 responsive-column--m">
-        <div class="form-box dashboard-card order-card border-0">
-          <div class="form-title-wrap">
-            <h3 class="title">الطلب</h3>
-          </div>
-          <div class="form-content p-0">
-            <div class="list-group drop-reveal-list">
-              <div
-                class="list-group-item list-group-item-action border-top-0"
-              >
-                <div
-                  class="msg-body d-flex align-items-center justify-content-between"
-                >
-                  <div class="msg-content">
-                    <h3 class="title pb-2">
-                      3 - ليلة الباهاما - ميامي ذهابا وإيابا
-                    </h3>
-                    <ul class="list-items d-flex align-items-center">
-                      <li class="font-size-14 me-2">
-                        <span
-                          class="badge text-bg-success py-1 px-2 font-size-13 font-weight-medium"
-                          >دفع</span
-                        >
-                      </li>
-                      <li class="font-size-14 me-2">الطلب: # 232</li>
-                      <li class="font-size-14">التاريخ: 11/05/2019</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="#"
-                    class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
-                  >
-                    عرض الفاتورة
-                  </a>
-                </div>
-                <!-- end msg-body -->
-              </div>
-              <div class="list-group-item list-group-item-action">
-                <div
-                  class="msg-body d-flex align-items-center justify-content-between"
-                >
-                  <div class="msg-content">
-                    <h3 class="title pb-2">كاليفورنيا الى نيويورك</h3>
-                    <ul class="list-items d-flex align-items-center">
-                      <li class="font-size-14 me-2">
-                        <span
-                          class="badge text-bg-danger py-1 px-2 font-size-13 font-weight-medium"
-                          >غير مدفوعة</span
-                        >
-                      </li>
-                      <li class="font-size-14 me-2">الطلب: # 232</li>
-                      <li class="font-size-14">التاريخ: 11/05/2019</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="#"
-                    class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
-                  >
-                    إنهاء الدفع
-                  </a>
-                </div>
-                <!-- end msg-body -->
-              </div>
-              <div class="list-group-item list-group-item-action">
-                <div
-                  class="msg-body d-flex align-items-center justify-content-between"
-                >
-                  <div class="msg-content">
-                    <h3 class="title pb-2">
-                      جولة مشي لمدة ساعتين في مانهاتن
-                    </h3>
-                    <ul class="list-items d-flex align-items-center">
-                      <li class="font-size-14 me-2">
-                        <span
-                          class="badge text-bg-success py-1 px-2 font-size-13 font-weight-medium"
-                          >دفع</span
-                        >
-                      </li>
-                      <li class="font-size-14 me-2">الطلب: # 232</li>
-                      <li class="font-size-14">التاريخ: 11/05/2019</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="#"
-                    class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
-                  >
-                    عرض الفاتورة
-                  </a>
-                </div>
-                <!-- end msg-body -->
-              </div>
-              <div class="list-group-item list-group-item-action">
-                <div
-                  class="msg-body d-flex align-items-center justify-content-between"
-                >
-                  <div class="msg-content">
-                    <h3 class="title pb-2">من دبي إلى إسبانيا</h3>
-                    <ul class="list-items d-flex align-items-center">
-                      <li class="font-size-14 me-2">
-                        <span
-                          class="badge text-bg-success py-1 px-2 font-size-13 font-weight-medium"
-                          >دفع</span
-                        >
-                      </li>
-                      <li class="font-size-14 me-2">الطلب: # 232</li>
-                      <li class="font-size-14">التاريخ: 11/05/2019</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="#"
-                    class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
-                  >
-                    عرض الفاتورة
-                  </a>
-                </div>
-                <!-- end msg-body -->
-              </div>
-              <div class="list-group-item list-group-item-action">
-                <div
-                  class="msg-body d-flex align-items-center justify-content-between"
-                >
-                  <div class="msg-content">
-                    <h3 class="title pb-2">فيلات باريان هوليداي</h3>
-                    <ul class="list-items d-flex align-items-center">
-                      <li class="font-size-14 me-2">
-                        <span
-                          class="badge text-bg-success py-1 px-2 font-size-13 font-weight-medium"
-                          >دفع</span
-                        >
-                      </li>
-                      <li class="font-size-14 me-2">الطلب: # 232</li>
-                      <li class="font-size-14">التاريخ: 11/05/2019</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="#"
-                    class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
-                  >
-                    عرض الفاتورة
-                  </a>
-                </div>
-                <!-- end msg-body -->
-              </div>
-              <div class="list-group-item list-group-item-action">
-                <div
-                  class="msg-body d-flex align-items-center justify-content-between"
-                >
-                  <div class="msg-content">
-                    <h3 class="title pb-2">فندق ليك بالاس</h3>
-                    <ul class="list-items d-flex align-items-center">
-                      <li class="font-size-14 me-2">
-                        <span
-                          class="badge text-bg-success py-1 px-2 font-size-13 font-weight-medium"
-                          >دفع</span
-                        >
-                      </li>
-                      <li class="font-size-14 me-2">الطلب: # 232</li>
-                      <li class="font-size-14">التاريخ: 11/05/2019</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="#"
-                    class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
-                  >
-                    عرض الفاتورة
-                  </a>
-                </div>
-                <!-- end msg-body -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end form-box -->
-      </div>
-      <!-- end col-lg-6 -->
-    </div>
-    <!-- end row -->
-    <div class="border-top mt-4"></div>
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="copy-right padding-top-30px">
-          <p class="copy__desc">
-            &copy; Copyright Trizen 2020. Made with
-            <span class="la la-heart"></span> by
-            <a href="https://themeforest.net/user/techydevs/portfolio"
-              >TechyDevs</a
-            >
-          </p>
-        </div>
-        <!-- end copy-right -->
-      </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="footer-social-box text-end padding-top-30px">
-          <ul class="social-profile">
-            <li>
-              <a href="#"><i class="lab la-facebook-f"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="lab la-twitter"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="lab la-instagram"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="lab la-linkedin-in"></i></a>
-            </li>
-          </ul>
-        </div>
-        <!-- end footer-social-box -->
-      </div>
-      <!-- end col-lg-5 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container-fluid -->
-</div>
-{% endblock content %}
-<!-- /Page Content -->
-          <!-- end dashboard-main-content -->
-        </div>
-        <!-- end dashboard-content-wrap -->
-      </section>
+              <div class="row mt-4">
+                <div class="col-lg-3 responsive-column-m">
+                  <div class="icon-box icon-layout-2 dashboard-icon-box">
+                    <div class="d-flex">
+                      <div class="info-icon icon-element flex-shrink-0">
+                        <i class="la la-shopping-cart"></i>
+                      </div>
+                      <!-- end info-icon-->
+                      <div class="info-content">
+                        <p class="info__desc">إجمالي الحجز</p>
+                        <h4 class="info__title">{{ booking_count }}</h4>
+                      </div>
 
+                      <!-- end info-content -->
+                    </div>
+                  </div>
+                </div>
+                <!-- end col-lg-3 -->
+                <div class="col-lg-3 responsive-column-m">
+                  <div class="icon-box icon-layout-2 dashboard-icon-box">
+                    <div class="d-flex">
+                      <div class="info-icon icon-element bg-2 flex-shrink-0">
+                        <i class="la la-bookmark"></i>
+                      </div>
+                      <!-- end info-icon-->
+                      <div class="info-content">
+                        <p class="info__desc">قائمة الرغبات</p>
+                        <h4 class="info__title">{{ wishlist_count }}</h4>
+                      </div>
 
-
-    <!-- Template JS Files -->
-    <!-- Core JS Libraries - الترتيب مهم جداً -->
-    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-    <!-- jQuery UI قبل Bootstrap -->
-    <script src="{% static 'js/jquery-ui.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    
-    <!-- Essential Plugins -->
-    <script src="{% static 'js/moment.min.js' %}"></script>
-    <script src="{% static 'js/select2.min.js' %}"></script>
-    
-    <!-- UI Enhancement Plugins -->
-    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
-    <script src="{% static 'js/jquery.countTo.min.js' %}"></script>
-    <script src="{% static 'js/jquery.filer.min.js' %}"></script>
-    <script src="{% static 'js/jquery.ripples-min.js' %}"></script>
-    <script src="{% static 'js/jquery.superslides.min.js' %}"></script>
-    
-    <!-- Date & Time Plugins -->
-    <script src="{% static 'js/daterangepicker.js' %}"></script>
-    
-    <!-- Custom Scripts -->
-    <script src="{% static 'js/animated-headline.js' %}"></script>
-    <script src="{% static 'js/quantity-input.js' %}"></script>
-    <script src="{% static 'js/superslider-script.js' %}"></script>
-    
-    <!-- Initialize Scripts -->
-    <script src="{% static 'js/main-rtl.js' %}"></script>
-
-
-    {% block extra_js %}
-    {% endblock extra_js %}    
-    <script>
-        // حل مشكلة تعارض النوافذ المنبثقة
-        $.widget.bridge('uibutton', $.ui.button);
-        $.widget.bridge('uitooltip', $.ui.tooltip);
-        
-        $(document).ready(function() {
-            // منع التعارض بين jQuery UI dialog و Bootstrap modal
-            $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-            
-            // تهيئة Select2
-            if ($.fn.select2) {
-                $('.select-contain-select').select2({
-                    dropdownParent: $('body') // لحل مشكلة ظهور Select2 في النوافذ المنبثقة
-                });
-            }
-            
-            // تهيئة DateRangePicker
-            if ($.fn.daterangepicker) {
-                $('input[name="daterange"]').daterangepicker({
-                    locale: {
-                        direction: 'rtl',
-                        format: 'YYYY/MM/DD'
-                    },
-                    autoUpdateInput: false // لمنع التحديث التلقائي للتاريخ
-                });
+                      <!-- end info-content -->
+                    </div>
+                  </div>
+                </div>
+                <!-- end col-lg-3 -->
+                <div class="col-lg-3 responsive-column-m">
+                  <div class="icon-box icon-layout-2 dashboard-icon-box">
+                    <div class="d-flex">
+                      <div class="info-icon icon-element bg-success flex-shrink-0">
+                        <i class="la la-wallet"></i>
+                      </div>
                 
-                // معالجة اختيار التاريخ
-                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-                    $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
-                });
-            }
+                      <div class="info-content">
+                        <p class="info__desc">إجمالي المدفوعات</p>
+                        <h4 class="info__title">
+                          {{ total_payments|floatformat:2 }} {{ currency_symbol|default:"$" }}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- end col-lg-3 -->
+                <div class="col-lg-3 responsive-column-m">
+                  <div class="icon-box icon-layout-2 dashboard-icon-box">
+                    <div class="d-flex">
+                      <div class="info-icon icon-element bg-warning flex-shrink-0">
+                        <i class="la la-star"></i>
+                      </div>
+                      
+                      <div class="info-content">
+                        <p class="info__desc">المراجعات</p>
+                        <h4 class="info__title">{{ reviews_count }}</h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- end col-lg-3 -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end row -->
+      <div class="dashboard-main-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-6 responsive-column--m">
+              <div class="form-box dashboard-card order-card border-0">
+                <div class="form-title-wrap">
+                  <h3 class="title">الطلبات</h3>
+                </div>
+                <div class="form-content p-0">
+                  <div class="list-group drop-reveal-list">
+                    {% if user_orders %}
+                      {% for order in user_orders %}
+                        <div class="list-group-item list-group-item-action {% if forloop.first %}border-top-0{% endif %}">
+                          <div class="msg-body d-flex align-items-center justify-content-between">
+                            <div class="msg-content">
+                              <h3 class="title pb-2">
+                                
+                              </h3>
+                              <ul class="list-items d-flex align-items-center">
+                                <li class="font-size-14 me-2">
+                                  {% if order.payment_status == 1 %}
+                                    <span class="badge text-bg-success py-1 px-2 font-size-13 font-weight-medium">دفع</span>
+                                  {% elif order.payment_status == 2 %}
+                                    <span class="badge text-bg-danger py-1 px-2 font-size-13 font-weight-medium">ملغي</span>
+                                  {% else %}
+                                    <span class="badge text-bg-warning py-1 px-2 font-size-13 font-weight-medium">قيد الانتظار</span>
+                                  {% endif %}
+                                </li>
+                                <li class="font-size-14 me-2">الطلب: #{{ order.id }}</li>
+                                <li class="font-size-14">التاريخ: {{ order.payment_date|date:"d/m/Y" }}</li>
+                              </ul>
+                            </div>
+                            <a href="{% if order.payment_status == 0 %}{% url 'customer:cancel_payment' order.id %}{% else %}#{% endif %}" 
+                            class="theme-btn theme-btn-small theme-btn-transparent font-size-13"
+                            onclick="{% if order.payment_status == 0 %}return confirm('هل أنت متأكد من إلغاء الدفع؟');{% endif %}">
+                             {% if order.payment_status == 0 %}
+                                 إلغاء الدفع
+                             {% else %}
+                                 عرض الفاتورة
+                             {% endif %}
+                         </a>
+                         
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <div class="text-center p-3">لا توجد طلبات بعد.</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end col-lg-6 -->
+            <div class="col-lg-6 responsive-column--m">
+              <div class="form-box dashboard-card">
+                <div class="form-title-wrap">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="title">إشعارات</h3>
+                    <button type="button" class="icon-element mark-as-read-btn ms-auto me-0" data-bs-toggle="tooltip"
+                      data-placement="left" title="اشر عليها بأنها قرأت">
+                      <i class="la la-check-square"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-content p-0">
+                  <div class="list-group drop-reveal-list">
+                    {% if notifications %}
+                    {% for notification in notifications %}
+                    <a href="{{ notification.action_url|default:'#' }}"
+                      class="list-group-item list-group-item-action {% if forloop.first %}border-top-0{% endif %}">
+                      <div class="msg-body d-flex align-items-center">
+                        <div
+                          class="icon-element {% if notification.notification_type == '1' %}bg-warning{% elif notification.notification_type == '2' %}bg-success{% elif notification.notification_type == '3' %}bg-danger{% else %}bg-1{% endif %} flex-shrink-0 me-3 ms-0">
+                          <div class="notification-icon 
+                          {% if notification.notification_type == '0' %}icon-info
+                          {% elif notification.notification_type == '1' %}icon-warning
+                          {% elif notification.notification_type == '2' %}icon-success
+                          {% elif notification.notification_type == '3' %}icon-danger
+                          {% endif %}">
+                          {% if notification.notification_type == '0' %}ℹ️
+                          {% elif notification.notification_type == '1' %}⚠️
+                          {% elif notification.notification_type == '2' %}✓
+                          {% elif notification.notification_type == '3' %}❌
+                          {% endif %}
+                        </div>
+                        </div>
+                        <div class="msg-content w-100">
+                          <h3 class="title pb-1">{{ notification.title }}</h3>
+                          <p class="msg-text">{{ notification.send_time|timesince }} منذ</p>
+                        </div>
+                        
+                      </div>
+                    </a>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center p-3">لا توجد إشعارات</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- end col-lg-6 -->
+            <div class="col-lg-6 responsive-column--m">
+              <div class="form-box dashboard-card">
+                <div class="form-title-wrap">
+                  <h3 class="title">مهام</h3>
+                </div>
+                <div class="form-content">
+                  {% for notification in notifications %}
+  <div class="alert alert-{{ notification.get_notification_type_class }} alert-dismissible fade show" role="alert">
+    <i class="la la-{{ notification.get_icon_class }} me-2"></i>
+    {{ notification.message|safe }}
+    {% if notification.action_url %}
+      <a href="{{ notification.action_url }}" class="alert-link">{{ notification.link_text|default:"" }}</a>
+    {% endif %}
+    <button type="button" class="btn-close close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% empty %}
+  <div class="alert alert-info">لا توجد إشعارات جديدة</div>
+{% endfor %}
+
+                  
+                  {% for booking in recent_bookings %}
+                  <div class="alert alert-{{ booking.get_status_class }} alert-dismissible fade show" role="alert">
+                    <i class="la la-{{ booking.get_status_icon }} me-2"></i>
+                    حالة حجزك في {{ booking.hotel.name }}: 
+                    <strong>{{ booking.get_status_display }}</strong>
+                    <button type="button" class="btn-close close" data-bs-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  {% endfor %}
+                  
+                  {% for payment in recent_payments %}
+                  <div class="alert alert-{{ payment.get_status_class }} alert-dismissible fade show" role="alert">
+                    <i class="la la-{{ payment.get_status_icon }} me-2"></i>
+                    حالة الدفع لرقم الحجز {{ payment.booking.id }}: 
+                    <strong>{{ payment.get_payment_status_display }}</strong>
+                    <button type="button" class="btn-close close" data-bs-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
             
-            // تهيئة Owl Carousel
-            if ($.fn.owlCarousel) {
-                $('.owl-carousel').owlCarousel({
-                    rtl: true,
-                    loop: true,
-                    margin: 10,
-                    nav: true,
-                    responsive: {
-                        0: { items: 1 },
-                        600: { items: 3 },
-                        1000: { items: 5 }
-                    }
-                });
+            <!-- end col-lg-6 -->
+          </div>
+          <!-- end row -->
+          <div class="border-top mt-4"></div>
+          <div class="row align-items-center">
+            <div class="col-lg-7">
+              <div class="copy-right padding-top-30px">
+                <p class="copy__desc">
+                  &copy; Copyright Trizen 2020. Made with
+                  <span class="la la-heart"></span> by
+                  <a href="https://themeforest.net/user/techydevs/portfolio">TechyDevs</a>
+                </p>
+              </div>
+              <!-- end copy-right -->
+            </div>
+            <!-- end col-lg-7 -->
+            <div class="col-lg-5">
+              <div class="footer-social-box text-end padding-top-30px">
+                <ul class="social-profile">
+                  <li>
+                    <a href="#"><i class="lab la-facebook-f"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="lab la-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="lab la-instagram"></i></a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="lab la-linkedin-in"></i></a>
+                  </li>
+                </ul>
+              </div>
+              <!-- end footer-social-box -->
+            </div>
+            <!-- end col-lg-5 -->
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- end container-fluid -->
+      </div>
+      {% endblock content %}
+      <!-- /Page Content -->
+      <!-- end dashboard-main-content -->
+    </div>
+    <!-- end dashboard-content-wrap -->
+  </section>
+
+
+
+  <!-- Template JS Files -->
+  <!-- Core JS Libraries - الترتيب مهم جداً -->
+  <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+  <!-- jQuery UI قبل Bootstrap -->
+  <script src="{% static 'js/jquery-ui.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Essential Plugins -->
+  <script src="{% static 'js/moment.min.js' %}"></script>
+  <script src="{% static 'js/select2.min.js' %}"></script>
+
+  <!-- UI Enhancement Plugins -->
+  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+  <script src="{% static 'js/jquery.countTo.min.js' %}"></script>
+  <script src="{% static 'js/jquery.filer.min.js' %}"></script>
+  <script src="{% static 'js/jquery.ripples-min.js' %}"></script>
+  <script src="{% static 'js/jquery.superslides.min.js' %}"></script>
+
+  <!-- Date & Time Plugins -->
+  <script src="{% static 'js/daterangepicker.js' %}"></script>
+
+  <!-- Custom Scripts -->
+  <script src="{% static 'js/animated-headline.js' %}"></script>
+  <script src="{% static 'js/quantity-input.js' %}"></script>
+  <script src="{% static 'js/superslider-script.js' %}"></script>
+
+  <!-- Initialize Scripts -->
+  <script src="{% static 'js/main-rtl.js' %}"></script>
+
+
+  {% block extra_js %}
+  {% endblock extra_js %}
+  <script>
+    document.querySelectorAll('.mark-as-read-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const notificationId = this.getAttribute('data-id');
+        fetch(`/notifications/mark-as-read/${notificationId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
             }
-            
-            // تهيئة FancyBox للنوافذ المنبثقة
-            if ($.fn.fancybox) {
-                $('[data-fancybox]').fancybox({
-                    touch: false, // لمنع مشاكل اللمس على الموبايل
-                    autoFocus: false, // لمنع التركيز التلقائي
-                    backFocus: false, // لمنع مشاكل التركيز عند الإغلاق
-                    trapFocus: false // لمنع حصر التركيز داخل النافذة
-                });
-            }
-            
-            // تهيئة Bootstrap Modals
-            $('.modal').on('shown.bs.modal', function() {
-                $(this).find('[autofocus]').focus();
-            });
-        });
-        
-        // دالة مساعدة لفتح النوافذ المنبثقة
-        function openModal(modalId) {
-            $('#' + modalId).modal({
-                backdrop: 'static',
-                keyboard: false,
-                show: true
-            });
+          });
+      });
+    });
+
+    // زر "اشر عليها بأنها قرأت" الكل
+    document.querySelector('.mark-as-read-btn.ms-auto').addEventListener('click', function () {
+      fetch("{% url 'customer:mark_all_notifications_as_read' %}", {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
         }
-    </script>
-  </body>
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          }
+        });
+    });
+  </script>
+  <script>
+    // حل مشكلة تعارض النوافذ المنبثقة
+    $.widget.bridge('uibutton', $.ui.button);
+    $.widget.bridge('uitooltip', $.ui.tooltip);
+
+    $(document).ready(function () {
+      // منع التعارض بين jQuery UI dialog و Bootstrap modal
+      $.fn.modal.Constructor.prototype.enforceFocus = function () { };
+
+      // تهيئة Select2
+      if ($.fn.select2) {
+        $('.select-contain-select').select2({
+          dropdownParent: $('body') // لحل مشكلة ظهور Select2 في النوافذ المنبثقة
+        });
+      }
+
+      // تهيئة DateRangePicker
+      if ($.fn.daterangepicker) {
+        $('input[name="daterange"]').daterangepicker({
+          locale: {
+            direction: 'rtl',
+            format: 'YYYY/MM/DD'
+          },
+          autoUpdateInput: false // لمنع التحديث التلقائي للتاريخ
+        });
+
+        // معالجة اختيار التاريخ
+        $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+          $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+        });
+      }
+
+      // تهيئة Owl Carousel
+      if ($.fn.owlCarousel) {
+        $('.owl-carousel').owlCarousel({
+          rtl: true,
+          loop: true,
+          margin: 10,
+          nav: true,
+          responsive: {
+            0: { items: 1 },
+            600: { items: 3 },
+            1000: { items: 5 }
+          }
+        });
+      }
+
+      // تهيئة FancyBox للنوافذ المنبثقة
+      if ($.fn.fancybox) {
+        $('[data-fancybox]').fancybox({
+          touch: false, // لمنع مشاكل اللمس على الموبايل
+          autoFocus: false, // لمنع التركيز التلقائي
+          backFocus: false, // لمنع مشاكل التركيز عند الإغلاق
+          trapFocus: false // لمنع حصر التركيز داخل النافذة
+        });
+      }
+
+      // تهيئة Bootstrap Modals
+      $('.modal').on('shown.bs.modal', function () {
+        $(this).find('[autofocus]').focus();
+      });
+    });
+
+    // دالة مساعدة لفتح النوافذ المنبثقة
+    function openModal(modalId) {
+      $('#' + modalId).modal({
+        backdrop: 'static',
+        keyboard: false,
+        show: true
+      });
+    }
+  </script>
+</body>
+
 </html>

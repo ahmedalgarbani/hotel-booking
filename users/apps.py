@@ -6,4 +6,5 @@ class UsersConfig(AppConfig):
     name = 'users'
 
     def ready(self):
-        import users.permissions  # تفعيل الإشارات
+        import users.signals
+        import users.permissions

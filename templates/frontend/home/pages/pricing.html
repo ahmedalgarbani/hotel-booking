@@ -2,8 +2,8 @@
 
 {% block content %}
 
-    <!-- ================================
-    START PACKAGE AREA
+<!-- ================================
+START PACKAGE AREA
 ================================= -->
 <section class="package-area section-padding text-center">
   <div class="container">
@@ -18,14 +18,15 @@
       </div>
       <!-- end col-lg-12 -->
     </div>
-    <!-- end row -->
+    <!-- end row    -->
     <div class="row padding-top-80px">
+      {% for plan in pricing_plans %}
       <div class="col-lg-4 p-0">
-        <div class="package-card">
+        <div class="package-card {% if plan.is_primary %}package-card-active{% endif %}">
           <div class="package-title">
-            <h2 class="package__title">عادي</h2>
-            <h3 class="package__price"><span>$</span>13.99</h3>
-            <h5 class="package__month">كل شهر</h5>
+            <h2 class="package__title">{{ plan.title }}</h2>
+            <h3 class="package__price"><span>YR</span>{{ plan.price }}</h3>
+            <h5 class="package__month">{{ plan.duration }}</h5>
             <svg
               class="hero-svg"
               xmlns="http://www.w3.org/2000/svg"
@@ -37,82 +38,18 @@
           </div>
           <!-- end package-title -->
           <ul class="list-items">
-            <li>مساحة القرص 250 جيجا بايت</li>
-            <li>عرض النطاق الترددي 25 جيجا بايت</li>
-            <li>قواعد البيانات 1</li>
-            <li class="text-disabled">حسابات البريد الإلكتروني NO</li>
-            <li class="text-disabled">دعم 24 ساعة NO</li>
-            <li class="text-disabled">دعم البريد الإلكتروني NO</li>
+            {% for feature in plan.get_features_list %}
+            <li>{{ feature }}</li>
+            {% endfor %}
           </ul>
           <div class="btn-box">
-            <a href="#" class="theme-btn theme-btn-transparent">اختر خطة</a>
+            <a href="{% url 'HotelManagement:add_request' %}" class="theme-btn {% if not plan.is_primary %}theme-btn-transparent{% endif %}">اختر خطة</a>
           </div>
         </div>
         <!-- end package-card -->
       </div>
       <!-- end col-lg-4 -->
-      <div class="col-lg-4 p-0">
-        <div class="package-card package-card-active">
-          <div class="package-title">
-            <h2 class="package__title">اساسي</h2>
-            <h3 class="package__price"><span>$</span>95.99</h3>
-            <h5 class="package__month">كل شهر</h5>
-            <svg
-              class="hero-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 10"
-              preserveAspectRatio="none"
-            >
-              <path d="M0 10 0 0 A 90 59, 0, 0, 0, 100 0 L 100 10 Z"></path>
-            </svg>
-          </div>
-          <!-- end package-title -->
-          <ul class="list-items">
-            <li>مساحة القرص 350 جيجا بايت</li>
-            <li>عرض النطاق الترددي 45 جيجا بايت</li>
-            <li>قواعد البيانات 1</li>
-            <li>حسابات البريد الإلكتروني نعم</li>
-            <li class="text-disabled">دعم 24 ساعة NO</li>
-            <li class="text-disabled">دعم البريد الإلكتروني NO</li>
-          </ul>
-          <div class="btn-box">
-            <a href="#" class="theme-btn">اختر خطة</a>
-          </div>
-        </div>
-        <!-- end package-card -->
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 p-0">
-        <div class="package-card">
-          <div class="package-title">
-            <h2 class="package__title">الممتازة</h2>
-            <h3 class="package__price"><span>$</span>155.99</h3>
-            <h5 class="package__month">كل شهر</h5>
-            <svg
-              class="hero-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 10"
-              preserveAspectRatio="none"
-            >
-              <path d="M0 10 0 0 A 90 59, 0, 0, 0, 100 0 L 100 10 Z"></path>
-            </svg>
-          </div>
-          <!-- end package-title -->
-          <ul class="list-items">
-            <li>مساحة القرص 500 جيجا بايت</li>
-            <li>عرض النطاق الترددي 125 جيجا بايت</li>
-            <li>قواعد البيانات 1</li>
-            <li>حسابات البريد الإلكتروني نعم</li>
-            <li>دعم 24 ساعة نعم</li>
-            <li>دعم البريد الإلكتروني نعم</li>
-          </ul>
-          <div class="btn-box">
-            <a href="#" class="theme-btn theme-btn-transparent">اختر خطة</a>
-          </div>
-        </div>
-        <!-- end package-card -->
-      </div>
-      <!-- end col-lg-4 -->
+      {% endfor %}
     </div>
     <!-- end row -->
   </div>

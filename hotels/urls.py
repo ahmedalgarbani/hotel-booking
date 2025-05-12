@@ -18,19 +18,28 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from api.admin import admin_site
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('users/', include('users.urls', namespace='users')),
-    path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagementz')),
+    path('HotelManagement/', include('HotelManagement.urls', namespace='HotelManagement')),
     path('', include('home.urls'), name='home'),
     path('rooms/', include('rooms.urls')),
-    path('bookings/', include('bookings.urls')),
+    path('bookings/', include('bookings.urls', namespace='bookings')),
     path('payments/', include('payments.urls')),
     path('reviews/', include('reviews.urls')),
-    path('services/', include('services.urls')),
+    path('services/', include('services.urls', namespace='services')),
     path('blog/', include('blog.urls')),
+    path('api/', include('api.urls', namespace='api')),
+    path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('customer/', include('customer.urls')),
+
+    path('notifications/', include('notifications.urls',namespace='notifications')),
+    
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('auth/', include('social_django.urls', namespace='social')),
 ]
 
 if settings.DEBUG:

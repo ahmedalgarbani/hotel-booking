@@ -1,0 +1,223 @@
+{% extends "admin/user_dashboard/index.html" %}
+{% load static %}
+
+{% block title %}تفاصيل الحجز - {{ booking.id }}{% endblock %}
+
+{% block section_title %} {{ title }} {% endblock section_title %}
+{% block path_title %} تفاصيل الحجز {% endblock path_title %}
+
+{% block content %}
+<style>
+    /* الأنماط الأساسية (تأكد من تطابقها مع الأنماط السابقة أو دمجها) */
+    :root {
+        --primary-color: #4f46e5; /* أزرق رئيسي */
+        --primary-dark: #4338ca; /* أزرق أغمق */
+        --text-color: #1f2937; /* لون النص الرئيسي */
+        --gray-light: #f3f4f6; /* رمادي فاتح للخلفيات */
+        --gray-medium: #9ca3af; /* رمادي متوسط للنصوص الثانوية */
+        --gray-border: #e5e7eb; /* لون الحدود */
+        --white: #ffffff;
+        --danger-color: #ef4444; /* أحمر للخطر */
+        --success-color: #10b981; /* أخضر للنجاح */
+        --warning-color: #f59e0b; /* أصفر للتحذير */
+        --info-color: #3b82f6; /* أزرق للمعلومات */
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --radius: 8px; /* نصف قطر الانحناء */
+    }
+    body { background-color: var(--gray-light); color: var(--text-color); font-family: 'Cairo', sans-serif; }
+    .dashboard-main-content { padding-bottom: 3rem; } /* إضافة مسافة سفلية */
+    .container-fluid { max-width: 1200px; margin: 1rem auto; padding: 0 1rem; direction: rtl; }
+
+    /* تصميم البطاقات */
+    .detail-card { background-color: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1.5rem; overflow: hidden; }
+    .detail-header { background-color: var(--gray-light); padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-border); font-weight: 600; color: var(--gray-700); font-size: 1.1rem; }
+    .detail-body { padding: 1.5rem; }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .detail-item { margin-bottom: 0.8rem; display: flex; justify-content: space-between; padding-bottom: 0.5rem; border-bottom: 1px dashed #eee; }
+    .detail-item:last-child { border-bottom: none; }
+    .detail-label { font-weight: 500; color: var(--gray-medium); margin-left: 0.5rem; }
+    .detail-value { color: var(--text-color); font-weight: 500; }
+    .detail-value a { color: var(--primary-color); text-decoration: none; }
+    .detail-value a:hover { text-decoration: underline; }
+
+    /* قائمة الضيوف والدفعات */
+    .guests-list, .payments-list { list-style: none; padding: 0; margin-top: 0.5rem; }
+    .guest-item, .payment-item { background-color: var(--gray-light); padding: 0.8rem 1.2rem; margin-bottom: 0.6rem; border-radius: var(--radius); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; /* للسماح بالالتفاف */ gap: 0.5rem; border: 1px solid var(--gray-border); }
+    .guest-info { flex-grow: 1; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-right: 1rem; } /* حاوية معلومات الضيف */
+    .guest-info span { display: inline-block; } /* جعل كل معلومة كتلة */
+    .guest-actions { flex-shrink: 0; } /* زر الحذف */
+
+    /* زر الحذف */
+    .btn-delete-guest { background-color: transparent; border: none; color: var(--danger-color); font-size: 1.1rem; cursor: pointer; padding: 0.2rem 0.5rem; line-height: 1; transition: color 0.2s ease; }
+    .btn-delete-guest:hover { color: #b91c1c; }
+
+    /* حالات Badge */
+    .badge-status { font-size: 0.85em; padding: 0.4em 0.8em; border-radius: 50px; font-weight: 600; } /* جعلها دائرية أكثر */
+    .badge-confirmed { background-color: var(--info-color); color: var(--white); } /* تأكيد - أزرق */
+    .badge-pending { background-color: var(--warning-color); color: var(--white); } /* انتظار - أصفر */
+    .badge-canceled { background-color: var(--danger-color); color: var(--white); } /* ملغي - أحمر */
+    .badge-paid { background-color: var(--success-color); color: var(--white); } /* دفع - أخضر */
+    .badge-rejected { background-color: #777; color: var(--white); } /* مرفوض - رمادي */
+
+
+    .payment-item span { margin: 0 0.5rem; } /* مسافات بين عناصر الدفع */
+
+    /* أقسام العناوين */
+    .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--gray-700); border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+
+    /* رسالة "لا توجد بيانات" */
+    .no-data { color: var(--gray-medium); font-style: italic; padding: 1rem 0; text-align: center; }
+
+    /* أزرار */
+    .theme-btn-small { font-size: 0.9rem; padding: 0.5rem 1rem !important; } /* تعديل حجم الأزرار */
+    .theme-btn-small i.la { font-size: 1.1em; vertical-align: middle; margin-left: 5px; } /* أيقونات الأزرار */
+    .btn-success { background-color: var(--success-color) !important; border-color: var(--success-color) !important; }
+    .btn-success:hover { background-color: #059669 !important; border-color: #059669 !important; }
+    .btn-warning { background-color: var(--warning-color) !important; border-color: var(--warning-color) !important; color: var(--white) !important; }
+    .btn-warning:hover { background-color: #d97706 !important; border-color: #d97706 !important; }
+    .btn-info { background-color: var(--info-color) !important; border-color: var(--info-color) !important; }
+    .btn-info:hover { background-color: #2563eb !important; border-color: #2563eb !important; }
+    .btn-danger { background-color: var(--danger-color) !important; border-color: var(--danger-color) !important; }
+    .btn-danger:hover { background-color: #dc2626 !important; border-color: #dc2626 !important; }
+    .back-button { margin-top: 2rem; }
+    .theme-btn-small.btn-secondary { background-color: var(--gray-medium) !important; border-color: var(--gray-medium) !important; opacity: 0.7; }
+
+    /* رسائل Django */
+    .messages .alert { padding: 1rem; margin-bottom: 1.5rem; border: 1px solid transparent; border-radius: var(--radius); font-weight: 500; text-align: right; }
+    .messages .alert-success { color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; }
+    .messages .alert-danger { color: #842029; background-color: #f8d7da; border-color: #f5c2c7; }
+    .messages .alert-warning { color: #664d03; background-color: #fff3cd; border-color: #ffecb5; }
+    .messages .alert-info { color: #055160; background-color: #cff4fc; border-color: #b6effb; }
+    .messages .btn-close { float: left; }
+</style>
+
+<div class="dashboard-main-content">
+    <div class="container-fluid">
+        {# --- رسائل Django --- #}
+        {% if messages %}
+        <div class="messages mb-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# --- بطاقة معلومات الحجز --- #}
+        <div class="detail-card">
+            <div class="detail-header">المعلومات الأساسية للحجز</div>
+            <div class="detail-body">
+                 <div class="detail-grid">
+                    <div>
+                        <div class="detail-item"><span class="detail-label">رقم الحجز:</span><span class="detail-value">{{ booking.id }}</span></div>
+                        <div class="detail-item"><span class="detail-label">الفندق:</span><span class="detail-value">{{ booking.hotel.name }}</span></div>
+                        <div class="detail-item"><span class="detail-label">نوع الغرفة:</span><span class="detail-value">{{ booking.room.name }}</span></div>
+                         <div class="detail-item"><span class="detail-label">عدد الغرف:</span><span class="detail-value">{{ booking.rooms_booked }}</span></div>
+                    </div>
+                    <div>
+                        <div class="detail-item"><span class="detail-label">تاريخ الدخول:</span><span class="detail-value">{{ booking.check_in_date|date:"Y-m-d" }}</span></div>
+                        <div class="detail-item"><span class="detail-label">تاريخ الخروج:</span><span class="detail-value">{{ booking.check_out_date|date:"Y-m-d" }}</span></div>
+                        <div class="detail-item"><span class="detail-label">الخروج الفعلي:</span><span class="detail-value">{{ booking.actual_check_out_date|date:"Y-m-d H:i"|default:"لم يتم بعد" }}</span></div>
+                        <div class="detail-item"><span class="detail-label">المبلغ الإجمالي:</span><span class="detail-value">{{ booking.amount }}</span></div> {# أضف العملة #}
+                        <div class="detail-item">
+                            <span class="detail-label">حالة الحجز:</span>
+                            <span class="detail-value">
+                                {% if booking.status == '0' %} <span class="badge-status badge-pending">قيد الانتظار</span>
+                                {% elif booking.status == '1' %} <span class="badge-status badge-confirmed">مؤكد</span>
+                                {% else %} <span class="badge-status badge-canceled">ملغي</span> {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# --- بطاقة معلومات الضيوف --- #}
+        <div class="detail-card">
+            <div class="detail-header">
+                معلومات الضيوف ({{ guests.count }}/{{ max_capacity_for_booking }}) {# عرض العدد الحالي والسعة #}
+            </div>
+            <div class="detail-body">
+                {% if guests %}
+                    <ul class="guests-list">
+                        {% for guest in guests %}
+                            <li class="guest-item">
+                                <div class="guest-info">
+                                    <span><i class="la la-user me-1"></i><strong>{{ guest.name }}</strong></span>
+                                    <span>هاتف: {{ guest.phone_number }}</span>
+                                    <span>الجنس: {{ guest.get_gender_display }}</span>
+                                    <span>الميلاد: {{ guest.birthday_date|date:"Y-m-d"|default:"-" }}</span>
+                                    {% if guest.id_card_image %}
+                                        <span><a href="{{ guest.id_card_image.url }}" target="_blank" class="btn-link">عرض الهوية</a></span>
+                                    {% endif %}
+                                </div>
+                                <div class="guest-actions">
+                                    {% if booking.status == '1' and not booking.actual_check_out_date %} {# السماح بالحذف فقط للحجز المؤكد والنشط #}
+                                    <form action="{% url 'customer:delete_guest' guest.id %}" method="post" style="display: inline;" onsubmit="return confirm('هل أنت متأكد من حذف الضيف {{ guest.name }}؟');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-delete-guest" title="حذف الضيف">
+                                            <i class="la la-trash"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                     {# زر إضافة المزيد من الضيوف #}
+                     {% if booking.status == '1' and not booking.actual_check_out_date and guests.count < max_capacity_for_booking %}
+                     <div class="text-center mt-3">
+                         <a href="{% url 'payments:add_guest' booking.id %}" class="theme-btn theme-btn-small btn-success">
+                             <i class="la la-user-plus"></i> إضافة ضيف آخر
+                         </a>
+                     </div>
+                    {% endif %}
+                {% else %}
+                    <p class="no-data">لم يتم إضافة ضيوف لهذا الحجز بعد.</p>
+                    {% if booking.status == '1' and not booking.actual_check_out_date %}
+                     <a href="{% url 'payments:add_guest' booking.id %}" class="theme-btn theme-btn-small btn-success mt-3">
+                        <i class="la la-user-plus"></i> إضافة ضيوف
+                     </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+         {# --- بطاقة سجل الدفعات --- #}
+        <div class="detail-card">
+            <div class="detail-header">سجل الدفعات</div>
+            <div class="detail-body">
+                {% if payments %}
+                    <ul class="payments-list">
+                        {% for payment in payments %}
+                            <li class="payment-item">
+                                <span>{{ payment.payment_date|date:"Y-m-d H:i" }}</span>
+                                <span>{{ payment.payment_method.payment_option.method_name }}</span>
+                                <span>{{ payment.payment_totalamount }} {{ payment.payment_currency }}</span>
+                                <span class="badge-status
+                                    {% if payment.payment_status == 1 %}badge-paid{% endif %}
+                                    {% if payment.payment_status == 0 %}badge-pending{% endif %}
+                                    {% if payment.payment_status == 2 %}badge-rejected{% endif %}">
+                                    {{ payment.get_payment_status_display }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="no-data">لا توجد دفعات مسجلة لهذا الحجز.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# --- زر العودة --- #}
+        <div class="back-button">
+            <a href="{% url 'customer:user_dashboard_bookings' %}" class="theme-btn theme-btn-small">
+                <i class="la la-arrow-right"></i> العودة إلى قائمة الحجوزات
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

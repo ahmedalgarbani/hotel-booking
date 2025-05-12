@@ -29,7 +29,7 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 **/static/
-doctors_appointment/static/
+hotels/static/
 /static/
 /staticfiles/
 
@@ -41,18 +41,20 @@ doctors_appointment/static/
 !.vscode/extensions.json
 *.code-workspace
 .history/
-
+*.vscode
+.idea
 # IDE - PyCharm
 .idea/
 *.iml
 *.iws
 .idea_modules/
-
+*.
 # Virtual Environment
 venv/
 ENV/
 env/
 .env
+.env/
 .venv
 env.bak/
 venv.bak/
@@ -123,3 +125,14 @@ media/hotel_requests/profile_pictures/
 media/images/
 media/hotel_documents/
 media/hotel/images/
+media/guests/
+media/guests
+media/payment_logos
+media/payment_logos/
+media/payments
+media/payments/
+media/room_images
+media/room_images/
+media/users
+media/users/
+media/

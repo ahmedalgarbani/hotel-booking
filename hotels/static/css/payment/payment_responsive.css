@@ -1,0 +1,172 @@
+/* Responsive Styles */
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .container {
+        padding: var(--space-4);
+    }
+    
+    .header {
+        padding: var(--space-4);
+    }
+    
+    .payment-details {
+        gap: var(--space-4);
+    }
+    
+    .card-header, .card-body {
+        padding: var(--space-4);
+    }
+    
+    .info-label {
+        flex: 0 0 35%;
+    }
+    
+    .info-value {
+        flex: 0 0 65%;
+    }
+    
+    .collapsible.expanded {
+        padding: var(--space-4);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+    }
+    
+    .header h1 {
+        margin-bottom: var(--space-2);
+    }
+    
+    .payment-details {
+        flex-direction: column;
+    }
+    
+    .info-row {
+        flex-direction: column;
+    }
+    
+    .info-label {
+        flex: 0 0 100%;
+        margin-bottom: var(--space-1);
+    }
+    
+    .info-value {
+        flex: 0 0 100%;
+    }
+    
+    .modal-content {
+        max-width: 95%;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .container {
+        padding: var(--space-3);
+    }
+    
+    .header {
+        padding: var(--space-3);
+        margin-bottom: var(--space-4);
+    }
+    
+    .card {
+        margin-bottom: var(--space-4);
+    }
+    
+    .card-header, .card-body {
+        padding: var(--space-3);
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.1rem;
+    }
+    
+    .btn {
+        font-size: 0.8125rem;
+        padding: var(--space-1) var(--space-3);
+    }
+    
+    .collapsible.expanded {
+        max-height: 300px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: white;
+        font-size: 12pt;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .header {
+        box-shadow: none;
+        margin-bottom: 20pt;
+        padding: 0;
+    }
+    
+    .btn-back {
+        display: none;
+    }
+    
+    .payment-details {
+        display: block;
+    }
+    
+    .card {
+        box-shadow: none;
+        margin-bottom: 20pt;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .card-header {
+        background-color: white;
+        border-bottom: 1pt solid #eee;
+        padding: 10pt;
+    }
+    
+    .card-body {
+        padding: 10pt;
+    }
+    
+    .expandable .expand-icon {
+        display: none;
+    }
+    
+    .collapsible {
+        max-height: none;
+        padding: 10pt;
+    }
+    
+    .info-row {
+        padding-bottom: 5pt;
+        margin-bottom: 5pt;
+    }
+    
+    .image-overlay, .image-thumbnail-container:hover .image-overlay {
+        display: none;
+    }
+}

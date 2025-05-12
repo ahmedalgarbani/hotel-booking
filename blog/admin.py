@@ -1,23 +1,68 @@
+from django import forms
 from django.contrib import admin
-from .models import Category, Post, Comment
+from django.utils.translation import gettext_lazy as _
+from .models import Category, Post, Comment, Tag
+from .forms import PostAdminForm
 
 # Register your models here.
+class AutoUserTrackMixin:
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
+class CategoryAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ('name', 'created_at')
     search_fields = ('name',)
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
 
-@admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+
+class PostAdmin(AutoUserTrackMixin,admin.ModelAdmin):
+    form = PostAdminForm
     list_display = ('title', 'author', 'category', 'published_at', 'is_published', 'views')
     list_filter = ('is_published', 'category', 'created_at')
     search_fields = ('title', 'content')
     date_hierarchy = 'published_at'
     raw_id_fields = ('author',)
+    readonly_fields = ('created_at', 'updated_at','published_at','views', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ('created_at', 'updated_at', 'published_at','views','created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
 
-@admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(AutoUserTrackMixin,admin.ModelAdmin):
     list_display = ('author', 'post', 'created_at', 'is_approved')
     list_filter = ('is_approved', 'created_at')
     search_fields = ('content', 'author__username', 'post__title')
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+
+class TagAdmin(AutoUserTrackMixin,admin.ModelAdmin):
+    list_display = ('name', 'created_at', 'post_count')
+    search_fields = ('name',)
+    readonly_fields = ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
+        return self.readonly_fields
+
+    def post_count(self, obj):
+        return obj.posts.count()
+    post_count.short_description = 'عدد المقالات'
+
+
+from api.admin import admin_site
+
+# blog-------
+admin_site.register(Post,PostAdmin)
+admin_site.register(Category,CategoryAdmin)
+admin_site.register(Tag,TagAdmin)
+admin_site.register(Comment,CommentAdmin)

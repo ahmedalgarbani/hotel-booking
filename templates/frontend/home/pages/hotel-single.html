@@ -1,7 +1,278 @@
 {% extends "frontend/layout/master.html" %}
 {% load static %}
+
 {% block content %}
 
+<style>
+  /* ====== الاتجاه العام للغة العربية ====== */
+  .comment-forum {
+    direction: rtl;
+    text-align: right;
+  }
+  .star-rating {
+    direction: rtl;
+    display: inline-flex;
+    flex-direction: row-reverse;
+  }
+
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+
+  .star-rating label {
+    font-size: 22px; /* تم تكبير الحجم من 18px إلى 22px */
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    padding: 0 3px;
+  }
+
+  .star-rating input[type="radio"]:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: #ffc107;
+  }
+
+  .small-stars label {
+    font-size: 25px;
+  }
+
+  /* ====== تنسيق textarea ====== */
+  textarea.form-control {
+    resize: none;
+    min-height: 100px;
+  }
+
+  /* ====== زر الإضافة للمفضلة (wishlist) ====== */
+  .add-to-wishlist {
+color: #6c757d; /* grey by default */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .add-to-wishlist .la-heart-o {
+color: #6c757d; /* grey heart */
+  }
+
+  .add-to-wishlist .la-heart {
+color:red; /* white heart when selected */
+
+  }
+
+/* Blue button when added to wishlist */
+  .btn-blue {
+background-color: #007bff; /* blue background */
+color: block; /* white text */
+  }
+
+  .btn-blue .la-heart {
+color: red; /* white heart icon when selected */
+
+  }
+
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .custom-checkbox input[type="checkbox"] {
+    margin-left: 8px;
+  }
+  .sidebar-review .ratings {
+    margin-right: 0;
+  }
+  .sidebar-category .custom-checkbox {
+    margin-bottom: 8px;
+  }
+
+  /* ====== الرسائل (Alerts) ====== */
+  .messages .alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 2px solid;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+
+  .messages .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+
+  .messages .alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+  .messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+
+  .messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+  }
+
+  /* ====== تنسيق تنبيه مخصص (custom alert) ====== */
+  .custom-alert.warning {
+    background: rgb(205, 255, 217);
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .alert-icon {
+    width: 24px;
+    height: 24px;
+    color: rgb(7, 255, 32);
+    flex-shrink: 0;
+  }
+
+  .alert-heading {
+    color: #856404;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .custom-alert p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* ====== تنسيق معلومات الفندق المحسنة ====== */
+  .hotel-highlight-box .highlight-content {
+    background: linear-gradient(135deg, #2c3e50, #4a6491);
+    transition: transform 0.3s ease;
+  }
+
+  .hotel-highlight-box .highlight-content:hover {
+    transform: translateY(-3px);
+  }
+
+  .booking-stats-box {
+    transition: all 0.3s ease;
+  }
+
+  .booking-stats-box:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-2px);
+  }
+
+  .stats-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .why-book-item {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .why-book-item:hover {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    transform: translateX(-5px);
+  }
+
+  .why-book-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bg-success-light {
+    background-color: rgba(40, 167, 69, 0.15);
+  }
+
+  .bg-info-light {
+    background-color: rgba(23, 162, 184, 0.15);
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+  }
+
+  .hover-shadow:hover {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+
+  /* Estilos para tarjetas de hoteles de tamaño uniforme */
+  .card-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .card-item .card-img {
+    position: relative;
+    width: 100%;
+    height: 220px; /* Altura fija para todas las imágenes */
+    overflow: hidden;
+  }
+
+  .card-item .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción y cubre el área */
+    object-position: center;
+  }
+
+  .card-item .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .card-item .card-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .card-item .card-price {
+    margin-top: auto;
+  }
+
+  /* Estilos para las tarjetas de disponibilidad de habitaciones */
+  .cabin-type-img {
+    width: 200px;
+    height: 150px;
+    overflow: hidden;
+    margin-right: 15px;
+  }
+
+  .cabin-type-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  </style>
     <!-- ================================
     START BREADCRUMB TOP BAR
 ================================= -->
@@ -47,7 +318,7 @@ START BREADCRUMB AREA
               >
                 <i class="la la-video-camera me-2"></i>فيديو
               </a> {% endcomment %}
-              
+
               <a
                 class="theme-btn"
                 data-src="{{hotel.profile_picture.url}}"
@@ -66,7 +337,7 @@ START BREADCRUMB AREA
            data-caption="Showing image - 02"
            data-speed="700"
          ></a>
-           
+
            {% endfor %}
           </div>
           <!-- end breadcrumb-btn -->
@@ -83,7 +354,15 @@ START BREADCRUMB AREA
 <!-- ================================
 END BREADCRUMB AREA
 ================================= -->
-
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 <!-- ================================
 START TOUR DETAIL AREA
 ================================= -->
@@ -145,30 +424,150 @@ START TOUR DETAIL AREA
           <div class="single-content-wrap padding-top-60px">
             <div id="description" class="page-scroll">
               <div class="single-content-item pb-4">
-                <h3 class="title font-size-26">فندق {{hotel.name}} </h3>
-                <div class="d-flex align-items-center pt-2">
-                  <p class="me-2">
-                    {{hotel.location.city.state}} ، {{hotel.location.address}} ،{{hotel.location.city.country}}
-                  </p>
-                  <p>
-                    {% if avg_rating_service %}
-                    
-                    <span
-                    class="badge text-bg-warning text-white font-size-16"
-                    >{{avg_rating_service}}</span
-                    >
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h3 class="title font-size-26">فندق {{hotel.name}} </h3>
+                    <div class="d-flex align-items-center pt-2">
+                      <p class="me-2">
+                        {{hotel.location.city.state}} ، {{hotel.location.address}} ،{{hotel.location.city.country}}
+                      </p>
+                      <p>
+                        {% if avg_rating_service %}
+                        <span
+                        class="badge text-bg-warning text-white font-size-16"
+                        >{{avg_rating_service}}</span
+                        >
+                        {% endif %}
+                        {% if  review_count > 0 %}
+                        <span>({{review_count}} تعليقات)</span>
+                        {% endif %}
+                      </p>
+                    </div>
+                  </div>
+                  {% if coupon %}
+                  <div class="hotel-coupon-badge" id="couponBadge">
+                    {% if coupon.discount_type == 'percent' %}
+                    <span class="discount-text">{{ coupon.discount }}% خصم</span>
+                    {% else %}
+                    <span class="discount-text">{{ coupon.discount }} ريال خصم</span>
                     {% endif %}
-                    {% if  review_count > 0 %}
-                    
-                    <span>({{review_count}} تعليقات)</span>
-                    {% endif %}
-                  </p>
+                    <span class="view-coupon">عرض الكوبون</span>
+                  </div>
+                  {% endif %}
                 </div>
               </div>
-              <!-- end single-content-item -->
+
+              {% if coupon %}
+              <div class="hotel-coupon-modal" id="couponModal">
+                <div class="coupon-modal-content">
+                  <span class="close-modal">&times;</span>
+                  {% include "frontend/home/components/hotel-coupon.html" %}
+                </div>
+              </div>
+
+              <style>
+                .hotel-coupon-badge {
+                  background: linear-gradient(135deg, #287bff, #1a68e0);
+                  color: white;
+                  padding: 8px 15px;
+                  border-radius: 30px;
+                  cursor: pointer;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                  transition: all 0.3s ease;
+                  text-align: center;
+                  margin-right: 10px;
+                }
+
+                .hotel-coupon-badge:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+                }
+
+                .discount-text {
+                  font-weight: bold;
+                  font-size: 14px;
+                  display: block;
+                }
+
+                .view-coupon {
+                  font-size: 12px;
+                  display: block;
+                  margin-top: 3px;
+                  opacity: 0.9;
+                }
+
+                .hotel-coupon-modal {
+                  display: none;
+                  position: fixed;
+                  z-index: 9999;
+                  left: 0;
+                  top: 0;
+                  width: 100%;
+                  height: 100%;
+                  overflow: auto;
+                  background-color: rgba(0,0,0,0.5);
+                }
+
+                .coupon-modal-content {
+                  background-color: #fefefe;
+                  margin: 15% auto;
+                  padding: 20px;
+                  border-radius: 8px;
+                  width: 80%;
+                  max-width: 600px;
+                  position: relative;
+                }
+
+                .close-modal {
+                  color: #aaa;
+                  float: left;
+                  font-size: 28px;
+                  font-weight: bold;
+                  cursor: pointer;
+                }
+
+                .close-modal:hover {
+                  color: black;
+                }
+
+                @media (max-width: 768px) {
+                  .coupon-modal-content {
+                    width: 95%;
+                    margin: 30% auto;
+                  }
+                }
+              </style>
+
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  const couponBadge = document.getElementById('couponBadge');
+                  const couponModal = document.getElementById('couponModal');
+                  const closeModal = document.querySelector('.close-modal');
+
+                  if (couponBadge && couponModal) {
+                    couponBadge.addEventListener('click', function() {
+                      couponModal.style.display = 'block';
+                    });
+
+                    closeModal.addEventListener('click', function() {
+                      couponModal.style.display = 'none';
+                    });
+
+                    window.addEventListener('click', function(event) {
+                      if (event.target == couponModal) {
+                        couponModal.style.display = 'none';
+                      }
+                    });
+                  }
+                });
+              </script>
+              {% endif %}
+              {% if hotel_services %}
+                            <!-- end single-content-item -->
               <div class="section-block"></div>
               <div class="single-content-item py-4">
                 <div class="row">
+                  {% for hotel_services in hotel_services %}
                   <div class="col-lg-4 responsive-column">
                     <div
                       class="single-tour-feature d-flex align-items-center mb-3"
@@ -176,155 +575,25 @@ START TOUR DETAIL AREA
                       <div
                         class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
                       >
-                        <i class="la la-hotel"></i>
+                        <i class="la {{hotel_services.icon}}"></i>
                       </div>
                       <div class="single-feature-titles">
                         <h3 class="title font-size-15 font-weight-medium">
-                          نوع الفندق
+                          {{hotel_services.name}}
                         </h3>
-                        <span class="font-size-13">4 نجوم</span>
+                        <span class="font-size-13">{{hotel_services.description}}</span>
                       </div>
                     </div>
                     <!-- end single-tour-feature -->
                   </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-user"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          أشخاص إضافيون
-                        </h3>
-                        <span class="font-size-13">لا تهمة</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-bed"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          الحد الأدنى للإقامة
-                        </h3>
-                        <span class="font-size-13">2 ليالي</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-money"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مبلغ التأمين
-                        </h3>
-                        <span class="font-size-13">$279</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-globe"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          بلد
-                        </h3>
-                        <span class="font-size-13">فرنسا</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-map"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          مدينة
-                        </h3>
-                        <span class="font-size-13">باريس</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-user"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          حي
-                        </h3>
-                        <span class="font-size-13">جمهورية</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
-                  <div class="col-lg-4 responsive-column">
-                    <div
-                      class="single-tour-feature d-flex align-items-center mb-3"
-                    >
-                      <div
-                        class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                      >
-                        <i class="la la-times"></i>
-                      </div>
-                      <div class="single-feature-titles">
-                        <h3 class="title font-size-15 font-weight-medium">
-                          إلغاء
-                        </h3>
-                        <span class="font-size-13">صارم</span>
-                      </div>
-                    </div>
-                    <!-- end single-tour-feature -->
-                  </div>
-                  <!-- end col-lg-4 -->
+                  {% endfor %}
+
                 </div>
                 <!-- end row -->
               </div>
               <!-- end single-content-item -->
+              {% endif %}
+
               <div class="section-block"></div>
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -333,7 +602,7 @@ START TOUR DETAIL AREA
                 <p class="py-3">
                  {{hotel.description}}
                 </p>
-               
+
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
@@ -344,788 +613,71 @@ START TOUR DETAIL AREA
                 class="single-content-item padding-top-40px padding-bottom-30px"
               >
                 <h3 class="title font-size-20">التوفر</h3>
-                <div class="contact-form-action padding-bottom-35px">
-                  <form method="post">
-                    <div class="row">
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text"
-                            >تسجيل دخول تسجيل خروج</label
-                          >
-                          <div class="form-group">
-                            <span class="la la-calendar form-icon"></span>
-                            <input
-                              class="date-picker-multiple form-control"
-                              type="text"
-                              name="date"
-                              readonly
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">غرف</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الغرف</option>
-                                <option value="1">1 غرفة</option>
-                                <option value="2">2 غرف</option>
-                                <option value="3">3 غرف</option>
-                                <option value="4">4 غرف</option>
-                                <option value="5">5 غرف</option>
-                                <option value="6">6 غرف</option>
-                                <option value="7">7 غرف</option>
-                                <option value="8">8 غرف</option>
-                                <option value="9">9 غرف</option>
-                                <option value="10">10 غرف</option>
-                                <option value="11">11 غرف</option>
-                                <option value="12">12 غرف</option>
-                                <option value="13">13 غرف</option>
-                                <option value="14">14 غرف</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">الكبار (18+)</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الكبار</option>
-                                <option value="1">1 الكبار</option>
-                                <option value="2">2 الكبار</option>
-                                <option value="3">3 الكبار</option>
-                                <option value="4">4 الكبار</option>
-                                <option value="5">5 الكبار</option>
-                                <option value="6">6 الكبار</option>
-                                <option value="7">7 الكبار</option>
-                                <option value="8">8 الكبار</option>
-                                <option value="9">9 الكبار</option>
-                                <option value="10">10 الكبار</option>
-                                <option value="11">11 الكبار</option>
-                                <option value="12">12 الكبار</option>
-                                <option value="13">13 الكبار</option>
-                                <option value="14">14 الكبار</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 responsive-column">
-                        <div class="input-box">
-                          <label class="label-text">الأطفال (0-17)</label>
-                          <div class="form-group">
-                            <div
-                              class="select-contain select2-container-wrapper w-auto"
-                            >
-                              <select class="select-contain-select">
-                                <option value="0">حدد الأطفال</option>
-                                <option value="1">1 الأطفال</option>
-                                <option value="2">2 الأطفال</option>
-                                <option value="3">3 الأطفال</option>
-                                <option value="4">4 الأطفال</option>
-                                <option value="5">5 الأطفال</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="btn-box">
-                          <button type="button" class="theme-btn">
-                            ابحث الآن
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+
                 <!-- end contact-form-action -->
                 <h3 class="title font-size-20">الغرف المتاحة</h3>
-                {% for availability in availability %}
+                {% for availability in available_room_types %}
                 <!-- start cabin-type -->
-                <div class="cabin-type padding-top-30px">
+                <div onClick="window.location.href='{% url 'rooms:room_detail' availability.room_type.id %}';" class="cabin-type padding-top-30px">
                   <div class="cabin-type-item seat-selection-item d-flex">
-                    <div class="cabin-type-img flex-shrink-0">
-                      <!-- Dynamically render the main room image -->
-                      {% if availability.room_type.images.all|length > 0 %}
-                      <img
-                        src="{{ availability.room_type.images.all.0.image.url }}"
-                        alt="{{ availability.room_type.name }}"
-                      />
-                      {% else %}
-                      <img src="{% static 'images/placeholder.png' %}" alt="No Image Available" />
-                      {% endif %}
-                    </div>
-                
-                    <div class="cabin-type-detail">
-                      <h3 class="title">{{ availability.room_type.name }}</h3>
-                      <div class="row padding-top-20px">
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-wifi"></i>
-                            </div>
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">واى فاى مجانى</h3>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-bed"></i>
-                            </div>
-                            {% if availability.room_type.beds_count > 0 %}
-                            
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">
-                                {{ availability.room_type.beds_count }} سرير
-                              </h3>
-                            </div>
-                            {% endif %}
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-building"></i>
-                            </div>
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">
-                                {{ availability.room_type.default_capacity }} m²
-                              </h3>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
-                        <div class="col-lg-6 responsive-column">
-                          <div class="single-tour-feature d-flex align-items-center mb-3">
-                            <div
-                              class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2"
-                            >
-                              <i class="la la-hotel"></i>
-                            </div>
-                            <div class="single-feature-titles">
-                              <h3 class="title font-size-15 font-weight-medium">
-                                دش وحوض استحمام
-                              </h3>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- end col-lg-6 -->
+
+                    <!-- Wrap the whole div with a link -->
+                    <a href="{% url 'rooms:room_detail' availability.room_type.id %}" class="d-flex">
+
+                      <div class="cabin-type-img flex-shrink-0">
+                        <!-- Dynamically render the main room image -->
+                        {% if availability.room_type.images.all|length > 0 %}
+                          <img
+                            src="{{ availability.room_type.images.all.0.image.url }}"
+                            alt="{{ availability.room_type.name }}"
+                          />
+                        {% else %}
+                          <img src="{% static 'images/placeholder.png' %}" alt="No Image Available" />
+                        {% endif %}
                       </div>
-                      <!-- end row -->
-                    </div>
-                
-                    <div class="cabin-price">
-                      <p class="text-uppercase font-size-14">
-                        لليلة الواحدة
-                        <strong
-                          class="mt-n1 text-black font-size-18 font-weight-black d-block"
-                          >${{ availability.price }}</strong
-                        >
-                      </p>
-                      <div class="custom-checkbox mb-0">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="selectChb{{ forloop.counter }}"
-                        />
-                        <label
-                          for="selectChb{{ forloop.counter }}"
-                          class="theme-btn theme-btn-small"
-                          >تحديد</label
-                        >
+
+                      <div class="cabin-type-detail">
+                        <a href="{% url 'rooms:room_detail' availability.room_type.id %}" class="title">{{availability.room_type.name}}</a>
+
+                        {% if availability.services %}
+                          <div class="row padding-top-20px">
+                            {% for service in availability.services %}
+                              <div class="col-lg-6 responsive-column">
+                                <div class="single-tour-feature d-flex align-items-center mb-3">
+                                  <div class="single-feature-icon icon-element ms-0 flex-shrink-0 me-2">
+                                    <i class="la {{service.icon}}"></i>
+                                  </div>
+                                  <div class="single-feature-titles">
+                                    <h3 class="title font-size-15 font-weight-medium">{{service}}</h3>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
                       </div>
-                    </div>
+
+                      <div class="cabin-price">
+                        <p class="text-uppercase font-size-14">
+                          لليلة الواحدة
+                          <strong class="mt-n1 text-black font-size-18 font-weight-black d-block">
+                            ريال{{ availability.price }}
+                          </strong>
+                        </p>
+                      </div>
+                    </a> <!-- End of the link wrapping the whole content -->
+
                   </div>
-                  <!-- end cabin-type-item -->
                 </div>
                 <!-- end cabin-type -->
-                {% endfor %}
-                
+              {% endfor %}
+
+
               </div>
               <!-- end single-content-item -->
               <div class="section-block"></div>
             </div>
-            <!-- end location-map -->
-            <div id="amenities" class="page-scroll">
-              <div
-                class="single-content-item padding-top-40px padding-bottom-20px"
-              >
-                <h3 class="title font-size-20">وسائل الراحة</h3>
-                <div class="amenities-feature-item pt-4">
-                  <div class="row">
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-wifi"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            وفي
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            حمام السباحة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-television"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            التلفاز
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-coffee"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            قهوة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-tree"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            تكييف
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-gear"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مرافق اللياقة البدنية
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            ثلاجة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-glass"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            بار النبيذ
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-music"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            وسائل الترفيه
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-lock"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            قبو آمن
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-car"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            انتقاء وإفلات
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            خدمة الغرف
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-check-circle"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مسموح بدخول الحيوانات الأليفة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-coffee"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            وجبة افطار
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-car"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            موقف سيارات مجاني
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-fire"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            المدفأة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-wheelchair"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            الوصول لذوي الإعاقة
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-user-secret"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            بواب
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-building"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مصعد في المبنى
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-gift"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مناسب للأحداث
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                    <div class="col-lg-4 responsive-column">
-                      <div
-                        class="single-tour-feature d-flex align-items-center mb-3"
-                      >
-                        <div
-                          class="single-feature-icon icon-element ms-0 flex-shrink-0 me-3"
-                        >
-                          <i class="la la-gamepad"></i>
-                        </div>
-                        <div class="single-feature-titles">
-                          <h3 class="title font-size-15 font-weight-medium">
-                            مكان اللعب
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- end single-tour-feature -->
-                    </div>
-                    <!-- end col-lg-4 -->
-                  </div>
-                  <!-- end row -->
-                </div>
-              </div>
-              <!-- end single-content-item -->
-              <div class="section-block"></div>
-            </div>
-            <!-- end faq -->
-            <div id="faq" class="page-scroll">
-              <div
-                class="single-content-item padding-top-40px padding-bottom-40px"
-              >
-                <h3 class="title font-size-20">أسئلة وأجوبة</h3>
-                <div
-                  class="accordion accordion-item accordions--items padding-top-30px"
-                  id="accordionExample2"
-                >
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingFour">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseFour"
-                          aria-expanded="true"
-                          aria-controls="faqCollapseFour"
-                        >
-                          <span class="ms-3"
-                            >كيف أعرف أن الحجز مقبول أو مؤكد؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseFour"
-                      class="collapse show"
-                      aria-labelledby="faqHeadingFour"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingFive">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseFive"
-                          aria-expanded="false"
-                          aria-controls="faqCollapseFive"
-                        >
-                          <span class="ms-3"
-                            >هل يسمح لي برفض طلبات الحجز؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseFive"
-                      class="collapse"
-                      aria-labelledby="faqHeadingFive"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingSix">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseSix"
-                          aria-expanded="false"
-                          aria-controls="faqCollapseSix"
-                        >
-                          <span class="ms-3"
-                            >ماذا يحدث إذا تركت طلب حجز تنتهي صلاحيته؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseSix"
-                      class="collapse"
-                      aria-labelledby="faqHeadingSix"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                  <div class="card">
-                    <div class="card-header" id="faqHeadingSeven">
-                      <h2 class="mb-0">
-                        <button
-                          class="btn btn-link d-flex align-items-center justify-content-end flex-row-reverse font-size-16"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#faqCollapseSeven"
-                          aria-expanded="false"
-                          aria-controls="faqCollapseSeven"
-                        >
-                          <span class="ms-3"
-                            >كيف يمكنني تحديد متطلبات الحجز؟</span
-                          >
-                          <i class="la la-minus"></i>
-                          <i class="la la-plus"></i>
-                        </button>
-                      </h2>
-                    </div>
-                    <div
-                      id="faqCollapseSeven"
-                      class="collapse"
-                      aria-labelledby="faqHeadingSeven"
-                      data-bs-parent="#accordionExample2"
-                    >
-                      <div class="card-body d-flex">
-                        <p>
-                          يبدو أن بلاغي قد تُرك دون أن يتم ، وبلاغته ستذهب ،
-                          لأنها كذلك ، والتي يجب أن تكون ديمقراطية. هذا هو
-                          السبب الأول في تقلصه ، لكن العدو. سواء كان ذلك في
-                          سيرتي الذاتية ، غير مسلح أو نحو ذلك. سواء كان ذلك
-                          بالنسبة له أن euismod facilisis Nullam id dolor id
-                          nibh ultricies Vehiclesicula elit.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card -->
-                </div>
-              </div>
-              <!-- end single-content-item -->
-              <div class="section-block"></div>
-            </div>
-            <!-- end faq -->
+
             <div id="reviews" class="page-scroll">
               <div
                 class="single-content-item padding-top-40px padding-bottom-40px"
@@ -1135,9 +687,9 @@ START TOUR DETAIL AREA
                   <div class="row align-items-center">
                     <div class="col-lg-4">
                       <div class="review-summary">
-                        <h2>{{review_count}}<span>/5</span></h2>
+                        <h2>{{reviews.count}}<span>/5</span></h2>
                         <p>ممتاز</p>
-                        <span>مرتكز على 4 تقييمات</span>
+                        <span>مرتكز على {{reviews.count}} تقييمات</span>
                       </div>
                     </div>
                     <!-- end col-lg-4 -->
@@ -1169,7 +721,7 @@ START TOUR DETAIL AREA
                           <!-- end col-lg-6 -->
                           <div class="col-lg-6">
                             <div class="progress-item">
-                              <h3 class="progressbar-title">موقعك</h3>
+                              <h3 class="progressbar-title">الموقع</h3>
                               <div
                                 class="progressbar-content line-height-20 d-flex align-items-center justify-content-between"
                               >
@@ -1236,7 +788,7 @@ START TOUR DETAIL AREA
                             <!-- end progress-item -->
                           </div>
                           <!-- end col-lg-6 -->
-                         
+
                           <!-- end col-lg-6 -->
                         </div>
                         <!-- end row -->
@@ -1257,10 +809,17 @@ START TOUR DETAIL AREA
                   {% for review in reviews %}
                   <div class="comment">
                     <div class="comment-avatar">
+                      {% if review.user.image %}
                       <img
                         class="avatar__img"
                         alt="{{ review.user.username }}"
-                        src="{{ review.user.profile.image.url|default:'images/default-avatar.jpg' }}" />
+                        src="{{ review.user.image.url|default:'images/default-avatar.jpg' }}" />
+                        {% else %}
+                        <img
+                        class="avatar__img"
+                        alt="{{ review.user.username }}"
+                        src="{% static 'images/default-avatar.jpg' %}" />
+                      {% endif %}
                     </div>
                     <div class="comment-body">
                       <div class="meta-data">
@@ -1272,13 +831,13 @@ START TOUR DETAIL AREA
                             <i class="la {% if review.rating_service > 2 %} la-star {% else %} la-star-o {% endif %}"></i>
                             <i class="la {% if review.rating_service > 3 %} la-star {% else %} la-star-o {% endif %}"></i>
                             <i class="la {% if review.rating_service > 4 %} la-star {% else %} la-star-o {% endif %}"></i>
-                            
+
                           </span>
                           <p class="comment__date">{{ review.created_at|date:"d M Y" }}</p>
                         </div>
                       </div>
                       <p class="comment-content">{{ review.review }}</p>
-                     
+
                     </div>
                   </div>
                   {% empty %}
@@ -1300,17 +859,17 @@ START TOUR DETAIL AREA
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
                                 <label>الخدمات</label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="service-5" type="radio" name="rating_service" value="5" />
-                                  <label for="service-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-4" type="radio" name="rating_service" value="4" />
-                                  <label for="service-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-3" type="radio" name="rating_service" value="3" />
-                                  <label for="service-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-2" type="radio" name="rating_service" value="2" />
-                                  <label for="service-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="service-1" type="radio" name="rating_service" value="1" />
-                                  <label for="service-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="service-5" name="rating_service" value="5" required>
+                                  <label for="service-5">★</label>
+                                  <input type="radio" id="service-4" name="rating_service" value="4" required>
+                                  <label for="service-4">★</label>
+                                  <input type="radio" id="service-3" name="rating_service" value="3" required>
+                                  <label for="service-3">★</label>
+                                  <input type="radio" id="service-2" name="rating_service" value="2" required>
+                                  <label for="service-2">★</label>
+                                  <input type="radio" id="service-1" name="rating_service" value="1" required>
+                                  <label for="service-1">★</label>
                                 </div>
                               </div>
                             </div>
@@ -1318,35 +877,35 @@ START TOUR DETAIL AREA
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
                                 <label>موقع الفندق</label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="location-5" type="radio" name="rating_location" value="5" />
-                                  <label for="location-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-4" type="radio" name="rating_location" value="4" />
-                                  <label for="location-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-3" type="radio" name="rating_location" value="3" />
-                                  <label for="location-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-2" type="radio" name="rating_location" value="2" />
-                                  <label for="location-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="location-1" type="radio" name="rating_location" value="1" />
-                                  <label for="location-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="location-5" name="rating_location" value="5" required>
+                                  <label for="location-5">★</label>
+                                  <input type="radio" id="location-4" name="rating_location" value="4" required>
+                                  <label for="location-4">★</label>
+                                  <input type="radio" id="location-3" name="rating_location" value="3" required>
+                                  <label for="location-3">★</label>
+                                  <input type="radio" id="location-2" name="rating_location" value="2" required>
+                                  <label for="location-2">★</label>
+                                  <input type="radio" id="location-1" name="rating_location" value="1" required>
+                                  <label for="location-1">★</label>
                                 </div>
                               </div>
                             </div>
                             <!-- col-lg-4 -->
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
-                                <label>سعر الفندق </label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="value-5" type="radio" name="rating_value_for_money" value="5" />
-                                  <label for="value-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-4" type="radio" name="rating_value_for_money" value="4" />
-                                  <label for="value-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-3" type="radio" name="rating_value_for_money" value="3" />
-                                  <label for="value-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-2" type="radio" name="rating_value_for_money" value="2" />
-                                  <label for="value-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="value-1" type="radio" name="rating_value_for_money" value="1" />
-                                  <label for="value-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <label>سعر الفندق</label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="value-5" name="rating_value_for_money" value="5" required>
+                                  <label for="value-5">★</label>
+                                  <input type="radio" id="value-4" name="rating_value_for_money" value="4" required>
+                                  <label for="value-4">★</label>
+                                  <input type="radio" id="value-3" name="rating_value_for_money" value="3" required>
+                                  <label for="value-3">★</label>
+                                  <input type="radio" id="value-2" name="rating_value_for_money" value="2" required>
+                                  <label for="value-2">★</label>
+                                  <input type="radio" id="value-1" name="rating_value_for_money" value="1" required>
+                                  <label for="value-1">★</label>
                                 </div>
                               </div>
                             </div>
@@ -1354,17 +913,17 @@ START TOUR DETAIL AREA
                             <div class="col-lg-4 responsive-column">
                               <div class="rate-option-item">
                                 <label>النظافة</label>
-                                <div class="rate-stars-option star-rating">
-                                  <input id="rating_cleanliness-5" type="radio" name="rating_cleanliness" value="5" />
-                                  <label for="rating_cleanliness-5" title="5 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-4" type="radio" name="rating_cleanliness" value="4" />
-                                  <label for="rating_cleanliness-4" title="4 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-3" type="radio" name="rating_cleanliness" value="3" />
-                                  <label for="rating_cleanliness-3" title="3 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-2" type="radio" name="rating_cleanliness" value="2" />
-                                  <label for="rating_cleanliness-2" title="2 stars"><i class="active fa fa-star"></i></label>
-                                  <input id="rating_cleanliness-1" type="radio" name="rating_cleanliness" value="1" />
-                                  <label for="rating_cleanliness-1" title="1 star"><i class="active fa fa-star"></i></label>
+                                <div class="star-rating small-stars">
+                                  <input type="radio" id="clean-5" name="rating_cleanliness" value="5">
+                                  <label for="clean-5">★</label>
+                                  <input type="radio" id="clean-4" name="rating_cleanliness" value="4">
+                                  <label for="clean-4">★</label>
+                                  <input type="radio" id="clean-3" name="rating_cleanliness" value="3">
+                                  <label for="clean-3">★</label>
+                                  <input type="radio" id="clean-2" name="rating_cleanliness" value="2">
+                                  <label for="clean-2">★</label>
+                                  <input type="radio" id="clean-1" name="rating_cleanliness" value="1">
+                                  <label for="clean-1">★</label>
                                 </div>
                               </div>
                             </div>
@@ -1374,29 +933,19 @@ START TOUR DETAIL AREA
                         <!-- end rate-option -->
                         <div class="mb-3">
                           <label class="mb-2">رسالتك</label>
-                          <textarea
-                            id="review_desc"
-                            name="review"
-                            class="form-control"
-                            maxlength="100"
-                            placeholder="اكتب رسالتك"
-                          ></textarea>
+                          <textarea id="review_desc" name="review" class="form-control" maxlength="100" placeholder="اكتب رسالتك"></textarea>
                           <div class="d-flex justify-content-between mt-3">
-                            <small class="text-muted">
-                              <span id="chars">100</span> حرف متبقي
-                            </small>
+
                           </div>
                         </div>
+
                         <div class="submit-section">
                           <button type="submit" class="theme-btn btn-primary">إضافة المراجعة</button>
                         </div>
                       </form>
                     </div>
-                    <!-- end form-content -->
                   </div>
-                  <!-- end form-box -->
                 </div>
-                
                 <!-- end comment-forum -->
               </div>
               <!-- end single-content-item -->
@@ -1407,216 +956,90 @@ START TOUR DETAIL AREA
         </div>
         <!-- end col-lg-8 -->
         <div class="col-lg-4">
-          <div class="sidebar single-content-sidebar mb-0">
-            <div class="sidebar-widget single-content-widget">
-              <div class="sidebar-widget-item">
-                <div class="sidebar-book-title-wrap mb-3">
-                  <h3>جمع</h3>
-                  <p>
-                    <span class="text-form">من عند</span
-                    ><span class="text-value ms-2 me-1">$399.00</span>
-                    <span class="before-price">$412.00</span>
-                  </p>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div class="contact-form-action">
-                  <form action="#">
-                    <div class="input-box">
-                      <label class="label-text"
-                        >تسجيل دخول تسجيل خروج</label
-                      >
-                      <div class="form-group">
-                        <span class="la la-calendar form-icon"></span>
-                        <input
-                          class="date-picker-multiple form-control"
-                          type="text"
-                          name="date"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                    <div class="input-box">
-                      <label class="label-text">غرف</label>
-                      <div class="form-group">
-                        <div
-                          class="select-contain select2-container-wrapper w-auto"
-                        >
-                          <select class="select-contain-select">
-                            <option value="0">حدد الغرف</option>
-                            <option value="1">1 غرفة</option>
-                            <option value="2">2 غرف</option>
-                            <option value="3">3 غرف</option>
-                            <option value="4">4 غرف</option>
-                            <option value="5">5 غرف</option>
-                            <option value="6">6 غرف</option>
-                            <option value="7">7 غرف</option>
-                            <option value="8">8 غرف</option>
-                            <option value="9">9 غرف</option>
-                            <option value="10">10 غرف</option>
-                            <option value="11">11 غرف</option>
-                            <option value="12">12 غرف</option>
-                            <option value="13">13 غرف</option>
-                            <option value="14">14 غرف</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="sidebar-widget-item">
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الكبار <span>Age 18+</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الأطفال <span>2-12 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-                <div
-                  class="qty-box mb-2 d-flex align-items-center justify-content-between"
-                >
-                  <label class="font-size-16"
-                    >الرضع <span>0-2 سنة</span></label
-                  >
-                  <div class="qtyBtn d-flex align-items-center">
-                    <div class="qtyDec"><i class="la la-minus"></i></div>
-                    <input type="text" name="qtyInput" value="0" />
-                    <div class="qtyInc"><i class="la la-plus"></i></div>
-                  </div>
-                </div>
-                <!-- end qty-box -->
-              </div>
-              <!-- end sidebar-widget-item -->
-              <div class="btn-box pt-2">
-                <a
-                  href="tour-booking.html"
-                  class="theme-btn text-center w-100 mb-2"
-                  ><i class="la la-shopping-cart me-2 font-size-18"></i>احجز
-                  الآن</a
-                >
-                <a
-                  href="#"
-                  class="theme-btn text-center w-100 theme-btn-transparent"
-                  ><i class="la la-heart-o me-2"></i>أضف إلى قائمة
-                  الامنيات</a
-                >
-                <div
-                  class="d-flex align-items-center justify-content-between pt-2"
-                >
-                  <a
-                    href="#"
-                    class="btn theme-btn-hover-gray font-size-15"
-                    data-bs-toggle="modal"
-                    data-bs-target="#sharePopupForm"
-                    ><i class="la la-share me-1"></i>شارك</a
-                  >
-                  <p>
-                    <i class="la la-eye me-1 font-size-15 color-text-2"></i
-                    >3456
-                  </p>
-                </div>
-              </div>
-            </div>
-           
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">نوع حساب؟</h3>
-              <div class="sidebar-list">
-                <ul class="list-items">
-                  <li>
-                    <i class="la la-dollar icon-element me-2"></i> ضمان أفضل
-                    الأسعار بدون متاعب
-                  </li>
-                  <li>
-                    <i class="la la-microphone icon-element me-2"></i> خدمة
-                    العملاء متوفرة 24/7
-                  </li>
-                  <li>
-                    <i class="la la-thumbs-up icon-element me-2"></i> جولات
-                    وأنشطة منتقاة بعناية
-                  </li>
-                  <li>
-                    <i class="la la-file-text icon-element me-2"></i> تأمين
-                    سفر مجاني
-                  </li>
-                </ul>
-              </div>
-              <!-- end sidebar-list -->
-            </div>
+
+
+            <div class="sidebar-widget single-content-widget border rounded shadow-sm p-4 mb-4">
+  <h3 class="title stroke-shape mb-4">معلومات الفندق</h3>
+
+  {% if hotel.best_seller %}
+  <div class="hotel-highlight-box mb-4">
+    <div class="highlight-content bg-gradient-primary text-white p-3 rounded-lg">
+      <div class="d-flex align-items-center">
+        <div class="highlight-icon me-3">
+          <i class="la la-crown fs-1 text-warning"></i>
+        </div>
+        <div class="highlight-text">
+          <h5 class="mb-0 fw-bold">هذا الفندق من بين <span class="text-warning">الأكثر حجزًا</span>!</h5>
+          <p class="mb-0 mt-1 small">اختيار مميز من قبل ضيوفنا</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="booking-stats-box mb-4 p-3 bg-light rounded-lg">
+    <div class="d-flex align-items-center">
+      <div class="stats-icon bg-primary text-white rounded-circle p-2 me-3">
+        <i class="la la-book fs-3"></i>
+      </div>
+      <div class="stats-content">
+        <h6 class="mb-1 text-muted">عدد الحجوزات المؤكدة</h6>
+        <h3 class="mb-0 text-primary fw-bold">{{ hotel.booking_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="why-book-box">
+    <h5 class="mb-3 fw-bold border-bottom pb-2">لماذا تحجز معنا؟</h5>
+    <div class="why-book-items">
+      <div class="why-book-item d-flex align-items-center mb-3 p-2 rounded hover-shadow">
+        <div class="why-book-icon bg-success-light p-2 rounded-circle me-3">
+          <i class="la la-dollar fs-4 text-success"></i>
+        </div>
+        <div class="why-book-text">
+          <h6 class="mb-0 fw-bold">ضمان أفضل الأسعار</h6>
+          <p class="mb-0 small text-muted">بدون متاعب أو رسوم إضافية</p>
+        </div>
+      </div>
+      <div class="why-book-item d-flex align-items-center mb-2 p-2 rounded hover-shadow">
+        <div class="why-book-icon bg-info-light p-2 rounded-circle me-3">
+          <i class="la la-headset fs-4 text-info"></i>
+        </div>
+        <div class="why-book-text">
+          <h6 class="mb-0 fw-bold">خدمة العملاء متوفرة 24/7</h6>
+          <p class="mb-0 small text-muted">دعم متواصل طوال اليوم</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
             <!-- end sidebar-widget -->
             <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">احصل على سؤال؟</h3>
+              <h3 class="title stroke-shape"> تواصل مع الفندق </h3>
               <p class="font-size-14 line-height-24">
                 لا تتردد في الاتصال بنا. نحن فريق من الخبراء ويسعدنا التحدث
                 إليكم.
               </p>
               <div class="sidebar-list pt-3">
                 <ul class="list-items">
+                  {% for phones in phones %}
                   <li>
                     <i class="la la-phone icon-element me-2"></i
-                    ><a href="#">+ 61 23 8093 3400</a>
+                    ><a href="#">{{phones.country_code}} {{phones.country_code}}</a>
+
                   </li>
+                  {% endfor %}
                   <li>
                     <i class="la la-envelope icon-element me-2"></i
-                    ><a href="mailto:info@trizen.com">info@trizen.com</a>
+                    ><a href="mailto:info@trizen.com">{{hotel.email}}</a>
                   </li>
                 </ul>
               </div>
               <!-- end sidebar-list -->
             </div>
             <!-- end sidebar-widget -->
-            <div class="sidebar-widget single-content-widget">
-              <h3 class="title stroke-shape">نظمت من قبل</h3>
-              <div class="author-content d-flex">
-                <div class="author-img">
-                  <a href="#"
-                    ><img src="images/team8.jpg" alt="testimonial image"
-                  /></a>
-                </div>
-                <div class="author-bio">
-                  <h4 class="author__title">
-                    <a href="#">royaltravelagency</a>
-                  </h4>
-                  <span class="author__meta">عضو منذ 2017</span>
-                  <span class="ratings d-flex align-items-center">
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star"></i>
-                    <i class="la la-star-o"></i>
-                    <span class="ms-2">305 التعليقات</span>
-                  </span>
-                  <div class="btn-box pt-3">
-                    <a
-                      href="#"
-                      class="theme-btn theme-btn-small theme-btn-transparent"
-                      >طرح سؤال</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
+
             <!-- end sidebar-widget -->
           </div>
           <!-- end sidebar -->
@@ -1639,7 +1062,7 @@ END TOUR DETAIL AREA
 <!-- ================================
 START RELATE TOUR AREA
 ================================= -->
-{% if hotels.count == 0 %}
+{% if external_hotels %}
 
 <section class="related-tour-area section--padding">
   <div class="container">
@@ -1654,7 +1077,8 @@ START RELATE TOUR AREA
     </div>
     <!-- end row -->
     <div class="row padding-top-50px">
-      {% for hotels in hotels %}
+      {% for hotels in external_hotels %}
+
       <!-- end col-lg-4 -->
       <div class="col-lg-4 responsive-column">
         <div class="card-item">
@@ -1662,45 +1086,48 @@ START RELATE TOUR AREA
             <a href="{{hotels.get_absolute_url}}" class="d-block">
               <img src="{{hotels.profile_picture.url}}" alt="hotel-img" />
             </a>
-            {% comment %} <span class="badge">متميز</span> {% endcomment %}
-            <div
-              class="add-to-wishlist icon-element"
-              data-bs-toggle="tooltip"
-              data-placement="top"
-              title="المرجعية"
-            >
-              <i class="la la-heart-o"></i>
-            </div>
+                        {% comment %} <span class="badge">متميز</span> {% endcomment %}
+
+                        <div
+                        class="add-to-wishlist icon-element {% if hotels.is_favorite %}btn-blue{% endif %}"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        data-hotel-id="{{ hotels.id }}"
+                        title="المرجعية"
+                      >
+                        <i class="{% if hotels.is_favorite %}la la-heart{% else %}la la-heart-o{% endif %}"></i>
+                      </div>
           </div>
           <div class="card-body">
             <h3 class="card-title">
-              <a href="{{hotels.get_absolute_url}}">{{hotel.name}}</a>
+              <a href="{{hotels.get_absolute_url}}">{{hotels.name}}</a>
             </h3>
-            <p class="card-meta">{{hotel.location.city.state}} , {{hotel.location.address}}</p>
+            <p class="card-meta">{{hotel.location.city.state}} , {{hotels.location.address}}</p>
             <div class="card-rating">
-              <span class="badge text-white">4.4/5</span>
+              {% if hotels.average_rating > 0 %}
+
+              <span class="badge text-white">{{hotels.average_rating}}/5</span>
+
+              {% else %}
+              <span class="badge text-white">0.0/5</span>
+
+              {% endif %}
               <span class="review__text">معدل</span>
-              <span class="rating__text">(30 التعليقات)</span>
+              <span class="rating__text">({{hotels.review_count}} التعليقات)</span>
             </div>
-            <div
-              class="card-price d-flex align-items-center justify-content-between"
-            >
-              <p>
-                <span class="price__from">من عند</span>
-                <span class="price__num">$88.00</span>
-                <span class="price__text">لليلة الواحدة</span>
-              </p>
+            <div class="card-price d-flex align-items-center justify-content-between">
+
               <a href="{{hotels.get_absolute_url}}" class="btn-text"
-                >انظر التفاصيل<i class="la la-angle-right"></i
-              ></a>
-            </div>
+              >انظر التفاصيل<i class="la la-angle-right"></i
+            ></a>            </div>
           </div>
         </div>
         <!-- end card-item -->
       </div>
-      <!-- end col-lg-4 -->
       {% endfor %}
+
     </div>
+
     <!-- end row -->
   </div>
   <!-- end container -->
@@ -1713,67 +1140,41 @@ START RELATE TOUR AREA
 END RELATE TOUR AREA
 ================================= -->
 
-<!-- ================================
-START CTA AREA
-================================= -->
-<section
-  class="cta-area subscriber-area section-bg-2 padding-top-60px padding-bottom-60px"
->
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="cta-content">
-          <div class="section-heading">
-            <h2 class="sec__title font-size-30 text-white">
-              اشترك للحصول على عرض حصري عبر البريد الإلكتروني
-            </h2>
-          </div>
-          <!-- end section-heading -->
-        </div>
-      </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="subscriber-box">
-          <div class="contact-form-action">
-            <form action="#">
-              <div class="input-box">
-                <label class="label-text text-white"
-                  >أدخل عنوان البريد الالكتروني</label
-                >
-                <div class="form-group mb-0">
-                  <span class="la la-envelope form-icon"></span>
-                  <input
-                    class="form-control"
-                    type="email"
-                    name="email"
-                    placeholder="عنوان البريد الالكترونى"
-                  />
-                  <button
-                    class="theme-btn theme-btn-small submit-btn"
-                    type="submit"
-                  >
-                    الإشتراك
-                  </button>
-                  <span class="font-size-15 pt-1 text-white-50"
-                    ><i class="la la-lock me-1"></i>لا تقلق معلوماتك آمنة
-                    معنا.
-                  </span>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-5 -->
-    </div>
-    <!-- end row -->
-  </div>
-  <!-- end container -->
-</section>
-<!-- end cta-area -->
-<!-- ================================
-END CTA AREA
-================================= -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
+      button.addEventListener('click', function() {
+        var hotelId = this.getAttribute('data-hotel-id');
+        var icon = this.querySelector('i');
+        var buttonElement = this; // Explicitly reference the button
+
+        fetch("{% url 'customer:add_to_favorites' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+          body: JSON.stringify({
+            'hotel_id': hotelId,
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            // Toggle styles immediately to avoid double click issue
+            buttonElement.classList.toggle('btn-blue');
+            icon.classList.toggle('la-heart');
+            icon.classList.toggle('la-heart-o');
+          } else {
+            alert(data.message || 'Something went wrong');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    });
+  });
+</script>
 
 {% endblock content %}

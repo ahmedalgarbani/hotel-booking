@@ -1,0 +1,748 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
+  <style>
+    .report-container {
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .report-title {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #2E7D32;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .report-filters {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .filter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: flex-end;
+    }
+    .filter-group {
+      margin-bottom: 0;
+    }
+
+    .filter-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .filter-group select,
+    .filter-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .filter-actions button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .filter-actions .apply-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .filter-actions .reset-btn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .filter-actions .export-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .summary-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      flex: 1;
+      min-width: 200px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .loyalty-meter {
+      height: 10px;
+      background-color: #eee;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .loyalty-value {
+      height: 100%;
+      background-color: #4CAF50;
+    }
+
+    .charts-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .chart-container {
+      flex: 1;
+      min-width: 300px;
+      height: 300px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 15px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .badge-platinum {
+      background: linear-gradient(135deg, #e5e4e2 0%, #b9b9b9 100%);
+      color: #333;
+    }
+
+    .badge-gold {
+      background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+      color: #333;
+    }
+
+    .badge-silver {
+      background: linear-gradient(135deg, #c0c0c0 0%, #a9a9a9 100%);
+      color: #333;
+    }
+
+    .badge-bronze {
+      background: linear-gradient(135deg, #cd7f32 0%, #a0522d 100%);
+      color: white;
+    }
+
+    .badge-regular {
+      background-color: #777;
+      color: white;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 50px 0;
+      color: #777;
+    }
+
+    /* Premium Features Toggle */
+    .premium-toggle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .toggle-label {
+      margin-right: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    .premium-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+      color: #333;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+  </style>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class="report-header">
+    <h1 class="report-title">{% trans "تقرير العملاء المميزين" %} <span class="premium-badge">{% trans "النسخة الفاخرة" %}</span></h1>
+  </div>
+
+  <div class="filters">
+    <form method="get" class="filter-form">
+      <div class="filter-group">
+        <label class="filter-label" for="id_period">{% trans "الفترة الزمنية" %}</label>
+        <select name="period" id="id_period" class="form-control">
+          <option value="monthly" {% if period == 'monthly' %}selected{% endif %}>{% trans "شهري" %}</option>
+          <option value="quarterly" {% if period == 'quarterly' %}selected{% endif %}>{% trans "ربع سنوي" %}</option>
+          <option value="half_yearly" {% if period == 'half_yearly' %}selected{% endif %}>{% trans "نصف سنوي" %}</option>
+          <option value="yearly" {% if period == 'yearly' or not period %}selected{% endif %}>{% trans "سنوي" %}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="id_sort_by">{% trans "ترتيب حسب" %}</label>
+        <select name="sort_by" id="id_sort_by" class="form-control">
+          <option value="bookings" {% if sort_by == 'bookings' or not sort_by %}selected{% endif %}>{% trans "عدد الحجوزات" %}</option>
+          <option value="spending" {% if sort_by == 'spending' %}selected{% endif %}>{% trans "إجمالي الإنفاق" %}</option>
+          <option value="loyalty" {% if sort_by == 'loyalty' %}selected{% endif %}>{% trans "درجة الولاء" %}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="id_hotel">{% trans "الفندق" %}</label>
+        <select name="hotel_id" id="id_hotel" class="form-control">
+          <option value="">{% trans "جميع الفنادق" %}</option>
+          {% for hotel in hotels %}
+            <option value="{{ hotel.id }}" {% if selected_hotel_id == hotel.id|stringformat:"i" %}selected{% endif %}>{{ hotel.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="id_show_premium">{% trans "عرض الميزات الفاخرة" %}</label>
+        <select name="show_premium" id="id_show_premium" class="form-control">
+          <option value="yes" {% if show_premium %}selected{% endif %}>{% trans "نعم" %}</option>
+          <option value="no" {% if not show_premium %}selected{% endif %}>{% trans "لا" %}</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <button type="submit" class="btn-primary">{% trans "تطبيق الفلتر" %}</button>
+      </div>
+
+      {% if pdf_export_url %}
+      <div class="filter-group">
+        <a href="{{ pdf_export_url }}?period={{ period }}&sort_by={{ sort_by }}&hotel_id={{ selected_hotel_id }}" class="btn-primary" style="background-color: #D32F2F;">
+          {% trans "تصدير PDF" %}
+        </a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+
+  {% if customers %}
+    <!-- Summary Cards -->
+    <div class="summary-section">
+      <div class="summary-card">
+        <div class="card-title">{% trans "إجمالي العملاء المميزين" %}</div>
+        <div class="card-value">{{ customers|length }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-title">{% trans "متوسط عدد الحجوزات" %}</div>
+        <div class="card-value">
+          {% with total_bookings=0 %}
+            {% for customer in customers %}
+              {% with total_bookings=total_bookings|add:customer.booking_count %}{% endwith %}
+            {% endfor %}
+            {{ total_bookings|default:0|floatformat:0 }}
+          {% endwith %}
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="card-title">{% trans "إجمالي الإنفاق" %}</div>
+        <div class="card-value">{{ total_spending|floatformat:2 }}</div>
+      </div>
+      {% if show_premium %}
+      <div class="summary-card">
+        <div class="card-title">{% trans "متوسط درجة الولاء" %}</div>
+        <div class="card-value">{{ avg_loyalty_score }}/100</div>
+        <div class="loyalty-meter">
+          <div class="loyalty-value" style="width: {{ avg_loyalty_score }}%;"></div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    
+    {% if show_premium %}
+    <!-- Tier Distribution Chart -->
+    <div class="chart-container">
+      <h3 class="chart-title">{% trans "توزيع العملاء حسب المستوى" %}</h3>
+      <canvas id="tierDistributionChart"></canvas>
+    </div>
+    {% endif %}
+
+    <!-- Charts -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <h3 class="chart-title">{% trans "أفضل 10 عملاء (عدد الحجوزات)" %}</h3>
+        <canvas id="bookingsChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <h3 class="chart-title">{% trans "أفضل 10 عملاء (الإنفاق)" %}</h3>
+        <canvas id="spendingChart"></canvas>
+      </div>
+    </div>
+    
+    {% if show_premium %}
+    <div class="charts-section">
+      <div class="chart-container">
+        <h3 class="chart-title">{% trans "أفضل 10 عملاء (درجة الولاء)" %}</h3>
+        <canvas id="loyaltyChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <h3 class="chart-title">{% trans "تحليل العلاقة بين الإنفاق ودرجة الولاء" %}</h3>
+        <canvas id="correlationChart"></canvas>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Data Table -->
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>{% trans "الترتيب" %}</th>
+          <th>{% trans "اسم العميل" %}</th>
+          <th>{% trans "البريد الإلكتروني" %}</th>
+          <th>{% trans "رقم الهاتف" %}</th>
+          <th>{% trans "عدد الحجوزات" %}</th>
+          <th>{% trans "إجمالي الإنفاق" %}</th>
+          {% if show_premium %}
+          <th>{% trans "درجة الولاء" %}</th>
+          <th>{% trans "متوسط قيمة الحجز" %}</th>
+          {% endif %}
+          <th>{% trans "تصنيف العميل" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+          <tr>
+            <td>
+              {% if forloop.counter == 1 %}
+                <div class="customer-rank rank-1">1</div>
+              {% elif forloop.counter == 2 %}
+                <div class="customer-rank rank-2">2</div>
+              {% elif forloop.counter == 3 %}
+                <div class="customer-rank rank-3">3</div>
+              {% else %}
+                <div class="customer-rank rank-other">{{ forloop.counter }}</div>
+              {% endif %}
+            </td>
+            <td>{{ customer.get_full_name|default:customer.username }}</td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.phone }}</td>
+            <td>{{ customer.booking_count }}</td>
+            <td>{{ customer.total_spent|default:0|floatformat:2 }}</td>
+            {% if show_premium %}
+            <td>
+              {{ customer.loyalty_score }}/100
+              <div class="loyalty-meter">
+                <div class="loyalty-value" style="width: {{ customer.loyalty_score }}%;"></div>
+              </div>
+            </td>
+            <td>{{ customer.avg_booking_value|default:0|floatformat:2 }}</td>
+            {% endif %}
+            <td>
+              {% if customer.tier == 'platinum' %}
+                <span class="badge badge-platinum">{% trans "بلاتيني" %}</span>
+              {% elif customer.tier == 'gold' %}
+                <span class="badge badge-gold">{% trans "ذهبي" %}</span>
+              {% elif customer.tier == 'silver' %}
+                <span class="badge badge-silver">{% trans "فضي" %}</span>
+              {% elif customer.tier == 'bronze' %}
+                <span class="badge badge-bronze">{% trans "برونزي" %}</span>
+              {% else %}
+                <span class="badge badge-regular">{% trans "عادي" %}</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="no-data">
+      <h3>{% trans "لا توجد بيانات متاحة للفترة المحددة" %}</h3>
+      <p>{% trans "يرجى تغيير معايير التصفية أو التحقق من وجود عملاء في النظام" %}</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Data for charts
+    var customerNames = {{ customer_names|safe }};
+    var bookingCounts = {{ booking_counts|safe }};
+    var spendingAmounts = {{ spending_amounts|safe }};
+    
+    // Create bookings chart
+    if (document.getElementById('bookingsChart')) {
+      var bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+      new Chart(bookingsCtx, {
+        type: 'bar',
+        data: {
+          labels: customerNames,
+          datasets: [{
+            label: '{% trans "عدد الحجوزات" %}',
+            data: bookingCounts,
+            backgroundColor: 'rgba(67, 160, 71, 0.7)',
+            borderColor: 'rgba(67, 160, 71, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create spending chart
+    if (document.getElementById('spendingChart')) {
+      var spendingCtx = document.getElementById('spendingChart').getContext('2d');
+      new Chart(spendingCtx, {
+        type: 'bar',
+        data: {
+          labels: customerNames,
+          datasets: [{
+            label: '{% trans "إجمالي الإنفاق" %}',
+            data: spendingAmounts,
+            backgroundColor: 'rgba(33, 150, 243, 0.7)',
+            borderColor: 'rgba(33, 150, 243, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    {% if show_premium %}
+    var loyaltyScores = {{ loyalty_scores|safe }};
+    
+    // Create loyalty score chart
+    if (document.getElementById('loyaltyChart')) {
+      var loyaltyCtx = document.getElementById('loyaltyChart').getContext('2d');
+      new Chart(loyaltyCtx, {
+        type: 'bar',
+        data: {
+          labels: customerNames,
+          datasets: [{
+            label: '{% trans "درجة الولاء" %}',
+            data: loyaltyScores,
+            backgroundColor: 'rgba(67, 160, 71, 0.7)',
+            borderColor: 'rgba(67, 160, 71, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 100,
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create correlation chart
+    if (document.getElementById('correlationChart')) {
+      // Prepare data for correlation chart
+      var correlationData = [];
+      for (var i = 0; i < customerNames.length; i++) {
+        correlationData.push({
+          x: spendingAmounts[i],
+          y: loyaltyScores[i]
+        });
+      }
+      
+      var correlationCtx = document.getElementById('correlationChart').getContext('2d');
+      new Chart(correlationCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: '{% trans "العلاقة بين الإنفاق والولاء" %}',
+            data: correlationData,
+            backgroundColor: 'rgba(156, 39, 176, 0.7)',
+            borderColor: 'rgba(156, 39, 176, 1)',
+            borderWidth: 1,
+            pointRadius: 8,
+            pointHoverRadius: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  var index = context.dataIndex;
+                  return customerNames[index] + ' - ' + 
+                         '{% trans "الإنفاق" %}: ' + spendingAmounts[index] + ', ' + 
+                         '{% trans "الولاء" %}: ' + loyaltyScores[index];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: '{% trans "إجمالي الإنفاق" %}'
+              },
+              beginAtZero: true,
+              grid: {
+                display: true,
+                color: 'rgba(0, 0, 0, 0.1)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: '{% trans "درجة الولاء" %}'
+              },
+              beginAtZero: true,
+              max: 100,
+              grid: {
+                display: true,
+                color: 'rgba(0, 0, 0, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Tier Distribution Chart
+    if (document.getElementById('tierDistributionChart')) {
+      var tierLabels = ['{% trans "بلاتيني" %}', '{% trans "ذهبي" %}', '{% trans "فضي" %}', '{% trans "برونزي" %}', '{% trans "عادي" %}'];
+      var tierData = [
+        {{ tier_distribution.platinum|default:0 }},
+        {{ tier_distribution.gold|default:0 }},
+        {{ tier_distribution.silver|default:0 }},
+        {{ tier_distribution.bronze|default:0 }},
+        {{ tier_distribution.regular|default:0 }}
+      ];
+      
+      var tierCtx = document.getElementById('tierDistributionChart').getContext('2d');
+      new Chart(tierCtx, {
+        type: 'doughnut',
+        data: {
+          labels: tierLabels,
+          datasets: [{
+            data: tierData,
+            backgroundColor: [
+              '#e5e4e2',
+              '#ffd700',
+              '#c0c0c0',
+              '#cd7f32',
+              '#777777'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                padding: 20
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  var total = context.chart.data.datasets[0].data.reduce(function(a, b) { return a + b; }, 0);
+                  var value = context.raw;
+                  var percentage = Math.round((value / total) * 100);
+                  return context.label + ': ' + value + ' (' + percentage + '%)';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+    {% endif %}
+  });
+</script>
+{% endblock %}

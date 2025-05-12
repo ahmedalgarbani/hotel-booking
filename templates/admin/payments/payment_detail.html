@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الدفع - {{ payment.booking_id }}</title>
+    <link rel="stylesheet" href="{% static 'css/payment/payment_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/payment/payment_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/payment/payment_responsive.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+    <div class="payment-status-buttons">
+    <form method="POST" action="{% url 'payments:change_payment_status' payment.id %}">
+    {% csrf_token %}
+    <button type="submit" name="status" value="1" class="btn badge badge-paid" >تاكيد الدفع </button>
+    <button type="submit" name="status" value="2" class="btn badge badge-rejected">رفض</button>
+</form>
+
+    </div>
+                <h1>تفاصيل الدفع</h1>
+                <a href="{% url 'admin:payments_payment_changelist' %}" class="btn btn-back">
+                    <span class="btn-icon">←</span> العودة إلى المدفوعات
+                </a>
+            </div>
+        </header>
+
+        <main class="payment-details">
+            <div class="payment-info-section">
+                <div class="card payment-primary-info">
+                    <div class="card-header">
+                        <h2>المعلومات الأساسية</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <div class="info-label">رقم الحجز</div>
+                            <div class="info-value">
+                                <a href="{% url 'admin:bookings_booking_change' payment.booking.id %}" class="link-primary">
+                                    {{ payment.booking_id }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">المستخدم</div>
+                            <div class="info-value">
+                                {% if payment.user %}
+                                <a href="#" class="link-primary">
+                                    {{ payment.user.get_full_name }}
+                                </a>
+                                {% else %}
+                                <span class="text-muted">مجهول</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">حالة الدفع</div>
+                            <div class="info-value">
+                                {% if payment.payment_status == 1 %}
+                                    <span class="badge badge-paid">{{ payment.get_payment_status_display }}</span>
+                                {% elif payment.payment_status == 0 %}
+                                    <span class="badge badge-pending">{{ payment.get_payment_status_display }}</span>
+                                {% elif payment.payment_status == 2 %}
+                                    <span class="badge badge-rejected">{{ payment.get_payment_status_display }}</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">{{ payment.get_payment_status_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">نوع الدفع</div>
+                            <div class="info-value">{{ payment.get_payment_type_display }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">طريقة الدفع</div>
+                            <div class="info-value">
+                                {% if payment.payment_method == 'Visa' %}
+                                <span class="payment-method visa">{{ payment.payment_method }}</span>
+                                {% elif payment.payment_method == 'Bank Transfer' %}
+                                <span class="payment-method bank">{{ payment.payment_method }}</span>
+                                {% else %}
+                                <span class="payment-method cash">{{ payment.payment_method }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">تاريخ الدفع</div>
+                            <div class="info-value">{{ payment.payment_date|date:"F j, Y, g:i a" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card payment-financial-info">
+                    <div class="card-header">
+                        <h2>التفاصيل المالية</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <div class="info-label">المبلغ الفرعي</div>
+                            <div class="info-value">{{ payment.subtotal }} {{ payment.currency }}</div>
+                        </div>
+                        
+                        {% if payment.discount %}
+                        <div class="info-row">
+                            <div class="info-label">الخصم</div>
+                            <div class="info-value discount-value">- {{ payment.discount }} {{ payment.currency }}</div>
+                        </div>
+                        {% if payment.discount_code %}
+                        <div class="info-row">
+                            <div class="info-label">كود الخصم</div>
+                            <div class="info-value">
+                                <span class="discount-code">{{ payment.discount_code }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        
+                        <div class="info-row total-row">
+                            <div class="info-label">المبلغ الإجمالي</div>
+                            <div class="info-value total-value">{{ payment.payment_totalamount }} {{ payment.currency }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-additional-section">
+                {% if payment.transfer_image %}
+                <div class="card payment-transfer-image">
+                    <div class="card-header">
+                        <h2>صورة السند</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="image-thumbnail-container">
+                            <img src="{{ payment.transfer_image.url }}" alt="Transfer Receipt" class="image-thumbnail" id="transferImageThumbnail">
+                            <div class="image-overlay">
+                                <span class="view-image-text">انقر لعرض الصورة</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card payment-notes">
+                    <div class="card-header expandable" id="notesHeader">
+                        <h2>ملاحظات الدفع</h2>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="card-body collapsible" id="notesContent">
+                        <div class="notes-container">
+                            {% if payment.payment_note %}
+                                {{ payment.payment_note|linebreaks }}
+                            {% else %}
+                                <p class="text-muted">لا توجد ملاحظات متاحة لهذا الدفع.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal to view transfer image -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" class="modal-image" src="" alt="Transfer Receipt">
+        </div>
+    </div>
+
+   
+
+    <script src="{% static 'js/payment_detail.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+{% load i18n static %}
+
+<style>
+    :root {
+        --primary-color: #4f46e5;
+        --primary-light: #eef2ff;
+        --gray-700: #374151;
+        --gray-500: #6b7280;
+        --white: #ffffff;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(to bottom right, #f0f7ff, #e0e7ff);
+        min-height: 100vh;
+        padding: 1.5rem;
+    }
+
+    .container {
+        max-width: 64rem;
+        margin: 0 auto;
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .header {
+        background: var(--primary-color);
+        padding: 1.5rem;
+        color: var(--white);
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .header p {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .content {
+        padding: 2rem;
+    }
+
+    .booking-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-label {
+        color: var(--gray-500);
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        color: var(--gray-700);
+        font-weight: 500;
+    }
+
+    .extension-section {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 2rem;
+    }
+
+    .extension-section h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--gray-700);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--gray-700);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .summary-box {
+        background: var(--primary-light);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-box h3 {
+        color: var(--primary-color);
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+    }
+
+    .summary-item {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .submit-button:hover {
+        background-color: #4338ca;
+    }
+
+    .submit-button:disabled {
+        background-color: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .error-message {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* RTL Support */
+    [dir="rtl"] {
+        text-align: right;
+    }
+
+    [dir="rtl"] .detail-group,
+    [dir="rtl"] .form-group {
+        text-align: right;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .booking-details {
+            grid-template-columns: 1fr;
+        }
+
+        .content {
+            padding: 1rem;
+        }
+    }
+</style>
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>تمديد مده الاقامه</h1>
+        <p>Modify your booking duration with ease</p>
+    </div>
+
+    <div class="content">
+        <!-- Original Booking Details -->
+        <div class="booking-details">
+            <div>
+                <div class="detail-group">
+                    <div class="detail-label">رقم الحجز</div>
+                    <div class="detail-value">{{ original.id }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">اسم العميل</div>
+                    <div class="detail-value">{{ original.user.first_name }} {{ original.user.last_name }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">نوع الغرفه</div>
+                    <div class="detail-value">{{ original.room }}</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="detail-group">
+                    <div class="detail-label">تاريخ الدخول</div>
+                    <div class="detail-value">{{ original.check_in_date|date:"M d, Y" }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">تاريخ الخروج</div>
+                    <div class="detail-value">{{ original.check_out_date|date:"M d, Y" }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">السعر</div>
+                    <div class="detail-value">ريال{{ original.amount|floatformat:2 }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extension Form -->
+        <div class="extension-section">
+            <h2>تاريخ التمديد الجديد</h2>
+            <form method="POST" action="" id="extension-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    {{ form.new_check_out.label_tag }}
+                    {{ form.new_check_out }}
+                </div>
+               
+                <div class="form-group">
+                    {{ form.reason.label_tag }}
+                    {{ form.reason }}
+                    {% if form.reason.errors %}
+                        <div class="error-message">
+                            {{ form.reason.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="summary-box">
+                    <h3>ملخص التمديد</h3>
+                    <div class="summary-item">
+                        عدد الليالي: <span id="nights-display">{{ additional_nights }}</span>
+                    </div>
+                    <div class="summary-item">
+                        عدد الغرف: <span id="nights-display">{{ original.rooms_booked }}</span>
+                    </div>
+
+
+                    <div class="summary-item">
+    التكلفة الإضافية: ريال
+    {% if services %}
+        {% for service in services %}
+            <div>
+                <span>{{ service.name }}</span> -
+                <span>لكل ليله: {{ service.price }}</span>
+            </div>
+        {% endfor %}
+        الإجمالي :
+        <span id="additional-price-display"> {{ initial_price_services|default:0 }}</span> 
+    {% else %}
+        <span id="additional-price-display">0.00</span>
+    {% endif %}
+</div>
+                   
+                    <div class="summary-item">
+                        المبلغ النهائي: ريال<span id="total-price-display">{{ additional_price|floatformat:2 }}</span>
+                    </div>
+                </div>
+                <button type="submit" class="submit-button">تأكيد التمديد</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('extension-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+    
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.close();
+                window.location.href = data.redirect_url;  
+
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    document.getElementById("id_new_check_out").setAttribute("min", "{{ original.check_out_date|date:'Y-m-d' }}");
+
+    document.getElementById("id_new_check_out").addEventListener('change', function () {
+        const selectedDate = new Date(this.value);
+        const originalCheckOutDate = new Date("{{ check_out|date:'Y-m-d' }}");
+        const pricePerNight = parseFloat("{{ room_price }}"); 
+        const originalPrice = parseFloat("{{ original.amount }}");
+        const rooms_booked = parseFloat("{{ original.rooms_booked }}");
+        const additional_services = {{ total_services_price|default:0 }};
+        
+
+        if (selectedDate > originalCheckOutDate) {
+            const timeDifference = selectedDate - originalCheckOutDate;
+            const nights = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) ; 
+            const additionalPrice = nights * (pricePerNight + additional_services) * rooms_booked ;
+            const totalPrice =  additionalPrice;
+            const additional_services_display =  nights *   additional_services * rooms_booked;
+
+            document.getElementById('nights-display').textContent = nights;
+            document.getElementById('additional-price-display').textContent = additional_services_display.toFixed(2);
+            document.getElementById('total-price-display').textContent = totalPrice.toFixed(2);
+        } else {
+            document.getElementById('nights-display').textContent = 0;
+            document.getElementById('additional-price-display').textContent = '0.00';
+            document.getElementById('total-price-display').textContent = originalPrice.toFixed(2);
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
+    <style>
+        .report-summary p { margin: 5px 0; }
+        .report-summary strong { color: #417690; }
+        .filter-form { margin-bottom: 20px; background: #f8f8f8; padding: 15px; border: 1px solid #eee; border-radius: 4px; display: flex; gap: 15px; align-items: flex-end;}
+        .filter-group label { display: block; margin-bottom: 5px; font-weight: bold;}
+        .filter-form select, .filter-form button { padding: 5px; border: 1px solid #ccc; border-radius: 3px; }
+        .status-active { color: green; }
+        .status-inactive { color: red; }
+    </style>
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %}
+
+{% block content_title %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% block object-tools %}
+            <ul class="object-tools">
+                {% block object-tools-items %}
+                    {% if pdf_export_url %}
+                    <li>
+                        <a href="{{ pdf_export_url }}?account_type={{ selected_type }}&parent_id={{ selected_parent_id }}&status={{ selected_status }}" class="addlink">
+                            {% trans "تصدير PDF" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        {% endblock %}
+
+        <div class="module" id="changelist">
+            {# Filter Form #}
+            <div class="filter-form">
+                <form method="get" action="" class="filter-form">
+                    <div class="filter-group">
+                        <label for="account_type">{% trans "نوع الحساب:" %}</label>
+                        <select id="account_type" name="account_type">
+                            <option value="">{% trans "الكل" %}</option>
+                            {% for type in account_types %}
+                                <option value="{{ type }}" {% if selected_type == type %}selected{% endif %}>{{ type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="parent_id">{% trans "الحساب الرئيسي:" %}</label>
+                        <select id="parent_id" name="parent_id">
+                            <option value="">{% trans "الكل" %}</option>
+                            {% for parent in parent_accounts %}
+                                <option value="{{ parent.id }}" {% if selected_parent_id == parent.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ parent.account_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="status">{% trans "الحالة:" %}</label>
+                        <select id="status" name="status">
+                            {% for value, display in status_choices %}
+                            <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <button type="submit">{% trans "تصفية" %}</button>
+                    </div>
+                </form>
+            </div>
+
+            {# Summary Section #}
+            <div class="report-summary">
+                <p><strong>{% trans "ملخص أنواع الحسابات:" %}</strong></p>
+                {% for item in type_counts %}
+                    <p>{{ item.account_type }}: {{ item.count }}</p>
+                {% empty %}
+                    <p>{% trans "لا توجد بيانات." %}</p>
+                {% endfor %}
+            </div>
+
+            {# Results Table #}
+            {% if accounts %}
+                <div class="results">
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                <th>{% trans "رقم الحساب" %}</th>
+                                <th>{% trans "اسم الحساب" %}</th>
+                                <th>{% trans "النوع" %}</th>
+                                <th>{% trans "الحساب الرئيسي" %}</th>
+                                <th>{% trans "الرصيد" %}</th>
+                                <th>{% trans "الحالة" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for account in accounts %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <td>{{ account.account_number }}</td>
+                                    <td>{{ account.account_name }}</td>
+                                    <td>{{ account.account_type }}</td>
+                                    <td>{{ account.account_parent.account_name|default:"-" }}</td>
+                                    <td>{{ account.account_balance|floatformat:2 }}</td>
+                                    <td class="{% if account.account_status %}status-active{% else %}status-inactive{% endif %}">
+                                        {% if account.account_status %}{% trans "نشط" %}{% else %}{% trans "غير نشط" %}{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>{% trans "لا توجد حسابات للعرض حسب الفلاتر المحددة." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

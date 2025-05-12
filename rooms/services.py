@@ -5,6 +5,73 @@ from .models import RoomType, RoomPrice, Availability
 from datetime import datetime, timedelta
 from django.db.models import Q
 
+from datetime import datetime
+import pytz
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+from .models import RoomPrice, RoomType
+
+
+
+def calculate_total_cost(room, check_in_date, check_out_date, room_number):
+    total_cost = 0.0
+    last_room_price = None 
+
+    delta = check_out_date - check_in_date
+    num_days = delta.days
+
+    for i in range(num_days):
+        current_date = check_in_date + timedelta(days=i)
+        room_price = RoomPrice.objects.filter(
+            room_type=room,
+            date_from__lte=current_date,
+            date_to__gte=current_date
+        ).first()
+        
+        if room_price:
+            total_cost += float(room_price.price) * room_number
+            last_room_price = room_price.price  # Store last price
+        else:
+            total_cost += float(room.base_price) * room_number
+            last_room_price = room.base_price  # Default to base price
+
+    return total_cost, last_room_price  # Ensure second value is not None
+
+
+def get_room_price(room):
+    """
+    Retrieves the room price for today's date. 
+    If no specific price is found, it falls back to the room type's base price.
+    """
+    today = timezone.now().date()
+
+    # Check for a RoomPrice entry where today's date is within the defined range
+    room_price_entry = RoomPrice.objects.filter(
+        room_type=room,
+        hotel=room.hotel,
+        date_from__lte=today,
+        date_to__gte=today
+    ).first()
+
+    if room_price_entry:
+        return room_price_entry.price
+
+    # Fallback to room type's base price if no RoomPrice found
+    room_type = get_object_or_404(RoomType, id=room.id)
+    return room_type.base_price
+
+
+
+def change_date_format2(date_str):
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+    
+    utc_timezone = pytz.UTC
+    date_obj_utc = date_obj.replace(tzinfo=utc_timezone)  
+    
+    print(date_obj_utc) 
+    return date_obj_utc
+
+
 
 
 def change_date_format(date_str):
@@ -72,7 +139,7 @@ def parse_check_in_date(check_in_date):
 def get_hotels_query(hotel_name):
     hotels_query = Hotel.objects.all()
     if hotel_name:
-        cities = City.objects.filter(Q(state__icontains=hotel_name) | Q(name__icontains=hotel_name))
+        cities = City.objects.filter(Q(state__icontains=hotel_name) )
         hotels_by_city = Hotel.objects.filter(location__city__in=cities)
         hotels_by_name = Hotel.objects.filter(name__icontains=hotel_name)
         hotels_query = (hotels_by_city | hotels_by_name).distinct()
@@ -137,3 +204,40 @@ def filter_rooms_by_availability(rooms, check_in, check_out):
     available_rooms = RoomType.objects.filter(id__in=[room.id for room in final_rooms])
    
     return available_rooms
+
+
+
+
+
+
+
+
+
+
+# ---------------- New Services -------------------
+
+
+from datetime import timedelta
+
+def check_room_availability(room_type, hotel, room_number):
+    """
+    Check the latest room availability record for a specific hotel and room type.
+    Returns a tuple (bool, str) where bool indicates availability and str contains any error message.
+    """
+    if not all([room_type, hotel, room_number]):
+        return False, "بيانات الحجز غير مكتملة"
+    
+    if not room_type.is_active:
+        return False, "هذا النوع من الغرف غير متاح للحجز حالياً"
+    
+    latest_availability = room_type.availabilities.filter(
+        hotel=hotel
+    ).order_by('-created_at').first()
+    
+    if not latest_availability:
+        return False, "لا توجد بيانات توفر حديثة لهذا النوع من الغرف في هذا الفندق"
+    
+    if latest_availability.available_rooms < room_number:
+        return False, f"عدد الغرف المطلوب غير متوفر. المتوفر حالياً: {latest_availability.available_rooms} غرفة"
+
+    return True, "الغرف متوفرة"

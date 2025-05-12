@@ -1,0 +1,198 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+    .module {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .form-row {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+    }
+    .form-row label {
+        width: 200px;
+        color: #333;
+        font-weight: 600;
+    }
+    .form-row input[type="date"],
+    .form-row input[type="number"],
+    .form-row select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 300px;
+        font-size: 14px;
+    }
+    .form-row input[type="date"]:focus,
+    .form-row input[type="number"]:focus,
+    .form-row select:focus {
+        border-color: #79aec8;
+        outline: none;
+        box-shadow: 0 0 5px rgba(121,174,200,0.5);
+    }
+    .submit-row {
+        padding: 20px 0;
+        text-align: right;
+    }
+    .submit-row input[type="submit"] {
+        background: #417690;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    .submit-row input[type="submit"]:hover {
+        background: #205067;
+    }
+    .help {
+        color: #666;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    .errors {
+        color: #ba2121;
+        background: #fff1f1;
+        border-radius: 4px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+    }
+    .preview-section {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <form method="post" id="bulk_create_form" novalidate>
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            <h2>{% trans "إنشاء توفر الغرف" %}</h2>
+            
+            <div class="form-row{% if form.start_date.errors %} errors{% endif %}">
+                <div>
+                    {{ form.start_date.errors }}
+                    {{ form.start_date.label_tag }}
+                    <input type="date" name="{{ form.start_date.name }}" id="id_{{ form.start_date.name }}" 
+                           value="{{ form.start_date.value|date:'Y-m-d' }}" class="datepicker">
+                    {% if form.start_date.help_text %}
+                    <div class="help">{{ form.start_date.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row{% if form.end_date.errors %} errors{% endif %}">
+                <div>
+                    {{ form.end_date.errors }}
+                    {{ form.end_date.label_tag }}
+                    <input type="date" name="{{ form.end_date.name }}" id="id_{{ form.end_date.name }}" 
+                           value="{{ form.end_date.value|date:'Y-m-d' }}" class="datepicker">
+                    {% if form.end_date.help_text %}
+                    <div class="help">{{ form.end_date.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row{% if form.available_rooms.errors %} errors{% endif %}">
+                <div>
+                    {{ form.available_rooms.errors }}
+                    {{ form.available_rooms.label_tag }}
+                    <input type="number" name="{{ form.available_rooms.name }}" 
+                           id="id_{{ form.available_rooms.name }}" 
+                           value="{{ form.available_rooms.value }}" min="0">
+                    {% if form.available_rooms.help_text %}
+                    <div class="help">{{ form.available_rooms.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row{% if form.room_type.errors %} errors{% endif %}">
+                <div>
+                    {{ form.room_type.errors }}
+                    {{ form.room_type.label_tag }}
+                    {{ form.room_type }}
+                    {% if form.room_type.help_text %}
+                    <div class="help">{{ form.room_type.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            
+
+            <div class="preview-section" id="preview">
+                <h3>{% trans "معاينة" %}</h3>
+                <p>{% trans "عدد الأيام المحددة: " %}<span id="days-count">0</span></p>
+                <p>{% trans "إجمالي الغرف المتوفرة: " %}<span id="total-rooms">0</span></p>
+            </div>
+        </fieldset>
+
+        <div class="submit-row">
+            <input type="submit" class="default" value="{% trans 'إنشاء' %}">
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    django.jQuery(document).ready(function() {
+        // تحديث المعاينة
+        function updatePreview() {
+            var startDate = new Date(django.jQuery('#id_start_date').val());
+            var endDate = new Date(django.jQuery('#id_end_date').val());
+            var availableRooms = parseInt(django.jQuery('#id_available_rooms').val()) || 0;
+
+            if (startDate && endDate && !isNaN(startDate) && !isNaN(endDate)) {
+                var days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                days = days > 0 ? days : 0;
+                django.jQuery('#days-count').text(days);
+                django.jQuery('#total-rooms').text(days * availableRooms);
+            }
+        }
+
+        // إضافة مستمعي الأحداث
+        django.jQuery('#id_start_date, #id_end_date, #id_available_rooms').on('change', updatePreview);
+        
+        // التحقق من التواريخ
+        django.jQuery('#bulk_create_form').on('submit', function(e) {
+            var startDate = new Date(django.jQuery('#id_start_date').val());
+            var endDate = new Date(django.jQuery('#id_end_date').val());
+            
+            if (endDate < startDate) {
+                e.preventDefault();
+                alert("{% trans 'تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء' %}");
+            }
+        });
+
+        // تهيئة التقويم
+        if (typeof DateTimeShortcuts !== 'undefined') {
+            DateTimeShortcuts.init();
+        }
+        
+        // التحديث الأولي للمعاينة
+        updatePreview();
+    });
+</script>
+{% endblock %}

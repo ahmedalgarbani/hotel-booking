@@ -1,9 +1,10 @@
+import random
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError
 from django.utils import timezone
+
 
 class CustomUser(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('تاريخ الإنشاء'), help_text=_('تاريخ إنشاء الحساب'))
@@ -16,11 +17,11 @@ class CustomUser(AbstractUser):
         ('hotel_staff',_('موظف')),
         
     ]
-    
     user_type = models.CharField(
         max_length=20,
         choices=USER_TYPE_CHOICES,
         verbose_name=_('نوع المستخدم'),
+        default='customer',
         help_text=_('نوع حساب المستخدم في النظام')
     )
     
@@ -40,9 +41,19 @@ class CustomUser(AbstractUser):
         upload_to='users/%Y/%m/%d/',
         verbose_name=_('الصورة الشخصية'),
         blank=True,
+        null=True,
         help_text=_('الصورة الشخصية للمستخدم')
     )
-    
+    gender = models.CharField(
+        max_length=10,
+        choices=[('Male', _('Male')), ('Female', _('Female'))],
+        verbose_name=_("الجنس"),
+        null=True
+    )
+    birth_date = models.DateField(verbose_name=_("تاريخ الميلاد"),
+            null=True
+)
+
     is_active = models.BooleanField(
         default=True,
         verbose_name=_('نشط'),
@@ -58,17 +69,48 @@ class CustomUser(AbstractUser):
         related_name='employees',
         help_text=_('الموظف المعين من قبل مدير الفندق')
     )
+    chart = models.ForeignKey(
+        'accounts.ChartOfAccounts',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('الحساب المرتبط'),
+        related_name='charts',
+        help_text=_('الحساب المرتبط')
+    )
+    otp_code = models.CharField(max_length=6, blank=True, null=True)
+    otp_created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         verbose_name = _('مستخدم')
         verbose_name_plural = _('المستخدمين')
         ordering = ['-created_at']
+        
+        
+    def is_otp_valid(self, entered_otp):
+        if not self.otp_code or not self.otp_created_at:
+            return False
+        
+        if self.otp_code != entered_otp:
+            return False
+            
+        expiry_time = self.otp_created_at + timezone.timedelta(minutes=5) 
+        if timezone.now() > expiry_time:
+            self.otp_code = None
+            self.otp_created_at = None
+            self.save(update_fields=['otp_code', 'otp_created_at'])
+            return False
+        return True
+
+    def clear_otp(self):
+        self.otp_code = None
+        self.otp_created_at = None
+        self.save(update_fields=['otp_code', 'otp_created_at'])
+
 
     def __str__(self):
         full_name = self.get_full_name()
         return f"{full_name or self.username}"
-
-    
     @property
     def is_hotel_manager(self):
         return self.user_type == 'hotel_manager'
@@ -76,7 +118,13 @@ class CustomUser(AbstractUser):
     @property
     def is_customer(self):
         return self.user_type == 'customer'
-
+    
+    def save(self, *args, **kwargs):
+        if self._state.adding: 
+           if self.is_superuser:
+               self.user_type = ''
+        super().save(*args, **kwargs)
+    
 class ActivityLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('تاريخ الإنشاء'), help_text=_('تاريخ إنشاء السجل'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('تاريخ التحديث'), help_text=_('تاريخ آخر تحديث للسجل'))

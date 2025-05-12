@@ -1,0 +1,445 @@
+{% load static %}
+
+{% block content %}
+<div class="payment-container">
+    <h1 class="page-title">تفاصيل الدفع</h1>
+    
+    <form method="POST" enctype="multipart/form-data" class="payment-form" id="paymentForm">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            <!-- Booking Details -->
+            <div class="form-section">
+                <h2>الحجز</h2>
+                <div class="booking-info">
+                    <p>رقم الحجز: {{ booking.id }}</p>
+                    <p>تاريخ الحجز: {{ booking.created_at }}</p>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="form-section">
+                <h2>طريقة الدفع</h2>
+                <select name="payment_type" id="paymentMethod" required>
+                    <option value="">اختر طريقة الدفع</option>
+                    {% for payment_types in payment_types %}
+                    <option value="{{payment_types.0}}">{{payment_types.1}} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Transfer Image -->
+            <div class="form-section" id="transferImageSection2">
+                <h2>طريقه الدفع</h2>
+                <select name="payment_method" required>
+                    {% for status in payment_methods %}
+                        <option value="{{ status.id }}" >
+                            {{ status.payment_option.method_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-section" id="transferImageSection">
+                <h2>صورة سند الدفع</h2>
+                <div class="file-upload">
+                    <input type="file" name="transfer_image" id="transferImage" accept="image/*">
+                    <label for="transferImage">
+                        <span class="upload-icon">📎</span>
+                        <span>اختر الملف</span>
+                    </label>
+                </div>
+                <div id="imagePreview" class="image-preview"></div>
+            </div>
+
+
+
+            <!-- Financial Details -->
+            <div class="form-section amounts">
+                <h2>التفاصيل المالية</h2>
+                <div class="amount-grid">
+                    <div class="amount-item">
+                        <label>المبلغ الفرعي:</label>
+                        <span>{{ booking.amount }} {{ booking.currency }}</span>
+                    </div>
+                    <div class="amount-item">
+                        <label>قيمة الخصم:</label>
+                        <input type="number" name="discount_amount" value="0" min="0">
+                    </div>
+                    <div class="amount-item total">
+                        <label>المبلغ الإجمالي:</label>
+                        <span>{{ booking.amount }}</span>
+                    </div>
+                </div>
+            </div>
+
+         <!-- Payment Status -->
+<div class="form-section">
+    <h2>حالة الدفع</h2>
+    <select name="payment_status" required>
+        {% for status in payment_status %}
+            <option value="{{ status.0 }}" {% if payment.payment_status == status.0 %}selected{% endif %}>
+                {{ status.1 }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<!-- Currency Section -->
+<div class="form-section">
+    <h2>العملة</h2>
+    <select name="currency" required>
+        {% for cur in currency %}
+            <option value="{{ cur.id }}" {% if payment.payment_currency == cur.currency_name %}selected{% endif %}>
+                {{ cur.currency_name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+
+            <!-- Payment Notes -->
+            <div class="form-section full-width">
+                <h2>ملاحظات الدفع</h2>
+                <textarea name="payment_notes" rows="3">{{ payment.notes }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">حفظ التغييرات</button>
+            <button type="button" class="cancel-btn">إلغاء</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Reset and Base Styles */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Cairo', sans-serif;
+        background-color: #f7f9fc;
+        color: #2d3748;
+        line-height: 1.6;
+        direction: rtl;
+    }
+
+    /* Container Styles */
+    .payment-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .page-title {
+        font-size: 2rem;
+        color: #2d3748;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .page-title::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: #4299e1;
+        margin: 1rem auto;
+        border-radius: 2px;
+    }
+
+    /* Form Grid Layout */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-section {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .form-section.full-width {
+        grid-column: 1 / -1;
+    }
+
+    /* Section Headers */
+    .form-section h2 {
+        font-size: 1.25rem;
+        color: #2d3748;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    /* Form Controls */
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    }
+
+    /* File Upload Styles */
+    .file-upload {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+
+    .file-upload input[type="file"] {
+        display: none;
+    }
+
+    .file-upload label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #edf2f7;
+        border: 2px dashed #cbd5e0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .file-upload label:hover {
+        background: #e2e8f0;
+        border-color: #4299e1;
+    }
+
+    .upload-icon {
+        font-size: 1.5rem;
+    }
+
+    /* Image Preview */
+    .image-preview {
+        margin-top: 1rem;
+        max-width: 100%;
+        height: 200px;
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-badge.paid {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-badge.failed {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Amount Grid */
+    .amount-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .amount-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+    }
+
+    .amount-item.total {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e2e8f0;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .submit-btn,
+    .cancel-btn {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn {
+        background: #4299e1;
+        color: white;
+        border: none;
+    }
+
+    .submit-btn:hover {
+        background: #3182ce;
+    }
+
+    .cancel-btn {
+        background: white;
+        color: #2d3748;
+        border: 1px solid #e2e8f0;
+    }
+
+    .cancel-btn:hover {
+        background: #f7fafc;
+        border-color: #cbd5e0;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .payment-container {
+            padding: 1rem;
+            margin: 1rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .submit-btn,
+        .cancel-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('paymentForm');
+        const transferImage = document.getElementById('transferImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const paymentMethod = document.getElementById('paymentMethod');
+        const transferImageSection = document.getElementById('transferImageSection');
+        const transferImageSection2 = document.getElementById('transferImageSection2');
+
+        // Handle payment method change
+        paymentMethod.addEventListener('change', function() {
+            if (this.value === 'e_pay') {
+                transferImageSection.style.display = 'block';
+                transferImageSection2.style.display = 'block';
+            } else {
+                transferImageSection.style.display = 'none';
+                transferImageSection2.style.display = 'none';
+            }
+        });
+
+        transferImage.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Transfer receipt preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    try {
+        const formData = new FormData(this);
+        const response = await fetch('{% url "bookings:booking_extend_payment" booking.id extension.movement_number %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'حدث خطأ أثناء معالجة الدفع');
+        }
+
+        alert('تم حفظ معلومات الدفع بنجاح');
+        
+        if (result.redirect_url) {
+            window.location.href = result.redirect_url;
+        } else {
+            window.location.reload();
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('حدث خطأ أثناء معالجة الدفع');
+    }
+});
+
+
+        // Calculate total amount when discount changes
+        const discountInput = document.querySelector('input[name="discount_amount"]');
+        const subtotalElement = document.querySelector('.amount-item span');
+        const totalElement = document.querySelector('.amount-item.total span');
+
+        discountInput.addEventListener('input', function() {
+            const subtotal = parseFloat(subtotalElement.textContent);
+            const discount = parseFloat(this.value) || 0;
+            const total = subtotal - discount;
+            totalElement.textContent = `${total.toFixed(2)} ${subtotalElement.textContent.split(' ')[1]}`;
+        });
+    });
+</script>
+{% endblock %}

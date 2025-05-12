@@ -1,0 +1,745 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'assets/css/jquery.fancybox.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Material Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="{% static 'assets/css/material-dashboard.css?v=3.2.0' %}" rel="stylesheet" />
+  <style>
+    :root {
+      /* نظام الألوان الرئيسية - محدودة لتحسين تجربة المستخدم */
+      --primary-color: #1e3a8a;    /* أزرق غامق */
+      --accent-color: #d4af37;     /* ذهبي */
+      --light-color: #f8f9fa;      /* أبيض فاتح */
+      --dark-color: #1e293b;       /* رمادي غامق */
+      --text-primary: #1e293b;     /* لون النص الرئيسي */
+      --text-secondary: #64748b;   /* لون النص الثانوي */
+      --border-color: #e2e8f0;     /* لون الحدود */
+      
+      /* ألوان الحالات */
+      --success-color: #10b981;    /* أخضر */
+      --danger-color: #ef4444;     /* أحمر */
+      --warning-color: #f59e0b;    /* برتقالي */
+      --info-color: #3b82f6;       /* أزرق */
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-color);
+      color: var(--text-primary);
+    }
+    
+    .report-container {
+      padding: 20px;
+      background-color: var(--light-color);
+      min-height: 100vh;
+    }
+    
+    .report-header {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--gold-primary);
+      padding-bottom: 15px;
+    }
+    
+    .report-description {
+      margin-top: 10px;
+      padding: 15px;
+      background-color: rgba(30, 58, 138, 0.05);
+      border-radius: 8px;
+      border-right: 3px solid var(--accent-color);
+    }
+    
+    .report-description p {
+      margin: 0;
+      font-size: 15px;
+      color: var(--dark-secondary);
+      line-height: 1.5;
+    }
+    
+    .report-title {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      font-weight: bold;
+      position: relative;
+      padding-right: 15px;
+    }
+    
+    .report-title:before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 80%;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      position: relative;
+      padding-right: 15px;
+    }
+    
+    .section-title:before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 80%;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+    }
+    
+    .report-filters {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      border-top: 3px solid var(--primary-color);
+    }
+    
+    .filter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-end;
+    }
+    
+    .filter-group {
+      margin-bottom: 0;
+      min-width: 200px;
+    }
+    
+    .filter-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    
+    select.form-control {
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      width: 100%;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    select.form-control:focus {
+      border-color: var(--accent-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+    
+    .chart-container {
+      background-color: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      height: 450px;
+      border-top: 3px solid var(--primary-color);
+    }
+    
+    .chart-info {
+      background-color: rgba(30, 58, 138, 0.05);
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      border-right: 3px solid var(--accent-color);
+    }
+    
+    .chart-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      position: relative;
+      padding-right: 15px;
+    }
+    
+    .chart-row {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .chart-col {
+      flex: 1;
+      background-color: var(--white);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      height: 400px;
+      border-top: 3px solid var(--gold-primary);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .data-table th {
+      background-color: var(--gold-primary);
+      color: var(--white);
+      padding: 15px;
+      text-align: right;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-size: 15px;
+    }
+    
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    
+    .data-table tr:nth-child(even) {
+      background-color: rgba(212, 175, 55, 0.05);
+    }
+    
+    .data-table tr:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+    
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    .btn-export:hover {
+            background-color: #c9a430;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+    .summary-card {
+      flex: 1;
+      min-width: 220px;
+      background-color: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      text-align: center;
+      border-top: 3px solid var(--accent-color);
+      transition: transform 0.3s;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card-title {
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      font-weight: 600;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .card-title:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 2px;
+      background-color: var(--gold-primary);
+    }
+    
+    .card-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    
+    .card-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(212, 175, 55, 0.3);
+    }
+    
+    .card-trend {
+      margin-top: 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .trend-up {
+      color: var(--success-color);
+    }
+    btn-export {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 42px;
+        }
+    .trend-down {
+      color: var(--danger-color);
+    }
+    
+    .trend-neutral {
+      color: var(--warning-color);
+    }
+    
+    .recommendation-text {
+      color: var(--dark-light);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    
+    .recommendation-action {
+      background-color: rgba(30, 58, 138, 0.05);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--primary-color);
+      margin-top: 10px;
+      border-right: 2px solid var(--accent-color);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-primary:hover {
+      background-color: #15326d;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+  </style>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class="report-header">
+    <h1 class="report-title">{% trans "تقرير تحليل العائد على الغرفة الواحدة (RevPAR)" %}</h1>
+    <div class="report-description">
+      <p>{% trans "يوضح هذا التقرير مؤشرات الأداء الرئيسية للإيرادات مع التركيز على العائد لكل غرفة متاحة (RevPAR)، ومتوسط السعر اليومي (ADR)، ومعدل الإشغال." %}</p>
+    </div>
+  </div>
+
+  <div class="report-filters">
+    <form method="get" class="filter-form">
+      <div class="filter-group">
+        <label class="filter-label" for="id_hotel">{% trans "الفندق" %}</label>
+        <select name="hotel_id" id="id_hotel" class="form-control">
+          <option value="">{% trans "جميع الفنادق" %}</option>
+          {% for hotel in hotels %}
+            <option value="{{ hotel.id }}" {% if selected_hotel_id == hotel.id|stringformat:"i" %}selected{% endif %}>{{ hotel.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="id_room_type">{% trans "نوع الغرفة" %}</label>
+        <select name="room_type_id" id="id_room_type" class="form-control">
+          <option value="">{% trans "جميع أنواع الغرف" %}</option>
+          {% for room_type in room_types %}
+            <option value="{{ room_type.id }}" {% if selected_room_type.id == room_type.id %}selected{% endif %}>{{ room_type.name }} - {{ room_type.hotel.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="id_period">{% trans "الفترة" %}</label>
+        <select name="period" id="id_period" class="form-control">
+          <option value="7" {% if period == '7' %}selected{% endif %}>{% trans "آخر أسبوع" %}</option>
+          <option value="30" {% if period == '30' %}selected{% endif %}>{% trans "آخر شهر" %}</option>
+          <option value="90" {% if period == '90' %}selected{% endif %}>{% trans "آخر 3 أشهر" %}</option>
+          <option value="180" {% if period == '180' %}selected{% endif %}>{% trans "آخر 6 أشهر" %}</option>
+          <option value="365" {% if period == '365' %}selected{% endif %}>{% trans "آخر سنة" %}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-filter" style="margin-left: 5px;"></i>
+          {% trans "تطبيق التصفية" %}
+        </button>
+        {% if pdf_export_url %}
+        <a href="{{ pdf_export_url }}?hotel_id={{ selected_hotel.id }}&room_type_id={{ selected_room_type.id }}&period={{ selected_period }}" class="btn-export">
+          <i class="fas fa-file-pdf" ></i>
+          {% trans "تصدير PDF" %}
+        </a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+
+  {% if selected_room_type or room_type_data %}
+    <!-- Performance Metrics Summary -->
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="card-title">{% trans "العائد لكل غرفة متاحة (RevPAR)" %}</div>
+        <div class="card-value">{{ performance_metrics.overall_revpar|floatformat:2 }}</div>
+        <div class="card-trend">
+          {% if performance_metrics.revpar_trend > 0 %}
+            <i class="fas fa-arrow-up trend-up"></i>
+            <span class="trend-up">{{ performance_metrics.revpar_trend|floatformat:1 }}%</span>
+          {% elif performance_metrics.revpar_trend < 0 %}
+            <i class="fas fa-arrow-down trend-down"></i>
+            <span class="trend-down">{{ performance_metrics.revpar_trend|floatformat:1 }}%</span>
+          {% else %}
+            <i class="fas fa-minus trend-neutral"></i>
+            <span class="trend-neutral">0%</span>
+          {% endif %}
+        </div>
+        <div class="card-description">{% trans "مؤشر RevPAR = (الإيرادات الإجمالية ÷ عدد الغرف المتاحة)" %}</div>
+      </div>
+      
+      <div class="summary-card">
+        <div class="card-title">{% trans "متوسط معدل الإشغال" %}</div>
+        <div class="card-value">{{ performance_metrics.avg_occupancy|floatformat:1 }}%</div>
+        <div class="card-description">{% trans "معدل الإشغال = (عدد الغرف المشغولة ÷ عدد الغرف المتاحة) × 100" %}</div>
+      </div>
+      
+      <div class="summary-card">
+        <div class="card-title">{% trans "متوسط السعر اليومي (ADR)" %}</div>
+        <div class="card-value">{{ performance_metrics.avg_adr|floatformat:2 }}</div>
+        <div class="card-description">{% trans "مؤشر ADR = (الإيرادات الإجمالية ÷ عدد الغرف المشغولة)" %}</div>
+      </div>
+      
+      <div class="summary-card">
+        <div class="card-title">{% trans "إجمالي الإيرادات" %}</div>
+        <div class="card-value">{{ performance_metrics.total_revenue|floatformat:2 }}</div>
+        <div class="card-description">{% trans "مجموع كل الإيرادات خلال الفترة المحددة" %}</div>
+      </div>
+    </div>
+
+    <!-- RevPAR Chart -->
+    <div class="chart-container">
+      <h2 class="chart-title">{% trans "تحليل العائد على الغرفة الواحدة" %}</h2>
+      <div class="chart-info">
+        <p>{% trans "يوضح هذا الرسم البياني العلاقة بين RevPAR ومعدل الإشغال ومتوسط السعر اليومي (ADR) خلال الفترة المحددة." %}</p>
+      </div>
+      <canvas id="revparChart"></canvas>
+    </div>
+
+    <!-- Market Comparison -->
+    {% if market_comparison %}
+    <div class="market-comparison">
+      <h3 class="comparison-title">{% trans "مقارنة السوق" %}</h3>
+      <!-- ... -->
+    </div>
+    {% endif %}
+
+    <!-- Recommendations -->
+    {% if recommendations %}
+    <div class="recommendations-container">
+      <h3 class="section-title">{% trans "التوصيات والملاحظات" %}</h3>
+      <div class="recommendations-list">
+        {% for recommendation in recommendations %}
+          <div class="recommendation-item">
+            <div class="recommendation-icon">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="recommendation-content">
+              <div class="recommendation-title">{% trans "توصية" %} #{{ forloop.counter }}</div>
+              <div class="recommendation-text">{{ recommendation }}</div>
+              {% if forloop.first %}
+              <div class="recommendation-action">
+                <i class="fas fa-lightbulb"></i> {% trans "الإجراء المقترح:" %} {% trans "مراجعة استراتيجية التسعير وتحسين معدلات الإشغال" %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-recommendations">
+          <p>{% trans "لا توجد توصيات حالياً. يرجى تحديد فترة زمنية أطول للحصول على تحليل أكثر دقة." %}</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>{% trans "نوع الغرفة" %}</th>
+          <th>{% trans "الفندق" %}</th>
+          <th>{% trans "RevPAR" %}</th>
+          <th>{% trans "معدل الإشغال" %}</th>
+          <th>{% trans "متوسط السعر اليومي" %}</th>
+          <th>{% trans "الإيرادات" %}</th>
+{{ ... }}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in room_type_data %}
+          <tr {% if selected_room_type and selected_room_type.name == item.name %}style="background-color: rgba(212, 175, 55, 0.15);"{% endif %}>
+            <td>{{ item.name }}</td>
+            <td>{{ item.hotel }}</td>
+            <td>{{ item.revpar|floatformat:2 }}</td>
+            <td>{{ item.occupancy|floatformat:1 }}%</td>
+            <td>{{ item.adr|floatformat:2 }}</td>
+            <td>{{ item.revenue|floatformat:2 }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Daily RevPAR Data -->
+    <h3 class="section-title">{% trans "بيانات RevPAR اليومية" %}</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>{% trans "التاريخ" %}</th>
+          <th>{% trans "RevPAR" %}</th>
+          <th>{% trans "معدل الإشغال" %}</th>
+          <th>{% trans "متوسط السعر اليومي" %}</th>
+          <th>{% trans "الغرف المشغولة" %}</th>
+          <th>{% trans "الغرف المتاحة" %}</th>
+          <th>{% trans "الإيرادات" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in revpar_data %}
+          <tr>
+            <td>{{ item.date }}</td>
+            <td>{{ item.revpar|floatformat:2 }}</td>
+            <td>{{ item.occupancy_rate|floatformat:1 }}%</td>
+            <td>{{ item.adr|floatformat:2 }}</td>
+            <td>{{ item.occupied_rooms }}</td>
+            <td>{{ item.available_rooms }}</td>
+            <td>{{ item.revenue|floatformat:2 }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="no-data">
+      <h3>{% trans "لا توجد بيانات متاحة" %}</h3>
+      <p>{% trans "يرجى اختيار نوع غرفة لعرض تحليل العائد على الغرفة الواحدة" %}</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% if selected_room_type or room_type_data %}
+      // Define luxury color scheme
+      const goldPrimary = '#D4AF37';
+      const goldSecondary = '#FBD341';
+      const goldLight = '#FFF1AA';
+      const darkPrimary = '#222222';
+      const darkSecondary = '#333333';
+      
+      // RevPAR Chart
+      var labels = {{ chart_data.labels|safe }};
+      var revparData = {{ chart_data.revpar|safe }};
+      var occupancyData = {{ chart_data.occupancy|safe }};
+      var adrData = {{ chart_data.adr|safe }};
+      
+      var revparCtx = document.getElementById('revparChart').getContext('2d');
+      new Chart(revparCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: '{% trans "RevPAR" %}',
+              data: revparData,
+              backgroundColor: 'rgba(212, 175, 55, 0.2)',
+              borderColor: goldPrimary,
+              borderWidth: 3,
+              pointBackgroundColor: goldPrimary,
+              pointBorderColor: '#fff',
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              tension: 0.3,
+              fill: true,
+              yAxisID: 'y'
+            },
+            {
+              label: '{% trans "معدل الإشغال %" %}',
+              data: occupancyData,
+              backgroundColor: 'rgba(56, 142, 60, 0.1)',
+              borderColor: '#388E3C',
+              borderWidth: 2,
+              pointBackgroundColor: '#388E3C',
+              pointBorderColor: '#fff',
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.3,
+              fill: false,
+              yAxisID: 'y1'
+            },
+            {
+              label: '{% trans "متوسط السعر اليومي" %}',
+              data: adrData,
+              backgroundColor: 'rgba(33, 150, 243, 0.1)',
+              borderColor: '#2196F3',
+              borderWidth: 2,
+              pointBackgroundColor: '#2196F3',
+              pointBorderColor: '#fff',
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.3,
+              fill: false,
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                font: {
+                  size: 12
+                },
+                color: darkSecondary,
+                padding: 15
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(34, 34, 34, 0.9)',
+              titleFont: {
+                size: 14,
+                weight: 'bold'
+              },
+              bodyFont: {
+                size: 13
+              },
+              padding: 12,
+              cornerRadius: 6,
+              caretSize: 6,
+              borderColor: goldPrimary,
+              borderWidth: 1
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              grid: {
+                display: true,
+                color: 'rgba(0, 0, 0, 0.05)',
+                drawBorder: false
+              },
+              ticks: {
+                font: {
+                  size: 12
+                },
+                color: darkSecondary,
+                padding: 10
+              },
+              position: 'left',
+              title: {
+                display: true,
+                text: '{% trans "RevPAR / متوسط السعر اليومي" %}',
+                color: darkSecondary,
+                font: {
+                  size: 12,
+                  weight: 'bold'
+                }
+              }
+            },
+            y1: {
+              position: 'right',
+              title: {
+                display: true,
+                text: '{% trans "معدل الإشغال %" %}',
+                color: darkSecondary,
+                font: {
+                  size: 12,
+                  weight: 'bold'
+                }
+              },
+              min: 0,
+              max: 100,
+              grid: {
+                display: false
+              },
+              ticks: {
+                font: {
+                  size: 12
+                },
+                color: darkSecondary,
+                padding: 10,
+                callback: function(value) {
+                  return value + '%';
+                }
+              }
+            },
+            x: {
+              grid: {
+                display: false,
+                drawBorder: false
+              },
+              ticks: {
+                maxTicksLimit: 10,
+                maxRotation: 45,
+                minRotation: 45,
+                font: {
+                  size: 12
+                },
+                color: darkSecondary,
+                padding: 10
+              }
+            }
+          }
+        }
+      });
+    {% endif %}
+  });
+</script>
+{% endblock %}

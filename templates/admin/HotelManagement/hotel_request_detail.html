@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل طلب الفندق - {{ hotel_request.hotel_name }}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.rtl.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #dee2e6;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        
+        .header {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-back {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-back:hover {
+            background-color: #e9ecef;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: var(--light-color);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--secondary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-label {
+            flex: 0 0 200px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .info-value {
+            flex: 1;
+        }
+        
+        .badge {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .badge-pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .badge-approved {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .badge-rejected {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .image-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            max-width: 900px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .modal-image {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .info-row {
+                flex-direction: column;
+            }
+            
+            .info-label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="status-badge">
+                    {% if hotel_request.is_approved %}
+                    <span class="badge badge-approved">تمت الموافقة</span>
+                    {% else %}
+                    <span class="badge badge-pending">قيد الانتظار</span>
+                    {% endif %}
+                </div>
+                <h1>تفاصيل طلب الفندق</h1>
+                <a href="{% url 'admin:HotelManagement_hotelrequest_changelist' %}" class="btn btn-back">
+                    <i class="fas fa-arrow-right"></i> العودة إلى قائمة الطلبات
+                </a>
+            </div>
+        </header>
+
+        <main class="request-details">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- معلومات الفندق -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>معلومات الفندق</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <div class="info-label">اسم الفندق</div>
+                                <div class="info-value">{{ hotel_request.hotel_name }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">الوصف</div>
+                                <div class="info-value">{{ hotel_request.description }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">رقم الرخصة التجارية</div>
+                                <div class="info-value">{{ hotel_request.business_license_number|default:"غير متوفر" }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">العنوان</div>
+                                <div class="info-value">{{ hotel_request.address }}, {{ hotel_request.city_name }}, {{ hotel_request.state }}, {{ hotel_request.country }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- معلومات مقدم الطلب -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>معلومات مقدم الطلب</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <div class="info-label">الاسم</div>
+                                <div class="info-value">{{ hotel_request.name }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">البريد الإلكتروني</div>
+                                <div class="info-value">{{ hotel_request.email }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">الدور الوظيفي</div>
+                                <div class="info-value">{{ hotel_request.role }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">رقم الهاتف</div>
+                                <div class="info-value">{{ hotel_request.country_code }} {{ hotel_request.phone_number }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- الصور -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>الصور</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <div class="info-label">الصورة الرئيسية</div>
+                                <div class="info-value">
+                                    <img src="{{ hotel_request.profile_picture.url }}" alt="صورة الفندق الرئيسية" class="image-thumbnail" id="mainImageThumbnail">
+                                </div>
+                            </div>
+                            
+                            {% if hotel_request.document_path %}
+                            <div class="info-row">
+                                <div class="info-label">مستند الرخصة</div>
+                                <div class="info-value">
+                                    <a href="{{ hotel_request.document_path.url }}" target="_blank" class="btn btn-primary">
+                                        <i class="fas fa-file-pdf"></i> عرض المستند
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if additional_images %}
+                            <div class="info-row">
+                                <div class="info-label">صور إضافية</div>
+                                <div class="info-value">
+                                    <div class="image-gallery">
+                                        {% for image in additional_images %}
+                                        <img src="{{ image.url }}" alt="صورة إضافية" class="image-thumbnail gallery-image">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- معلومات النظام -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>معلومات النظام</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <div class="info-label">تاريخ الطلب</div>
+                                <div class="info-value">{{ hotel_request.created_at|date:"Y-m-d H:i" }}</div>
+                            </div>
+                            {% if hotel_request.is_approved %}
+                            <div class="info-row">
+                                <div class="info-label">تاريخ الموافقة</div>
+                                <div class="info-value">{{ hotel_request.approved_at|date:"Y-m-d H:i" }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="info-row">
+                                <div class="info-label">الحالة</div>
+                                <div class="info-value">
+                                    {% if hotel_request.is_approved %}
+                                    <span class="badge badge-approved">تمت الموافقة</span>
+                                    {% else %}
+                                    <span class="badge badge-pending">قيد الانتظار</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- أزرار الإجراءات -->
+                    {% if not hotel_request.is_approved %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>الإجراءات</h2>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'HotelManagement:approve_hotel_request' hotel_request.id %}">
+                                {% csrf_token %}
+                                <div class="action-buttons">
+                                    <button type="submit" name="action" value="approve" class="btn btn-success w-100 mb-2">
+                                        <i class="fas fa-check"></i> الموافقة على الطلب
+                                    </button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger w-100">
+                                        <i class="fas fa-times"></i> رفض الطلب
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal to view images -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" src="" alt="صورة الفندق">
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality for images
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const closeModal = document.getElementsByClassName('close-modal')[0];
+        
+        // Main image
+        const mainImg = document.getElementById('mainImageThumbnail');
+        if (mainImg) {
+            mainImg.onclick = function() {
+                modal.style.display = "block";
+                modalImg.src = this.src;
+            }
+        }
+        
+        // Gallery images
+        const galleryImages = document.getElementsByClassName('gallery-image');
+        for (let i = 0; i < galleryImages.length; i++) {
+            galleryImages[i].onclick = function() {
+                modal.style.display = "block";
+                modalImg.src = this.src;
+            }
+        }
+        
+        // Close modal
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+        
+        // Close modal when clicking outside the image
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

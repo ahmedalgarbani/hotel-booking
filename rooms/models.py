@@ -1,20 +1,18 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from HotelManagement.models import BaseModel, Hotel
 from django.utils import timezone
-
+from django.db.models import Q
 from users.models import CustomUser
 
 
 class Category(BaseModel):
-    hotel = models.ForeignKey(
-        Hotel,
-        on_delete=models.CASCADE,
-        verbose_name=_("الفندق"),
-        related_name='room_categories'
-    )
+    status = models.BooleanField(default=True,        
+                                 verbose_name=_("الحاله")
+                                )
     name = models.CharField(
         max_length=100,
         verbose_name=_("اسم التصنيف")
@@ -31,13 +29,13 @@ class Category(BaseModel):
         ordering = ['name']
         constraints = [
             models.UniqueConstraint(
-                fields=['hotel', 'name'],
+                fields=['name'],
                 name='unique_hotel_category'
             )
         ]
 
     def __str__(self):
-        return f"{self.name} - {self.hotel.name}"
+        return f"{self.name} - {self.status}"
 
 
 class RoomType(BaseModel):
@@ -57,6 +55,7 @@ class RoomType(BaseModel):
         max_length=100,
         verbose_name=_("اسم نوع الغرفة")
     )
+
     description = models.TextField(
         verbose_name=_("وصف"),
         blank=True,
@@ -109,15 +108,41 @@ class RoomType(BaseModel):
             raise ValidationError({
                 'max_capacity': _("السعة القصوى يجب أن تكون أكبر من أو تساوي السعة الافتراضية")
             })
+    def get_absolute_url(self):
+        return reverse('rooms:room_detail', args=[self.slug])
+
+
 
     @property
     def available_rooms_count(self):
-        """عدد الغرف المتاحة حالياً"""
+        """Calculate available rooms dynamically based on active bookings and check-out dates."""
+        now = timezone.now()
+
+        active_bookings = self.bookings.filter(
+            status='1',
+            check_in_date__lte=now,
+        ).filter(
+
+            Q(actual_check_out_date__isnull=True, check_out_date__gt=now) |
+            Q(actual_check_out_date__gt=now)
+        ).count()
+
+        return max(self.rooms_count - active_bookings, 0)
+
+    def get_current_price(self):
+        """
+        الحصول على سعر الغرفة الحالي من جدول أسعار الغرف
+        إذا لم يكن هناك سعر محدد، يتم استخدام السعر الأساسي
+        """
         today = timezone.now().date()
-        availability = self.availabilities.filter(
-            availability_date=today
-        ).first()
-        return availability.available_rooms if availability else 0
+        room_price = self.prices.filter(
+            date_from__lte=today,
+            date_to__gte=today
+        ).order_by('-is_special_offer').first()
+
+        if room_price:
+            return room_price.price
+        return None
 
 
 class RoomPrice(BaseModel):
@@ -166,52 +191,15 @@ class RoomPrice(BaseModel):
 
     def clean(self):
         super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
         if self.date_to and self.date_from:
             if self.date_to <= self.date_from:
                 raise ValidationError({
                     'date_to': _("تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء")
                 })
-
-
-class RoomStatus(BaseModel):
-    hotel = models.ForeignKey(
-        Hotel,
-        on_delete=models.CASCADE,
-        verbose_name=_("الفندق"),
-        related_name='room_statuses'
-    )
-    code = models.CharField(
-        max_length=50,
-        verbose_name=_("رمز الحالة")
-    )
-    name = models.CharField(
-        max_length=100,
-        verbose_name=_("اسم الحالة")
-    )
-    description = models.TextField(
-        verbose_name=_("وصف الحالة"),
-        blank=True,
-        null=True
-    )
-    is_available = models.BooleanField(
-        default=True,
-        verbose_name=_("متاح للحجز"),
-        help_text=_("هل يمكن حجز الغرف في هذه الحالة؟")
-    )
-
-    class Meta:
-        verbose_name = _("حالة الغرفة")
-        verbose_name_plural = _("حالات الغرف")
-        ordering = ['code']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['hotel', 'code'],
-                name='unique_hotel_status_code'
-            )
-        ]
-
-    def __str__(self):
-        return f"{self.name} ({self.code})"
 
 
 
@@ -228,13 +216,8 @@ class Availability(BaseModel):
         verbose_name=_("نوع الغرفة"),
         related_name='availabilities'
     )
-    room_status = models.ForeignKey(
-        RoomStatus,
-        on_delete=models.CASCADE,
-        verbose_name=_("حالة الغرفة"),
-        related_name='availabilities'
-    )
-    availability_date = models.DateField(  
+
+    availability_date = models.DateField(
         verbose_name=_("تاريخ التوفر")
     )
     available_rooms = models.PositiveIntegerField(
@@ -251,20 +234,18 @@ class Availability(BaseModel):
         verbose_name = _("توفر الغرف")
         verbose_name_plural = _("توفر الغرف")
         ordering = ['-availability_date', 'room_type']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['hotel', 'room_type', 'availability_date'],
-                name='unique_room_availability'
-            )
-        ]
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.room_type.name} - {self.available_rooms} rooms available on {self.availability_date}"
     def clean(self):
         super().clean()
-        if self.available_rooms > self.room_type.rooms_count:
+        if self.hotel != self.room_type.hotel:
             raise ValidationError({
-                'available_rooms': _("عدد الغرف المتوفرة لا يمكن أن يتجاوز العدد الكلي للغرف")
-            })
-
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
 
 
 class RoomImage(BaseModel):
@@ -306,40 +287,16 @@ class RoomImage(BaseModel):
 
     def clean(self):
         super().clean()
+        if self.hotel != self.room_type.hotel:
+            raise ValidationError({
+                        'room_type': _("يجب ان تكون الغرفه ضمن الفندق المحدد")
+                    })
         if self.is_main and RoomImage.objects.filter(room_type=self.room_type, is_main=True).exists():
             raise ValidationError(_("لا يمكن أن تكون هناك أكثر من صورة رئيسية واحدة لكل نوع غرفة"))
 
+    def save(self, *args, **kwargs):
+        # تعيين حقل hotel تلقائيًا من room_type إذا لم يتم تعيينه
+        if not self.hotel_id and self.room_type_id:
+            self.hotel = self.room_type.hotel
+        super().save(*args, **kwargs)
 
-
-
-#تحت التطوير 
-class Review(BaseModel):
-    hotel = models.ForeignKey(
-        Hotel,
-        on_delete=models.CASCADE,
-        verbose_name=_("الفندق"),
-        related_name='reviews'
-    )
-    room_type = models.ForeignKey(
-        RoomType,
-        on_delete=models.CASCADE,
-        verbose_name=_("نوع الغرفة"),
-        related_name='reviews'
-    )
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
-        verbose_name=_("التقييم")
-    )
-    content = models.TextField(
-        verbose_name=_("محتوى المراجعة")
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = _("مراجعة")
-        verbose_name_plural = _("مراجعات")
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f'Review by {self.user.username} for {self.room_type.name} in {self.hotel.name}'

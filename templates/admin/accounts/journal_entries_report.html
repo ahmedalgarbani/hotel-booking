@@ -1,0 +1,121 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
+    {# Add custom styles similar to booking report if needed #}
+    <style>
+        .report-summary p { margin: 5px 0; }
+        .report-summary strong { color: #417690; }
+        .date-filter-form { margin-bottom: 20px; background: #f8f8f8; padding: 15px; border: 1px solid #eee; border-radius: 4px; }
+        .date-filter-form label { margin-left: 10px; }
+        .date-filter-form input[type="date"], .date-filter-form select { margin-left: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 3px; }
+        .date-filter-form button { margin-left: 10px; }
+        .net-balance-positive { color: green; }
+        .net-balance-negative { color: red; }
+    </style>
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %}
+
+{% block content_title %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% block object-tools %}
+            <ul class="object-tools">
+                {% block object-tools-items %}
+                    {% if pdf_export_url %}
+                    <li>
+                        <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}&account_id={{ selected_account_id }}¤cy={{ selected_currency }}" class="addlink">
+                            {% trans "تصدير PDF" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        {% endblock %}
+
+        <div class="module" id="changelist">
+            {# Date and Filter Form #}
+            <div class="date-filter-form">
+                <form method="get" action="">
+                    <label for="start_date">{% trans "من تاريخ:" %}</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+                    <label for="end_date">{% trans "إلى تاريخ:" %}</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+                    <label for="account_id">{% trans "الحساب:" %}</label>
+                    <select id="account_id" name="account_id">
+                        <option value="">{% trans "الكل" %}</option>
+                        {% for account in accounts %}
+                            <option value="{{ account.id }}" {% if selected_account_id == account.id|stringformat:"s" %}selected{% endif %}>
+                                {{ account.account_number }} - {{ account.account_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="currency">{% trans "العملة:" %}</label>
+                    <select id="currency" name="currency">
+                         <option value="">{% trans "الكل" %}</option>
+                        {% for curr in currencies %}
+                            <option value="{{ curr }}" {% if selected_currency == curr %}selected{% endif %}>{{ curr }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">{% trans "تصفية" %}</button>
+                </form>
+            </div>
+
+            {# Summary Section #}
+            <div class="report-summary">
+                <p>{% trans "الفترة:" %} {{ start_date }} - {{ end_date }}</p>
+                <p>{% trans "إجمالي المدين:" %} <strong>{{ total_debit|floatformat:2 }}</strong></p>
+                <p>{% trans "إجمالي الدائن:" %} <strong>{{ total_credit|floatformat:2 }}</strong></p>
+                <p>{% trans "صافي الرصيد:" %} <strong class="{% if net_balance >= 0 %}net-balance-positive{% else %}net-balance-negative{% endif %}">{{ net_balance|floatformat:2 }}</strong></p>
+            </div>
+
+            {# Results Table #}
+            {% if entries %}
+                <div class="results">
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                <th>{% trans "رقم القيد" %}</th>
+                                <th>{% trans "التاريخ" %}</th>
+                                <th>{% trans "الحساب" %}</th>
+                                <th>{% trans "الوصف" %}</th>
+                                <th>{% trans "مدين" %}</th>
+                                <th>{% trans "دائن" %}</th>
+                                <th>{% trans "العملة" %}</th>
+                                <th>{% trans "المستخدم" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in entries %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <td>{{ entry.journal_entry_number }}</td>
+                                    <td>{{ entry.journal_entry_date|date:"Y-m-d" }}</td>
+                                    <td>{{ entry.journal_entry_account.account_name }}</td>
+                                    <td>{{ entry.journal_entry_description }}</td>
+                                    <td>{{ entry.journal_entry_out_amount|floatformat:2 }}</td>
+                                    <td>{{ entry.journal_entry_in_amount|floatformat:2 }}</td>
+                                    <td>{{ entry.journal_entry_currency }}</td>
+                                    <td>{{ entry.created_by.username|default:"-" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>{% trans "لا توجد قيود يومية للعرض في الفترة المحددة." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

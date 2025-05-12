@@ -1,0 +1,466 @@
+{% extends 'frontend/layout/master.html' %}
+{% load static %} {# تأكد من تحميل static #}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary-color: #4f46e5; /* أزرق رئيسي */
+        --primary-dark: #4338ca; /* أزرق أغمق */
+        --text-color: #1f2937; /* لون النص الرئيسي */
+        --gray-light: #f3f4f6; /* رمادي فاتح للخلفيات */
+        --gray-medium: #9ca3af; /* رمادي متوسط للنصوص الثانوية */
+        --gray-border: #e5e7eb; /* لون الحدود */
+        --white: #ffffff;
+        --danger-color: #ef4444; /* أحمر للخطر */
+        --success-color: #10b981; /* أخضر للنجاح */
+        --warning-color: #f59e0b; /* أصفر للتحذير */
+        --info-color: #3b82f6; /* أزرق للمعلومات */
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --radius: 8px; /* نصف قطر الانحناء */
+    }
+
+    body {
+        background-color: var(--gray-light);
+        color: var(--text-color);
+        font-family: 'Cairo', sans-serif; /* خط Cairo للعربية */
+    }
+
+    /* حاوية الصفحة الرئيسية */
+    .add-guest-page-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        direction: rtl; /* الاتجاه من اليمين لليسار */
+    }
+
+    /* عمود النموذج */
+    .form-column {
+        flex: 2;
+        min-width: 300px;
+    }
+
+    /* عمود ملخص الحجز */
+    .summary-column {
+        flex: 1;
+        min-width: 280px;
+    }
+
+    /* تصميم البطاقة الأساسي */
+    .card-box {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+    }
+
+    .card-box-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-box-header h2, .card-box-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .card-box-body {
+        padding: 1.5rem;
+    }
+
+    /* رأس النموذج وزر الإضافة */
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-header h2 {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .btn-add {
+        background: var(--primary-light);
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-add:hover:not(:disabled) { background: var(--primary-color); color: var(--white); }
+    .btn-add:disabled {
+        background-color: var(--gray-medium); border-color: var(--gray-medium);
+        color: var(--white); cursor: not-allowed; opacity: 0.7;
+    }
+    .btn-add .icon { margin-left: 0.5rem; } /* أيقونة على يسار النص */
+
+    .max-guest-message {
+        color: var(--danger-color); font-size: 0.9rem;
+        margin-top: -0.5rem; margin-bottom: 1rem; text-align: right; display: none;
+    }
+
+    /* بطاقة الضيف */
+    .guest-card {
+        background: var(--gray-light); border-radius: var(--radius); padding: 1.5rem;
+        margin-bottom: 1.5rem; position: relative; border: 1px solid var(--gray-border);
+        animation: fadeIn 0.3s ease-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .guest-card h3 { margin-bottom: 1rem; color: var(--primary-color); font-size: 1rem; font-weight: 600; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+
+    .input-with-icon { position: relative; }
+    .input-with-icon input[type="text"], .input-with-icon input[type="tel"],
+    .input-with-icon input[type="date"], .input-with-icon input[type="file"],
+    .input-with-icon select {
+        width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; /* تعديل padding لـ RTL */
+        border: 1px solid var(--gray-border); border-radius: var(--radius);
+        font-size: 0.95rem; transition: all 0.2s ease;
+    }
+    .input-with-icon .icon {
+        position: absolute; right: 1rem; top: 50%;
+        transform: translateY(-50%); color: var(--gray-medium); pointer-events: none;
+    }
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: left 0.75rem center;
+        background-size: 16px 12px; padding-right: 1rem; padding-left: 2.5rem;
+    }
+    input:focus, select:focus {
+        outline: none; border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1); /* استخدام اللون الأساسي */
+    }
+    .guest-card small { display: block; color: var(--gray-dark); font-size: 0.8rem; margin-top: 0.25rem; }
+
+    /* زر الحذف */
+    .btn-remove {
+        position: absolute; top: 0.75rem; left: 0.75rem; background: transparent;
+        border: none; color: var(--danger-color); font-size: 1.5rem; cursor: pointer;
+        padding: 0.25rem; line-height: 1; transition: color 0.2s ease;
+    }
+    .btn-remove:hover { color: #b91c1c; }
+
+    /* زر التسجيل */
+    .btn-submit {
+        background: var(--primary-color); color: var(--white); border: none;
+        padding: 0.8rem 1.5rem; border-radius: var(--radius); width: 100%;
+        font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
+        margin-top: 1rem;
+    }
+    .btn-submit:hover { background: var(--primary-dark); }
+
+    /* ملخص الحجز */
+    .booking-summary .card-box-body { padding: 1.5rem; }
+    .booking-summary h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .summary-item {
+        display: flex; justify-content: space-between; padding: 0.6rem 0;
+        border-bottom: 1px solid var(--gray-light); font-size: 0.95rem;
+    }
+    .summary-item:last-of-type { border-bottom: none; }
+    .summary-label { color: var(--gray-dark); }
+    .summary-value { font-weight: 500; color: var(--text-color); }
+    .total-price {
+        margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-border);
+        font-size: 1.2rem; font-weight: 600; color: var(--primary-color);
+    }
+    /* Sticky Summary */
+    .summary-column .card-box { position: sticky; top: 2rem; }
+
+    /* رسائل التنبيه */
+    .messages .alert {
+        padding: 1rem; margin-bottom: 1.5rem; border: 1px solid transparent;
+        border-radius: var(--radius); font-weight: 500; text-align: right; /* RTL */
+    }
+    .messages .alert-success { color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; }
+    .messages .alert-danger { color: #842029; background-color: #f8d7da; border-color: #f5c2c7; }
+    .messages .alert-warning { color: #664d03; background-color: #fff3cd; border-color: #ffecb5; }
+    .messages .alert-info { color: #055160; background-color: #cff4fc; border-color: #b6effb; }
+    .messages .btn-close { float: left; } /* RTL */
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .add-guest-page-container { flex-direction: column; }
+        .summary-column .card-box { position: static; }
+    }
+</style>
+
+{# --- Header بسيط للصفحة --- #}
+<section class="breadcrumb-area bread-bg padding-top-180px padding-bottom-120px">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-content">
+                    <div class="section-heading">
+                        <h2 class="sec__title text-white">تسجيل الضيوف</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{# --- نهاية الـ Header --- #}
+
+<div class="add-guest-page-container section--padding">
+
+    {# --- عمود النموذج --- #}
+    <div class="form-column">
+        <div class="card-box">
+            <div class="card-box-header">
+                <h2>تفاصيل الحجز</h2>
+                 {# عرض رسائل Django هنا #}
+                {% if messages %}
+                    <div class="messages" style="width: 100%; margin-top: 1rem;">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="card-box-body">
+
+                <form id="guestForm" action='{% url "payments:add_guest" booking.id %}' method='POST' enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-header">
+                        <h2>معلومات الضيوف (الحد الأقصى: {{ max_guests }})</h2>
+                        <button type="button" id="addGuestBtn" class="btn-add">
+                            <span class="icon">+</span> إضافة ضيف آخر
+                        </button>
+                    </div>
+                    <div id="maxGuestMessage" class="max-guest-message">
+                        لقد وصلت إلى الحد الأقصى لعدد الضيوف لهذا الحجز.
+                    </div>
+
+                    <div id="guestsContainer">
+                        <!-- نموذج الضيف الأولي (رقم 1) -->
+                        <div class="guest-card" data-guest-index="1">
+                            <h3>الضيف 1</h3>
+                            {# لا يوجد زر حذف للضيف الأول #}
+                            <div class="form-group">
+                                <label for="name_1">الاسم الكامل</label>
+                                <div class="input-with-icon">
+                                    <input type="text" name="name[]" id="name_1" required placeholder="أدخل الاسم الكامل">
+                                    <span class="icon">👤</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_1">رقم الهاتف</label>
+                                <div class="input-with-icon">
+                                    <input type="tel" name="phone_number[]" id="phone_1" required placeholder="أدخل رقم الهاتف">
+                                    <span class="icon">📱</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender_1">الجنس</label>
+                                <select name="gender[]" id="gender_1" required>
+                                    <option value="" disabled selected>-- اختر --</option> {# إضافة خيار افتراضي #}
+                                    <option value="male">ذكر</option>
+                                    <option value="female">أنثى</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bday_1">تاريخ الميلاد</label>
+                                <div class="input-with-icon">
+                                    <input type="date" name="birthday_date[]" id="bday_1" required>
+                                    <span class="icon">📅</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="idcard_1">صورة بطاقة الهوية (اختياري)</label>
+                                <div class="input-with-icon">
+                                    <input type="file" name="id_card_image[]" id="idcard_1" accept="image/*">
+                                    <span class="icon">🪪</span>
+                                </div>
+                                <small>ارفع صورة واضحة لبطاقة الهوية</small>
+                            </div>
+                        </div>
+                        <!-- نهاية نموذج الضيف الأولي -->
+                    </div>
+
+                    <button type="submit" class="btn-submit">تسجيل الضيوف</button>
+                </form>
+            </div> {# end card-box-body #}
+        </div> {# end card-box #}
+    </div> {# end form-column #}
+
+    {# --- عمود ملخص الحجز --- #}
+    <div class="summary-column">
+        <div class="card-box">
+            <div class="card-box-header">
+                <h2>ملخص الحجز</h2>
+            </div>
+            <div class="card-box-body">
+                <div class="summary-item">
+                    <span class="summary-label">الفندق:</span>
+                    <span class="summary-value">{{ booking.hotel.name }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">نوع الغرفة:</span>
+                    <span class="summary-value">{{ booking.room.name }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">تسجيل الدخول:</span>
+                    <span class="summary-value">{{ booking.check_in_date|date:"Y-m-d" }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">تسجيل الخروج:</span>
+                    <span class="summary-value">{{ booking.check_out_date|date:"Y-m-d" }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">عدد الغرف:</span>
+                    <span class="summary-value">{{ booking.rooms_booked }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">الضيوف:</span>
+                    <span class="summary-value" id="guestCountDisplay">1</span> {# سيتم تحديثه بواسطة JS #}
+                </div>
+                <div class="summary-item total-price">
+                    <span class="summary-label">الإجمالي:</span>
+                    <span class="summary-value">{{ booking.amount }}</span> {# أضف العملة إذا لزم الأمر #}
+                </div>
+            </div> {# end card-box-body #}
+        </div> {# end card-box #}
+    </div> {# end summary-column #}
+
+</div> {# end add-guest-page-container #}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const addGuestBtn = document.getElementById('addGuestBtn');
+      const guestsContainer = document.getElementById('guestsContainer');
+      const guestCountDisplay = document.getElementById('guestCountDisplay');
+      const maxGuestMessage = document.getElementById('maxGuestMessage');
+      const maxGuests = parseInt("{{ max_guests }}", 10);
+
+      let guestCount = guestsContainer.querySelectorAll('.guest-card').length;
+
+      // --- وظيفة إنشاء بطاقة ضيف جديدة ---
+      const createGuestCard = (guestNumber) => {
+          const guestCard = document.createElement('div');
+          guestCard.className = 'guest-card';
+          guestCard.setAttribute('data-guest-index', guestNumber);
+          guestCard.innerHTML = `
+              <h3>الضيف ${guestNumber}</h3>
+              <button type="button" class="btn-remove" aria-label="حذف الضيف ${guestNumber}">×</button>
+              <div class="form-group">
+                  <label for="name_${guestNumber}">الاسم الكامل</label>
+                  <div class="input-with-icon">
+                      <input type="text" name="name[]" id="name_${guestNumber}" required placeholder="أدخل الاسم الكامل">
+                      <span class="icon">👤</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="phone_${guestNumber}">رقم الهاتف</label>
+                  <div class="input-with-icon">
+                      <input type="tel" name="phone_number[]" id="phone_${guestNumber}" required placeholder="أدخل رقم الهاتف">
+                      <span class="icon">📱</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="gender_${guestNumber}">الجنس</label>
+                  <select name="gender[]" id="gender_${guestNumber}" required>
+                      <option value="" disabled selected>-- اختر --</option>
+                      <option value="male">ذكر</option>
+                      <option value="female">أنثى</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="bday_${guestNumber}">تاريخ الميلاد</label>
+                  <div class="input-with-icon">
+                      <input type="date" name="birthday_date[]" id="bday_${guestNumber}" required>
+                      <span class="icon">📅</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="idcard_${guestNumber}">صورة بطاقة الهوية (اختياري)</label>
+                  <div class="input-with-icon">
+                      <input type="file" name="id_card_image[]" id="idcard_${guestNumber}" accept="image/*">
+                      <span class="icon">🪪</span>
+                  </div>
+                  <small>ارفع صورة واضحة لبطاقة الهوية</small>
+              </div>
+          `;
+
+          const removeBtn = guestCard.querySelector('.btn-remove');
+          removeBtn.addEventListener('click', () => {
+              guestCard.remove();
+              updateGuestNumbersAndButton();
+          });
+
+          return guestCard;
+      };
+
+      // --- وظيفة تحديث أرقام الضيوف وحالة زر الإضافة ---
+      const updateGuestNumbersAndButton = () => {
+          const guestCards = guestsContainer.querySelectorAll('.guest-card');
+          guestCount = guestCards.length;
+
+          guestCards.forEach((card, index) => {
+              const guestNumber = index + 1;
+              const title = card.querySelector('h3');
+              if (title) { title.textContent = `الضيف ${guestNumber}`; }
+
+              // تحديث IDs و labels
+              card.querySelectorAll('[id^="name_"], [id^="phone_"], [id^="gender_"], [id^="bday_"], [id^="idcard_"]').forEach(el => {
+                  const parts = el.id.split('_');
+                  el.id = `${parts[0]}_${guestNumber}`;
+              });
+              card.querySelectorAll('label[for^="name_"], label[for^="phone_"], label[for^="gender_"], label[for^="bday_"], label[for^="idcard_"]').forEach(label => {
+                  const parts = label.getAttribute('for').split('_');
+                  label.setAttribute('for', `${parts[0]}_${guestNumber}`);
+              });
+
+              const removeBtn = card.querySelector('.btn-remove');
+              if(removeBtn) { removeBtn.setAttribute('aria-label', `حذف الضيف ${guestNumber}`); }
+          });
+
+          guestCountDisplay.textContent = guestCount.toString();
+
+          if (guestCount >= maxGuests) {
+              addGuestBtn.disabled = true;
+              maxGuestMessage.style.display = 'block';
+          } else {
+              addGuestBtn.disabled = false;
+              maxGuestMessage.style.display = 'none';
+          }
+      };
+
+      // --- إضافة ضيف جديد ---
+      addGuestBtn.addEventListener('click', () => {
+          if (guestCount < maxGuests) {
+              const newGuestNumber = guestCount + 1;
+              const newGuestCard = createGuestCard(newGuestNumber);
+              guestsContainer.appendChild(newGuestCard);
+              updateGuestNumbersAndButton();
+          }
+      });
+
+      // --- تحديث الحالة الأولية ---
+      updateGuestNumbersAndButton();
+
+  });
+</script>
+
+{% endblock %}

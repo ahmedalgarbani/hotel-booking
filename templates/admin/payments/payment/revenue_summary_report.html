@@ -1,0 +1,402 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* الألوان الرئيسية - محدودة لتحسين تجربة المستخدم */
+        :root {
+            --primary-color: #1e3a8a;    /* أزرق غامق */
+            --accent-color: #d4af37;     /* ذهبي */
+            --light-color: #f8f9fa;      /* أبيض فاتح */
+            --dark-color: #1e293b;       /* رمادي غامق */
+            --text-primary: #1e293b;     /* لون النص الرئيسي */
+            --text-secondary: #64748b;   /* لون النص الثانوي */
+            --border-color: #e2e8f0;     /* لون الحدود */
+        }
+        
+        /* خلفية الصفحة */
+        body {
+            background-color: var(--light-color);
+            color: var(--text-primary);
+        }
+        
+        /* عنوان التقرير */
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: right;
+        }
+        
+        /* تنسيق الجداول */
+        #result_list {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #result_list th, #result_list td {
+            padding: 12px;
+            text-align: right;
+            border: 1px solid var(--border-color);
+        }
+        
+        #result_list th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        #result_list tr:hover {
+            background-color: rgba(212, 175, 55, 0.05);
+        }
+        
+        #result_list tr.row1 {
+            background-color: #f8f8f8;
+        }
+        
+        /* نموذج التصفية */
+        .date-filter-form {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            text-align: right;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-left: 15px;
+        }
+        
+        .date-filter-form label {
+            margin-left: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .date-filter-form input[type="date"] {
+            margin-left: 8px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .date-filter-form input[type="date"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+            outline: none;
+        }
+        
+        .date-filter-form button {
+            padding: 10px 18px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 42px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .actions-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .date-filter-form button:hover {
+            background-color: #15326d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* زر التصدير */
+        .export-btn {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 42px;
+        }
+        
+        .export-btn:hover {
+            background-color: #c9a430;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* بطاقة ملخص الإيرادات */
+        .revenue-summary-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border-right: 4px solid var(--accent-color);
+        }
+        
+        .summary-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .summary-icon {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-left: 15px;
+        }
+        
+        .summary-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .summary-content {
+            padding: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .summary-label i {
+            margin-left: 8px;
+            color: var(--accent-color);
+        }
+        
+        .summary-value {
+            font-weight: 600;
+        }
+        
+        .summary-value.highlight {
+            color: var(--accent-color);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        /* قسم النتائج */
+        .results-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .results-section h2 {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .results-section h2 i {
+            margin-left: 10px;
+            color: var(--accent-color);
+        }
+        
+        /* رسالة عدم وجود نتائج */
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 16px;
+            border-top: 3px solid var(--accent-color);
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            display: block;
+            opacity: 0.5;
+        }
+        
+        /* تعديل الأدوات */
+        .object-tools {
+            display: none; /* نخفي الأدوات الأصلية ونستخدم زر التصدير المخصص */
+        }
+        
+        .object-tools a.addlink {
+            background: linear-gradient(to left, var(--luxury-gold), #e6c34d);
+            color: var(--luxury-dark);
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .object-tools a.addlink:hover {
+            background: linear-gradient(to left, #e6c34d, var(--luxury-gold));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+    </style>
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %} {# Added report-container class #}
+
+{% block content_title %}
+    <h1><i class="fas fa-chart-line" style="color: var(--luxury-gold); margin-left: 10px;"></i>{% trans "تقرير ملخص الإيرادات" %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {# Add back object-tools to include the export button #}
+        {% block object-tools %}
+            <ul class="object-tools">
+                {% block object-tools-items %}
+                    {# Add link to export PDF #}
+                    {% if pdf_export_url %}
+                    <li>
+                        {# Pass current date filters to the export URL #}
+                        <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}" class="addlink">
+                            <i class="fas fa-file-pdf" style="margin-left: 5px;"></i>{% trans "تصدير PDF" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        {% endblock %}
+
+        <div class="module" id="changelist">
+
+            {# Date Filter Form - Now styled better #}
+            <div class="date-filter-form">
+                <form method="get" action="" style="display: flex; flex-wrap: wrap; align-items: center; width: 100%; gap: 15px;">
+                    <div class="filter-group">
+                        <label for="start_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "من تاريخ:" %}</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="end_date"><i class="fas fa-calendar-alt" style="margin-left: 5px;"></i>{% trans "إلى تاريخ:" %}</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+                    </div>
+
+                    <div class="actions-group">
+                        <button type="submit"><i class="fas fa-filter" style="margin-left: 5px;"></i>{% trans "تصفية" %}</button>
+                        
+                        {% if pdf_export_url %}
+                        <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}" class="export-btn">
+                            <i class="fas fa-file-pdf" style="margin-left: 5px;"></i>{% trans "تصدير PDF" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+<
+            {# Revenue Summary Card - Now positioned better #}
+            <div class="revenue-summary-card">
+                <div class="summary-header">
+                    <i class="fas fa-chart-line summary-icon"></i>
+                    <h3>{% trans "ملخص الإيرادات" %}</h3>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <div class="summary-label"><i class="fas fa-calendar-week"></i> {% trans "الفترة:" %}</div>
+                        <div class="summary-value">{{ start_date }} - {{ end_date }}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label"><i class="fas fa-coins"></i> {% trans "إجمالي الإيرادات المؤكدة:" %}</div>
+                        <div class="summary-value highlight">{{ total_revenue|floatformat:2 }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {# Revenue by Payment Method Table - Now styled better #}
+            {% if revenue_by_method %}
+                <div class="results results-section">
+                    <h2><i class="fas fa-credit-card" style="margin-left: 10px;"></i>{% trans "الإيرادات حسب طريقة الدفع" %}</h2>
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                <th scope="col">{% trans "طريقة الدفع" %}</th>
+                                <th scope="col">{% trans "عدد المدفوعات" %}</th>
+                                <th scope="col">{% trans "إجمالي الإيرادات" %}</th>
+                                <th scope="col">{% trans "العملة" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for method_data in revenue_by_method %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <td>{{ method_data.payment_method__payment_option__method_name }}</td>
+                                    <td>{{ method_data.method_count }}</td>
+                                    <td style="direction: ltr; text-align: right;">{{ method_data.method_total|floatformat:2 }}</td> {# Added styling for consistency #}
+                                    <td>{{ method_data.payment_method__payment_option__currency__currency_symbol }}</td> {# Correct variable is already used, ensure data is passed correctly #}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>{% trans "لا توجد مدفوعات مؤكدة للفترة المحددة." %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

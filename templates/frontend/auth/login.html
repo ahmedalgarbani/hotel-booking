@@ -1,0 +1,324 @@
+{% extends "frontend/layout/master.html" %}
+{% block title %}إنشاء حساب{% endblock %}
+{% block extra_css %}
+   
+    <style>
+    .messages .alert {
+    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+    border: 2px solid; /* إضافة حدود سميكة */
+    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+    font-weight: bold; /* جعل النص أكثر جرأة */
+}
+
+.messages .alert-success {
+    color: #155724; /* لون نص النجاح (أخضر داكن) */
+    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+}
+
+.messages .alert-error {
+    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+}
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+.messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+</style>
+ {% endblock extra_css %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">مرحبًا بعودتك</h2>
+                        <p class="text-muted">قم بتسجيل الدخول لحسابك</p>
+                    </div>
+
+                    <!-- زر تسجيل الدخول بجوجل -->
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">
+                            <img src="https://www.google.com/favicon.ico" alt="Google" class="me-2" width="20">
+                            <span>تسجيل دخول باستخدام جوجل</span>
+                        </a>
+                    </div>
+
+                    <!-- فاصل بين جوجل والتسجيل عبر الإيميل -->
+                    <div class="text-center my-4 position-relative">
+                        <hr class="w-100">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">أو سجل دخولك عبر الإيميل</span>
+                    </div>
+
+                    <form id="loginForm" novalidate method="POST" action="{% url 'users:login' %}">
+                        {% csrf_token %}
+
+                        <!-- رسائل الخطأ والتنبيهات -->
+                        {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- حقل اسم المستخدم -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">اسم المستخدم</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                                <input type="hidden"   value={{next}}   name="next" >
+                            </div>
+                            <div class="invalid-feedback">رجاءً أدخل اسم مستخدم صالح.</div>
+                        </div>
+
+                        <!-- حقل كلمة المرور -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">كلمة المرور</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">رجاءً أدخل كلمة المرور.</div>
+                        </div>
+
+                        <!-- خيارات إضافية -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+                                <label class="form-check-label text-muted" for="rememberMe">تذكرني</label>
+                            </div>
+                            <a href="{% url "users:forgot_password" %}" class="text-decoration-none">هل نسيت كلمة المرور؟</a>
+                        </div>
+
+                        <!-- زر تسجيل الدخول -->
+                        <button type="submit" class="btn btn-primary w-100 py-2">تسجيل دخول</button>
+
+                        <!-- تسجيل حساب جديد -->
+                        <div class="text-center mt-3">
+                            <p class="text-muted mb-0">لا تمتلك حسابًا؟ 
+                                <a href="{% url 'users:register' %}" class="text-primary text-decoration-none">إنشاء حساب جديد</a>
+                            </p>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- شروط الاستخدام -->
+            <div class="text-center mt-3">
+                <p class="text-muted small mb-0">
+                    بمجرد تسجيل دخولك فأنت توافق على
+                    <a href="{% url 'home:terms_condition' %}" class="text-decoration-none">الشروط</a> و
+                    <a href="{% url 'home:privacy_policy' %}" class="text-decoration-none">سياسة الخصوصية</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+        
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #dee2e6;
+        }
+        
+        .form-floating > .form-control:focus,
+        .form-floating > .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            color: #6c757d;
+            z-index: 5;
+        }
+        
+        .password-toggle:hover {
+            color: #0d6efd;
+        }
+        
+        .profile-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-btn-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* RTL Support */
+        [dir="rtl"] .password-toggle {
+            right: auto;
+            left: 0;
+        }
+        
+        [dir="rtl"] .form-floating > label {
+            right: 0;
+            left: auto;
+            transform-origin: right top;
+        }
+        
+        /* Form check RTL support */
+        [dir="rtl"] .form-check {
+            padding-right: 1.5em;
+            padding-left: 0;
+        }
+        
+        [dir="rtl"] .form-check .form-check-input {
+            float: right;
+            margin-right: -1.5em;
+            margin-left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 2rem !important;
+            }
+        }
+        
+        /* Custom validation styles */
+        .form-control.is-invalid,
+        .form-select.is-invalid {
+            border-color: #dc3545;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .invalid-feedback {
+            display: none;
+            font-size: 0.875rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+        }
+        
+        .was-validated .form-control:invalid ~ .invalid-feedback,
+        .was-validated .form-select:invalid ~ .invalid-feedback {
+            display: block;
+        }
+        
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .form-check-input:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.querySelector('.password-toggle');
+        
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                icon.classList.toggle('bi-eye');
+                icon.classList.toggle('bi-eye-slash');
+            });
+        
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                
+                const password = document.getElementById('password').value;
+                
+            
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+            
+                form.submit();
+            });
+        
+            function setDirection(dir) {
+                document.documentElement.setAttribute('dir', dir);
+            }
+        
+            // Example usage (you can trigger this based on user preference or language selection):
+            // setDirection('rtl'); // For Arabic
+            // setDirection('ltr'); // For English
+        });
+    </script>
+    {% endblock %}

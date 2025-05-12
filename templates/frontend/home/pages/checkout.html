@@ -2,230 +2,1068 @@
 
 {% block content %}
 
-<!-- ================================
-    START BREADCRUMB AREA
-================================= -->
-<section class="breadcrumb-area bread-bg-10">
-  <div class="breadcrumb-wrap">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="breadcrumb-content text-center">
-            <div class="section-heading">
-              <h2 class="sec__title text-white">الدفع</h2>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">الدفع</h1>
+      <div class="arrow-down">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="wave-divider"></div>
+</section>
+
+<!-- Main Content Section -->
+<section class="main-content">
+  <div class="container">
+    <div class="content-wrapper">
+      <!-- Payment Information Column -->
+      <div class="payment-column">
+        <div class="card">
+          <!-- Payment Header -->
+          <div class="card-header">
+            <h2 class="header-title">معلومات التحويل</h2>
+          </div>
+          
+          <!-- Payment Content -->
+          <div class="card-body">
+            {% if paymentsMethods %}
+              <!-- Payment Methods Tabs -->
+              <div class="payment-methods">
+                <div class="payment-tabs" role="tablist">
+                  {% for paymentsMethod in paymentsMethods %}
+                    <button 
+                      class="payment-tab-button {% if forloop.first %}active{% endif %}"
+                      id="tab-{{ paymentsMethod.id }}"
+                      data-bs-toggle="tab"
+                      data-bs-target="#content-{{ paymentsMethod.id }}"
+                      role="tab"
+                      aria-controls="content-{{ paymentsMethod.id }}"
+                      aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                      {% comment %} {% if forloop.first %}
+                        <div class="selected-indicator">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </div>
+                      {% endif %} {% endcomment %}
+                      <img
+                        src="{{ paymentsMethod.payment_option.logo.url }}"
+                        class="payment-logo"
+                        alt="{{ paymentsMethod.payment_option.method_name }}"
+                      />
+                      <span class="payment-name">
+                        {{ paymentsMethod.payment_option.method_name }}
+                      </span>
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Payment Methods Content -->
+              <div class="tab-content">
+                {% for method in paymentsMethods %}
+                  <div
+                    class="tab-pane {% if forloop.first %}active{% endif %}"
+                    id="content-{{ method.id }}"
+                    role="tabpanel"
+                    aria-labelledby="tab-{{ method.id }}"
+                  >
+                    <!-- Payment Account Details -->
+                    <div class="account-details">
+                      <div class="details-grid">
+                       
+                        {% if method.account_number %}
+                        <div class="details-column">
+                          <p class="detail-item"><span class="detail-label">اسم الحساب:</span> {{ method.account_name }}</p>
+                          <p class="detail-item"><span class="detail-label">رقم الحساب:</span> {{ method.account_number }}</p>
+                        </div>
+                        {% endif %}
+                        <div class="details-column">
+                          {% if method.account_number %}
+                          <p class="detail-item"><span class="detail-label">رقم الآيبان:</span> {{ method.iban }}</p>
+                          {% endif %}
+                          <p class="detail-item"><span class="detail-label">تعليمات الدفع:</span> {{ method.description }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Payment Form -->
+                    <form action="{% url 'payments:hotel_confirm_payment' %}" method="POST" enctype="multipart/form-data" class="payment-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="payment_method" value="{{ method.id }}">
+                      <input type="hidden" name="check_in_date" value="{{ check_in }}">
+                      <input type="hidden" name="check_out_date" value="{{ check_out }}">
+                      
+                      <div class="form-grid">
+                      
+                       
+                      {% if method.account_number %}
+                        <!-- Transfer Image -->
+                        <div class="form-group">
+                          <label class="form-label">صورة التحويل</label>
+                          <div class="input-with-icon">
+                            <div class="input-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                              </svg>
+                            </div>
+                            <input
+                              class="form-input"
+                              type="file"
+                              name="transfer_image"
+                              accept="image/*"
+                              required
+                            />
+                          </div>
+                          <small>قم برفع صورة واضحة لإيصال التحويل.</small>
+                        </div>
+                        {% endif %}
+                      </div>
+                      
+                      <!-- Terms Agreement -->
+                      <div class="terms-agreement">
+                        <div class="checkbox-wrapper">
+                          <label for="agreechb-{{ method.id }}" class="checkbox-label">
+                            بالموافقة، فإنك توافق على
+                            <a href="{% url 'home:terms_condition' %}" class="terms-link">البنود والشروط</a>.
+                            <a href="{% url 'home:payment_policy' %}" class="terms-link">سياسه الدفع</a>.
+                          </label>
+                          <input
+                            type="checkbox"
+                            class="checkbox-input"
+                            id="agreechb-{{ method.id }}"
+                            required
+                          />
+                        </div>
+                      </div>
+                      
+                      <!-- Submit Button -->
+                      <div class="form-actions">
+                        <button type="submit" class="submit-button">
+                          تأكيد الدفع
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                          </svg>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+          
+              <!-- No Payment Methods Available -->
+               <div class="alert alert-warning">
+                <div class="alert-content">
+                  <div class="alert-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                      <line x1="12" y1="9" x2="12" y2="13"></line>
+                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                  </div>
+                  <div class="alert-message">
+                    <p>لا توجد طرق دفع متاحة لهذا الفندق.</p>
+                  </div>
+                </div>
+              </div> 
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- Booking Summary Column -->
+      <div class="summary-column">
+        <div class="card sticky">
+          <!-- Summary Header -->
+          <div class="card-header">
+            <h2 class="header-title">ملخص الحجز</h2>
+          </div>
+          
+          <!-- Summary Content -->
+          <div class="card-body">
+            <!-- Hotel Card -->
+            <div class="hotel-card">
+              <div class="hotel-card-body">
+                <!-- Hotel Header -->
+                <div class="hotel-header">
+                  <div class="hotel-info">
+                    <h3 class="hotel-name">{{ hotel_id }}</h3>
+                    <p class="room-number">
+                      <span>الغرفة رقم: {{ room.id }}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                    </p>
+                  </div>
+                  <span> {{ room.name }}</span>
+                  <div class="hotel-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 14h18v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-7z"></path>
+                      <path d="M21 12v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path>
+                      <path d="M9 6V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
+                    </svg>
+                  </div>
+                </div>
+                
+                <!-- Booking Dates -->
+                <div class="booking-dates">
+                  <div class="dates-grid">
+                    <div class="date-column border-right">
+                      <p class="date-label">تاريخ الدخول</p>
+                      <p class="date-value">{{ booking_data.check_in }}</p>
+                    </div>
+                    <div class="date-column">
+                      <p class="date-label">تاريخ الخروج</p>
+                      <p class="date-value">{{ booking_data.check_out }}</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Booking Details -->
+                <div class="booking-details">
+                  <div class="detail-row">
+                    <span class="detail-value">{{ booking_data.room_number }}</span>
+                    <span class="detail-label">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                      </svg>
+                      عدد الغرف:
+                    </span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-value">{{ booking_data.days }}</span>
+                    <span class="detail-label">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                      </svg>
+                      عدد الايام:
+                    </span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-value">{{ booking_data.adult_number }}</span>
+                    <span class="detail-label">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      </svg>
+                      عدد الأشخاص:
+                    </span>
+                  </div>
+                </div>
+                
+                {% if booking_data.extra_services %}
+                  <!-- Extra Services -->
+                  <div class="extra-services">
+                    <h4 class="section-title">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                      </svg>
+                      الخدمات الإضافية
+                    </h4>
+                    <div class="services-list">
+                      {% for service in booking_data.extra_services %}
+                        <div class="service-row">
+                          <span class="service-price">ريال{{ service.price }}</span>
+                          <span class="service-name">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-small success">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            {{ service.name }}
+                          </span>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+                
+                <!-- Price Summary -->
+                <div class="price-summary">
+                  <div class="price-list">
+                    <div class="price-row">
+                      <span class="price-value">ريال{{ booking_data.room_price }}</span>
+                      <span class="price-label">سعر الغرفة:</span>
+                    </div>
+                    <div class="price-row">
+                      <span class="price-value">ريال{{ booking_data.extra_services_total }}</span>
+                      <span class="price-label">إجمالي الخدمات الإضافية:</span>
+                    </div>
+                    <div class="price-row">
+                      <span class="price-value">ريال{{ booking_data.total_price }}</span>
+                      <span class="price-label">السعر قبل الخصم:</span>
+                    </div>
+                    <div class="price-row">
+                      <span class="price-value" id="discount">ريال0</span>
+                      <span class="price-label">قيمه الخصم:</span>
+                    </div>
+                    <div class="price-divider"></div>
+                    <div class="price-row total">
+                      <span class="price-value total-price" id="finalTotal">ريال{{ booking_data.grand_total }}</span>
+                      <span class="price-label">السعر الاجمالي:</span>
+                    </div>
+                    <div class="container1">
+                      <h2>ادخل كودالخصم</h2>
+                      <input class="couponinput" type="hidden" id="subtotal"  value="{{booking_data.total_price}}">
+                      <input class="couponinput" type="hidden" id="hotel_id" value="{{booking_data.hotel_id}}">
+                      <input class="couponinput" type="text" id="coupon" placeholder="Enter Coupon Code">
+                      <button  class="couponbutton" onclick="applyCoupon()">تنفيذ </button>
+                      <p class="couponmessage" id="message"></p>
+                      {% comment %} <p><strong>Final Total:</strong> <span id="finalTotal">-</span></p>
+                      <p><strong>Discount:</strong> <span id="discount">-</span></p> {% endcomment %}
+                    </div>
+                   
+                  </div>
+                </div>
+                
+                <!-- Booking Confirmation Note -->
+                <div class="confirmation-note">
+                  <div class="info-alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-icon">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <p class="alert-text">أكمل معلومات الزوار لتأكيد الحجز</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <span class="arrow-blink">
-              <i class="la la-arrow-down"></i>
-            </span>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="bread-svg-box">
-    <svg
-      class="bread-svg"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 10"
-      preserveAspectRatio="none"
-    >
-      <polygon points="100 0 50 10 0 0 0 10 100 10"></polygon>
-    </svg>
-  </div>
 </section>
-<!-- ================================
-    END BREADCRUMB AREA
-================================= -->
 
-<!-- ================================
-    START BOOKING AREA
-================================= -->
-<section class="booking-area padding-top-100px padding-bottom-70px">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8">
-        <div class="form-box">
-          <div class="form-title-wrap">
-            <h3 class="title">معلومات التحويل</h3>
-          </div>
-          <div class="form-content">
-            {% if paymentsMethods %}
-            <div class="section-tab check-mark-tab text-center pb-4">
-              <ul
-                class="nav nav-tabs justify-content-center"
-                id="paymentTabs"
-                role="tablist"
-              >
-                {% for paymentsMethod in paymentsMethods %}
-                <li class="nav-item">
-                  <a
-                    class="nav-link {% if forloop.first %}active{% endif %}"
-                    id="tab-{{ paymentsMethod.id }}"
-                    data-bs-toggle="tab"
-                    href="#content-{{ paymentsMethod.id }}"
-                    role="tab"
-                    aria-controls="content-{{ paymentsMethod.id }}"
-                    aria-selected="{{ forloop.first }}"
-                  >
-                    <i class="la la-check icon-element"></i>
-                    <img
-                      src="{{ paymentsMethod.payment_option.logo.url }}"
-                      width="100"
-                      height="80"
-                      alt="{{ paymentsMethod.payment_option.method_name }}"
-                    />
-                    <span class="d-block pt-2">
-                      {{ paymentsMethod.payment_option.method_name }}
-                    </span>
-                  </a>
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
+<script>
+  function applyCoupon() {
+      let subtotal = document.getElementById("subtotal").value;
+      let hotel_id = document.getElementById("hotel_id").value;
+      let coupon = document.getElementById("coupon").value;
+      let messageEl = document.getElementById("message");
+      let finalTotalEl = document.getElementById("finalTotal");
+      let discountEl = document.getElementById("discount");
 
-            <div class="tab-content">
-              {% for method in paymentsMethods %}
-              <div
-                class="tab-pane fade {% if forloop.first %}show active{% endif %}"
-                id="content-{{ method.id }}"
-                role="tabpanel"
-                aria-labelledby="tab-{{ method.id }}"
-              >
-                <div class="payment-details mb-3">
-                  <p class="mb-1"><strong>اسم الحساب:</strong> {{ method.account_name }}</p>
-                  <p class="mb-1"><strong>رقم الحساب:</strong> {{ method.account_number }}</p>
-                  <p class="mb-1"><strong>رقم الآيبان:</strong> {{ method.iban }}</p>
-                  <p class="mb-0"><strong>تعليمات الدفع:</strong> {{ method.description }}</p>
-                </div>
-                <div class="contact-form-action">
-                  <form method="post">
-                    <div class="row">
-                      <div class="col-lg-6">
-                        <div class="input-box">
-                          <label class="label-text">إسم صاحب التحويل</label>
-                          <div class="form-group">
-                            <span class="la la-user form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              name="transfer_owner_name"
-                              placeholder="إسم صاحب التحويل"
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6">
-                        <div class="input-box">
-                          <label class="label-text">رقم الحواله</label>
-                          <div class="form-group">
-                            <span class="la la-hashtag form-icon"></span>
-                            <input
-                              class="form-control"
-                              type="text"
-                              name="transfer_number"
-                              placeholder="رقم الحواله"
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="input-box">
-                          <div class="form-group">
-                            <div class="custom-checkbox">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="agreechb"
-                                required
-                              />
-                              <label for="agreechb">
-                                بالموافقة، فإنك توافق على
-                                <a href="#">البنود والشروط</a>.
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="btn-box">
-                          <button class="theme-btn" type="submit">تأكيد الحجز</button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <!-- Booking Summary -->
-          <div class="form-box booking-detail-form">
-            <div class="form-title-wrap">
-              <h3 class="title">حجزك</h3>
-            </div>
-            <!-- end form-title-wrap -->
-            <div class="form-content">
-              <div class="card-item shadow-none radius-none mb-0">
-                <div class="card-img pb-4">
-                  <a href="room-details.html" class="d-block">
-                    <img src="images/img5.jpg" alt="room-img">
-                  </a>
-                </div>
-                <div class="card-body p-0">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      <h3 class="card-title">
-                        غرفة بريميوم مطلة على البحيرة
-                      </h3>
-                      <p class="card-meta">فندق ماريانا ، المكسيك</p>
-                    </div>
-                    <div>
-                      <a href="room-details.html" class="btn ms-1"><i class="la la-edit" data-bs-toggle="tooltip" data-placement="top" aria-label="تعديل" data-bs-original-title="تعديل"></i></a>
-                    </div>
-                  </div>
-                  <div class="section-block"></div>
-                  <ul class="list-items list-items-2 list--items-2 py-2">
-                    <li class="font-size-15">
-                      <span class="w-auto d-block mb-n1"><i class="la la-calendar me-1 font-size-17"></i>من
-                        عند</span>12 مايو 2020 7:40 صباحًا
-                    </li>
-                    <li class="font-size-15">
-                      <span class="w-auto d-block mb-n1"><i class="la la-calendar me-1 font-size-17"></i>إلى</span>16 مايو 2020 8:40 صباحًا
-                    </li>
-                  </ul>
-                  <h3 class="card-title pb-3">تفاصيل الطلب</h3>
-                  <div class="section-block"></div>
-                  <ul class="list-items list-items-2 py-3">
-                    <li><span>نوع الغرفة:</span>فخم. ترف</li>
-                    <li><span>ليل:</span>1</li>
-                    <li><span>غرفة:</span>1</li>
-                    <li><span>ضيوف:</span>2 الكبار</li>
-                    <li>
-                      <span>خدمات إضافية:</span>التنظيف ، الغسيل ، الإفطار
-                    </li>
-                  </ul>
-                  <div class="section-block"></div>
-                  <ul class="list-items list-items-2 pt-3">
-                    <li><span>المجموع الفرعي:</span>$240</li>
-                    <li><span>الضرائب والرسوم:</span>$5</li>
-                    <li><span>السعر الكلي:</span>$245</li>
-                  </ul>
-                </div>
-              </div>
-              <!-- end card-item -->
-            </div>
-            <!-- end form-content -->
-          </div>
-          <!-- end form-box -->
-        </div>
-      </div>
-  </div>
-</section>
+      $.ajax({
+          url: "{% url 'services:apply_coupon' %}",
+          method: "POST",
+          data: {
+              subtotal: subtotal,
+              coupon: coupon,
+              hotel_id:hotel_id
+          },
+          success: function(data) {
+              if (data.message.includes("بنجاح")) {
+                  messageEl.style.color = "green";
+                  finalTotalEl.textContent = data.finalTotal.toFixed(2);
+                  discountEl.textContent = data.discount.toFixed(2);
+              } else {
+                  messageEl.style.color = "red";
+              }
+              messageEl.textContent = data.message;
+          },
+          error: function(xhr, status, error) {
+            messageEl.style.color = "red";
+            
+            if (xhr.status === 422) {
+                const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                messageEl.textContent = errorMessage; 
+            } else {
+                messageEl.textContent = "An unexpected error occurred.";
+            }
+            console.error("Error:", error);
+        }
+      });
+  }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const paymentTabs = document.querySelectorAll(".payment-tab-button");
+    const hiddenInput = document.querySelector('input[name="payment_method"]');
+
+    paymentTabs.forEach(tab => {
+      tab.addEventListener("click", function () {
+        const selectedMethodId = this.id.split("-")[1];
+        hiddenInput.value = selectedMethodId;
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Base Styles */
+  :root {
+    --primary-color: #4f46e5;
+    --primary-dark: #4338ca;
+    --primary-light: #e0e7ff;
+    --secondary-color: #3b82f6;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #3b82f6;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --border-radius-sm: 0.25rem;
+    --border-radius: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+  }
+
+  /* Layout */
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  .container1 {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+.couponinput, .couponbutton {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.couponbutton {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+}
+.couponbutton:hover {
+    background-color: #218838;
+}
+.couponmessage {
+    margin-top: 10px;
+    font-weight: bold;
+}
+  .content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem;
+  }
+
+  .payment-column {
+    width: 100%;
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .summary-column {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 992px) {
+    .payment-column {
+      width: 66.666667%;
+      margin-bottom: 0;
+    }
+    
+    .summary-column {
+      width: 33.333333%;
+    }
+  }
+
+  /* Hero Section */
+  .hero-section {
+    position: relative;
+    background: linear-gradient(to bottom, #4f46e5, #3b82f6);
+    padding: 4rem 0;
+    overflow: hidden;
+    color: var(--white);
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .arrow-down {
+    margin-top: 1.5rem;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-20px);
+    }
+    60% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .wave-divider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  /* Main Content Section */
+  .main-content {
+    padding: 4rem 0;
+    background-color: var(--gray-50);
+  }
+
+  /* Card Styles */
+  .card {
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-header {
+    background: linear-gradient(to right, #3b82f6, #4f46e5);
+    padding: 1rem 1.5rem;
+    color: var(--white);
+  }
+
+  .header-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  /* Payment Methods */
+  .payment-methods {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .payment-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .payment-tab-button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--gray-200);
+    background-color: var(--white);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .payment-tab-button.active {
+    border-color: var(--primary-color);
+    background-color: var(--primary-light);
+  }
+
+  .payment-tab-button:hover:not(.active) {
+    border-color: var(--secondary-color);
+    background-color: var(--gray-50);
+  }
+
+  .selected-indicator {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-radius: 50%;
+    padding: 0.25rem;
+  }
+
+  .payment-logo {
+    width: 5rem;
+    height: 4rem;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+  }
+
+  .payment-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  /* Tab Content */
+  .tab-content {
+    position: relative;
+  }
+
+  .tab-pane {
+    display: none;
+  }
+
+  .tab-pane.active {
+    display: block;
+  }
+
+  /* Account Details */
+  .account-details {
+    background-color: var(--primary-light);
+    border-radius: var(--border-radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    text-align: right;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .details-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .detail-item {
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+  }
+
+  .detail-label {
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  /* Form Styles */
+  .payment-form {
+    text-align: right;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-with-icon {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    pointer-events: none;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    color: var(--gray-700);
+    text-align: right;
+    transition: all 0.2s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  .form-input.readonly {
+    background-color: var(--gray-100);
+  }
+
+  .form-input::placeholder {
+    color: var(--gray-400);
+  }
+
+  /* Terms Agreement */
+  .terms-agreement {
+    margin-bottom: 1.5rem;
+  }
+
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .checkbox-label {
+    margin-right: 0.5rem;
+    color: var(--gray-700);
+  }
+
+  .checkbox-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--primary-color);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-sm);
+  }
+
+  .terms-link {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  .terms-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Form Actions */
+  .form-actions {
+    text-align: left;
+  }
+
+  .submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #3b82f6, #4f46e5);
+    color: var(--white);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .submit-button:hover {
+    background: linear-gradient(to right, #2563eb, #4338ca);
+  }
+
+  .submit-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+  }
+
+  .button-icon {
+    margin-left: 0.5rem;
+  }
+
+  /* Alert Styles */
+  .alert {
+    border-radius: var(--border-radius);
+    padding: 1rem;
+  }
+
+  .alert-warning {
+    background-color: #fff7ed;
+    border-left: 4px solid var(--warning-color);
+  }
+
+  .alert-content {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .alert-icon {
+    color: var(--warning-color);
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .alert-message {
+    margin-right: 0.75rem;
+  }
+
+  .alert-message p {
+    color: #9a3412;
+    margin: 0;
+  }
+
+  /* Hotel Card */
+  .hotel-card {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .hotel-card-body {
+    padding: 1.25rem;
+  }
+
+  .hotel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .hotel-info {
+    text-align: right;
+  }
+
+  .hotel-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+  }
+
+  .room-number {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: var(--gray-600);
+    margin-top: 0.25rem;
+  }
+
+  .icon-small {
+    margin-left: 0.25rem;
+    color: var(--primary-color);
+  }
+
+  .hotel-icon {
+    background-color: var(--primary-light);
+    padding: 0.75rem;
+    border-radius: 50%;
+    color: var(--primary-color);
+  }
+
+  /* Booking Dates */
+  .booking-dates {
+    background-color: var(--gray-50);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .dates-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .date-column {
+    text-align: right;
+  }
+
+  .border-right {
+    border-right: 1px solid var(--gray-300);
+  }
+
+  .date-label {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-bottom: 0.25rem;
+  }
+
+  .date-value {
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+  }
+
+  /* Booking Details */
+  .booking-details {
+    margin: 0.75rem 0;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-label {
+    display: flex;
+    align-items: center;
+    color: var(--gray-700);
+  }
+
+  .detail-value {
+    font-weight: 700;
+  }
+
+  /* Extra Services */
+  .extra-services {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: var(--gray-700);
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .services-list {
+    margin-top: 0.5rem;
+  }
+
+  .service-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .service-name {
+    display: flex;
+    align-items: center;
+    color: var(--gray-700);
+  }
+
+  .service-price {
+    font-weight: 700;
+  }
+
+  .success {
+    color: var(--success-color);
+  }
+
+  /* Price Summary */
+  .price-summary {
+    margin-top: 1.5rem;
+    background-color: var(--gray-50);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+  }
+
+  .price-list {
+    margin-top: 0.5rem;
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .price-label {
+    color: var(--gray-700);
+  }
+
+  .price-value {
+    font-weight: 700;
+  }
+
+  .price-divider {
+    border-top: 1px solid var(--gray-300);
+    margin: 0.5rem 0;
+    padding-top: 0.5rem;
+  }
+
+  .total .price-value {
+    font-size: 1.125rem;
+    color: var(--primary-color);
+  }
+
+  .total .price-label {
+    font-weight: 500;
+  }
+
+  /* Confirmation Note */
+  .confirmation-note {
+    margin-top: 1.5rem;
+  }
+
+  .info-alert {
+    display: flex;
+    align-items: flex-start;
+    background-color: var(--primary-light);
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+  }
+
+  .alert-icon {
+    color: var(--primary-color);
+    margin-left: 0.5rem;
+    margin-top: 0.125rem;
+  }
+
+  .alert-text {
+    font-size: 0.875rem;
+    color: var(--primary-dark);
+    text-align: right;
+    margin: 0;
+  }
+
+  /* Sticky Summary */
+  .sticky {
+    position: sticky;
+    top: 1.5rem;
+  }
+</style>
 
 {% endblock content %}

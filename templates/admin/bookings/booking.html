@@ -1,0 +1,35 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static %}
+{% load tz %}  
+
+{% block extrahead %}
+    {{ block.super }}
+    <script>
+        function showExtensionPopup(url) {
+            const popup = window.open(
+                url,
+                "extensionPopup",
+                "width=800,height=600,resizable=yes,scrollbars=yes"
+            );
+            if (!popup) {
+                alert("Please allow popups for this site.");
+                return false;
+            }
+            return false;
+        }
+    </script>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    
+    <div class="submit-row mt-2">
+        {% if original and not original.actual_check_out_date and original.check_out_date > now %}
+    <a href="{% url 'admin:booking-extend' original.pk %}" 
+       class="btn btn-success form-control"
+       onclick="return showExtensionPopup(this.href);">
+        تمديد الحجز
+    </a>
+{% endif %}
+    </div>
+{% endblock %}

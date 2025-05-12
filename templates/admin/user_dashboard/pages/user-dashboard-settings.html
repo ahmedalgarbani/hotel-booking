@@ -2,138 +2,154 @@
 {% load static %}
 {% block section_title %} settings {% endblock section_title %}
 {% block path_title %} settings {%endblock path_title %}
+{% block extra_css %}
+   
+    <style>
+    .messages .alert {
+    padding: 15px; /* زيادة حجم المساحة الداخلية للرسالة */
+    margin-bottom: 15px; /* إضافة مسافة أسفل كل رسالة */
+    border: 2px solid; /* إضافة حدود سميكة */
+    border-radius: 8px; /* جعل الزوايا مستديرة أكثر */
+    font-weight: bold; /* جعل النص أكثر جرأة */
+}
+
+.messages .alert-success {
+    color: #155724; /* لون نص النجاح (أخضر داكن) */
+    background-color: #d4edda; /* لون خلفية النجاح (أخضر فاتح) */
+    border-color: #c3e6cb; /* لون حدود النجاح (أخضر أفتح) */
+}
+
+.messages .alert-error {
+    color: #721c24; /* لون نص الخطأ (أحمر داكن) */
+    background-color: #f8d7da; /* لون خلفية الخطأ (أحمر فاتح) */
+    border-color: #f5c6cb; /* لون حدود الخطأ (أحمر أفتح) */
+}
+
+/* يمكنك إضافة أنماط لأنواع الرسائل الأخرى مثل warning و info إذا كنت تستخدمها */
+.messages .alert-warning {
+    color: #85640a;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.messages .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+</style>
+ {% endblock extra_css %}
 {% block content %}
 <div class="dashboard-main-content">
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-6">
         <div class="form-box">
-          <div class="form-title-wrap">
-            <h3 class="title">معلومات شخصية</h3>
-          </div>
-          <div class="form-content">
-            <div class="user-profile-action d-flex align-items-center pb-4">
-              <div class="user-pro-img">
-                <img src="images/team1.jpg" alt="user-image" />
-              </div>
-              <div class="upload-btn-box">
-                <p class="pb-2 font-size-15 line-height-24">
-                  الحد الأقصى لحجم الملف هو 5 ميجا بايت ، والحد الأدنى للأبعاد:
-                  150 × 150 والملفات المناسبة هي .jpg & amp؛ .بي إن جي
-                </p>
-                <form action="#" method="post" enctype="multipart/form-data">
-                  <div class="d-flex align-items-center">
-                    <input
-                      type="file"
-                      name="files[]"
-                      class="filer_input"
-                      multiple="multiple"
-                    />
-                    <button
-                      class="theme-btn theme-btn-small ms-2 mt-n3"
-                      type="button"
-                    >
-                      إزالة الصورة
-                    </button>
-                  </div>
-                </form>
-              </div>
+            <div class="form-title-wrap">
+                <h3 class="title">معلومات شخصية</h3>
             </div>
+            {% if messages %}
+                            <div class="messages">
+                                {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+            <!-- Main form for other details -->
             <div class="contact-form-action">
-              <form action="#">
-                <div class="row">
-                  <div class="col-lg-6 responsive-column">
-                    <div class="input-box">
-                      <label class="label-text">الاسم الاول</label>
-                      <div class="form-group">
-                        <span class="la la-user form-icon"></span>
-                        <input class="form-control" type="text" value="علي" />
-                      </div>
+                <form method="POST" action="{% url 'customer:user_profile_dashboard_settings' %}" enctype="multipart/form-data"> <!-- تأكد من تضمين enctype هنا -->
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="form-content">
+                            <div class="user-profile-action d-flex align-items-center pb-4">
+                              {% if user.image %}
+                                <div class="user-pro-img">
+                                    <img id="profile-image" src="{{ user.image.url }}" alt="User Image">
+                                </div>
+                                {% endif %}
+                                <div class="upload-btn-box">
+                                    <p class="pb-2 font-size-15 line-height-24">
+                                        الحد الأقصى لحجم الملف هو 5 ميجا بايت ، والحد الأدنى للأبعاد: 150 × 150 والملفات المناسبة هي .jpg &amp; .بي إن جي
+                                    </p>
+    
+                                    <div class="d-flex align-items-center">
+                                        <!-- Image file input -->
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            class="filer_input"
+                                            multiple="multiple"
+                                            id="image-input"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6 responsive-column">
+                            <div class="input-box">
+                                <label class="label-text">الاسم الاول</label>
+                                <div class="form-group">
+                                    <span class="la la-user form-icon"></span>
+                                    <input class="form-control" type="text" name="first_name" value="{{ form.first_name.value }}" />
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6 responsive-column">
+                            <div class="input-box">
+                                <label class="label-text">الكنية</label>
+                                <div class="form-group">
+                                    <span class="la la-user form-icon"></span>
+                                    <input class="form-control" type="text" name="last_name" value="{{ form.last_name.value }}" />
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6 responsive-column">
+                            <div class="input-box">
+                                <label class="label-text">رقم الهاتف</label>
+                                <div class="form-group">
+                                    <span class="la la-phone form-icon"></span>
+                                    <input class="form-control" type="text" name="phone" value="{{ form.phone.value }}" />
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6 responsive-column">
+                            <div class="input-box">
+                                <label class="label-text">تاريخ الميلاد</label>
+                                <div class="form-group">
+                                    <span class="la la-user form-icon"></span>
+                                    <input class="form-control" type="date" name="date_of_birth" value="{{ form.date_of_birth.value }}" />
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6 responsive-column">
+                            <div class="input-box">
+                                <label class="label-text">عنوان</label>
+                                <div class="form-group">
+                                    <span class="la la-map form-icon"></span>
+                                    <input class="form-control" type="text" name="address" value="{{ form.address.value }}" />
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-12">
+                            <div class="btn-box">
+                                <button class="theme-btn" type="submit">حفظ التغييرات</button>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <!-- end col-lg-6 -->
-                  <div class="col-lg-6 responsive-column">
-                    <div class="input-box">
-                      <label class="label-text">الكنية</label>
-                      <div class="form-group">
-                        <span class="la la-user form-icon"></span>
-                        <input class="form-control" type="text" value="توفان" />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end col-lg-6 -->
-                  <div class="col-lg-6 responsive-column">
-                    <div class="input-box">
-                      <label class="label-text">عنوان البريد الالكترونى</label>
-                      <div class="form-group">
-                        <span class="la la-envelope form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value="alitufan@gmail.com"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end col-lg-6 -->
-                  <div class="col-lg-6 responsive-column">
-                    <div class="input-box">
-                      <label class="label-text">رقم الهاتف</label>
-                      <div class="form-group">
-                        <span class="la la-phone form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value="+01 4561 3214"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end col-lg-6 -->
-                  <div class="col-lg-6 responsive-column">
-                    <div class="input-box">
-                      <label class="label-text">تاريخ الولادة</label>
-                      <div class="form-group">
-                        <span class="la la-user form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value="03 يونيو 1990"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end col-lg-6 -->
-                  <div class="col-lg-6 responsive-column">
-                    <div class="input-box">
-                      <label class="label-text">عنوان</label>
-                      <div class="form-group">
-                        <span class="la la-map form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value="8800 Orchard Lake Road، Suite 180 فارمنجتون هيلز ، الولايات المتحدة الأمريكية"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end col-lg-6 -->
-                  <div class="col-lg-12">
-                    <div class="btn-box">
-                      <button class="theme-btn" type="button">
-                        حفظ التغييرات
-                      </button>
-                    </div>
-                  </div>
-                  <!-- end col-lg-12 -->
-                </div>
-                <!-- end row -->
-              </form>
+                </form>
             </div>
-          </div>
         </div>
-        <!-- end form-box -->
-      </div>
+    </div>
+    
+    
       <!-- end col-lg-6 -->
       <div class="col-lg-6">
         <div class="form-box">
@@ -142,68 +158,53 @@
           </div>
           <div class="form-content">
             <div class="contact-form-action">
-              <form action="#">
+              <form action="{% url 'customer:user_dashboard_settings_email' %}" method="POST">
+                {% csrf_token %}
                 <div class="row">
                   <div class="col-lg-12 responsive-column">
                     <div class="input-box">
                       <label class="label-text">الايميل الحالي</label>
                       <div class="form-group">
                         <span class="la la-envelope form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          placeholder="الايميل الحالي"
-                        />
+                        <input class="form-control" type="email" name="current_email" placeholder="الايميل الحالي" required />
                       </div>
                     </div>
                   </div>
-                  <!-- end col-lg-12 -->
+      
                   <div class="col-lg-12 responsive-column">
                     <div class="input-box">
                       <label class="label-text">بريد إلكتروني جديد</label>
                       <div class="form-group">
                         <span class="la la-envelope form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          placeholder="بريد إلكتروني جديد"
-                        />
+                        <input class="form-control" type="email" name="new_email" placeholder="بريد إلكتروني جديد" required />
                       </div>
                     </div>
                   </div>
-                  <!-- end col-lg-12 -->
+      
                   <div class="col-lg-12 responsive-column">
                     <div class="input-box">
-                      <label class="label-text"
-                        >بريد إلكتروني جديد مرة أخرى</label
-                      >
+                      <label class="label-text">بريد إلكتروني جديد مرة أخرى</label>
                       <div class="form-group">
                         <span class="la la-envelope form-icon"></span>
-                        <input
-                          class="form-control"
-                          type="text"
-                          placeholder="بريد إلكتروني جديد مرة أخرى"
-                        />
+                        <input class="form-control" type="email" name="confirm_email" placeholder="بريد إلكتروني جديد مرة أخرى" required />
                       </div>
                     </div>
                   </div>
-                  <!-- end col-lg-12 -->
+      
                   <div class="col-lg-12">
                     <div class="btn-box">
-                      <button class="theme-btn" type="button">
+                      <button class="theme-btn" type="submit">
                         تغيير الايميل
                       </button>
                     </div>
                   </div>
-                  <!-- end col-lg-12 -->
                 </div>
-                <!-- end row -->
               </form>
             </div>
           </div>
         </div>
-        <!-- end form-box -->
       </div>
+      
       <!-- end col-lg-6 -->
       <div class="col-lg-6">
         <div class="form-box">
@@ -212,7 +213,8 @@
           </div>
           <div class="form-content">
             <div class="contact-form-action">
-              <form action="#">
+              <form action="{% url "customer:user_dashboard_settings_password" %}" method="POST">
+                {% csrf_token %}
                 <div class="row">
                   <div class="col-lg-6 responsive-column">
                     <div class="input-box">
@@ -251,7 +253,7 @@
                         <span class="la la-lock form-icon"></span>
                         <input
                           class="form-control"
-                          type="text"
+                          type="text" name="newPasswordConfirm"
                           placeholder="كلمة المرور الجديدة مرة أخرى"
                         />
                       </div>
@@ -260,7 +262,7 @@
                   <!-- end col-lg-6 -->
                   <div class="col-lg-12">
                     <div class="btn-box">
-                      <button class="theme-btn" type="button">
+                      <button class="theme-btn reset-password" id="reset-password" type="button">
                         غير كلمة السر
                       </button>
                     </div>
@@ -353,4 +355,70 @@
   </div>
   <!-- end container-fluid -->
 </div>
+
+<script type="text/javascript">
+  document.getElementById("image-input").addEventListener("change", function(event) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imgElement = document.getElementById("profile-image");
+      imgElement.src = e.target.result;
+    };
+    reader.readAsDataURL(this.files[0]);
+  });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('form').on('click', '.reset-password', function(e) {
+      e.preventDefault(); 
+
+      var form = $(this).closest('form');
+      var url = form.attr('action');
+      var csrfToken = form.find('input[name="csrfmiddlewaretoken"]').val();
+
+      var inputs = form.find('input[type="text"]');
+      var currentPassword = inputs.eq(0).val();
+      var newPassword = inputs.eq(1).val();
+      var newPasswordConfirm = inputs.eq(2).val();
+  
+      console.log("Submitting:", {
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        newPasswordConfirm: newPasswordConfirm,
+        csrfToken: csrfToken
+      });
+  
+      $.ajax({
+        url: url,
+        method: "POST",
+        data: {
+          csrfmiddlewaretoken: csrfToken,
+          current_password: currentPassword,
+          new_password: newPassword,
+          new_password_confirm: newPasswordConfirm
+        },
+        dataType: 'json', 
+        success: function(response) {
+          console.log("Password changed successfully:", response);
+          alert(response.success || "Password changed successfully!");
+        },
+        error: function(xhr, errmsg, err) {
+          try {
+            var errResponse = JSON.parse(xhr.responseText);
+            if (errResponse.error) {
+              alert(errResponse.error);
+            } else {
+              alert("An error occurred. Please try again.");
+            }
+          } catch(e) {
+            alert("An error occurred. Please try again.");
+          }
+          console.error("Error changing password:", errmsg);
+        }
+      });
+    });
+  });
+</script>
+
 {% endblock content %}

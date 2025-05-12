@@ -1,7 +1,8 @@
 {% extends "admin/user_dashboard/index.html" %}
 {% load static %}
-{% block section_title %} bookings {% endblock section_title %}
-{% block path_title %} bookings {% endblock path_title %}
+{% load tz %}
+{% block section_title %} الحجوزات الخاصة بي {% endblock section_title %}
+{% block path_title %} الحجوزات {% endblock path_title %}
 {% block content %}
 <div class="dashboard-main-content">
   <div class="container-fluid">
@@ -9,19 +10,17 @@
       <div class="col-lg-12">
         <div class="form-box">
           <div class="form-title-wrap">
-            <div
-              class="d-flex align-items-center justify-content-between"
-            >
+            <div class="d-flex align-items-center justify-content-between">
               <div>
                 <h3 class="title">نتائج الحجز</h3>
                 <p class="font-size-14">
-                  إظهار 1 إلى 7 من أصل 17 مُدخل
+                  إظهار {{ page_obj.start_index }} إلى {{ page_obj.end_index }} من أصل {{ paginator.count }} مُدخل
                 </p>
               </div>
-              <span
-                >إجمالي الحجوزات
-                <strong class="color-text"> (17) </strong></span
-              >
+              <span>
+                إجمالي الحجوزات
+                <strong class="color-text">({{ paginator.count }})</strong>
+              </span>
             </div>
           </div>
           <div class="form-content">
@@ -29,298 +28,173 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th scope="col">نوع</th>
-                    <th scope="col">عنوان</th>
-                    <th scope="col">موقعك</th>
-                    <th scope="col">تاريخ الطلب</th>
-                    <th scope="col">تاريخ التنفيذ</th>
+                    <th scope="col">فندق</th>
+                    <th scope="col">المدينة</th>
+                    <th scope="col">الموقع</th>
+                    <th scope="col">تاريخ الدخول</th>
+                    <th scope="col">تاريخ الخروج</th>
                     <th scope="col">السعر</th>
                     <th scope="col">الحالة</th>
                     <th scope="col">عمل</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-plane me-1 font-size-18"></i>طيران
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">من لندن إلى مدينة نيويورك</h3>
-                      </div>
-                    </td>
-                    <td>مدينة نيويورك</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-info py-1 px-2"
-                        >قيد الانتظار</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-car me-1 font-size-18"></i>سيارة
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">مرسيدس بنز A 200 CDI</h3>
-                      </div>
-                    </td>
-                    <td>لندن الكبرى ، المملكة المتحدة</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-success py-1 px-2"
-                        >منجز</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-tree me-1 font-size-18"></i>جولة
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">
-                          إنتركونتيننتال نيويورك باركلي
-                        </h3>
-                      </div>
-                    </td>
-                    <td>اسطنبول، تركيا</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-warning py-1 px-2"
-                        >تأخر</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-ship me-1 font-size-18"></i>رحلة
-                      بحرية
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">
-                          رحلة بحرية لمدة 5 ليالٍ في برمودا
-                        </h3>
-                      </div>
-                    </td>
-                    <td>ميامي، فلوريدا</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-info py-1 px-2"
-                        >في الموعد المحدد</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-building me-1 font-size-18"></i
-                      >الفندق
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">فندق ميليا وايت هاوس</h3>
-                      </div>
-                    </td>
-                    <td>بوسطن، ماساتشوستس</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-success py-1 px-2"
-                        >منجز</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-tree me-1 font-size-18"></i>جولة
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">كوخ في جولة بلو واتر بيتش</h3>
-                      </div>
-                    </td>
-                    <td>124 نيفادا ، لاس فيغاس</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-success py-1 px-2"
-                        >منجز</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <i class="la la-plane me-1 font-size-18"></i>طيران
-                    </th>
-                    <td>
-                      <div class="table-content">
-                        <h3 class="title">من روما إلى أستراليا</h3>
-                      </div>
-                    </td>
-                    <td>مدينة نيويورك</td>
-                    <td>30/6/2020</td>
-                    <td>2/6/2020</td>
-                    <td>$350</td>
-                    <td>
-                      <span class="badge text-bg-success py-1 px-2"
-                        >منجز</span
-                      >
-                    </td>
-                    <td>
-                      <div class="table-content">
-                        <button class="theme-btn theme-btn-small">
-                          إلغاء
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  {% for item_data in page_obj %}
+                    {# --- تم إضافة can_add_more_guests للمتغيرات المستخرجة --- #}
+                    {% with booking=item_data.booking can_manage_guests=item_data.can_manage_guests has_guests=item_data.has_guests can_add_more_guests=item_data.can_add_more_guests %}
+                    <tr>
+                      <!-- ... (باقي الأعمدة كما هي) ... -->
+                       <th scope="row">
+                        <i class="la la-hotel me-1 font-size-18"></i>{{ booking.hotel.name }}
+                      </th>
+                      <td>
+                        <div class="table-content">
+                          <h3 class="title">{{ item_data.city_name }}</h3>
+                        </div>
+                      </td>
+                      <td>{{ item_data.hotel_location }}</td>
+                      <td>{{ booking.check_in_date|date:"d/m/Y" }}</td>
+                      <td>{{ booking.check_out_date|date:"d/m/Y" }}</td>
+                      <td>{{ booking.amount }}</td> {# أضف العملة هنا إذا لزم الأمر #}
+                      <td>
+                        {% if booking.status == '0' %}
+                          <span class="badge text-bg-warning py-1 px-2">قيد الانتظار</span>
+                        {% elif booking.status == '1' %}
+                          <span class="badge text-bg-info py-1 px-2">مؤكد</span>
+                        {% else %}
+                          <span class="badge text-bg-danger py-1 px-2">ملغي</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <div class="table-content d-flex gap-2">
+
+                            {# --- زر عرض التفاصيل --- #}
+                            <a
+                              href="{% url 'customer:user_booking_detail' booking.id %}"
+                              class="theme-btn theme-btn-small btn-info"
+                              data-bs-toggle="tooltip" data-placement="top" title="عرض تفاصيل الحجز"
+                            >
+                              <i class="la la-eye"></i>
+                            </a>
+                            {# --- نهاية زر عرض التفاصيل --- #}
+
+                            {# زر إلغاء الحجز #}
+                            {% if booking.status != '2' and booking.check_in_date %}
+                              <a
+                                href="{% url 'customer:cancel_booking' booking.id %}"
+                                class="theme-btn theme-btn-small btn-danger cancel-btn"
+                                data-checkin="{{ booking.check_in_date|date:'Y-m-d\\TH:i:s' }}"
+                                data-booking-id="{{ booking.id }}"
+                                onclick="return confirm('هل أنت متأكد من إلغاء هذا الحجز؟');"
+                              >
+                                <i class="la la-times"></i>
+                              </a>
+                            {% endif %}
+
+                            {# ---- زر إدارة الضيوف بالمنطق الجديد ---- #}
+                            {% if can_manage_guests %} {# تحقق أولاً إذا كانت الإدارة مسموحة #}
+                                {% if not has_guests %}
+                                    {# لا يوجد ضيوف بعد، ويمكن الإضافة #}
+                                    <a
+                                      href="{% url 'payments:add_guest' booking.id %}"
+                                      class="theme-btn theme-btn-small btn-success"
+                                      title="إضافة ضيوف لهذا الحجز"
+                                    >
+                                      <i class="la la-user-plus"></i>
+                                      إضافة ضيوف
+                                    </a>
+                                {% elif has_guests and can_add_more_guests %}
+                                    {# يوجد ضيوف، ولكن لا يزال يمكن إضافة المزيد #}
+                                    <a
+                                      href="{% url 'payments:add_guest' booking.id %}"
+                                      class="theme-btn theme-btn-small btn-warning" {# لون مختلف للإشارة للتعديل/الإضافة #}
+                                      title="إضافة أو تعديل الضيوف"
+                                    >
+                                      <i class="la la-users"></i> {# أيقونة مجموعة #}
+                                      إدارة الضيوف
+                                    </a>
+                                {% elif has_guests and not can_add_more_guests %}
+                                    {# يوجد ضيوف وتم الوصول للحد الأقصى #}
+                                    <a
+                                        href="{% url 'customer:user_booking_detail' booking.id %}" {# يوجه لصفحة التفاصيل #}
+                                        class="theme-btn theme-btn-small btn-secondary" {# لون رمادي أو أزرق مختلف #}
+                                        style="opacity: 0.8;"
+                                        title="عرض الضيوف (تم الوصول للحد الأقصى)"
+                                    >
+                                        <i class="la la-check"></i> {# أيقونة صح #}
+                                        تم إضافة الضيوف
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                            {# ---- نهاية التعديل ---- #}
+                        </div>
+                      </td>
+                    </tr>
+                    {% endwith %}
+                  {% empty %}
+                    <tr>
+                      <td colspan="8" class="text-center">لا توجد حجوزات بعد.</td>
+                    </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        <!-- end form-box -->
       </div>
-      <!-- end col-lg-12 -->
     </div>
-    <!-- end row -->
-    <div class="row">
+
+     <div class="row">
       <div class="col-lg-12">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item">
-              <a
-                class="page-link page-link-nav"
-                href="#"
-                aria-label="Previous"
-              >
-                <span aria-hidden="true"
-                  ><i class="la la-angle-left"></i
-                ></span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-            <li class="page-item">
-              <a class="page-link page-link-nav" href="#">1</a>
-            </li>
-            <li class="page-item active">
-              <a class="page-link page-link-nav" href="#"
-                >2 <span class="sr-only">(current)</span></a
-              >
-            </li>
-            <li class="page-item">
-              <a class="page-link page-link-nav" href="#">3</a>
-            </li>
-            <li class="page-item">
-              <a
-                class="page-link page-link-nav"
-                href="#"
-                aria-label="Next"
-              >
-                <span aria-hidden="true"
-                  ><i class="la la-angle-right"></i
-                ></span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <!-- end col-lg-12 -->
-    </div>
-    <!-- end row -->
-    <div class="border-top mt-5"></div>
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <div class="copy-right padding-top-30px">
-          <p class="copy__desc">
-            &copy; Copyright Trizen 2020. Made with
-            <span class="la la-heart"></span> by
-            <a href="https://themeforest.net/user/techydevs/portfolio"
-              >TechyDevs</a
-            >
+          <nav class="d-flex justify-content-center mt-5">
+              <ul class="pagination">
+                  {% if page_obj.has_previous %}
+                      <li class="page-item">
+                          <a class="page-link page-link-nav" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                              <span aria-hidden="true"><i class="la la-angle-left"></i></span>
+                              <span class="sr-only">Previous</span>
+                          </a>
+                      </li>
+                  {% endif %}
+                  {% for num in paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          <li class="page-item active"><span class="page-link page-link-nav">{{ num }}</span></li>
+                      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                           <li class="page-item"><a class="page-link page-link-nav" href="?page={{ num }}">{{ num }}</a></li>
+                      {% endif %}
+                  {% endfor %}
+                  {% if page_obj.has_next %}
+                      <li class="page-item">
+                          <a class="page-link page-link-nav" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                              <span aria-hidden="true"><i class="la la-angle-right"></i></span>
+                              <span class="sr-only">Next</span>
+                          </a>
+                      </li>
+                  {% endif %}
+              </ul>
+          </nav>
+          <p class="text-center font-size-13 pt-2">
+              عرض {{ page_obj.start_index }} - {{ page_obj.end_index }} من إجمالي {{ paginator.count }} حجوزات
           </p>
-        </div>
-        <!-- end copy-right -->
       </div>
-      <!-- end col-lg-7 -->
-      <div class="col-lg-5">
-        <div class="footer-social-box text-end padding-top-30px">
-          <ul class="social-profile">
-            <li>
-              <a href="#"><i class="lab la-facebook-f"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="lab la-twitter"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="lab la-instagram"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="lab la-linkedin-in"></i></a>
-            </li>
-          </ul>
-        </div>
-        <!-- end copy-right-content -->
-      </div>
-      <!-- end col-lg-5 -->
     </div>
-    <!-- end row -->
+
+
   </div>
-  <!-- end container-fluid -->
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cancelButtons = document.querySelectorAll('.cancel-btn');
+      const now = new Date();
+      cancelButtons.forEach(function (btn) {
+        btn.addEventListener('click', function (event) {
+          const confirmation = confirm("هل أنت متأكد أنك تريد إلغاء هذا الحجز؟");
+          if (!confirmation) { event.preventDefault(); }
+        });
+      });
+    });
+</script>
+
 {% endblock content %}
+

@@ -1,0 +1,493 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'assets/css/jquery.fancybox.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Material Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <style>
+    :root {
+      --gold-primary: #D4AF37;
+      --gold-secondary: #FBD341;
+      --gold-light: #FFF1AA;
+      --dark-primary: #222222;
+      --dark-secondary: #333333;
+      --dark-light: #444444;
+      --white: #FFFFFF;
+      --light-gray: #f8f9fa;
+      --success-color: #388E3C;
+      --danger-color: #D32F2F;
+      --warning-color: #FFA000;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .report-container {
+      padding: 20px;
+      background-color: var(--light-gray);
+      min-height: 100vh;
+    }
+    
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--gold-primary);
+      padding-bottom: 15px;
+    }
+    
+    .report-title {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: var(--dark-primary);
+      font-weight: bold;
+      position: relative;
+      padding-right: 15px;
+    }
+    
+    .report-title:before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 80%;
+      background-color: var(--gold-primary);
+      border-radius: 2px;
+    }
+    .report-filters {
+      background-color: var(--white);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-top: 3px solid var(--gold-primary);
+    }
+    
+    .filter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-end;
+    }
+    
+    .filter-group {
+      margin-bottom: 0;
+      min-width: 200px;
+    }
+    
+    .filter-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--dark-secondary);
+    }
+    
+    select.form-control {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 100%;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+    
+    select.form-control:focus {
+      border-color: var(--gold-primary);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    .chart-container {
+      background-color: var(--white);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      height: 400px;
+      border-top: 3px solid var(--gold-primary);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      background-color: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      border-top: 3px solid var(--gold-primary);
+    }
+    
+    .data-table th {
+      background-color: var(--gold-primary);
+      color: var(--white);
+      padding: 15px;
+      text-align: right;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      color: var(--dark-secondary);
+    }
+    
+    .data-table tr:nth-child(even) {
+      background-color: rgba(212, 175, 55, 0.05);
+    }
+    
+    .data-table tr:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+    .summary-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .summary-card {
+      flex: 1;
+      min-width: 220px;
+      background-color: var(--white);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      border-top: 3px solid var(--gold-primary);
+      transition: transform 0.3s;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card-title {
+      font-size: 15px;
+      color: var(--dark-secondary);
+      margin-bottom: 15px;
+      font-weight: 600;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .card-title:after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 2px;
+      background-color: var(--gold-primary);
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .card-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--gold-primary);
+      margin-top: 10px;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+    }
+    .no-data {
+      text-align: center;
+      padding: 50px;
+      background-color: var(--white);
+      border-radius: 8px;
+      color: var(--dark-secondary);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-top: 3px solid var(--gold-primary);
+    }
+    
+    .no-data h3 {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: var(--dark-primary);
+    }
+    
+    .no-data p {
+      font-size: 16px;
+      color: var(--dark-light);
+    }
+    .btn-primary {
+      background-color: var(--gold-primary);
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--gold-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+    
+    .rate-high {
+      color: var(--success-color);
+      font-weight: 600;
+    }
+    
+    .rate-medium {
+      color: var(--warning-color);
+      font-weight: 600;
+    }
+    
+    .rate-low {
+      color: var(--danger-color);
+      font-weight: 600;
+    }
+  </style>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list report-container{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class="report-header">
+    <h1 class="report-title">{% trans "تقرير معدل الإشغال" %}</h1>
+  </div>
+
+  <div class="report-filters">
+    <form method="get" class="filter-form">
+      <div class="filter-group">
+        <label class="filter-label" for="id_period">{% trans "الفترة الزمنية" %}</label>
+        <select name="period" id="id_period" class="form-control">
+          <option value="daily" {% if period == 'daily' %}selected{% endif %}>{% trans "يومي" %}</option>
+          <option value="weekly" {% if period == 'weekly' %}selected{% endif %}>{% trans "أسبوعي" %}</option>
+          <option value="monthly" {% if period == 'monthly' or not period %}selected{% endif %}>{% trans "شهري" %}</option>
+          <option value="yearly" {% if period == 'yearly' %}selected{% endif %}>{% trans "سنوي" %}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="id_hotel">{% trans "الفندق" %}</label>
+        <select name="hotel_id" id="id_hotel" class="form-control">
+          <option value="">{% trans "جميع الفنادق" %}</option>
+          {% for hotel in hotels %}
+            <option value="{{ hotel.id }}" {% if selected_hotel_id == hotel.id|stringformat:"i" %}selected{% endif %}>{{ hotel.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <button type="submit" class="btn-primary">{% trans "تطبيق الفلتر" %}</button>
+      </div>
+
+      {% if pdf_export_url %}
+      <div class="filter-group">
+        <a href="{{ pdf_export_url }}?period={{ period }}&hotel_id={{ selected_hotel_id }}" class="btn-primary" style="background-color: var(--danger-color);">
+          <i class="fas fa-file-pdf"></i>
+          {% trans "تصدير PDF" %}
+        </a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+
+  {% if occupancy_data %}
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="card-title">{% trans "متوسط معدل الإشغال" %}</div>
+        <div class="card-value">
+          {{ avg_rate|default:0|floatformat:2 }}%
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="card-title">{% trans "أعلى معدل إشغال" %}</div>
+        <div class="card-value">
+          {{ max_rate|default:0|floatformat:2 }}%
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="card-title">{% trans "إجمالي الغرف" %}</div>
+        <div class="card-value">
+          {% with first_entry=occupancy_data|first %}
+            {{ first_entry.total }}
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="occupancyChart"></canvas>
+    </div>
+
+    <!-- Data Table -->
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>{% trans "الفترة" %}</th>
+          <th>{% trans "الغرف المشغولة" %}</th>
+          <th>{% trans "إجمالي الغرف" %}</th>
+          <th>{% trans "معدل الإشغال" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in occupancy_data %}
+          <tr>
+            <td>{{ entry.date }}</td>
+            <td>{{ entry.occupied }}</td>
+            <td>{{ entry.total }}</td>
+            <td>
+              {% if entry.rate >= 70 %}
+                <span class="rate-high">{{ entry.rate }}%</span>
+              {% elif entry.rate >= 40 %}
+                <span class="rate-medium">{{ entry.rate }}%</span>
+              {% else %}
+                <span class="rate-low">{{ entry.rate }}%</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="no-data">
+      <h3>{% trans "لا توجد بيانات متاحة للفترة المحددة" %}</h3>
+      <p>{% trans "يرجى تغيير معايير التصفية أو التحقق من وجود حجوزات في النظام" %}</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var ctx = document.getElementById('occupancyChart').getContext('2d');
+
+    var chartLabels = {{ chart_labels|safe }};
+    var chartData = {{ chart_data|safe }};
+
+    // Define colors
+    var goldPrimary = getComputedStyle(document.documentElement).getPropertyValue('--gold-primary').trim();
+    var darkSecondary = getComputedStyle(document.documentElement).getPropertyValue('--dark-secondary').trim();
+    
+    var chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [{
+          label: '{% trans "معدل الإشغال (%)" %}',
+          data: chartData,
+          backgroundColor: 'rgba(212, 175, 55, 0.2)',
+          borderColor: goldPrimary,
+          borderWidth: 3,
+          pointBackgroundColor: goldPrimary,
+          pointBorderColor: '#fff',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              font: {
+                size: 12
+              },
+              color: darkSecondary,
+              padding: 15
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(34, 34, 34, 0.9)',
+            titleFont: {
+              size: 14,
+              weight: 'bold'
+            },
+            bodyFont: {
+              size: 13
+            },
+            padding: 12,
+            cornerRadius: 6,
+            caretSize: 6,
+            borderColor: goldPrimary,
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.parsed.y + '%';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              },
+              font: {
+                size: 12
+              },
+              color: darkSecondary,
+              padding: 10
+            },
+            grid: {
+              display: true,
+              color: 'rgba(0, 0, 0, 0.05)',
+              drawBorder: false
+            },
+            title: {
+              display: true,
+              text: '{% trans "معدل الإشغال (%)" %}',
+              color: darkSecondary,
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            }
+          },
+          x: {
+            ticks: {
+              maxTicksLimit: 10,
+              maxRotation: 45,
+              minRotation: 45,
+              font: {
+                size: 12
+              },
+              color: darkSecondary,
+              padding: 10
+            },
+            grid: {
+              display: false,
+              drawBorder: false
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

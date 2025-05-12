@@ -1,30 +1,26 @@
-
 from django.urls import path
 from . import views
-
+from django.contrib.admin.views.decorators import staff_member_required
+from payments.services.reports import revenue_summary_view, export_revenue_summary_pdf
 
 app_name = 'payments'
 urlpatterns = [
-    
-    path('',views.user_dashboard_index,name='user_dashboard_index'),
-    path('user-dashboard/bookings',views.user_dashboard_bookings,name='user_dashboard_bookings'),
-    path('user-dashboard/settings',views.user_dashboard_settings,name='user_dashboard_settings'),
-    path('user-dashboard/wishlist',views.user_dashboard_wishlist,name='user_dashboard_wishlist'),
-    path('user-dashboard/reviews',views.user_dashboard_reviews,name='user_dashboard_reviews'),
-    path('user-dashboard/profile',views.user_dashboard_profile,name='user_dashboard_profile'),
+    # Payment methods for Hotels
+    path('checkout/<int:room_id>/', views.checkout, name='checkout'),
+    path('process_booking/<int:room_id>/', views.process_booking, name='process_booking'),
+    path("save-guests/<int:room_id>/", views.save_guests, name="save_guests"),
+    path('confirm-payment/', views.hotel_confirm_payment, name='hotel_confirm_payment'),
+#    path('process-hotel-payment/', views.process_hotel_payment, name='process_hotel_payment'),
+#    path('payment_complete/<int:hotel_id>/', views.payment_complete, name='payment_complete'),
 
-    # admin
+    path('add_guest/<int:booking_id>/', views.add_guest, name='add_guest'),
+    path('payment-detail/<int:pk>/', views.payment_detail_view, name='external-payment-detail'),
     
-    path('hotel_manager_dashboard_index',views.hotel_manager_dashboard_index,name='hotel_manager_dashboard_index'),
-    path('admin_dashboard_booking',views.admin_dashboard_booking,name='admin_dashboard_booking'),
-    path('admin_payments',views.admin_payments,name='admin_payments'),
-    path('admin_invoice',views.admin_invoice,name='admin_invoice'),
-    path('admin_dashboard_wishlist',views.admin_dashboard_wishlist,name='admin_dashboard_wishlist'),
-    path('admin_dashboard_users',views.admin_dashboard_users,name='admin_dashboard_users'),
-    path('admin_dashboard_user_detail',views.admin_dashboard_user_detail,name='admin_dashboard_user_detail'),
-    path('admin_dashboard_settings',views.admin_dashboard_settings,name='admin_dashboard_settings'),
-    path('admin_dashboard_reviews',views.admin_dashboard_reviews,name='admin_dashboard_reviews'),
-    path('admin_dashboard_orders',views.admin_dashboard_orders,name='admin_dashboard_orders'),
-    path('admin_dashboard_orders_detail',views.admin_dashboard_orders_detail,name='admin_dashboard_orders_detail'),
-    path('admin_currency_list',views.admin_currency_list,name='admin_currency_list'),
+    # Report URLs
+    path('reports/revenue-summary/', staff_member_required(revenue_summary_view), name='revenue-summary'),
+    path('reports/revenue-summary/export-pdf/', staff_member_required(export_revenue_summary_pdf), name='revenue-summary-export-pdf'),
+    path('payments/<int:payment_id>/change-status/', views.change_payment_status_view, name='change_payment_status'),
 ]
+
+
+

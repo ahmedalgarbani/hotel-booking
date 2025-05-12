@@ -2,6 +2,11 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
+from django.utils.text import slugify
+from users.utils import send_sms_via_sadeem
+import logging
+
+logger = logging.getLogger(__name__)  
 
 class Notification:
     @staticmethod
@@ -18,6 +23,10 @@ class Notification:
             'login_url': settings.LOGIN_URL
         }
         
+        # Generate slug for the hotel name
+        hotel_slug = slugify(hotel_name)
+        print(f"تم إنشاء slug للفندق: {hotel_slug}")
+
         # إرسال البريد الإلكتروني
         html_message = render_to_string('emails/hotel_manager_credentials.html', context)
         plain_message = f"""مرحباً {user.get_full_name()},
@@ -50,11 +59,21 @@ class Notification:
             send_mail(
                 subject=subject,
                 message=plain_message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=settings.EMAIL_HOST_USER,  # استخدام EMAIL_HOST_USER كمرسل
                 recipient_list=[user.email],
                 html_message=html_message,
                 fail_silently=False
             )
+            # إرسال رسالة نصية قصيرة عبر Sadeem            
+            message_body = f"""مرحباً {user.get_full_name()}،  
+            تم قبولك كمدير لفندق "{hotel_name}".  
+            بيانات الدخول:  
+            المستخدم: {user.username}  
+            كلمة المرور: {password}  
+            بالتوفيق!"""
+            sms_sent = send_sms_via_sadeem(user.phone, message_body)
+            if sms_sent:
+                print(f"تم إرسال رسالة نصية قصيرة بنجاح إلى {user.phone}")
             print(f"تم إرسال البريد الإلكتروني بنجاح إلى {user.email}")
             return True
         except Exception as e:
@@ -69,4 +88,59 @@ class Notification:
   * EMAIL_PORT: {getattr(settings, 'EMAIL_PORT', 'غير محدد')}
   * DEFAULT_FROM_EMAIL: {getattr(settings, 'DEFAULT_FROM_EMAIL', 'غير محدد')}
 """)
+            return False
+
+
+
+    @staticmethod
+    def send_end_booking_notification(user, hotel_name, check_out_date):
+
+        """
+        إرسال بريد إلكتروني لإعلام المستخدم بنهاية الحجز
+        """
+        subject = _('إشعار بنهاية الحجز في فندق {hotel_name}'.format(hotel_name=hotel_name))
+        context = {
+            'user': user,
+            'hotel_name': hotel_name,
+            'check_out_date': check_out_date,
+        }
+
+        # Constructing the HTML and plain text email body
+        html_message = render_to_string('emails/hotel_end_booking.html', context)
+        plain_message = f"""مرحباً {user.get_full_name()},
+
+نود إعلامك بأن حجزك في فندق {hotel_name} سينتهي في {check_out_date.strftime('%Y-%m-%d %H:%M:%S')}.
+
+نأمل منك إنهاء إجراءات الخروج في الوقت المحدد.
+
+مع تحيات،
+فريق إدارة الفنادق"""
+
+        try:
+            # Verify email settings
+            if not settings.EMAIL_HOST or not settings.EMAIL_PORT:
+                logger.error("خطأ في الإعدادات: لم يتم تكوين خادم البريد الإلكتروني")
+                return False
+
+            if not settings.DEFAULT_FROM_EMAIL:
+                logger.error("خطأ في الإعدادات: لم يتم تحديد عنوان المرسل")
+                return False
+
+            if not user.email:
+                logger.error(f"خطأ: لا يوجد بريد إلكتروني للمستخدم {user.username}")
+                return False
+
+            # Try sending the email
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                from_email=settings.EMAIL_HOST_USER,  # استخدام EMAIL_HOST_USER كمرسل
+                recipient_list=[user.email],
+                html_message=html_message,
+                fail_silently=False
+            )
+            logger.info(f"تم إرسال البريد الإلكتروني بنجاح إلى {user.email}")
+            return True
+        except Exception as e:
+            logger.error(f"خطأ في إرسال البريد الإلكتروني:\n- نوع الخطأ: {type(e).__name__}\n- رسالة الخطأ: {str(e)}\n- المستخدم: {user.username}\n- البريد الإلكتروني: {user.email}")
             return False

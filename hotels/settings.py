@@ -11,6 +11,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+# load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# This will make sure the tasks are registered when Celery starts
+from .celery import app as celery_app
+
+__all__ = ('celery_app',)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +35,10 @@ SECRET_KEY = 'django-insecure-$&gp2^!(w4%x2zo)1ohk&xk@$10kcw=3w15(t_q(x6$!6gec(p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1", "localhost", "10.0.2.2", "192.168.1.151","192.168.33.34","192.168.60.34","192.168.0.105","192.168.8.115"]
 
+# Load environment variables from .env file
+load_dotenv()
 
 # Application definition
 
@@ -38,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
     'users',
     'HotelManagement',
     'rooms',
@@ -48,13 +61,174 @@ INSTALLED_APPS = [
     'services',
     'rest_framework',
     'menu_generator',
-    'blog',  
+    'rest_framework_simplejwt',
+    'api',
+    'rest_framework_simplejwt.token_blacklist',
+    'blog',
+    'notifications',
+    'customer',
+    'django_celery_beat',
+    'ckeditor',
+    'rest_framework.authtoken',
+    'social_django',
+    'oauth2_provider'
+
+
+
 ]
+
+# python manage.py makemigrations accounts users HotelManagement rooms home bookings payments reviews services blog notifications customer
+
+
+REST_FRAMEWORK = {
+     'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ),
+
+
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute',
+        'user': '100/minute'
+    },
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
+
+
+
+}
+
+#  -------------------------------------
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+LOGIN = 'users/login/'
+LOGOUT = 'users/logout/'
+LOGIN_URL = 'users/login/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'users/login/'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET  = os.getenv('GOOGLE_CLIENT_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI =("http://127.0.0.1:8000/auth/complete/google-oauth2/")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['profile', 'email', 'openid']
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name', 'gender', 'birthday', 'picture']
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8000",
+#     "http://127.0.0.1:8000",
+# ]
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:8000",
+#     "http://127.0.0.1:8000",
+# ]
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
+}
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+#  -------------------------------------
+
+
+    #'EXCEPTION_HANDLER': '/api/handle.py'
+
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    # Serializers
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'errors.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+
+
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -75,6 +249,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'HotelManagement.context_processors.notifications_context',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -97,8 +274,13 @@ DATABASES = {
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'"
         }
+    },
+     'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -155,22 +337,29 @@ JAZZMIN_SETTINGS = {
     # الترحيب وحقوق النشر
     "welcome_sign": "مرحباً بك في نظام إدارة الفنادق",
     "copyright": "جميع الحقوق محفوظة 2024",
-    
-    # البحث والمستخدم
-    "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
-    "user_avatar": None,
 
-    # القوائم
+    # # البحث والمستخدم
+    # "search_model": ["users.CustomUser", "HotelManagement.Hotel"],
+    # "user_avatar": None,
+
     "topmenu_links": [
         {"name": "الرئيسية", "url": "admin:index", "permissions": ["users.view_customuser"]},
-        
+        {"name": "الإشعارات", "url": "admin:notifications_notifications_changelist", "icon": "fas fa-bell"},
         {"name": "الذهاب إلى الموقع", "url": "/", "new_window": True, "icon": "fas fa-globe"},
         {"model": "users.CustomUser"},
         {"model": "HotelManagement.Hotel"},
     ],
 
+
     # تجميع النماذج
     "models": {
+        # "notifications": {
+        #     "name": "الإشعارات",
+        #     "icon": "fas fa-bell",
+        #     "models": [
+        #         "notifications.Notifications",
+        #     ]
+        # },
         "system_setup": {
             "name": "تهيئة النظام",
             "icon": "fas fa-cogs",
@@ -217,17 +406,17 @@ JAZZMIN_SETTINGS = {
             ]
         },
     },
-    # قائمة المستخدم
-    "usermenu_links": [
-        {"model": "users.CustomUser"}
-    ],
+    # # قائمة المستخدم
+    # "usermenu_links": [
+    #     {"model": "users.CustomUser"}
+    # ],
 
     # القائمة الجانبية
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
-    
+
     # الأيقونات
     "icons": {
         "auth": "fas fa-users-cog",
@@ -236,7 +425,7 @@ JAZZMIN_SETTINGS = {
         "users.GuestProfile": "fas fa-address-card",
         "users.GuestPreference": "fas fa-heart",
         "auth.Group": "fas fa-users",
-        
+
         "locations.Region": "fas fa-map-marked",
         "HotelManagement.City": "fas fa-city",
         "HotelManagement.Location": "fas fa-map-marker-alt",
@@ -257,7 +446,6 @@ JAZZMIN_SETTINGS = {
         "rooms.RoomImage": "fas fa-image",
         "rooms.RoomAmenity": "fas fa-coffee",
         "rooms.RoomFeature": "fas fa-list-ul",
-        "rooms.RoomStatus": "fas fa-info-circle",
         "rooms.RoomPrice": "fas fa-tag",
         "rooms.RoomPriceHistory": "fas fa-history",
         "rooms.RoomDiscount": "fas fa-percent",
@@ -269,64 +457,79 @@ JAZZMIN_SETTINGS = {
         "bookings.Booking": "fas fa-calendar-check",
         "bookings.BookingStatus": "fas fa-clock",
         "bookings.BookingDetail": "fas fa-receipt",
-        "bookings.BookingGuest": "fas fa-users",
-        "bookings.BookingExtra": "fas fa-plus-circle",
-        "bookings.BookingNote": "fas fa-sticky-note",
-        "bookings.BookingCancellation": "fas fa-ban",
-        "bookings.Payment": "fas fa-credit-card",
-        "bookings.PaymentStatus": "fas fa-money-check-alt",
-        "bookings.PaymentMethod": "fas fa-money-bill-wave",
-        "bookings.Invoice": "fas fa-file-invoice-dollar",
-        "reviews.Review": "fas fa-star",
-        "reviews.Rating": "fas fa-star-half-alt",
-        "services.Service": "fas fa-concierge-bell",
+        "bookings.Guest": "fas fa-users",
+        "bookings.ExtensionMovement": "fas fa-plus-circle",
+        "bookings.BookingHistory": "fas fa-sticky-note",
+        "bookings.BookingHistory": "fas fa-ban",
+        "payments.Payment": "fas fa-credit-card",
+        "payments.PaymentOption": "fas fa-money-check-alt",
+        "payments.PaymentHistory": "fas fa-sticky-note",
+        "payments.PaymentMethod": "fas fa-money-bill-wave",
+        "payments.Currency": "fas fa-file-invoice-dollar",
+        "payments.HotelPaymentMethod": "fas fa-money-bill-alt",
+        "reviews.HotelReview": "fas fa-star",
+        "reviews.RoomReview": "fas fa-star-half-alt",
+        "services.HotelService": "fas fa-concierge-bell",
         "services.ServiceCategory": "fas fa-th-list",
-        "services.ServiceBooking": "fas fa-calendar-plus",
-        "media.Image": "fas fa-image",
-        "media.Gallery": "fas fa-images",
-        "media.Document": "fas fa-file-alt",
-        "media.Video": "fas fa-video",
+        "services.RoomTypeService": "fas fa-calendar-plus",
+        "services.Offer": "fas fa-gift",
+        "services.Coupon": "fas fa-ticket-alt",
+        "HotelManagement.Image": "fas fa-image",
+        "rooms.RoomImage": "fas fa-images",
+
         "blog.Post": "fas fa-blog",
         "blog.Category": "fas fa-folder",
         "blog.Comment": "fas fa-comments",
         "blog.Tag": "fas fa-tags",
-        "home.Slider": "fas fa-images",
+        "home.HeroSlider": "fas fa-images",
         "home.Testimonial": "fas fa-quote-right",
         "home.Partner": "fas fa-handshake",
-        "home.Contact": "fas fa-envelope",
-        "home.About": "fas fa-info-circle",
-        "home.FAQ": "fas fa-question-circle",
-        "home.Newsletter": "fas fa-newspaper",
-        "home.SocialMedia": "fas fa-share-alt"
+        "home.ContactMessage": "fas fa-envelope",
+        "home.InfoBox": "fas fa-info-circle",
+        "home.RoomTypeHome": "fas fa-bed",
+        "home.Setting": "fas fa-cog",
+        "home.SocialMediaLink": "fas fa-share-alt",
+        "home.TeamMember": "fas fa-users",
+        "home.PricingPlan": "fas fa-dollar-sign",
+        "home.PrivacyPolicy": "fas fa-shield-alt",
+        "home.PaymenPolicy": "fas fa-money-check",
+        "home.TermsConditions": "fas fa-file-contract",
+
+        # "notifications.Notifications": "fas fa-bell",
+
+        "accounts.ChartOfAccounts": "fas fa-chart-pie",
+        "accounts.JournalEntry": "fas fa-book"
     },
     # تخصيص الواجهة
-    "custom_css": "admin_assets/css/bootstrap.rtl.css",
-    "custom_js": "admin_assets/js/script.js",
+    "custom_css": "",
+    "custom_js": "admin/js/notification-badges-global.js",
     "use_google_fonts_cdn": True,
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
     "language_chooser": True,
-    
+
     # الألوان والتنسيق
     "dark_mode_theme": "darkly",
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
-    
+
     # Modal Settings
     "related_modal_active": True,
-    
+
     # Custom Links
     "custom_links": {
-        "users": [{
-            "name": "إحصائيات المستخدمين", 
-            "url": "admin:users_customuser_changelist", 
-            "icon": "fas fa-chart-line"
-        }],
+        # "notifications": [{
+        #     "name": "الإشعارات",
+        #     "url": "admin:notifications_notifications_changelist",
+        #     "icon": "fas fa-bell"
+        # }]
+        # ,
         "hotels": [{
             "name": "إحصائيات الفنادق",
             "url": "admin:HotelManagement_hotel_changelist",
             "icon": "fas fa-chart-bar"
-        }]
+        }],
+        
     },
 }
 
@@ -334,25 +537,25 @@ JAZZMIN_SETTINGS = {
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
-    "body_small_text": False,
+    "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "navbar-dark",
-    "accent": "accent-primary",
-    "navbar": "navbar-dark",
+    "brand_colour": "navbar-success",
+    "accent": "accent-olive",
+    "navbar": "navbar-white navbar-light",
     "no_navbar_border": True,
     "navbar_fixed": True,
     "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-primary",
+    "footer_fixed": True,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-light-success",
     "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
+    "sidebar_disable_expand": True,
     "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "default",
-    "dark_mode_theme": "default",
+    "theme": "litera",
+    "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",
@@ -364,15 +567,7 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-}
+
 
 
 ####################################################################################
@@ -383,42 +578,55 @@ REST_FRAMEWORK = {
 NAV_MENU_TOP = [
     {
         "name": "الرئيسي",
-        "url": "/",  
+        "url": "/",
     },
-    {
-        "name": "عنا",
-        "url": "register_view_url",  
-    },
+
     {
         "name": "الفنادق",
         "url": "/hotels",
-        # "submenu": [
-        #     {
-        #         "name": "Profile",
-        #         "url": "/account/profile",
-        #     },
-        #     {
-        #         "name": "Account Balance",
-        #         "url": "/account/balance",
-        #     },
-        #     {
-        #         "name": "Account Secrets",
-        #         "url": "/account/secrets",
-        #     }
-        # ],
+
     },
     {
         "name": "الغرف",
-        "url": "/rooms",  
+        "url": "/rooms",
     },
-    {
-        "name": "اشترك معنا",
-        "url": "/users/register/",  
-    },
+
     {
         "name": "المقالات",
-        "url": "/blog/",  
+        "url": "/blog/",
     },
+
+    {
+        "name": "المزيد",
+        "url": "/",
+
+        "submenu": [
+           {
+        "name": "عنا",
+        "url": "about/",
+    },
+            {
+        "name": "تواصل معنا",
+        "url": "/contact",
+    },
+            {
+                "name": "الشروط والاحكام",
+                "url": "/terms-condition",
+
+            },
+            {
+                "name": "سياسات الخصوصيه",
+                "url": "/privacy-policy",
+
+            },
+             {
+        "name": "الاسعار",
+        "url": "/price",
+    },
+
+        ],
+    },
+
 ]
 
 # إعدادات البريد الإلكتروني
@@ -429,3 +637,33 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ammarragha@gmail.com'
 EMAIL_HOST_PASSWORD = 'dbhv ajjh lphb gcrh'
 DEFAULT_FROM_EMAIL = 'نظام إدارة الفنادق <ammarragha@gmail.com>'
+
+
+# ----- Celebry Settings --------------
+#  Download Redis
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'UTC'
+
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
+# --------------- Extirnal Api -----------
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+
+
+CELERY_IMPORTS = [
+    'bookings.tasks',
+]
+
+SADEEM_API_SECRET = '43f5360a204233df6fc8c265c9be8ab0b0b9c282' 
+SADEEM_DEVICE_ID = 'a83a8a5ad76466e9'   
+SADEEM_SIM = '1'    
+
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

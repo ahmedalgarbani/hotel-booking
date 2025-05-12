@@ -1,0 +1,327 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Luxury Color Scheme */
+        :root {
+            --luxury-gold: #d4af37;
+            --luxury-dark: #2c3e50;
+            --luxury-light: #f8f9fa;
+            --luxury-accent: #8e44ad;
+            --luxury-success: #27ae60;
+            --luxury-info: #3498db;
+            --luxury-warning: #f39c12;
+            --luxury-danger: #e74c3c;
+        }
+        
+        /* Page Background */
+        body {
+            background-color: var(--luxury-light);
+        }
+        
+        /* Report Title */
+        h1 {
+            color: var(--luxury-dark);
+            border-bottom: 2px solid var(--luxury-gold);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        /* Table Styling */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        
+        .report-table th, .report-table td {
+            padding: 12px;
+            text-align: right; /* Align text to right for Arabic */
+            border: 1px solid #e0e0e0;
+        }
+        
+        .report-table th {
+            background-color: var(--luxury-dark);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+        
+        .report-table tr:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+        
+        .report-table tr.row1 {
+            background-color: #f8f8f8;
+        }
+        
+        /* Filter Form */
+        .date-filter-form {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(to right, #ffffff, #f8f9fa);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .date-filter-form label {
+            margin-left: 15px;
+            font-weight: bold;
+            color: var(--luxury-dark);
+        }
+        
+        .date-filter-form input[type="date"] {
+            margin-left: 8px;
+            padding: 8px 12px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .date-filter-form input[type="date"]:focus {
+            border-color: var(--luxury-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+            outline: none;
+        }
+        
+        .date-filter-form select {
+            margin-left: 8px;
+            padding: 8px 12px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            min-width: 200px;
+        }
+        
+        .date-filter-form select:focus {
+            border-color: var(--luxury-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+            outline: none;
+        }
+        
+        .date-filter-form button {
+            padding: 8px 16px;
+            background-color: var(--luxury-dark);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .date-filter-form button:hover {
+            background-color: #1a2530;
+        }
+        
+        /* Daily Summary */
+        .daily-summary {
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--luxury-dark), #34495e);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .daily-summary i {
+            margin-left: 10px;
+            color: var(--luxury-gold);
+        }
+        
+        /* Export Button */
+        .export-btn {
+            background: linear-gradient(to right, var(--luxury-gold), #e6c34d);
+            color: var(--luxury-dark);
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(to right, #e6c34d, var(--luxury-gold));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .export-btn i {
+            margin-left: 8px;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .status-confirmed {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+        
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+        
+        .status-cancelled {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .status-completed {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+        
+        /* No Results Message */
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+{% block content_title %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% if not has_view_permission %}
+            <p class="errornote">
+                {% blocktrans %}You do not have permission to view this report.{% endblocktrans %}
+            </p>
+        {% else %}
+            {# Date Filter Form #}
+            <div class="date-filter-form">
+                <form method="get" action="">
+                    <label for="start_date">{% trans "من تاريخ:" %}</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+                    <label for="end_date">{% trans "إلى تاريخ:" %}</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+                    <label for="customer_id" style="margin-right: 10px;">{% trans "العميل:" %}</label>
+                    <select id="customer_id" name="customer_id" style="margin-left: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 3px;">
+                        <option value="">{% trans "الكل" %}</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.id }}" {% if selected_customer_id == customer.id|stringformat:"s" %}selected{% endif %}>
+                                {{ customer.get_full_name|default:customer.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">{% trans "تصفية" %}</button>
+
+                    {# Add Export PDF button/link #}
+                    <a href="{{ pdf_export_url }}?start_date={{ start_date }}&end_date={{ end_date }}&customer_id={{ selected_customer_id }}" class="export-btn">
+                        {% trans "تصدير PDF" %} <i class="fas fa-file-pdf"></i>
+                    </a>
+                </form>
+            </div>
+
+            {# Display Bookings Grouped by Day (using the dictionary passed from view) #}
+            {% if bookings_by_day %}
+                {% for day, day_bookings in bookings_by_day.items %}
+                    <div class="daily-summary">
+                        <i class="fas fa-calendar-day"></i>
+                        {% blocktrans with date=day|date:"Y-m-d" count=day_bookings|length %}
+                        تاريخ: {{ date }} - عدد الحجوزات: {{ count }}
+                        {% endblocktrans %}
+                    </div>
+                    <div class="results">
+                        <table class="report-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "رقم الحجز" %}</th>
+                                    <th>{% trans "الفندق" %}</th>
+                                    <th>{% trans "العميل" %}</th>
+                                    <th>{% trans "الغرفة" %}</th>
+                                    <th>{% trans "تاريخ الوصول" %}</th>
+                                    <th>{% trans "تاريخ المغادرة" %}</th>
+                                    <th>{% trans "إجمالي المدفوعات" %}</th> {# Changed Header #}
+                                    <th>{% trans "حالة الحجز" %}</th> {# Changed Header #}
+                                    <th>{% trans "حالة الدفع" %}</th> {# New Header #}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in day_bookings %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.hotel.name }}</td>
+                                        <td>{{ booking.user.get_full_name|default:booking.user.username }}</td>
+                                        <td>{{ booking.room.name }}</td>
+                                        <td>{{ booking.check_in_date|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ booking.check_out_date|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ booking.total_paid|floatformat:2 }}</td> {# Changed Data #}
+                                        <td>
+                                            {% with status=booking.get_status_display %}
+                                                <span class="status-badge {% if status == 'مؤكد' %}status-confirmed{% elif status == 'معلق' %}status-pending{% elif status == 'ملغي' %}status-cancelled{% elif status == 'مكتمل' %}status-completed{% endif %}">
+                                                    {{ status }}
+                                                </span>
+                                            {% endwith %}
+                                        </td>
+                                        <td>
+                                            {% with payment_status=booking.latest_payment_status_display %}
+                                                <span class="status-badge {% if payment_status == 'مدفوع' %}status-confirmed{% elif payment_status == 'معلق' %}status-pending{% elif payment_status == 'مرفوض' %}status-cancelled{% elif payment_status == 'مسترد' %}status-completed{% endif %}">
+                                                    {{ payment_status }}
+                                                </span>
+                                            {% endwith %}
+                                        </td> {# New Data #}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>{% trans "لا توجد حجوزات للعرض في الفترة المحددة." %}</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

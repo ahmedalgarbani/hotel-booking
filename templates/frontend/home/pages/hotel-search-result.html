@@ -1,0 +1,598 @@
+{% extends "frontend/layout/master.html" %}
+
+{% block extra_css %}
+
+<style>
+
+  /* Default button styling */
+.add-to-wishlist {
+  color: #6c757d; /* grey by default */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.add-to-wishlist .la-heart-o {
+  color: #6c757d; /* grey heart */
+}
+
+.add-to-wishlist .la-heart {
+  color:red; /* white heart when selected */
+
+}
+
+/* Blue button when added to wishlist */
+.btn-blue {
+  background-color: #007bff; /* blue background */
+  color: block; /* white text */
+}
+
+.btn-blue .la-heart {
+  color: red; /* white heart icon when selected */
+
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.custom-checkbox input[type="checkbox"] {
+    margin-left: 8px;
+}
+.sidebar-review .ratings {
+    margin-right: 0;
+}
+.sidebar-category .custom-checkbox {
+    margin-bottom: 8px;
+}
+
+/* Estilos para tarjetas de hoteles de tamaño uniforme */
+.card-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.card-item .card-img {
+    position: relative;
+    width: 100%;
+    height: 220px; /* Altura fija para todas las imágenes */
+    overflow: hidden;
+}
+
+.card-item .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción y cubre el área */
+    object-position: center;
+}
+
+.card-item .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.card-item .card-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.card-item .card-price {
+    margin-top: auto;
+}
+
+.responsive-column {
+    margin-bottom: 20px;
+}
+
+  .custom-alert.warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.alert-icon {
+    width: 24px;
+    height: 24px;
+    color: #ffc107;
+    flex-shrink: 0;
+}
+
+.alert-heading {
+    color: #856404;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.custom-alert p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+</style>
+{% endblock extra_css %}
+{% block content %}
+
+<!-- ================================
+START BREADCRUMB AREA
+================================= -->
+<section class="breadcrumb-area bread-bg-10">
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="breadcrumb-content text-center">
+            <div class="section-heading">
+              <h2 class="sec__title text-white">نتيجة البحث عن الغرف</h2>
+            </div>
+            <span class="arrow-blink">
+              <i class="la la-arrow-down"></i>
+            </span>
+          </div>
+          <!-- end breadcrumb-content -->
+        </div>
+        <!-- end col-lg-12 -->
+      </div>
+      <!-- end row -->
+    </div>
+    <!-- end container -->
+  </div>
+  <!-- end breadcrumb-wrap -->
+  <div class="bread-svg-box">
+    <svg
+      class="bread-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 10"
+      preserveAspectRatio="none"
+    >
+      <polygon points="100 0 50 10 0 0 0 10 100 10"></polygon>
+    </svg>
+  </div>
+
+  <!-- end bread-svg -->
+</section>
+<!-- end breadcrumb-area -->
+<!-- ================================
+END BREADCRUMB AREA
+================================= -->
+
+<!-- ================================
+START CARD AREA
+================================= -->
+<section class="card-area section--padding">
+  <div class="container">
+    <div class="row">
+      {% if error_message %}
+      <div class="custom-alert warning">
+          <div class="alert-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              <div class="message">
+                  <h4 class="alert-heading">تنبيه!</h4>
+                  <p class="mb-0">{{ error_message }}</p>
+              </div>
+          </div>
+      </div>
+      {% endif %}
+      <div class="col-lg-12">
+        <div class="filter-wrap margin-bottom-30px">
+          <div class="filter-bar d-flex align-items-center justify-content-between">
+            <div class="filter-bar-filter d-flex flex-wrap align-items-center">
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">نتيجة</h3>
+              </div>
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">
+                  <i class="la la-user me-1"></i>اسم الفندق:
+                  {% if hotel_name %}
+                  <span class="text-color ms-2">{{hotel_name}}</span>
+                  {% endif %}
+                </h3>
+              </div>
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">
+                  <i class="la la-clock-o me-1"></i>تاريخ:
+                  <span class="text-color ms-2">{{check_out_start}} - {{check_in_start}}</span>
+                </h3>
+              </div>
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">
+                  <i class="la la-user me-1"></i>عدد الاشخاص:
+                  <span class="text-color ms-2">{{adult_number}}</span>
+                </h3>
+              </div>
+              <div class="filter-option me-5">
+                <h3 class="title font-size-16">
+                  <i class="la la-user me-1"></i>القسم:
+                  {% if room_type_name %}
+                  <span class="text-color ms-2">{{room_type_name}}</span>
+                  {% endif %}
+                </h3>
+              </div>
+
+            </div>
+            <!-- end filter-bar-filter -->
+            {% comment %} <div class="btn-box">
+              <a href="#" class="theme-btn theme-btn-transparent" data-bs-toggle="modal" data-bs-target="#modifyPopupForm">تعديل</a>
+            </div> {% endcomment %}
+            <!-- end btn-box -->
+          </div>
+          <!-- end filter-bar -->
+        </div>
+        <!-- end filter-wrap -->
+      </div>
+      <!-- end col-lg-12 -->
+
+    </div>
+
+    <!-- end row -->
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="row">
+          {% for hotel in hotels %}
+             <!-- end col-lg-6 -->
+             <div class="col-lg-6 responsive-column">
+              <div class="card-item">
+                <div class="card-img">
+                 {% if hotel.profile_picture %}
+                 <a href="{{hotel.get_absolute_url}}" class="d-block">
+                  <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
+                </a>
+                 {% endif %}
+                {% if hotel.best_seller %}
+            <span class="badge " style="margin:20px 0 0 10px">الأكثر مبيعا</span>
+            {% endif %}
+                 <div
+                 class="add-to-wishlist icon-element {% if hotel.is_favorite %}btn-blue{% endif %}"
+                 data-bs-toggle="tooltip"
+                 data-placement="top"
+                 data-hotel-id="{{ hotel.id }}"
+                 title="المرجعية"
+               >
+                 {% if hotel.is_favorite %}
+                   <i class="la la-heart"></i>
+                 {% else %}
+                   <i class="la la-heart-o"></i>
+                 {% endif %}
+               </div>
+
+                </div>
+                <div class="card-body">
+                  <h3 class="card-title">
+                    <a href="{{hotel.get_absolute_url}}">{{hotel.name}}</a>
+                  </h3>
+                  <h6 class="mb-2">
+                    <p> عدد الحجوزات ({{hotel.booking_count}})</p>
+                  </h6>
+                
+                  <p class="card-meta">{{hotel.location}},{{hotel.location.city.state}}</p>
+                  <div class="card-rating">
+               
+                    {% if hotel.average_rating > 0 %}
+
+                    <span class="badge text-white">{{hotel.average_rating}}/5</span>
+
+                    {% else %}
+                    <span class="badge text-white">0.0/5</span>
+
+                    {% endif %}
+                    <span class="review__text">معدل</span>
+                    <span class="rating__text">({{hotel.review_count}} التعليقات)</span>
+                  </div>
+                  <div
+                    class="card-price d-flex align-items-center justify-content-between"
+                  >
+
+                    <a href="{{hotel.get_absolute_url}}" class="btn-text"
+                      >انظر التفاصيل<i class="la la-angle-right"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+              <!-- end card-item -->
+            </div>
+            <!-- end col-lg-6 -->
+          {% endfor %}
+
+        </div>
+        <!-- end row -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="btn-box mt-3 text-center">
+              <button type="button" class="theme-btn">
+                <i class="la la-refresh me-1"></i>تحميل المزيد
+              </button>
+              <p class="font-size-13 pt-2">عرض 1 - 8 من {{hotels.count}} فنادق</p>
+            </div>
+            <!-- end btn-box -->
+          </div>
+          <!-- end col-lg-12 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <div class="col-lg-4">
+        <div class="sidebar mb-0">
+          <div class="sidebar-widget">
+            <h3 class="title stroke-shape">البحث عن الفنادق</h3>
+            <div class="sidebar-widget-item">
+              <div class="contact-form-action">
+                <form action="{% url 'home:hotels' %}" method="get">
+                  <div class="input-box">
+                    <label class="label-text">الوجهة / اسم الفندق</label>
+                    <div class="form-group">
+                      <span class="la la-map-marker form-icon"></span>
+                      <input
+                        class="form-control"
+                        type="text"
+                        name="search"
+                        value="{{ search_query }}"
+                        placeholder="الوجهة ، اسم الفندق"
+                      />
+                    </div>
+                  </div>
+                  <div class="sidebar-widget-item">
+                    <div
+                      class="qty-box mb-2 d-flex align-items-center justify-content-between"
+                    >
+                      <label class="font-size-16">غرف</label>
+                      <div class="roomBtn d-flex align-items-center">
+                        <div class="qtyDec" data-input="rooms"><i class="la la-minus"></i></div>
+                        <input type="text" name="rooms" value="{{ rooms|default:'' }}" readonly />
+                        <div class="qtyInc" data-input="rooms"><i class="la la-plus"></i></div>
+                      </div>
+                    </div>
+                    <!-- end qty-box -->
+                    <div
+                      class="qty-box mb-2 d-flex align-items-center justify-content-between"
+                    >
+                      <label class="font-size-16">الاشخاص</label>
+                      <div class="qtyBtn d-flex align-items-center">
+                        <div class="qtyDec" data-input="persons"><i class="la la-minus"></i></div>
+                        <input type="text" name="persons" value="{{ persons|default:'' }}" readonly />
+                        <div class="qtyInc" data-input="persons"><i class="la la-plus"></i></div>
+                      </div>
+                    </div>
+                    <!-- end qty-box -->
+                    <div
+                      class="qty-box mb-2 d-flex align-items-center justify-content-between"
+                    >
+                      <label class="font-size-16"
+                        >الحد الاقصى للاشخاص</label
+                      >
+                      <div class="qtyBtn d-flex align-items-center">
+                        <div class="qtyDec" data-input="max_persons"><i class="la la-minus"></i></div>
+                        <input type="text" name="max_persons" value="{{ max_persons|default:'' }}" readonly />
+                        <div class="qtyInc" data-input="max_persons"><i class="la la-plus"></i></div>
+                      </div>
+                    </div>
+                    <!-- end qty-box -->
+                  </div>
+                  <!-- Price Range Section -->
+                  <div class="sidebar-widget">
+                    <h3 class="title stroke-shape">تصفية حسب السعر</h3>
+                    <div class="sidebar-price-range">
+                      <div class="main-search-input-item">
+                        <div class="price-slider-amount padding-bottom-20px">
+                          <label for="amount2" class="filter__label">السعر:</label>
+                          <input type="text" id="amount2" class="amounts" readonly />
+                          <input type="hidden" name="min_price" id="min_price" value="{{ min_price|default:0 }}" />
+                          <input type="hidden" name="max_price" id="max_price" value="{{ max_price|default:1000 }}" />
+                        </div>
+                        <div id="slider-range2"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Price Range Section -->
+                  <!-- Rating Filter Section -->
+                    <div class="sidebar-widget">
+                      <h3 class="title stroke-shape">تصفية حسب التصنيف</h3>
+                      <div class="sidebar-review">
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating5" name="rating" value="5" {% if '5' in ratings %}checked{% endif %} />
+                          <label for="rating5" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating4" name="rating" value="4" {% if '4' in ratings %}checked{% endif %} />
+                          <label for="rating4" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating3" name="rating" value="3" {% if '3' in ratings %}checked{% endif %} />
+                          <label for="rating3" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating2" name="rating" value="2" {% if '2' in ratings %}checked{% endif %} />
+                          <label for="rating2" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="rating1" name="rating" value="1" {% if '1' in ratings %}checked{% endif %} />
+                          <label for="rating1" class="ratings d-flex align-items-center">
+                            <i class="la la-star"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                            <i class="la la-star text-gray"></i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Rating Filter Section -->
+                    <!-- Hotel Services Filter Section -->
+                    <div class="sidebar-widget">
+                      <h3 class="title stroke-shape">مرافق</h3>
+                      <div class="sidebar-category">
+                        <input type="hidden" name="hotels" value="_" readonly />
+
+                        {% for service in all_services %}
+                        <div class="custom-checkbox">
+                          <input type="checkbox" id="service_{{ service.id }}" name="services" value="{{ service.id }}"
+                            {% if service.id|stringformat:"i" in selected_services %}checked{% endif %} />
+                          <label for="service_{{ service.id }}">
+                            {{ service.name }}
+                          </label>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <!-- End Hotel Services Filter Section -->
+                  <div class="btn-box pt-2">
+                    <button type="submit" class="theme-btn">
+                      <i class="la la-refresh me-1"></i>ابحث الآن
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- end sidebar-widget -->
+        </div>
+        <!-- end sidebar -->
+      </div>
+    </div>
+    <!-- end row -->
+    <div class="row">
+      <div class="col-lg-12">
+
+        <!-- end btn-box -->
+      </div>
+      <!-- end col-lg-12 -->
+    </div>
+    <!-- end row -->
+  </div>
+  <!-- end container -->
+</section>
+<!-- end card-area -->
+<!-- ================================
+END CARD AREA
+================================= -->
+
+<div class="section-block"></div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const handleQuantityChange = (input, isIncrement) => {
+          const currentValue = parseInt(input.value) || 0;
+          const newValue = isIncrement ? currentValue + 1 : Math.max(0, currentValue - 1);
+          input.value = newValue;
+      };
+
+      document.querySelectorAll('.qtyInc, .qtyDec').forEach(button => {
+          button.addEventListener('click', function() {
+              const inputName = this.getAttribute('data-input');
+              const input = document.querySelector(`input[name="${inputName}"]`);
+              if (input) {
+                  handleQuantityChange(input, this.classList.contains('qtyInc'));
+              }
+          });
+      });
+
+      if ($.fn.slider) {
+          $("#slider-range2").slider({
+              range: true,
+              min: 0,
+              max: 1000,
+              values: [
+                  parseInt($("#min_price").val()) || 0,
+                  parseInt($("#max_price").val()) || 1000
+              ],
+              slide: function(event, ui) {
+                  $("#amount2").val(ui.values[0] + " - " + ui.values[1] + " ريال");
+                  $("#min_price").val(ui.values[0]);
+                  $("#max_price").val(ui.values[1]);
+              }
+          });
+
+          $("#amount2").val(
+              $("#slider-range2").slider("values", 0) +
+              " - " +
+              $("#slider-range2").slider("values", 1) +
+              " ريال"
+          );
+      }
+  });
+  </script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
+          button.addEventListener('click', function() {
+            var hotelId = this.getAttribute('data-hotel-id');
+            var icon = this.querySelector('i');
+
+            fetch("{% url 'customer:add_to_favorites' %}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+              },
+              body: JSON.stringify({
+                'hotel_id': hotelId,
+              }),
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                // Toggle icon & class
+                if (this.classList.contains('btn-blue')) {
+                  this.classList.remove('btn-blue');
+                  icon.classList.remove('la-heart');
+                  icon.classList.add('la-heart-o');
+                } else {
+                  this.classList.add('btn-blue');
+                  icon.classList.remove('la-heart-o');
+                  icon.classList.add('la-heart');
+                }
+              } else {
+                alert(data.message || 'Something went wrong');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+          });
+        });
+      });
+
+          </script>
+{% endblock content %}

@@ -1,14 +1,23 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from HotelManagement.models import BaseModel
 from users.models import CustomUser
 
 # Create your models here.
 
-class Category(models.Model):
+class Category(BaseModel):
     name = models.CharField(max_length=100, verbose_name="اسم التصنيف")
     description = models.TextField(blank=True, verbose_name="وصف التصنيف")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
+
+    created_by = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True, blank=True, 
+        related_name="blog_categories_created", verbose_name="تم الإنشاء بواسطة"
+    )
+    updated_by = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True, blank=True, 
+        related_name="blog_categories_updated", verbose_name="تم التحديث بواسطة"
+    )
 
     def __str__(self):
         return self.name
@@ -18,15 +27,26 @@ class Category(models.Model):
         verbose_name_plural = "التصنيفات"
         ordering = ['-created_at']
 
-class Post(models.Model):
+
+class Tag(BaseModel):
+    name = models.CharField(max_length=50, unique=True, verbose_name="اسم الوسم")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "وسم"
+        verbose_name_plural = "الوسوم"
+        ordering = ['name']
+
+class Post(BaseModel):
     title = models.CharField(max_length=200, verbose_name="عنوان المقال")
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True, allow_unicode=True, verbose_name="الرابط")
     content = models.TextField(verbose_name="محتوى المقال")
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="الكاتب")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name="التصنيف")
+    tags = models.ManyToManyField(Tag, blank=True, related_name='posts', verbose_name="الوسوم")
     image = models.ImageField(upload_to='blog/images/', blank=True, null=True, verbose_name="صورة المقال")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="تاريخ التحديث")
     published_at = models.DateTimeField(default=timezone.now, verbose_name="تاريخ النشر")
     is_published = models.BooleanField(default=True, verbose_name="منشور")
     views = models.PositiveIntegerField(default=0, verbose_name="عدد المشاهدات")
@@ -50,11 +70,10 @@ class Post(models.Model):
         verbose_name_plural = "المقالات"
         ordering = ['-published_at']
 
-class Comment(models.Model):
+class Comment(BaseModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name="المقال")
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="الكاتب")
     content = models.TextField(verbose_name="محتوى التعليق")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
     is_approved = models.BooleanField(default=True, verbose_name="معتمد")
 
     def __str__(self):

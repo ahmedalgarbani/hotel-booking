@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    {# Add the custom button for the daily report #}
+    {% if daily_report_url %}
+        <li>
+            <a href="{{ daily_report_url }}" class="addlink">
+                {% trans "تقرير الحجوزات اليومي" %}
+            </a>
+        </li>
+    {% endif %}
+{% endblock %}

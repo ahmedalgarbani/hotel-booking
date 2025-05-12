@@ -1,0 +1,116 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+
+    <style>
+        /* تنسيق الإشعارات غير المقروءة */
+        .dropdown-item.unread {
+            background-color: rgba(255, 193, 7, 0.1);
+            font-weight: bold;
+        }
+
+        /* تنسيق زر تحديد الكل كمقروء */
+        .mark-all-read {
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .mark-all-read:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- إضافة عدد الإشعارات كعنصر مخفي -->
+    {% if unread_notifications_count %}
+    <span id="unread-notifications-count" style="display: none;">{{ unread_notifications_count }}</span>
+    <script>
+        // تعريف متغير عام لعدد الإشعارات غير المقروءة
+        window.unreadNotificationsCount = {{ unread_notifications_count }};
+    </script>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inline notification badges script loaded');
+
+            function findUnreadCount() {
+                if (window.unreadNotificationsCount !== undefined) {
+                    return window.unreadNotificationsCount.toString();
+                }
+
+                const navbarBadge = document.querySelector('.navbar-badge');
+                if (navbarBadge && navbarBadge.textContent.trim() !== '') {
+                    return navbarBadge.textContent.trim();
+                }
+
+                const hiddenCount = document.getElementById('unread-notifications-count');
+                if (hiddenCount && hiddenCount.textContent.trim() !== '') {
+                    return hiddenCount.textContent.trim();
+                }
+
+                return '0';
+            }
+
+            function addBadges() {
+                const unreadCount = findUnreadCount();
+                if (unreadCount === '0') return;
+
+                console.log('Adding badges with count:', unreadCount);
+
+                document.querySelectorAll('a').forEach(function(link) {
+                    const href = link.getAttribute('href') || '';
+                    const text = link.textContent.trim();
+
+                    if (href.includes('notifications') || text.includes('إشعارات') || text.includes('الإشعارات')) {
+                        if (!link.querySelector('.badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge badge-warning';
+                            badge.textContent = unreadCount;
+                            badge.style.marginRight = '5px';
+                            badge.style.marginLeft = '5px';
+                            badge.style.backgroundColor = '#ffc107';
+                            badge.style.color = '#212529';
+                            badge.style.borderRadius = '10px';
+                            badge.style.padding = '2px 6px';
+                            badge.style.fontSize = '0.75rem';
+
+                            link.appendChild(badge);
+                            console.log('Added badge to link:', text);
+                        }
+                    }
+                });
+
+                document.querySelectorAll('.fa-bell, .fas.fa-bell').forEach(function(icon) {
+                    const parent = icon.parentElement;
+                    if (parent && !parent.querySelector('.badge:not(.navbar-badge)')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge badge-warning';
+                        badge.textContent = unreadCount;
+                        badge.style.position = 'absolute';
+                        badge.style.top = '0';
+                        badge.style.right = '0';
+                        badge.style.transform = 'translate(50%, -50%)';
+                        badge.style.backgroundColor = '#ffc107';
+                        badge.style.color = '#212529';
+                        badge.style.borderRadius = '10px';
+                        badge.style.padding = '2px 6px';
+                        badge.style.fontSize = '0.75rem';
+
+                        if (window.getComputedStyle(parent).position === 'static') {
+                            parent.style.position = 'relative';
+                        }
+
+                        parent.appendChild(badge);
+                        console.log('Added badge to bell icon');
+                    }
+                });
+            }
+
+            addBadges();
+            setTimeout(addBadges, 1000);
+            setTimeout(addBadges, 3000);
+        });
+    </script>
+{% endblock %}

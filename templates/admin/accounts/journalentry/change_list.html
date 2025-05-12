@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+    {# Add the link to the journal entries report #}
+    {% if journal_entries_report_url %}
+        <li>
+            <a href="{{ journal_entries_report_url }}" class="addlink">
+                {% trans "تقرير قيود اليومية" %}
+            </a>
+        </li>
+    {% endif %}
+    {{ block.super }} {# Include default items #}
+{% endblock %}

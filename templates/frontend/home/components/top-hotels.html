@@ -1,354 +1,107 @@
 {% load static %}
+
+<style>
+/* Estilos para tarjetas de hoteles de tamaño uniforme */
+.card-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.card-item .card-img {
+    position: relative;
+    width: 100%;
+    height: 220px; /* Altura fija para todas las imágenes */
+    overflow: hidden;
+}
+
+.card-item .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción y cubre el área */
+    object-position: center;
+}
+
+.card-item .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.card-item .card-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.card-item .card-price {
+    margin-top: auto;
+}
+</style>
+
 <section class="hotel-area section-bg padding-top-100px padding-bottom-200px overflow-hidden">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="section-heading text-center">
-          <h2 class="sec__title line-height-55">
-            وجهات الفنادق الشهيرة <br>
-            قد تعجبك
-          </h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-heading text-center">
+                    <h2 class="sec__title line-height-55">
+                        وجهات الفنادق الشهيرة <br> قد تعجبك
+                    </h2>
+                </div>
+            </div>
         </div>
-        <!-- end section-heading -->
-      </div>
-      <!-- end col-lg-12 -->
-    </div>
-    <!-- end row -->
-    <div class="row padding-top-50px">
-      <div class="col-lg-12">
-        <div class="hotel-card-wrap">
-          <div class="hotel-card-carousel-2 carousel-action owl-rtl owl-loaded owl-carousel">
-            
-            <!-- end card-item -->
-            
-            <!-- end card-item -->
-            
-            <!-- end card-item -->
-            
-            <!-- end card-item -->
-            
-            <!-- end card-item -->
-            
-            <!-- end card-item -->
-          <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(1206px, 0px, 0px); transition: all; width: 4824px;"><div class="owl-item cloned" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img4.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge">جمع</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">منتجع فور سيزونز ماوي في ويليا</a>
-                </h3>
-                <p class="card-meta">3900 Wailea Alanui Drive, Kihei, HI</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
+
+        <div class="row padding-top-50px">
+            <div class="col-lg-12">
+                <div class="hotel-card-wrap">
+                    <div class="hotel-card-carousel-2 carousel-action owl-rtl owl-loaded owl-carousel">
+                        {% for hotel in hotels %}
+                        <div class="owl-item">
+                            <div class="card-item">
+                                <div class="card-img">
+                                  {% if hotel.profile_picture %}
+                                  <a href="{{hotel.get_absolute_url}}" class="d-block">
+                                   <img src="{{hotel.profile_picture.url}}" alt="hotel-img" />
+                                 </a>
+                                  {% endif %}
+
+                                    {% if hotel.badge %}
+                                    <span class="badge">{{ hotel.badge }}</span>
+                                    {% endif %}
+                                    {% if hotel.special_offer %}
+                                    <span class="badge badge-ribbon">{{ hotel.special_offer }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h3 class="card-title">
+                                        <a href="{{hotel.get_absolute_url}}">{{ hotel.name }}</a>
+                                    </h3>
+                                    <p class="card-meta">{{ hotel.location }}</p>
+                                    <div class="card-rating">
+                                        <span class="badge text-white">{{ hotel.average_rating|floatformat:1 }}/5</span>
+                                        <span class="review__text">معدل</span>
+                                        <span class="rating__text">({{ hotel.review_count }} التعليقات)</span>
+                                    </div>
+                                    <div class="card-price d-flex align-items-center justify-content-between">
+                                        {% comment %} <p>
+                                            <span class="price__num">ريال{{ hotel.price }}</span>
+                                            {% if hotel.discount_price %}
+                                            <span class="price__num before-price color-text-3">
+                                                ريال{{ hotel.discount_price }}
+                                            </span>
+                                            {% endif %}
+                                            <span class="price__text">لليلة الواحدة</span>
+                                        </p> {% endcomment %}
+                                        <a href="{{hotel.get_absolute_url}}" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item cloned" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img5.jpg' %}" alt="hotel-img">
-                </a>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">إيبيس ستايلز لندن هيثرو</a>
-                </h3>
-                <p class="card-meta">272 Bath Road, Harlington, England</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item cloned" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img6.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge badge-ribbon">خصم 10</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">فندق Europe Saint Severin باريس</a>
-                </h3>
-                <p class="card-meta">
-                  38-40 Rue Saint Séverin, Paris, Paris
-                </p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$70.00</span>
-                    <span class="price__num before-price color-text-3">$80.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item active" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img1.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge">الأكثر مبيعا</span>
-                <span class="badge badge-ribbon">تخفيض 30</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">ميلينيوم هيلتون نيويورك</a>
-                </h3>
-                <p class="card-meta">124 E Huron St, New york</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$90.00</span>
-                    <span class="price__num before-price color-text-3">$120.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item active" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img2.jpg' %}" alt="hotel-img">
-                </a>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">
-                    فندق بست ويسترن جرانت بارك</a>
-                </h3>
-                <p class="card-meta">124 E Huron St, Chicago</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$58.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item active" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img3.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge">متميز</span>
-                <span class="badge badge-ribbon">20٪ خصم</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">منتجع وسبا حياة ريجنسي ماوي</a>
-                </h3>
-                <p class="card-meta">200 Nohea Kai Dr, Lahaina, HI</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$80.00</span>
-                    <span class="price__num before-price color-text-3">$100.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img4.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge">جمع</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">منتجع فور سيزونز ماوي في ويليا</a>
-                </h3>
-                <p class="card-meta">3900 Wailea Alanui Drive, Kihei, HI</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img5.jpg' %}" alt="hotel-img">
-                </a>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">إيبيس ستايلز لندن هيثرو</a>
-                </h3>
-                <p class="card-meta">272 Bath Road, Harlington, England</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$88.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img6.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge badge-ribbon">خصم 10</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">فندق Europe Saint Severin باريس</a>
-                </h3>
-                <p class="card-meta">
-                  38-40 Rue Saint Séverin, Paris, Paris
-                </p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$70.00</span>
-                    <span class="price__num before-price color-text-3">$80.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item cloned" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img1.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge">الأكثر مبيعا</span>
-                <span class="badge badge-ribbon">تخفيض 30</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">ميلينيوم هيلتون نيويورك</a>
-                </h3>
-                <p class="card-meta">124 E Huron St, New york</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$90.00</span>
-                    <span class="price__num before-price color-text-3">$120.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item cloned" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img2.jpg' %}" alt="hotel-img">
-                </a>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">
-                    فندق بست ويسترن جرانت بارك</a>
-                </h3>
-                <p class="card-meta">124 E Huron St, Chicago</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$58.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div><div class="owl-item cloned" style="width: 372px; margin-left: 30px;"><div class="card-item">
-              <div class="card-img">
-                <a href="hotel-single.html" class="d-block">
-                  <img src="{% static 'images/img3.jpg' %}" alt="hotel-img">
-                </a>
-                <span class="badge">متميز</span>
-                <span class="badge badge-ribbon">20٪ خصم</span>
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="hotel-single.html">منتجع وسبا حياة ريجنسي ماوي</a>
-                </h3>
-                <p class="card-meta">200 Nohea Kai Dr, Lahaina, HI</p>
-                <div class="card-rating">
-                  <span class="badge text-white">4.4/5</span>
-                  <span class="review__text">معدل</span>
-                  <span class="rating__text">(30 التعليقات)</span>
-                </div>
-                <div class="card-price d-flex align-items-center justify-content-between">
-                  <p>
-                    <span class="price__num">$80.00</span>
-                    <span class="price__num before-price color-text-3">$100.00</span>
-                    <span class="price__text">لليلة الواحدة</span>
-                  </p>
-                  <a href="hotel-single.html" class="btn-text">انظر التفاصيل<i class="la la-angle-right"></i></a>
-                </div>
-              </div>
-            </div></div></div></div><div class="owl-nav"><div class="owl-prev"><i class="la la-angle-left"></i></div><div class="owl-next"><i class="la la-angle-right"></i></div></div><div class="owl-dots"><div class="owl-dot active"><span></span></div><div class="owl-dot"><span></span></div></div></div>
-          <!-- end hotel-card-carousel -->
+            </div>
         </div>
-      </div>
-      <!-- end col-lg-12 -->
     </div>
-    <!-- end row -->
-  </div>
-  <!-- end container-fluid -->
 </section>

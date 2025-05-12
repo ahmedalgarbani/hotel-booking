@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+    {# Add the link to the revenue summary report #}
+    {% if revenue_summary_url %}
+        <li>
+            <a href="{{ revenue_summary_url }}" class="addlink">
+                {% trans "تقرير ملخص الإيرادات" %}
+            </a>
+        </li>
+    {% endif %}
+    {{ block.super }} {# Include default items like 'Add payment' #}
+{% endblock %}
