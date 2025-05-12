@@ -153,8 +153,8 @@ class Offer(BaseModel):
 
 class Coupon(BaseModel):
     DISCOUNT_TYPES = [
-        ('percent', 'Percent'),
-        ('amount', 'Amount'),
+        ('percent', 'النسبة المئوية'),
+        ('amount', 'المبلغ'),
     ]
     hotel = models.ForeignKey(
         Hotel,
@@ -162,15 +162,15 @@ class Coupon(BaseModel):
         related_name="hotel_coupon",
         verbose_name=_("الفندق")
     )
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=255, unique=True)
-    description = RichTextField()
-    quantity = models.IntegerField()
-    min_purchase_amount = models.IntegerField(default=0)
-    expired_date = models.DateField()
-    discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPES)
-    discount = models.FloatField()
-    status = models.BooleanField(default=True)
+    name = models.CharField(max_length=255, verbose_name=_("الاسم"))
+    code = models.CharField(max_length=255, unique=True, verbose_name=_("الكود"))
+    description = RichTextField(verbose_name=_("الوصف"))
+    quantity = models.IntegerField(verbose_name=_("الكمية"))
+    min_purchase_amount = models.IntegerField(default=0, verbose_name=_("الحد الأدنى للشراء"))
+    expired_date = models.DateField(verbose_name=_("تاريخ الانتهاء"))
+    discount_type = models.CharField(max_length=10, choices=DISCOUNT_TYPES, verbose_name=_("نوع الخصم"))
+    discount = models.FloatField(verbose_name=_("الخصم"))
+    status = models.BooleanField(default=True, verbose_name=_("الحالة"))
 
     def __str__(self):
         return self.name
