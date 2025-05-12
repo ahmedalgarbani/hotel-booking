@@ -311,12 +311,12 @@ class Booking(BaseModel):
                 self.update_availability(change=-self.rooms_booked)
                 self.send_notification(type='CONFIRMED', title=_("تم تأكيد حجزك بنجاح."))
 
-                if self.check_out_date:
-                    print("sss")
-                    send_booking_end_reminders.apply_async(
-                        args=[self.id],
-                        eta=self.check_out_date - timezone.timedelta(hours=5)
-                    )
+                # if self.check_out_date:
+                #     print("sss")
+                #     send_booking_end_reminders.apply_async(
+                #         args=[self.id],
+                #         eta=self.check_out_date - timezone.timedelta(hours=5)
+                #     )
             elif (self.status == Booking.BookingStatus.CANCELED and
                   original.status == Booking.BookingStatus.CONFIRMED):
                 

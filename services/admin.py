@@ -47,7 +47,7 @@ class CouponAdmin(AutoUserTrackMixin, admin.ModelAdmin):
     formatted_description.allow_tags = True
     formatted_description.short_description = "الوصف"
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser or request.user.is_hotel_manager :
+        if not request.user.is_superuser :
             return ('created_at', 'updated_at', 'created_by', 'hotel','updated_by','deleted_at')
         return self.readonly_fields
     def get_queryset(self, request):
