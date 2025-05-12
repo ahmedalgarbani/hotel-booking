@@ -398,8 +398,12 @@ class HotelRequest(models.Model):
             created_by=user,
             is_verified=True,
             verification_date=timezone.now(),
-
         )
+
+        # إنشاء slug إذا لم يكن موجودًا
+        if not hotel.slug:
+            hotel.slug = slugify(hotel.name)
+            hotel.save()
 
         # إضافة رقم الهاتف
         Phone.objects.create(
