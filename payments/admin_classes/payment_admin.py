@@ -20,6 +20,14 @@ class PaymentAdmin(admin.ModelAdmin):
                      'payment_method__method_name', 'id']
     readonly_fields = ['payment_subtotal', 'payment_totalamount', 'payment_currency','created_at', 'updated_at', 'created_by', 'updated_by','deleted_at']
     actions = ['change_payment_status']
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.user_type == 'hotel_manager':
+            return qs.filter(booking_id__hotel__manager=request.user)
+        elif request.user.user_type == 'hotel_staff':
+            return qs.filter(booking_id__hotel__manager=request.user.chield, hotel__manager=request.user.chield)
+        return qs
+
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
             return ('created_at', 'updated_at', 'created_by', 'updated_by','deleted_at')
