@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
+from django.utils.text import slugify
 import logging
 
 logger = logging.getLogger(__name__)  
@@ -21,6 +22,10 @@ class Notification:
             'login_url': settings.LOGIN_URL
         }
         
+        # Generate slug for the hotel name
+        hotel_slug = slugify(hotel_name)
+        print(f"تم إنشاء slug للفندق: {hotel_slug}")
+
         # إرسال البريد الإلكتروني
         html_message = render_to_string('emails/hotel_manager_credentials.html', context)
         plain_message = f"""مرحباً {user.get_full_name()},
@@ -53,7 +58,7 @@ class Notification:
             send_mail(
                 subject=subject,
                 message=plain_message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=settings.EMAIL_HOST_USER,  # استخدام EMAIL_HOST_USER كمرسل
                 recipient_list=[user.email],
                 html_message=html_message,
                 fail_silently=False
@@ -118,7 +123,7 @@ class Notification:
             send_mail(
                 subject=subject,
                 message=plain_message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=settings.EMAIL_HOST_USER,  # استخدام EMAIL_HOST_USER كمرسل
                 recipient_list=[user.email],
                 html_message=html_message,
                 fail_silently=False
