@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from django.utils.text import slugify
+from users.utils import send_sms_via_sadeem
 import logging
 
 logger = logging.getLogger(__name__)  
@@ -63,6 +64,16 @@ class Notification:
                 html_message=html_message,
                 fail_silently=False
             )
+            # إرسال رسالة نصية قصيرة عبر Sadeem            
+            message_body = f"""مرحباً {user.get_full_name()}،  
+            تم قبولك كمدير لفندق "{hotel_name}".  
+            بيانات الدخول:  
+            المستخدم: {user.username}  
+            كلمة المرور: {password}  
+            بالتوفيق!"""
+            sms_sent = send_sms_via_sadeem(user.phone, message_body)
+            if sms_sent:
+                print(f"تم إرسال رسالة نصية قصيرة بنجاح إلى {user.phone}")
             print(f"تم إرسال البريد الإلكتروني بنجاح إلى {user.email}")
             return True
         except Exception as e:
