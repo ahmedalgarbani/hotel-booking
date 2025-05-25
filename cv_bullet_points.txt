@@ -1,0 +1,9 @@
+- Engineered a full-stack Hotel Booking System using Python (Django) for the backend and HTML, CSS, & JavaScript for the frontend, delivering a comprehensive online reservation platform.
+- Developed and implemented a secure user authentication and authorization module, safeguarding user data and controlling access to system features.
+- Designed and built a dynamic hotel and room management system, enabling administrators to control room inventory, pricing, and real-time availability.
+- Implemented a customer relationship management (CRM) module for efficient tracking of guest information, preferences, and booking history.
+- Integrated a secure third-party payment gateway, streamlining the online booking and payment process for users.
+- Developed a RESTful Guest API to facilitate seamless data exchange and integration with external travel services.
+- Created a comprehensive administrative dashboard providing tools for site management, booking oversight, and operational reporting.
+- Implemented a reporting feature to generate actionable insights into booking trends, occupancy, and revenue streams.
+- Contributed to the initial design and backend infrastructure for a planned content blog and user notification system.
